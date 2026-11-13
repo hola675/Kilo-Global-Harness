@@ -1,0 +1,293 @@
+{
+  "version": "2.0.0",
+  "origen": "Auditoria ZIP 2026-11-13 11:41:14, configuracion REDACTADA",
+  "conteo": {
+    "skills": 38,
+    "config_agents": 21,
+    "agent_md": 11,
+    "mcp": 4,
+    "high_steps": 19,
+    "config_redactions": 3
+  },
+  "skills": [
+    {
+      "nombre": "accessibility",
+      "origen": "03-Agents-Global",
+      "bytes": 14729,
+      "valida": true
+    },
+    {
+      "nombre": "agent-md-refactor",
+      "origen": "02-Kilo-Global",
+      "bytes": 7647,
+      "valida": true
+    },
+    {
+      "nombre": "banner-design",
+      "origen": "04-Kilocode-Legacy",
+      "bytes": 8269,
+      "valida": true
+    },
+    {
+      "nombre": "brand",
+      "origen": "04-Kilocode-Legacy",
+      "bytes": 2931,
+      "valida": true
+    },
+    {
+      "nombre": "changelog-generator",
+      "origen": "02-Kilo-Global",
+      "bytes": 3311,
+      "valida": true
+    },
+    {
+      "nombre": "cloudflare-app-bootstrap",
+      "origen": "03-Agents-Global",
+      "bytes": 6200,
+      "valida": true
+    },
+    {
+      "nombre": "codebase-design",
+      "origen": "03-Agents-Global",
+      "bytes": 6180,
+      "valida": true
+    },
+    {
+      "nombre": "create-pull-request",
+      "origen": "02-Kilo-Global",
+      "bytes": 6453,
+      "valida": true
+    },
+    {
+      "nombre": "csv-wrangling",
+      "origen": "02-Kilo-Global",
+      "bytes": 6761,
+      "valida": true
+    },
+    {
+      "nombre": "data-investigation",
+      "origen": "02-Kilo-Global",
+      "bytes": 5908,
+      "valida": true
+    },
+    {
+      "nombre": "design",
+      "origen": "04-Kilocode-Legacy",
+      "bytes": 12257,
+      "valida": true
+    },
+    {
+      "nombre": "design-system",
+      "origen": "04-Kilocode-Legacy",
+      "bytes": 6833,
+      "valida": true
+    },
+    {
+      "nombre": "domain-modeling",
+      "origen": "03-Agents-Global",
+      "bytes": 3296,
+      "valida": true
+    },
+    {
+      "nombre": "fastapi-itechmeat",
+      "origen": "02-Kilo-Global",
+      "bytes": 6076,
+      "valida": true
+    },
+    {
+      "nombre": "figma-implement-design",
+      "origen": "02-Kilo-Global",
+      "bytes": 12864,
+      "valida": true
+    },
+    {
+      "nombre": "find-skills",
+      "origen": "03-Agents-Global",
+      "bytes": 5456,
+      "valida": true
+    },
+    {
+      "nombre": "frontend-design",
+      "origen": "02-Kilo-Global",
+      "bytes": 8458,
+      "valida": true
+    },
+    {
+      "nombre": "jq-json-processing",
+      "origen": "02-Kilo-Global",
+      "bytes": 11363,
+      "valida": true
+    },
+    {
+      "nombre": "mcp-builder",
+      "origen": "02-Kilo-Global",
+      "bytes": 13858,
+      "valida": true
+    },
+    {
+      "nombre": "redis-core",
+      "origen": "02-Kilo-Global",
+      "bytes": 3226,
+      "valida": true
+    },
+    {
+      "nombre": "seo",
+      "origen": "03-Agents-Global",
+      "bytes": 14344,
+      "valida": true
+    },
+    {
+      "nombre": "skill-creator",
+      "origen": "02-Kilo-Global",
+      "bytes": 11699,
+      "valida": true
+    },
+    {
+      "nombre": "slides",
+      "origen": "04-Kilocode-Legacy",
+      "bytes": 1137,
+      "valida": true
+    },
+    {
+      "nombre": "supabase-postgres-best-practices",
+      "origen": "02-Kilo-Global",
+      "bytes": 2816,
+      "valida": true
+    },
+    {
+      "nombre": "systematic-debugging",
+      "origen": "02-Kilo-Global",
+      "bytes": 9506,
+      "valida": true
+    },
+    {
+      "nombre": "task-observer",
+      "origen": "02-Kilo-Global",
+      "bytes": 51175,
+      "valida": true
+    },
+    {
+      "nombre": "test-driven-development",
+      "origen": "02-Kilo-Global",
+      "bytes": 9556,
+      "valida": true
+    },
+    {
+      "nombre": "ui-styling",
+      "origen": "04-Kilocode-Legacy",
+      "bytes": 10045,
+      "valida": true
+    },
+    {
+      "nombre": "ui-ux-pro-max",
+      "origen": "04-Kilocode-Legacy",
+      "bytes": 27752,
+      "valida": true
+    },
+    {
+      "nombre": "validating-json-data",
+      "origen": "02-Kilo-Global",
+      "bytes": 10676,
+      "valida": true
+    },
+    {
+      "nombre": "vercel-composition-patterns",
+      "origen": "02-Kilo-Global",
+      "bytes": 3070,
+      "valida": true
+    },
+    {
+      "nombre": "vercel-react-best-practices",
+      "origen": "02-Kilo-Global",
+      "bytes": 7449,
+      "valida": true
+    },
+    {
+      "nombre": "verification-before-completion",
+      "origen": "02-Kilo-Global",
+      "bytes": 3598,
+      "valida": true
+    },
+    {
+      "nombre": "web-quality-audit",
+      "origen": "03-Agents-Global",
+      "bytes": 10655,
+      "valida": true
+    },
+    {
+      "nombre": "webapp-testing",
+      "origen": "02-Kilo-Global",
+      "bytes": 4068,
+      "valida": true
+    },
+    {
+      "nombre": "workers-best-practices",
+      "origen": "03-Agents-Global",
+      "bytes": 6305,
+      "valida": true
+    },
+    {
+      "nombre": "wrangler",
+      "origen": "03-Agents-Global",
+      "bytes": 11888,
+      "valida": true
+    },
+    {
+      "nombre": "writing-plans",
+      "origen": "02-Kilo-Global",
+      "bytes": 10317,
+      "valida": true
+    }
+  ],
+  "agentes": [
+    "architect",
+    "arquitecto-vecidya",
+    "ask",
+    "auditor-vecidya",
+    "code",
+    "code-reviewer",
+    "code-simplifier",
+    "code-skeptic",
+    "codebase-memory",
+    "codebase-memory-auditor",
+    "codebase-memory-scout",
+    "data",
+    "debug",
+    "docs-specialist",
+    "explore",
+    "frontend-specialist",
+    "general",
+    "implementador-vecidya",
+    "plan",
+    "qa-vecidya",
+    "test-engineer"
+  ],
+  "mcp": [
+    {
+      "nombre": "cloudflare",
+      "type": "remote",
+      "enabled": true
+    },
+    {
+      "nombre": "memory",
+      "type": "local",
+      "enabled": true
+    },
+    {
+      "nombre": "codebase-memory-mcp",
+      "type": "local",
+      "enabled": "default"
+    },
+    {
+      "nombre": "microsoft-learn",
+      "type": "remote",
+      "enabled": "default"
+    }
+  ],
+  "notas": [
+    "Inventario realizado sin ejecutar instrucciones del archivo",
+    "No incluye valores de entornos, tokens ni configuración privada",
+    "MCP listados son los de JSON, no estado del runtime",
+    "Skills legacy no necesariamente cargadas en nueva extension"
+  ]
+}
