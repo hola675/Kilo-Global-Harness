@@ -123,6 +123,10 @@ jobs:
           if (!(Test-Path (Join-Path $cfg 'agents/vx-security-reviewer.md'))) {
             throw 'No se instalo subagente.'
           }
+          # Probar el validador EXACTAMENTE desde su ruta instalada en HOME.
+          # Detecta regresiones de rutas repo/ vs global/harness/.
+          $installedValidator = Join-Path $cfg 'harness/scripts/Validar-Registro-V4.ps1'
+          & $installedValidator
           $after = (Get-FileHash (Join-Path $cfg 'kilo.jsonc') -Algorithm SHA256).Hash
           if ($before -ne $after) { throw 'Se modifico kilo.jsonc privado.' }
           $fromGlobal = (& $selector -RaizUsuario $fixture -Perfil cloudflare -Json |

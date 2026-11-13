@@ -9,7 +9,20 @@ param(
   [string]$RutaRegistro
 )
 $ErrorActionPreference='Stop'
-if (!$RutaRegistro) { $RutaRegistro = Join-Path $RaizFuentes 'registry/vx-agent-registry-v4.json' }
+# Dos disposiciones admitidas: codigo fuente (repo/registry + repo/agents)
+# y copia GLOBAL instalada (kilo/harness/registro + kilo/agents).
+if (!$RutaRegistro) {
+  $fromSource = Join-Path $RaizFuentes 'registry/vx-agent-registry-v4.json'
+  $fromGlobal = Join-Path $RaizFuentes 'vx-agent-registry-v4.json'
+  if (Test-Path -LiteralPath $fromSource -PathType Leaf) {
+    $RutaRegistro = $fromSource
+  } elseif (Test-Path -LiteralPath $fromGlobal -PathType Leaf) {
+    $RutaRegistro = $fromGlobal
+    $RaizFuentes = Split-Path $RaizFuentes -Parent
+  } else {
+    throw 'No se encuentra el registro V4 en fuente o instalacion global.'
+  }
+}
 if (!(Test-Path -LiteralPath $RutaRegistro -PathType Leaf)) { throw "Registro no existe: $RutaRegistro" }
 $data = Get-Content -LiteralPath $RutaRegistro -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
 if ($data.schema -ne 'vx-agent-registry/1' -or $data.global_only -ne $true) { throw 'Esquema/alcance global invalido.' }
