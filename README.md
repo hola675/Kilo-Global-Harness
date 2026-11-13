@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V3.0
+# VECIDYA · Kilo Code Global Harness V3.1
 
-**Versión:** 3.0.0 · **Estado:** candidato a validación mediante CI y prueba real en Windows.
+**Versión documental:** 3.1.0 · **Instalador:** V3/manifest 3.0.0 · **Estado:** V3 instalado en Windows y verificado por el operador a nivel de archivos; carga funcional parcial confirmada.
 
 Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -82,6 +82,17 @@ Todos los destinos anteriores están bajo HOME. Si se ejecuta desde `D:\Proyecto
 - Los agentes heredados definidos en `kilo.jsonc` y en Markdown no se eliminan ni modifican, porque pueden tener precedencia o permisos diferentes.
 - La validación CI es un smoke test del instalador en Windows aislado. No valida conexión de los MCP del PC ni el comportamiento real de los modelos Kilo.
 
+## Diagnostico de agentes y MCP (sin modificar configuracion)
+
+```powershell
+pwsh -NoProfile -File .\scripts\Auditar-Kilo-Global.ps1
+pwsh -NoProfile -File .\scripts\Auditar-Kilo-Global.ps1 -Json
+```
+
+La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **fusionan por precedencia**, no son necesariamente agentes duplicados en ejecucion; revisar campos efectivos antes de limpiar. El plugin declarado en opencode.json y tui.json puede atender a dos superficies distintas. Los limites `steps` elevados se informan pero no se cambian sin una revision del comportamiento de los agentes.
+
+**ImageGen:** tres generaciones CLI con `codex-imagegen-mcp@0.2.3` confirmadas por el operador; las herramientas en Kilo requieren comprobacion separada. Usa `/vx-imagegen` para diagnosticar sin consumir cuota. Ver [validacion ImageGen](docs/IMAGEGEN-MCP.md).
+
 ## Documentación
 
 - [Auditoría actualizada](AUDITORIA-DETALLADA.md)
@@ -94,6 +105,7 @@ Todos los destinos anteriores están bajo HOME. Si se ejecuta desde `D:\Proyecto
 
 ## Changelog
 
+- **3.1.0 · 2026-11-13:** auditoría global de solo lectura (sin secretos), comando de verificación ImageGen sin generación automática, aclaración de precedencia de agentes y plugins.
 - **3.0.0 · 2026-11-13:** instalador global idempotente, AGENTS administrado sin tocar JSONC, simulación, backups con hashes, rollback conservador, skill V3, dos agentes VX globales, workflows actualizados y CI.
 - **2.1.0:** política autónoma, Git main permanente y pausa opcional de task-observer.
 - **2.0.0:** ciclo ingeniería y primera auditoría global.

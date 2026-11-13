@@ -34,3 +34,35 @@ jobs:
           & $script -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
           if (Test-Path (Join-Path $tmp '.config/kilo/AGENTS.md')) { throw 'Restaurar dejo AGENTS.md de prueba.' }
           Write-Host 'SMOKE TEST PASSED'
+
+      - name: Auditar fixture JSONC sin filtrar secretos
+        shell: pwsh
+        run: |
+          $tmp = Join-Path $env:RUNNER_TEMP 'kilo-global-audit-fixture'
+          $cfg = Join-Path $tmp '.config/kilo'
+          New-Item -ItemType Directory -Path (Join-Path $cfg 'agents') -Force | Out-Null
+          @'
+          {
+            // Datos ficticios de CI
+            "agent": {
+              "architect": { "steps": 10000000, },
+            },
+            "mcp": {
+              "imagegen": { "type": "local", "enabled": true,
+                            "environment": { "SECRET": "CI_SECRET_NEVER_PRINT_123" } }
+            }
+          }
+          '@ | Set-Content (Join-Path $cfg 'kilo.jsonc') -Encoding utf8
+          '---' | Set-Content (Join-Path $cfg 'agents/architect.md')
+          $auditScript = (Resolve-Path 'scripts/Auditar-Kilo-Global.ps1').Path
+          $err = $null
+          $tokens = $null
+          [System.Management.Automation.Language.Parser]::ParseFile($auditScript,[ref]$tokens,[ref]$err) | Out-Null
+          if ($err.Count -gt 0) { throw "Error de sintaxis en auditoría: $($err | Out-String)" }
+          $jsonText = & $auditScript -RaizUsuario $tmp -Json | Out-String
+          if ($jsonText -match 'CI_SECRET_NEVER_PRINT_123') { throw 'La auditoria filtro una credencial.' }
+          $r = $jsonText | ConvertFrom-Json
+          if ($r.high_steps_over_400.Count -ne 1) { throw 'No detecto steps elevados.' }
+          if ($r.duplicates_merged_by_kilo.Count -ne 1) { throw 'No detecto agente compartido.' }
+          if (!$r.imagegen_configured) { throw 'No detecto imagegen.' }
+          Write-Host 'AUDITORIA GLOBAL SIN SECRETOS: PASS'

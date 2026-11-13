@@ -20,6 +20,7 @@
 - `context7`/`microsoft-learn`: documentación de API/versión, buscar fragmentos concretos.
 - `github`/`cloudflare`: lectura o escritura según autorización/credenciales válidas; no asumir que el JSON implica conexión MCP.
 - `playwright`: pruebas reales en navegador si está conectado.
+- `imagegen`: generación gráfica únicamente si la tarea necesita imágenes y las herramientas están disponibles; la prueba de CLI no acredita la conexión del cliente. No crear assets en repositorios por defecto ni iniciar generaciones automáticas de validación que consuman cuota.
 
 ## Contexto/costo
 
