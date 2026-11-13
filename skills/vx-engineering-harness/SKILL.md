@@ -32,3 +32,11 @@ AutoApprove sigue como está. Para cambios normales autorizados, ejecutar sin pr
 ## Evidencia de salida
 
 Registrar alcance, archivos tocados, comandos y resultado verificable, cambios del PR/merge y estado de ramas. Reportar qué quedó sin ejecutar y por qué.
+
+
+## Equipo V4
+
+- En tareas complejas usa el catalogo global `~/.config/kilo/harness/vx-agent-registry-v4.json` y `/vx-equipo` para elegir roles; no delegar cuestiones triviales.
+- En modo estricto: lectores independientes simultaneos (max. 3) -> sintesis -> un unico implementador -> revisores con objetivos distintos. Los agentes read-only no ejecutan pruebas ni alteran Git.
+- Perfiles: general, backend, frontend, cloudflare, database, security, refactor, design, docs. Las skills son propuestas condicionadas a disponibilidad, no instalaciones automaticas.
+- El selector local solo produce un plan; no garantiza que se haya llamado a `task` ni reporta tokens que no esten medidos.
