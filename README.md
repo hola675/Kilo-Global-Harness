@@ -93,6 +93,14 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 
 **ImageGen:** tres generaciones CLI con `codex-imagegen-mcp@0.2.3` confirmadas por el operador; las herramientas en Kilo requieren comprobacion separada. Usa `/vx-imagegen` para diagnosticar sin consumir cuota. Ver [validacion ImageGen](docs/IMAGEGEN-MCP.md).
 
+## Investigación y diseño de la siguiente etapa V4
+
+- [Catálogo contrastado de 44 fuentes de agentes/harnesses](docs/investigacion/HARNESSES-Y-AGENTES-2026-11-13.md).
+- [Arquitectura de selección de agentes, paralelismo, gates y coste](docs/investigacion/ORQUESTACION-MULTIAGENTE-V4.md).
+- [Registro estructurado de fuentes (solo candidatos)](inventory/harness-sources-2026-11-13.json).
+
+**Esta documentación NO importa ni activa agentes externos.** El plan V4 conserva la configuración exclusivamente global, AutoApprove, MCP y modelos existentes. La implementación requiere adaptación selectiva y pruebas posteriores.
+
 ## Documentación
 
 - [Auditoría actualizada](AUDITORIA-DETALLADA.md)

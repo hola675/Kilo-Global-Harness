@@ -1,0 +1,447 @@
+{
+  "schema": "vx-harness-source-catalog/1",
+  "date": "2026-11-13",
+  "note": "Research candidates only, not installed; status P1/P2/P3 is review priority, not approval.",
+  "entries": [
+    {
+      "repo": "Kilo-Org/kilocode",
+      "url": "https://github.com/Kilo-Org/kilocode",
+      "kind": "núcleo",
+      "priority": "Base",
+      "notes": "Base nativa Task, Agent Manager, Swarm, plugins y permisos",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers",
+      "kind": "metodología",
+      "priority": "P1",
+      "notes": "Planificación, TDD, debugging, subagent-driven development; evitar duplicar skills existentes",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "affaan-m/ECC",
+      "url": "https://github.com/affaan-m/ECC",
+      "kind": "harness",
+      "priority": "P1",
+      "notes": "Memoria, contexto, evidencia, instrucciones y especialización; portada actual ECC",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "wshobson/agents",
+      "url": "https://github.com/wshobson/agents",
+      "kind": "catálogo",
+      "priority": "P1",
+      "notes": "Agentes/skills/commands escritos para varias plataformas; seleccionar roles uno por uno",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "VoltAgent/awesome-claude-code-subagents",
+      "url": "https://github.com/VoltAgent/awesome-claude-code-subagents",
+      "kind": "catálogo",
+      "priority": "P1",
+      "notes": "Biblioteca extensa de roles; adaptar frontmatter y privilegios",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "first-fluke/oh-my-agent",
+      "url": "https://github.com/first-fluke/oh-my-agent",
+      "kind": "harness",
+      "priority": "P1",
+      "notes": "Roles de producto, frontend, backend, QA, refactor; puertas de calidad",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "bmad-code-org/BMAD-METHOD",
+      "url": "https://github.com/bmad-code-org/BMAD-METHOD",
+      "kind": "metodología",
+      "priority": "P1",
+      "notes": "Descubrimiento, PRD, arquitectura, criterios de aceptación y QA",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "ZaxbyHub/opencode-swarm",
+      "url": "https://github.com/ZaxbyHub/opencode-swarm",
+      "kind": "orquestación",
+      "priority": "P1",
+      "notes": "Gates, reviewer distinto de writer, control de edición y skills en cuarentena; plugin no nativo Kilo",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "mksglu/context-mode",
+      "url": "https://github.com/mksglu/context-mode",
+      "kind": "contexto",
+      "priority": "P1",
+      "notes": "Plugin con integración Kilo documentada; evaluar ahorro real y conflicto con memoria",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "deepseek-ai/deepseek-harness",
+      "url": "https://github.com/deepseek-ai/deepseek-harness",
+      "kind": "meta-harness",
+      "priority": "P1",
+      "notes": "Arquitectura everything-is-a-plugin Cordis; runtime separado en preview",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "trailofbits/skills",
+      "url": "https://github.com/trailofbits/skills",
+      "kind": "seguridad",
+      "priority": "P1",
+      "notes": "Auditoría especializada; revisar licencias de cada pieza y no duplicar habilidades",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "cloudflare/skills",
+      "url": "https://github.com/cloudflare/skills",
+      "kind": "dominio",
+      "priority": "P1",
+      "notes": "Workers, Cloudflare, deployment; ya hay skills existentes, adaptar deltas",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "vercel-labs/agent-skills",
+      "url": "https://github.com/vercel-labs/agent-skills",
+      "kind": "dominio",
+      "priority": "P1",
+      "notes": "React/Next y composición; ya hay skills existentes, adaptar deltas",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "anthropics/skills",
+      "url": "https://github.com/anthropics/skills",
+      "kind": "estándar",
+      "priority": "P1",
+      "notes": "SKILL.md y formato; licencias heterogéneas por carpeta",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "promptfoo/promptfoo",
+      "url": "https://github.com/promptfoo/promptfoo",
+      "kind": "evaluación",
+      "priority": "P1",
+      "notes": "Pruebas, regresión y red teaming de prompts y agentes",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "github/awesome-copilot",
+      "url": "https://github.com/github/awesome-copilot",
+      "kind": "catálogo",
+      "priority": "P2",
+      "notes": "Colección de agentes, instrucciones y skills portables tras revisión",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "davila7/claude-code-templates",
+      "url": "https://github.com/davila7/claude-code-templates",
+      "kind": "catálogo",
+      "priority": "P2",
+      "notes": "Plantillas, MCP, agentes y hooks; evitar instalador masivo de Claude",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "code-yeongyu/oh-my-openagent",
+      "url": "https://github.com/code-yeongyu/oh-my-openagent",
+      "kind": "orquestación",
+      "priority": "P2",
+      "notes": "Delegación intensiva y routing multmodelos; plugin de otro runtime",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "ruvnet/claude-flow",
+      "url": "https://github.com/ruvnet/claude-flow",
+      "kind": "orquestación",
+      "priority": "P2",
+      "notes": "Swarm y memoria con muchos subsistemas; alto peso de dependencias",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "open-mercato/cezar",
+      "url": "https://github.com/open-mercato/cezar",
+      "kind": "orquestación",
+      "priority": "P2",
+      "notes": "Worktrees, tareas concurrentes, métricas; crea estado por proyecto",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "omnigent-ai/omnigent",
+      "url": "https://github.com/omnigent-ai/omnigent",
+      "kind": "meta-harness",
+      "priority": "P2",
+      "notes": "Supervisión de varios CLI; verificar madurez y Kilo real antes de probar",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "hyw007726/multi-agent-orchestrator-skill",
+      "url": "https://github.com/hyw007726/multi-agent-orchestrator-skill",
+      "kind": "orquestación",
+      "priority": "P2",
+      "notes": "Adaptadores CLI incluido Kilo; escribe coord/ y usa permisos autónomos",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "yw0nam/any-subagent",
+      "url": "https://github.com/yw0nam/any-subagent",
+      "kind": "orquestación",
+      "priority": "P2",
+      "notes": "Subsesiones identificadas por nombre; primario Claude/Codex",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "engn-dev/meta-harness-studio",
+      "url": "https://github.com/engn-dev/meta-harness-studio",
+      "kind": "meta-harness",
+      "priority": "P2",
+      "notes": "Generación de configs entre herramientas; ruta Kilo antigua y poca validación",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "deepklarity/harness-kit",
+      "url": "https://github.com/deepklarity/harness-kit",
+      "kind": "metodología",
+      "priority": "P2",
+      "notes": "DAG, pruebas y coste con tool externo; patrones portables",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "solo-code-com/Solo-Code-Harness",
+      "url": "https://github.com/solo-code-com/Solo-Code-Harness",
+      "kind": "harness",
+      "priority": "P2",
+      "notes": "Múltiples engines desde fuente Kilo; ejemplo experimental de tamaño reducido",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "langchain-ai/langgraph",
+      "url": "https://github.com/langchain-ai/langgraph",
+      "kind": "framework",
+      "priority": "P2",
+      "notes": "Grafos de estado y ejecución durable; no es plugin Kilo",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "microsoft/agent-framework",
+      "url": "https://github.com/microsoft/agent-framework",
+      "kind": "framework",
+      "priority": "P2",
+      "notes": "Orquestación para .NET/Python con checkpoints y trazas",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "openai/openai-agents-python",
+      "url": "https://github.com/openai/openai-agents-python",
+      "kind": "framework",
+      "priority": "P2",
+      "notes": "Handoffs, guardrails, trace y herramientas; runtime separado",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "crewAIInc/crewAI",
+      "url": "https://github.com/crewAIInc/crewAI",
+      "kind": "framework",
+      "priority": "P2",
+      "notes": "Roles y crews de agentes, runtime Python externo",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "mastra-ai/mastra",
+      "url": "https://github.com/mastra-ai/mastra",
+      "kind": "framework",
+      "priority": "P2",
+      "notes": "Orquestación y observabilidad TS; licencia mixta en ee/",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "OpenHands/OpenHands",
+      "url": "https://github.com/OpenHands/OpenHands",
+      "kind": "IDE-agente",
+      "priority": "P2",
+      "notes": "Comparar agentes autonomos y aislamiento; servicio independiente",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "SWE-agent/SWE-agent",
+      "url": "https://github.com/SWE-agent/SWE-agent",
+      "kind": "evaluación",
+      "priority": "P2",
+      "notes": "Solución de issues y benchmarks de software; reutilizar ideas de pruebas",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "OpenBMB/ChatDev",
+      "url": "https://github.com/OpenBMB/ChatDev",
+      "kind": "orquestación",
+      "priority": "P2",
+      "notes": "Colaboración por roles, múltiples conversaciones; capa externa",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "microsoft/semantic-kernel",
+      "url": "https://github.com/microsoft/semantic-kernel",
+      "kind": "framework",
+      "priority": "P2",
+      "notes": "Skills y composición en .NET; posible backend empresarial separado",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "UKGovernmentBEIS/inspect_ai",
+      "url": "https://github.com/UKGovernmentBEIS/inspect_ai",
+      "kind": "evaluación",
+      "priority": "P2",
+      "notes": "Evals y conjuntos de pruebas independientes del harness",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "agentops-ai/agentops",
+      "url": "https://github.com/agentops-ai/agentops",
+      "kind": "telemetría",
+      "priority": "P2",
+      "notes": "Costos/trazas de agentes con SDK externo; datos privados y carga",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "modelcontextprotocol/servers",
+      "url": "https://github.com/modelcontextprotocol/servers",
+      "kind": "MCP",
+      "priority": "P2",
+      "notes": "Servidores MCP de referencia, instalar solo tools necesarios",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "agentsmd/agents.md",
+      "url": "https://github.com/agentsmd/agents.md",
+      "kind": "estándar",
+      "priority": "P2",
+      "notes": "Formato de instrucciones; mantener en HOME, no en proyectos",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "Picrew/awesome-agent-harness",
+      "url": "https://github.com/Picrew/awesome-agent-harness",
+      "kind": "índice",
+      "priority": "P3",
+      "notes": "Índice para ampliar exploración, no integrar directamente",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "arach/awesome-agent-clients",
+      "url": "https://github.com/arach/awesome-agent-clients",
+      "kind": "índice",
+      "priority": "P3",
+      "notes": "Mapa de clientes/IDE/orquestadores; catálogo de descubrimiento",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "e2b-dev/awesome-ai-agents",
+      "url": "https://github.com/e2b-dev/awesome-ai-agents",
+      "kind": "índice",
+      "priority": "P3",
+      "notes": "Lista amplia de agentes; localizar solo implementaciones relevantes",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "microsoft/autogen",
+      "url": "https://github.com/microsoft/autogen",
+      "kind": "histórico",
+      "priority": "P3",
+      "notes": "README advierte proyecto archivado/sustituido; no usar como base",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    },
+    {
+      "repo": "jordimarsal/harness",
+      "url": "https://github.com/jordimarsal/harness",
+      "kind": "harness",
+      "priority": "P3",
+      "notes": "Gates y flujos, instalador escribe en proyecto; solo inspiración",
+      "installed": false,
+      "license_review": "pending_file_level",
+      "source_commit": "not_pinned"
+    }
+  ]
+}
