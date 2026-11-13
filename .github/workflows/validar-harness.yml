@@ -66,3 +66,77 @@ jobs:
           if ($r.duplicates_merged_by_kilo.Count -ne 1) { throw 'No detecto agente compartido.' }
           if (!$r.imagegen_configured) { throw 'No detecto imagegen.' }
           Write-Host 'AUDITORIA GLOBAL SIN SECRETOS: PASS'
+
+      - name: V4 - validar registro, equipos, global-only y rollback
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($file in @(Get-ChildItem scripts -Filter '*.ps1')) {
+            $errors = $null
+            $tokens = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $file.FullName,[ref]$tokens,[ref]$errors
+            ) | Out-Null
+            if ($errors.Count -gt 0) { throw "Error sintaxis: $($file.Name) $($errors | Out-String)" }
+          }
+          $validator = (Resolve-Path 'scripts/Validar-Registro-V4.ps1').Path
+          $selector = (Resolve-Path 'scripts/Seleccionar-Equipo-V4.ps1').Path
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $validator
+          $profiles = @('general','backend','frontend','cloudflare','database','security','refactor','design','docs')
+          foreach ($name in $profiles) {
+            $v = (& $selector -Perfil $name -Json | Out-String | ConvertFrom-Json)
+            if ($v.profile -ne $name -or $v.max_writers -ne 1 -or $v.actions_executed -ne 0) {
+              throw "Selector invalido: $name"
+            }
+            if (@($v.discover_parallel).Count -gt 3 -or @($v.review_parallel).Count -gt 3) {
+              throw "Paralelismo excesivo: $name"
+            }
+          }
+          $auto = (& $selector -Tarea 'Corregir UI React y CSS' -Json | Out-String | ConvertFrom-Json)
+          if ($auto.profile -ne 'frontend') { throw 'Deteccion automatica frontend fallida.' }
+          $read = (& $selector -Perfil cloudflare -SoloLectura -MaxLectores 1 -Json |
+            Out-String | ConvertFrom-Json)
+          if ($read.max_writers -ne 0 -or $read.implementation -or @($read.discover_parallel).Count -gt 1) {
+            throw 'SoloLectura o MaxLectores incumplidos.'
+          }
+          $broken = Get-Content 'registry/vx-agent-registry-v4.json' -Raw | ConvertFrom-Json -AsHashtable
+          $broken.execution.max_writers = 2
+          $bad = Join-Path $env:RUNNER_TEMP 'vx-invalid-registry.json'
+          $broken | ConvertTo-Json -Depth 30 | Set-Content $bad -Encoding utf8
+          $rejected = $false
+          try { & $validator -RutaRegistro $bad | Out-Null } catch { $rejected = $true }
+          if (!$rejected) { throw 'Validador acepto multiples escritores.' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx-v4-' + [guid]::NewGuid().ToString('N'))
+          $cfg = Join-Path $fixture '.config/kilo'
+          New-Item -ItemType Directory -Path $cfg -Force | Out-Null
+          '{"mcp":{"imagegen":{"enabled":true}},"agent":{"code":{"steps":10000000}},"secret":"CI_CANARY_DO_NOT_PRINT"}' |
+            Set-Content (Join-Path $cfg 'kilo.jsonc') -Encoding utf8
+          $before = (Get-FileHash (Join-Path $cfg 'kilo.jsonc') -Algorithm SHA256).Hash
+          & $installer -Modo Diagnostico -RaizUsuario $fixture
+          & $installer -Modo Simular -RaizUsuario $fixture
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          & $installer -Modo Verificar -RaizUsuario $fixture
+          if (!(Test-Path (Join-Path $cfg 'harness/vx-agent-registry-v4.json'))) {
+            throw 'No se instalo registro global.'
+          }
+          if (!(Test-Path (Join-Path $cfg 'agents/vx-security-reviewer.md'))) {
+            throw 'No se instalo subagente.'
+          }
+          $after = (Get-FileHash (Join-Path $cfg 'kilo.jsonc') -Algorithm SHA256).Hash
+          if ($before -ne $after) { throw 'Se modifico kilo.jsonc privado.' }
+          $fromGlobal = (& $selector -RaizUsuario $fixture -Perfil cloudflare -Json |
+            Out-String | ConvertFrom-Json)
+          if ($fromGlobal.profile -ne 'cloudflare') { throw 'Selector no utilizo registro global.' }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if (Test-Path (Join-Path $cfg 'harness/vx-agent-registry-v4.json')) {
+            throw 'Rollback no retiro registro nuevo.'
+          }
+          if (Test-Path (Join-Path $cfg 'agents/vx-security-reviewer.md')) {
+            throw 'Rollback no retiro agente nuevo.'
+          }
+          $restored = (Get-FileHash (Join-Path $cfg 'kilo.jsonc') -Algorithm SHA256).Hash
+          if ($restored -ne $before) { throw 'Rollback altero configuracion privada.' }
+          Write-Host 'V4 GLOBAL-ONLY, SEGURIDAD, ROUTING Y ROLLBACK: PASS'
