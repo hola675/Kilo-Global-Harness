@@ -95,3 +95,12 @@ source: {origin: upstream, license: check, upstream_sha: pin}
 7. Integrar CI y workflow de promoción de skills. No activar autoaprendizaje o actualización automática antes de pruebas.
 
 **Política:** solo global, AutoApprove conservado, Git `main` permanente, ningún MCP nuevo/skill externo activo por esta documentación.
+
+
+## Incremento V4 implementado (registro + orquestacion nativa)
+
+Se crea un registro JSON de agentes/perfiles globales, cinco subagentes de solo lectura, `/vx-equipo` y dos scripts PowerShell: seleccion de equipo SIN efectos y validacion de registro. Los perfiles cubren general, backend, frontend, cloudflare, database, security, refactor, design y docs. No hay llamadas automaticas a modelos ni importacion masiva de codigos externos.
+
+El validador comprueba rutas VX, identidades, frontmatter, limites de iteraciones, separacion de escritores y referencias de perfiles. El selector **solo recomienda**, no lanza agentes; Kilo `task(background: true)` es el mecanismo de ejecucion real. CI Windows prueba instalacion, seguridad de configuracion y restauracion. No se resuelven en este incremento los 12 agentes preexistentes JSON/MD ni los 19 limites `steps=10000000`; deben tratarse por compatibilidad y medicion.
+
+La instalacion V4 usa manifiesto 4.0.0 y permite restaurar respaldos 3.0.0 de V3 sin cambiar los archivos privados JSONC, AutoApprove o MCP. El modo de multi-escritura en worktrees auxiliares sigue desactivado hasta consentimiento del operador.
