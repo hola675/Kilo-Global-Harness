@@ -1,0 +1,16 @@
+# No publicar auditorias reales, copias de configuracion, secretos ni datos de usuario
+*.zip
+**/Kilo-Code-Auditoria-*/
+**/Kilo-Harness-Backup-*/
+**/kilo-harness-backups/
+*.env
+*.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*.sqlite
+*.db
+**/credentials*/
+**/tokens*/
+*.log

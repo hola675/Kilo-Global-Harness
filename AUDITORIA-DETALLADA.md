@@ -1,103 +1,44 @@
-# Auditoría técnica VECIDYA · Kilo Code Global Harness V2
+# Auditoría de referencia · VECIDYA Kilo Global Harness V3.0
 
-**Base:** archivo aportado `Kilo-Code-Auditoria-20261113-114114.zip`.
-**Alcance:** solamente copia incluida; no se accedió a Windows en remoto.
-**Seguridad:** NO se han reproducido secretos ni configuraciones originales.
+**Fuente principal:** `Kilo-Code-Auditoria-20261113-124536.zip` proporcionado por el usuario el 2026-11-13. Es una copia sanitizada, NO un backup recuperable. El análisis ocurrió fuera del PC Windows. No se publican secretos ni originales privados.
 
-## Inventario acreditado
+## Hallazgos observados
 
-| Componente | Observado | Interpretación |
-| --- | ---: | --- |
-| Entradas ZIP | 501 | Incluye subdirectorios, recursos y documentación |
-| Skills en `.kilo/skills` | 22 | Globales |
-| Skills en `.agents/skills` | 9 | Globales compatibles |
-| Skills en `.kilocode/skills` | 7 | Heredadas; carga efectiva por confirmar |
-| Total carpetas `SKILL.md` | 38 | 38 nombres únicos, sin duplicados exactos |
-| Skills con `name` y `description` frontmatter | 38 | Forma básica válida; no prueba la ejecución ni seguridad |
-| Agentes en `kilo.jsonc` | 21 | Incluye agentes built-in personalizados |
-| Agentes en Markdown | 11 | Mismos nombres también presentes en config |
-| Definiciones `steps > 160` | 19 | Usan 10.000.000 iteraciones (no tokens) |
-| MCP en JSON | 4 | Cloudflare, memory, codebase-memory-mcp, microsoft-learn |
-| Extensión VS Code | 7.8.27 | `kilocode.kilo-code` |
-| Node / npm / pnpm | 26.12.1 / 12.2.2 / 12.18.0 | Reportado por el equipo |
-| Docker / WSL | Detectados | Disponible en PATH no significa motor operativo |
-| Ollama / kilo CLI | No detectados | La extensión puede seguir operativa sin CLI en PATH |
-| VS Code auto-approve | `true` | Riesgo global alto |
+- Configuración global encontrada: `01-Kilo-Config/kilo.jsonc`. JSON parseable; contiene **21 definiciones de agentes**.
+- **19 definiciones** conservan `steps=10000000`. `steps` limita iteraciones, no tokens.
+- **11 archivos Markdown** en directorio global de agentes con nombres que también están en el objeto `agent` del JSON; la precedencia real debe probarse en Kilo.
+- MCP configurados en esta copia: `cloudflare`, `memory`, `codebase-memory-mcp`, `microsoft-learn`, `imagegen` (**cinco**). No se puede concluir si están conectados.
+- La configuración proporcionada no declara explícitamente un modelo principal. Esto no prueba que Kilo carezca de modelo operativo.
+- Skills incluidas en la copia: **22** en `~/.kilo/skills`, **9** en `~/.agents/skills` y **7** en `~/.kilocode/skills`. Hay instrucciones específicas de herramientas y algunas requieren dependencias adicionales.
+- `task-observer` 3.10.0 usa un disparador muy amplio (antes de casi cualquier herramienta) y documentación extensa; recomienda pausarla conservando un backup si se prioriza reducir contexto.
+- `AGENTS.md` global ya existía con reglas útiles, pero una regla antigua prohibía push/merge sin aprobación explícita; las preferencias actuales solicitan autonomía Git ordinaria en tareas autorizadas. V3 añade una sección posterior marcada para definir la excepción con límites claros.
+- Los JSON de auditoría pueden contener sustituciones `[REDACTADO]` que no son válidas como permisos. Por eso NO se usan como fuente para modificar el runtime.
 
-La configuración actual **no declara `model`, `small_model` ni `subagent_model`**;
-no significa que Kilo carezca de modelos, ya que puede guardar su selección en
-el runtime de la extensión. En una captura anterior se apreciaban nueve MCP;
-el ZIP trae cuatro. Debe prevalecer la enumeración del runtime de la sesión actual.
+## Diferencias importantes respecto al repositorio anterior
 
-## Hallazgos priorizados
+- `main` contenía V2.0 (regla que forzaba cambiar permisos y apagar AutoApprove). Esta versión V3 no cambia los permisos ni AutoApprove.
+- El usuario exige **cero skills, agentes o MCP por proyecto**. Todos los assets del harness se instalan en HOME; el repositorio mantiene únicamente la versión fuente.
+- El instalador V3 no modifica `kilo.jsonc`, por tanto no destruye comentarios JSONC ni tokens y puede convivir con cambios de UI posteriores.
+- Validación real de conexiones MCP, selección de modelos, indexación de repositorios y carga de subagentes sigue pendiente de ejecutar en Windows.
 
-### P0 — Riesgo operativo
+## Riesgos abiertos y tratamiento
 
-1. `kilo-code.new.autoApprove.enabled = true` y `agentWorkStyle = autonomous`.
-   La combinación requiere permisos por herramienta cuidadosamente configurados.
-2. `code-simplifier` tiene `edit: allow` y `bash: allow` en la definición JSON.
-   Otros agentes disponen de `bash: allow` sin filtros.
-3. Diecinueve definiciones utilizan `steps: 10000000`. Un valor alto reduce el
-   corte de sesiones, puede elevar consumo y dificultar detectar loops.
-4. El ZIP fue producido con un sanitizador que reemplazó tres valores legítimos
-   de permisos por `[REDACTADO]`. No debe usarse como copia restaurable.
+| Hallazgo | Gravedad | Tratamiento V3 |
+| --- | --- | --- |
+| Límites steps de 10 millones | Alta (consumo/bucles) | Solo diagnóstico. Planificar reducción tras prueba de versiones y límites. |
+| AutoApprove y permisos muy amplios | Alta | Mantener elección del usuario; reglas globales prohíben acciones destructivas o no autorizadas. Permisos reales siguen gobernados por Kilo. |
+| Duplicados JSON/Markdown | Media | No sobrescribir, identificar y reconciliar en fase posterior con pruebas. |
+| Skill task-observer demasiado activa | Media | `-PausarTaskObserver` la mueve a backup privado, reversible. |
+| Configuración MCP sin garantía de conexión | Media | `/vx-mcp`, pruebas concretas en runtime. |
+| Secretos potencialmente expuestos | Alta | No publicar el ZIP, credenciales ni archivos de backup; rotar claves reveladas previamente. |
+| Contenido local de `D:\Proyectos` no accesible aquí | Informativa | Modificaciones se publican al remoto GitHub; sincronizar local mediante fast-forward. |
 
-### P1 — Configuración coherente
+## Criterios de aceptación
 
-5. Once definiciones conviven en `~/.config/kilo/agents/*.md` y el objeto
-   global `agent` de `kilo.jsonc`. Hay diferencias de `steps`, `name` y permisos
-   sanitizados; primero se debe verificar precedencia exacta por nombre.
-6. `task-observer` (`SKILL.md` >50 KB) declara activación previa a herramientas
-   y en cualquier tarea de múltiples pasos. Puede crear ruido y gasto de tokens;
-   revisar y pausar opcionalmente, sin borrar contenido.
-7. La regla Codebase Memory global ordena preferir el grafo siempre. Debe
-   condicionarse a conexión, índice, frescura y cobertura para no crear fallos
-   o confianza excesiva cuando el repositorio no esté indexado.
-8. Siete skills se ubican en `.kilocode/skills` heredada. Hay que verificar
-   qué carga la extensión moderna antes de migrar, y preservar metadatos de
-   los instaladores para poder actualizar o revertir.
-
-### P2 — Rendimiento, contexto y mantenimiento
-
-9. No aparecen presupuestos explícitos de modelos/subagentes en el ZIP. Se
-   necesita ver Settings -> Models y sus proveedores disponibles, sin APIs.
-10. Los MCP necesitan un inventario de herramientas efectivamente conectadas;
-    una entrada en JSON no demuestra salud de conexión ni calidad del servicio.
-11. Evitar múltiples skills que repitan auditoría, diseño o depuración; activar
-    por tarea solo una o dos, con `description` y `name` bien delimitados.
-12. Evitar actualización automática de skills por defecto y pin de versiones
-    de MCP con `npx -y` en entornos de producción de desarrollo, tras verificar
-    versiones. No deshabilitar a ciegas todas las actualizaciones de VS Code.
-
-## Arquitectura objetivo (global-only)
-
-- **Reglas:** `~/.config/kilo/AGENTS.md` + reglas globales referenciadas en `instructions`.
-- **Workflows:** `~/.config/kilo/commands/vx-*.md`.
-- **Agentes:** una única fuente global canónica, tras reconciliar Markdown/JSON.
-- **Skills:** `~/.kilo/skills/` como ubicación preferente, manteniendo por ahora
-  las globales `~/.agents/skills/` compatibles para no romper ownership.
-- **MCP:** solo servidores activos útiles para la tarea; lectura por defecto,
-  escritura y despliegues mediante aprobaciones.
-- **Memoria:** grafo de código con cobertura comprobada + memoria de decisiones
-  explícitas, separando datos del repositorio y conocimiento persistente.
-- **Modelos:** modelo principal por calidad, modelo pequeño para clasificación,
-  subagente barato para exploración; seleccionar exclusivamente IDs reales
-  disponibles en tu cuenta.
-- **Costo:** steps acotados, resúmenes incrementales, `/compact`, herramientas
-  específicas y no volcar el código completo al contexto.
-- **Actualización:** inventario de versiones, cambios manuales revisados,
-  backup y rollback.
-
-## Flujo de trabajo global propuesto
-
-`/vx-plan` -> `/vx-implementar` -> `/vx-validar` -> `/vx-revisar-diff` ->
-`/vx-cierre`, con `/vx-diagnosticar`, `/vx-auditar` y `/vx-mcp` cuando haga falta.
-Cada comando vive globalmente, pero puede trabajar sobre la carpeta activa.
-
-## Límites de este paquete
-
-- El instalador incluye un P0 de permisos y un harness global mínimo, pero no
-  intenta resolver por sí solo duplicados entre agent Markdown y JSON.
-- No instala más servidores MCP, no toca credenciales, no configura proveedores
-  no verificados y no escribe archivos en repositorios.
-- Los resultados de pruebas de runtime en Windows siguen pendientes.
+1. `-Modo Diagnostico` y `-Modo Simular`: cero mutaciones.
+2. `-Modo Aplicar`: solamente rutas globales bajo HOME; intactos `kilo.jsonc`, configuración VS Code y archivos de proyectos.
+3. Aplicación repetida sin archivos duplicados ni cambio de contenido no gestionado.
+4. `-Modo Verificar`: hashes de assets coinciden y sección AGENTS está presente.
+5. `-Modo Restaurar`: restaura solo archivos respaldados y no sobrescribe cambios posteriores salvo autorización explícita.
+6. CI valida sintaxis PowerShell y realiza un smoke test aislado. No equiparar CI con prueba real de MCP.
+7. Flujo Git usa rama temporal, CI/PR/merge y única rama permanente main cuando se pueda verificar y eliminar con seguridad.

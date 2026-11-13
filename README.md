@@ -1,107 +1,99 @@
-# VECIDYA · Kilo Code Global Harness V2.0
+# VECIDYA · Kilo Code Global Harness V3.0
 
-**Fuente:** auditoría `Kilo-Code-Auditoria-20261113-114114.zip`. El paquete contiene
-solo nuevas instrucciones, flujos, una skill y scripts. **NO incluye ninguna
-configuración privada ni credenciales de tu ZIP.**
+**Versión:** 3.0.0 · **Estado:** candidato a validación mediante CI y prueba real en Windows.
 
-## Regla contractual: SOLO GLOBAL
+Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
-Todos los archivos que instala el script van a `%USERPROFILE%\.config\kilo\`
-o `%USERPROFILE%\.kilo\skills\` y a la configuración de usuario de VS Code.
-NO escribe `.kilo`, `.agents`, `.kilocode`, `AGENTS.md` o `CLAUDE.md` dentro
- de los repositorios. Leer documentación del proyecto no equivale a instalar
-habilidades en él.
+## Principios
 
-## Auditoría de referencia
+- **Global-only**: `~/.config/kilo/{AGENTS.md,agents/,commands/,rules/}` y `~/.kilo/skills/`.
+- **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
+- **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
+- **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
+- **Instalación segura**: diagnóstico, simulación, backup, aplicación idempotente, verificación y restauración con comprobación de hashes.
+- **Sin actualización silenciosa** de skills, MCP, extensiones ni modelos; el instalador no gestiona actualizaciones de Windows o VS Code.
 
-- `kilo.jsonc` es válido y tiene **21 entradas de agente** (incluye built-ins personalizados).
-- Hay **11 archivos Markdown de agente** con nombres presentes también en el JSON.
-- **19 agentes** tienen `steps=10000000` en la copia.
-- **22 skills** en `~/.kilo/skills`, **9** en `~/.agents/skills`,
-  **7** en `~/.kilocode/skills` (la carga efectiva de las heredadas debe validarse).
-- MCP en el ZIP: **cloudflare, memory, codebase-memory-mcp, microsoft-learn**.
-- VS Code tiene estilo autónomo y autoaprobación de Kilo activada.
-- `task-observer` tiene un disparador amplio y una skill de más de 50 KB;
-  puede elevar el consumo de contexto si se invoca en cada sesión.
-- Extensión detectada: `kilocode.kilo-code@7.8.27`; CLI `kilo` no visible en PATH.
-- Node 26.12.1, npm 12.2.2, pnpm 12.18.0 y Git 2.56.0 detectados.
-- Las copias de la auditoría incluyen **tres valores `[REDACTADO]` en permisos**;
-  nunca restaura el JSON de auditoría ni lo uses como backup operativo.
+## Instalación desde `D:\Proyectos\Kilo-Global-Harness`
 
-## Cómo utilizarlo
-
-1. Descomprime el ZIP en `Downloads\Kilo-Global-Harness-V2`.
-2. Desde PowerShell 7, dentro de la carpeta extraída:
+Abre PowerShell 7, comprueba que el repositorio local corresponda al remoto correcto:
 
 ```powershell
-pwsh -NoProfile -File .\scripts\Instalar-Kilo-Global-Harness-V2.ps1
+Set-Location 'D:\Proyectos\Kilo-Global-Harness'
+git remote -v
+git status --short
 ```
 
-Este comando es **DIAGNÓSTICO, SIN CAMBIOS**. Verifica también si tu
-`kilo.jsonc` sigue siendo JSON estricto. Si contiene comentarios o comas
-finales, el instalador se niega a reescribirlo para no destruirlos.
-
-3. Si el informe es coherente, aplica solamente al entorno global:
+Si es un directorio vacío y todavía no has clonado el proyecto:
 
 ```powershell
-pwsh -NoProfile -File .\scripts\Instalar-Kilo-Global-Harness-V2.ps1 -Modo Aplicar
+New-Item -ItemType Directory -Force 'D:\Proyectos' | Out-Null
+git clone https://github.com/hola675/Kilo-Global-Harness.git 'D:\Proyectos\Kilo-Global-Harness'
+Set-Location 'D:\Proyectos\Kilo-Global-Harness'
 ```
 
-Opcional: agrega `-PausarTaskObserver` para trasladar esa skill fuera del
-catálogo activo y guardarla junto al backup. NO borra la skill.
-
-4. Abre VS Code, revisa Settings -> Auto Approve, inicia una sesión y escribe
-`/reload`. Prueba `/vx-auditar` y `/vx-plan` en un repositorio sin permitir
-escrituras. Verifica manualmente las acciones de los agentes antiguos.
-
-### Qué modifica `-Modo Aplicar`
-
-- Crea regla global `rules/vx-global-harness-v2.md` y la registra en `instructions`.
-- Instala nueve workflows globales bajo `~/.config/kilo/commands`.
-- Instala una skill global `vx-engineering-harness` en `~/.kilo/skills`.
-- Conserva todos los servidores MCP, modelos, credenciales y nombres de agentes.
-- Reduce `steps > 160` a 120 (primarios) o 60 (subagentes) en la definición
-  JSON **sin tocar las definiciones Markdown existentes**.
-- Cambia `edit`/`bash`/`mcp` con valor `allow` a `ask` en las entradas JSON de agentes.
-- Configura aprobación global `ask` con lectura/búsqueda permitidas.
-- Desactiva `kilo-code.new.autoApprove.enabled` en settings de usuario de VS Code.
-- Guarda backup privado de archivos existentes en `Downloads` antes de alterar.
-
-**Limitación importante:** los 11 archivos Markdown de agente pueden contener
-permisos propios. No se eliminan ni se sobrescriben automáticamente. Es una
-fase pendiente para consolidar a una sola fuente de verdad tras las pruebas.
-
-### Restablecer
-
-Usa la ruta exacta indicada por el script cuando lo aplicaste:
+No uses `git reset --hard` en una carpeta que contenga trabajo local. Si ya existe el repositorio y está limpio, sincroniza de forma segura:
 
 ```powershell
-pwsh -NoProfile -File .\scripts\Instalar-Kilo-Global-Harness-V2.ps1 `
-  -Modo Restaurar -BackupFolder 'C:\Users\Admin\Downloads\Kilo-Harness-Backup-AAAAMMDD-HHMMSS'
+git switch main
+git pull --ff-only origin main
 ```
 
-**No subas backups:** contienen copias originales, quizá con credenciales.
-Restaurar reemplaza los archivos por su versión guardada; revisa cambios
-posteriores antes de hacerlo.
+Después:
 
-## Política de actualización
+```powershell
+$script = Join-Path (Get-Location) 'scripts\Instalar-Kilo-Global-Harness.ps1'
+pwsh -NoProfile -File $script -Modo Diagnostico
+pwsh -NoProfile -File $script -Modo Simular
+pwsh -NoProfile -File $script -Modo Aplicar -PausarTaskObserver
+pwsh -NoProfile -File $script -Modo Verificar
+```
 
-**Congelación por defecto:** no se habilitan actualizadores automáticos ni
-se ejecuta `npx skills update`, `gh skill update`, `npm update` o cambios
-masivos. Se revisan versiones, hashes y changelogs antes de aceptar cada cambio.
-Este paquete NO toca el mecanismo de actualización de VS Code ni la actualización
-server-side del modelo Auto. Las skills instaladas no se autoactualizan por
-su mera presencia en carpetas. Evitar `npx ...@latest` en MCP críticos después
- de verificar una versión estable.
+Si ya pausaste `task-observer`, la opción no realiza ningún nuevo movimiento. El respaldo se guarda en `~/.config/kilo-harness-backups/AAAAmmdd-HHMMSS` y **nunca debe subirse a GitHub**.
 
-## Próximas fases (NO automáticas)
+Finalmente, en Kilo ejecuta `/reload`, luego `/vx-harness-estado` y `/vx-mcp`.
 
-1. Comprobar en Kilo la precedencia de agentes JSON y Markdown, migrar
-   duplicados al único origen global elegido con backup y pruebas.
-2. Consolidar las 22+9+7 skills globales sin romper rastreo de sus instaladores.
-3. Diagnosticar MCP por conexión efectiva (captura runtime), no solo por JSON;
-   limitar MCP activos para bajar carga de contexto.
-4. Probar modelos/presupuestos en Settings -> Models. No hay proveedores ni
-   modelo fijado en `kilo.jsonc` del ZIP; puede haber configuración privada de UI.
-5. Validar con una tarea end-to-end en un repo de prueba sin crear dotfiles
-   locales de agente.
+## Reversión
+
+Utiliza la ruta de respaldo que imprimió el instalador:
+
+```powershell
+pwsh -NoProfile -File $script -Modo Restaurar -BackupFolder 'C:\Users\Admin\.config\kilo-harness-backups\AAAAMMDD-HHMMSS'
+```
+
+Por defecto, si un archivo administrado fue modificado **después de aplicar**, la restauración lo omite para evitar perder cambios. `-ForzarRestauracion` únicamente tras revisar esos cambios.
+
+## Qué instala
+
+| Origen del repositorio | Ubicación global en Windows | Resultado |
+| --- | --- | --- |
+| `rules/AGENTS-global-managed.md` | Sección marcada dentro de `~/.config/kilo/AGENTS.md` | Política corta y universal |
+| `rules/vx-global-harness-v3.md` | `~/.config/kilo/rules/` | Manual ampliado de trabajo |
+| `commands/vx-*.md` | `~/.config/kilo/commands/` | Workflows `/vx-*` |
+| `agents/vx-*.md` | `~/.config/kilo/agents/` | Coordinador y revisor |
+| `skills/vx-engineering-harness/SKILL.md` | `~/.kilo/skills/` | Orquestación bajo demanda |
+
+Todos los destinos anteriores están bajo HOME. Si se ejecuta desde `D:\Proyectos`, **no escribe allí**; esa carpeta es exclusivamente la fuente versionada del instalador.
+
+### Limitaciones deliberadas
+
+- No ejecuta automáticamente `git push`, `git merge` ni el borrado de ramas en tus repositorios; **define el comportamiento que Kilo debe seguir cuando realiza una tarea autorizada**. Si una protección del remoto bloquea una operación, no se elude.
+- No cambia modelos ni fuerza un límite `steps` diferente. La auditoría detecta riesgos y el agente puede recomendar cambios posteriormente, con evidencia de compatibilidad.
+- No instala ni repara servidores MCP automáticamente; distingue configuración de conectividad.
+- Los agentes heredados definidos en `kilo.jsonc` y en Markdown no se eliminan ni modifican, porque pueden tener precedencia o permisos diferentes.
+- La validación CI es un smoke test del instalador en Windows aislado. No valida conexión de los MCP del PC ni el comportamiento real de los modelos Kilo.
+
+## Documentación
+
+- [Auditoría actualizada](AUDITORIA-DETALLADA.md)
+- [Guía operativa y compatibilidad](docs/ARQUITECTURA.md)
+- [Instalador](scripts/Instalar-Kilo-Global-Harness.ps1)
+- [Documentación oficial de Kilo sobre settings](https://kilo.ai/docs/getting-started/settings)
+- [Skills globales](https://kilo.ai/docs/customize/skills)
+- [Agentes globales](https://kilo.ai/docs/customize/custom-subagents)
+- [Comandos](https://kilo.ai/docs/customize/workflows)
+
+## Changelog
+
+- **3.0.0 · 2026-11-13:** instalador global idempotente, AGENTS administrado sin tocar JSONC, simulación, backups con hashes, rollback conservador, skill V3, dos agentes VX globales, workflows actualizados y CI.
+- **2.1.0:** política autónoma, Git main permanente y pausa opcional de task-observer.
+- **2.0.0:** ciclo ingeniería y primera auditoría global.
