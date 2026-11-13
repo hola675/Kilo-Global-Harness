@@ -1,7 +1,6 @@
 ---
-description: Ejecutar cambios pequeños y verificables con revisión de alcance
+description: Implementación autónoma con cambios mínimos y evidencia verificable
 agent: code
 ---
-Usa `vx-engineering-harness`. Lee el plan de la conversación; si no existe, crea
-un plan mínimo verificable. Limita el diff a archivos requeridos. Solicita permiso
-antes de modificar, instalar o ejecutar acciones de riesgo. Valida y comunica el resultado.
+
+Usa `vx-engineering-harness`. Revisa estado real de Git y dependencias. Para cambios no triviales aplica `/vx-git-ciclo`: rama temporal, pruebas, revisión y cierre. Selecciona solo skills necesarias, delega subagentes solo para tareas independientes y conserva AutoApprove sin eludir permisos. No crees archivos de configuración Kilo dentro del repositorio. Valida y entrega resumen basado en resultados ejecutados. Tarea: $ARGUMENTS.

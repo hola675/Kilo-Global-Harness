@@ -1,0 +1,36 @@
+name: Validar Kilo Global Harness
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  powershell-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Obtener codigo
+        uses: actions/checkout@v4
+      - name: Analisis estatico y smoke test aislado
+        shell: pwsh
+        run: |
+          $errors = $null
+          $tokens = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path,
+            [ref]$tokens,
+            [ref]$errors
+          ) | Out-Null
+          if ($errors.Count -gt 0) { $errors | Out-String | Write-Error; exit 1 }
+          $tmp = Join-Path $env:RUNNER_TEMP 'kilo-harness-smoke'
+          New-Item -ItemType Directory -Path $tmp -Force | Out-Null
+          $script = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $script -Modo Diagnostico -RaizUsuario $tmp
+          & $script -Modo Simular -RaizUsuario $tmp
+          & $script -Modo Aplicar -RaizUsuario $tmp -PausarTaskObserver
+          & $script -Modo Verificar -RaizUsuario $tmp
+          $backup = Get-ChildItem (Join-Path $tmp '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $script -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+          if (Test-Path (Join-Path $tmp '.config/kilo/AGENTS.md')) { throw 'Restaurar dejo AGENTS.md de prueba.' }
+          Write-Host 'SMOKE TEST PASSED'
