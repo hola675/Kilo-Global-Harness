@@ -42,3 +42,15 @@
 5. `-Modo Restaurar`: restaura solo archivos respaldados y no sobrescribe cambios posteriores salvo autorización explícita.
 6. CI valida sintaxis PowerShell y realiza un smoke test aislado. No equiparar CI con prueba real de MCP.
 7. Flujo Git usa rama temporal, CI/PR/merge y única rama permanente main cuando se pueda verificar y eliminar con seguridad.
+
+
+## Adenda V3.1 — Pruebas funcionales del operador (13-11-2026)
+
+- V3 aplicada y verificada: 14 comandos, 2 agentes, skill de orquestacion y reglas globales detectados. La prueba de ejecución efectiva de subagentes sigue pendiente.
+- Hay 12 nombres de agente presentes en JSON y Markdown. La documentación oficial indica fusión por precedencia de propiedades; por ello hay **doble mantenimiento**, pero no se demuestra fallo de ejecución. Se prohíbe eliminar de forma automática los duplicados hasta comparar permisos y comportamiento efectivo.
+- Se reportaron 19 valores `steps: 10000000`; son límites de iteraciones, no de tokens. Auditoría en solo lectura y normalización posterior bajo control de cambios.
+- La presencia de `opencode-models-discovery` en `opencode.json` y `tui.json` puede estar prevista por la instalación de un plugin en dos superficies distintas; no retirar sin confirmar doble carga.
+- ImageGen: tres generaciones mediante CLI `codex-imagegen-mcp@0.2.3` verificadas por el operador. No se ha verificado que la sesión de Kilo exponga el mismo conjunto de herramientas. El comando `/vx-imagegen` solo inspecciona y no genera imagenes.
+- Se conserva AutoApprove, permisos, proveedores, modelos, MCP y `kilo.jsonc` sin modificación por defecto.
+
+Documentación oficial: https://kilo.ai/docs/customize/custom-modes ; https://kilo.ai/docs/customize/marketplace ; https://kilo.ai/docs/automate/mcp/using-in-kilo-code .
