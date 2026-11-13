@@ -35,3 +35,12 @@
 - Prohibidos force push, borrados de ramas ajenas, despliegues automáticos a producción y modificaciones de infraestructura sin consentimiento específico.
 - El operador controla los tokens de acceso, nunca el repositorio GitHub del harness.
 - No instalar ni actualizar skills/MCP de manera silenciosa.
+
+
+## Coordinacion de equipos V4 (on-demand)
+
+- Para tareas amplias, `/vx-equipo` y `~/.config/kilo/harness/vx-agent-registry-v4.json`; el script global `harness/scripts/Seleccionar-Equipo-V4.ps1` sugiere equipo sin lanzar modelos ni procesos.
+- Hasta tres agentes de lectura realmente independientes via `task(background: true)`; sintetizar, UN escritor, luego revisores por especialidad. No activar todos por inercia.
+- `task` comparte el arbol de archivos; Kilo Swarm transmite mensajes, no toma decisiones. Otra sesion Agent Manager requiere coordinacion externa y worktree para aislar edicion.
+- Solo una rama `work/*` temporal en modo estricto, `main` permanente. El modo de escrituras paralelas en ramas auxiliares es opt-in y no se activa aqui.
+- Nunca introducir credenciales como parametros del selector, ni asumir que una recomendacion equivale a ejecutar un agente.

@@ -1,0 +1,320 @@
+{
+  "schema": "vx-agent-registry/1",
+  "version": "4.0.0",
+  "global_only": true,
+  "runtime": "kilo-native",
+  "source_policy": "origin-authored-vx-no-external-agent-code",
+  "execution": {
+    "mode_default": "strict",
+    "max_parallel_readers": 3,
+    "max_writers": 1,
+    "parallel_write_mode": "requires-explicit-opt-in",
+    "persistent_branch": "main",
+    "temporary_branch_prefix": "work/",
+    "task_runner": "kilo-task",
+    "worktree_runner": "kilo-agent-manager",
+    "message_bus": "kilo-swarm",
+    "no_remote_actions_on_selection": true
+  },
+  "agents": [
+    {
+      "id": "vx-integrador",
+      "file": "agents/vx-integrador.md",
+      "mode": "primary",
+      "role": "coordinator",
+      "writes": true,
+      "steps": 400,
+      "capabilities": [
+        "plan",
+        "integrate",
+        "git-close"
+      ]
+    },
+    {
+      "id": "vx-inspector",
+      "file": "agents/vx-inspector.md",
+      "mode": "subagent",
+      "role": "review",
+      "writes": false,
+      "steps": 70,
+      "capabilities": [
+        "code-review",
+        "risk-review"
+      ]
+    },
+    {
+      "id": "vx-researcher",
+      "file": "agents/vx-researcher.md",
+      "mode": "subagent",
+      "role": "reader",
+      "writes": false,
+      "steps": 50,
+      "capabilities": [
+        "research",
+        "dependency-analysis"
+      ]
+    },
+    {
+      "id": "vx-security-reviewer",
+      "file": "agents/vx-security-reviewer.md",
+      "mode": "subagent",
+      "role": "reader",
+      "writes": false,
+      "steps": 55,
+      "capabilities": [
+        "security-review",
+        "auth-review"
+      ]
+    },
+    {
+      "id": "vx-test-analyst",
+      "file": "agents/vx-test-analyst.md",
+      "mode": "subagent",
+      "role": "reader",
+      "writes": false,
+      "steps": 50,
+      "capabilities": [
+        "test-design",
+        "regression-analysis"
+      ]
+    },
+    {
+      "id": "vx-frontend-adviser",
+      "file": "agents/vx-frontend-adviser.md",
+      "mode": "subagent",
+      "role": "reader",
+      "writes": false,
+      "steps": 50,
+      "capabilities": [
+        "frontend-review",
+        "accessibility-review"
+      ]
+    },
+    {
+      "id": "vx-workers-adviser",
+      "file": "agents/vx-workers-adviser.md",
+      "mode": "subagent",
+      "role": "reader",
+      "writes": false,
+      "steps": 55,
+      "capabilities": [
+        "cloudflare-review",
+        "worker-bindings"
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "id": "general",
+      "patterns": [],
+      "discover": [
+        "vx-researcher"
+      ],
+      "review": [
+        "vx-test-analyst",
+        "vx-inspector"
+      ],
+      "skills": [
+        "verification-before-completion"
+      ],
+      "writer": "code"
+    },
+    {
+      "id": "backend",
+      "patterns": [
+        "api",
+        "backend",
+        "fastapi",
+        "server",
+        "endpoint",
+        "nodejs",
+        "express"
+      ],
+      "discover": [
+        "vx-researcher",
+        "vx-security-reviewer"
+      ],
+      "review": [
+        "vx-test-analyst",
+        "vx-inspector"
+      ],
+      "skills": [
+        "systematic-debugging",
+        "test-driven-development"
+      ],
+      "writer": "code"
+    },
+    {
+      "id": "frontend",
+      "patterns": [
+        "react",
+        "nextjs",
+        "frontend",
+        "html",
+        "css",
+        "ui",
+        "ux",
+        "accesibilidad",
+        "interfaz",
+        "componentes"
+      ],
+      "discover": [
+        "vx-frontend-adviser",
+        "vx-researcher"
+      ],
+      "review": [
+        "vx-test-analyst",
+        "vx-inspector"
+      ],
+      "skills": [
+        "frontend-design",
+        "webapp-testing"
+      ],
+      "writer": "code"
+    },
+    {
+      "id": "cloudflare",
+      "patterns": [
+        "cloudflare",
+        "worker",
+        "workers",
+        "wrangler",
+        "r2",
+        "durable objects",
+        "kv namespace",
+        "d1"
+      ],
+      "discover": [
+        "vx-workers-adviser",
+        "vx-security-reviewer",
+        "vx-researcher"
+      ],
+      "review": [
+        "vx-test-analyst",
+        "vx-inspector"
+      ],
+      "skills": [
+        "workers-best-practices",
+        "wrangler"
+      ],
+      "writer": "code"
+    },
+    {
+      "id": "database",
+      "patterns": [
+        "postgres",
+        "sql",
+        "database",
+        "base de datos",
+        "sqlite",
+        "supabase",
+        "migracion",
+        "esquema"
+      ],
+      "discover": [
+        "vx-researcher",
+        "vx-security-reviewer"
+      ],
+      "review": [
+        "vx-test-analyst",
+        "vx-inspector"
+      ],
+      "skills": [
+        "supabase-postgres-best-practices"
+      ],
+      "writer": "code"
+    },
+    {
+      "id": "security",
+      "patterns": [
+        "seguridad",
+        "vulnerabilidad",
+        "oauth",
+        "autenticacion",
+        "autorizacion",
+        "token",
+        "secreto",
+        "cve"
+      ],
+      "discover": [
+        "vx-security-reviewer",
+        "vx-researcher"
+      ],
+      "review": [
+        "vx-inspector"
+      ],
+      "skills": [
+        "systematic-debugging"
+      ],
+      "writer": "code"
+    },
+    {
+      "id": "refactor",
+      "patterns": [
+        "refactor",
+        "reescribir",
+        "simplificar",
+        "duplicado",
+        "limpieza",
+        "renombrar"
+      ],
+      "discover": [
+        "vx-researcher",
+        "vx-test-analyst"
+      ],
+      "review": [
+        "vx-inspector",
+        "vx-security-reviewer"
+      ],
+      "skills": [
+        "test-driven-development",
+        "verification-before-completion"
+      ],
+      "writer": "code"
+    },
+    {
+      "id": "design",
+      "patterns": [
+        "diseño visual",
+        "imagen",
+        "imagegen",
+        "mockup",
+        "maqueta",
+        "prototipo",
+        "figma"
+      ],
+      "discover": [
+        "vx-frontend-adviser",
+        "vx-researcher"
+      ],
+      "review": [
+        "vx-inspector"
+      ],
+      "skills": [
+        "frontend-design"
+      ],
+      "writer": "code"
+    },
+    {
+      "id": "docs",
+      "patterns": [
+        "documentacion",
+        "readme",
+        "manual",
+        "guia",
+        "changelog",
+        "especificacion"
+      ],
+      "discover": [
+        "vx-researcher"
+      ],
+      "review": [
+        "vx-inspector"
+      ],
+      "skills": [
+        "changelog-generator"
+      ],
+      "writer": "code"
+    }
+  ]
+}
