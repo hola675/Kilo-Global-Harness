@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  VECIDYA | Kilo Global Harness 3.0 - instalador global, idempotente y reversible.
+  VECIDYA | Kilo Global Harness 4.0 - instalador global, idempotente y reversible.
 .DESCRIPTION
   No instala archivos dentro de ningun repositorio. No altera kilo.jsonc, modelos,
   credenciales, MCP, AutoApprove, steps ni permisos existentes.
@@ -129,6 +129,17 @@ function Global-Assets {
     Source=(Join-Path $root 'skills/vx-engineering-harness/SKILL.md');
     Target=(Join-Path $skillRoot 'vx-engineering-harness/SKILL.md')
   }
+  # Recursos adicionales V4 - SIEMPRE en perfil global, nunca en repositorios.
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'registry/vx-agent-registry-v4.json');
+    Target=(Join-Path $kiloDir 'harness/vx-agent-registry-v4.json')
+  }
+  foreach ($name in @('Seleccionar-Equipo-V4.ps1','Validar-Registro-V4.ps1')) {
+    $assets += [pscustomobject]@{
+      Source=(Join-Path (Join-Path $root 'scripts') $name);
+      Target=(Join-Path (Join-Path $kiloDir 'harness/scripts') $name)
+    }
+  }
   return @($assets)
 }
 function Managed-AgentsBlock {
@@ -148,7 +159,7 @@ function Replace-ManagedBlock([string]$Original,[string]$Block) {
   return ($Original.TrimEnd() + "`n`n" + $Block + "`n")
 }
 function Report-State {
-  Write-Host "=== VECIDYA | KILO GLOBAL HARNESS V3 | $Modo ===" -ForegroundColor Cyan
+  Write-Host "=== VECIDYA | KILO GLOBAL HARNESS V4 | $Modo ===" -ForegroundColor Cyan
   Write-Host "Configuracion principal: $configFile (existe: $(Test-Path $configFile))"
   try {
     $meta = Read-KiloMetadata
@@ -183,7 +194,7 @@ function Restore-Manifest([string]$Dir,[bool]$Force) {
   $path = Join-Path $Dir 'manifest.json'
   if (!(Test-Path -LiteralPath $path)) { throw "No existe manifiesto: $path" }
   $m = Read-JsonFile $path
-  if ($m.version -ne '3.0.0') { throw 'Version de manifiesto incompatible.' }
+  if ($m.version -notin @('3.0.0','4.0.0')) { throw 'Version de manifiesto incompatible.' }
   $restored = 0
   $skipped = 0
   foreach ($entry in $m.files) {
@@ -219,6 +230,10 @@ if ($Modo -eq 'Restaurar') {
   Restore-Manifest $BackupFolder ([bool]$ForzarRestauracion)
   return
 }
+# Validacion de roles y rutas antes de escribir. Si falla, no tocar la instalacion.
+$validator = Join-Path $root 'scripts/Validar-Registro-V4.ps1'
+if (!(Test-Path -LiteralPath $validator -PathType Leaf)) { throw 'Falta el validador V4.' }
+& $validator -RaizFuentes $root
 $assets = @(Global-Assets)
 $expectedPaths = @($assets | ForEach-Object Target)
 if ($expectedPaths.Count -ne @($expectedPaths | Select-Object -Unique).Count) { throw 'Colision de rutas internas en el paquete.' }
@@ -260,7 +275,7 @@ $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $backupDir = Join-Path $backupRoot $stamp
 New-Item -Path $backupDir -ItemType Directory -Force | Out-Null
 $manifest = [ordered]@{
-  version='3.0.0'; created=$stamp; BackupFolder=$backupDir;
+  version='4.0.0'; created=$stamp; BackupFolder=$backupDir;
   files=@(); observerMoved=$false; observerBackup=''
 }
 $index=0
@@ -301,6 +316,6 @@ try {
   Restore-Manifest $backupDir $true
   throw "No se completo Aplicar: $msg"
 }
-Write-Host 'APLICACION V3 COMPLETADA: solo rutas globales; AutoApprove, modelos, MCP y JSONC intactos.' -ForegroundColor Green
+Write-Host 'APLICACION V4 COMPLETADA: solo rutas globales; AutoApprove, modelos, MCP y JSONC intactos.' -ForegroundColor Green
 Write-Host "BACKUP PRIVADO (NO SUBIR): $backupDir" -ForegroundColor Yellow
 Write-Host 'Ejecuta -Modo Verificar, luego /reload en Kilo.'
