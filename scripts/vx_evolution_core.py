@@ -184,6 +184,10 @@ def init(home):
     existed = path.is_file()
     db = connect(home, create=True)
     try:
+        # WAL habilita lecturas concurrentes y un escritor local.
+        # El modo se fija antes de abrir la transaccion.
+        db.execute("PRAGMA journal_mode=WAL")
+        db.execute("PRAGMA synchronous=FULL")
         with db:
             current = db.execute("PRAGMA user_version").fetchone()[0]
             if current == 0:
