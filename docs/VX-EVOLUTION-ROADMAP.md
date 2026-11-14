@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición:** 2026-11-14 · **Estado:** V4.6.0 integrada (CI Windows PASS); V4.6.1 en implementación (matriz de solo lectura); V4.6.2–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
+**Edición:** 2026-11-14 · **Estado:** V4.6.0 integrada (CI Windows PASS); V4.6.1 implementada (CI Windows PASS; validación local pendiente); V4.6.2–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
 
 ## Fuente de verdad y definición de estados
 
@@ -25,7 +25,7 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | V4.5 | Calendario, actas y decisiones locales manuales | Integrado | **Validado junto con V4.5.1 mediante SQLite v4** | No hay scheduler |
 | V4.5.1 | **Primera reunión del mes conjunta**, secciones mensual/semanal a las 09:00 | **Integrado y CI Windows PASS** | **Validado**: instalación, SQLite v4, integridad y calendario real 2026-12-07, 09:00 | Observer `light`, scheduler OFF |
 | **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **Integrada en main; CI Windows PASS** | Pendiente de ejecución local del auditor | Sin cambios de permisos, SQLite ni roles |
-| **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **En implementación, pruebas/CI pendientes** | No validada en Windows del usuario | Puntuaciones y seniority sin asignar; solo lectura |
+| **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **Código completo; CI Windows PASS** | No validada en Windows del usuario | Puntuaciones y seniority sin asignar; solo lectura |
 | V4.6.2–V4.6.3 | Pruebas reproducibles, capacitación y auditoría de equipos | Diseñadas, **PENDIENTES** | No aplica | No crear nuevos agentes, skills o jerarquías automáticamente |
 | V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseñado | No aplica | Revisión independiente y autorización explícita |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
@@ -95,7 +95,7 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 **P1 CERRADO EN MAIN, PENDIENTE LOCAL** — V4.6.0 auditoría global de solo lectura y mapa de capacidades declaradas integrada en GitHub. Ejecutar auditoría en PC real. No migrar SQLite.
 
-**P1.1 EN CURSO** — V4.6.1 matriz global y evidencia declarada: integrar pruebas y CI Windows, luego validar localmente; no inferir seniority ni ejecutar pruebas reales en automático.
+**P1.1 LISTO EN CÓDIGO, PENDIENTE LOCAL** — V4.6.1 matriz global y evidencia declarada: 20 pruebas unitarias y smoke/rollback de CI Windows PASS. Ejecutar en Windows del usuario antes de cerrar validación local; sin seniority ni pruebas reales automáticas.
 
 **P2** — Probar evaluaciones y propuestas de capacitación/auditoría con fixtures de Kilo, registrar riesgos y presentar a `vx-reunion` para aprobación, nunca auto-publicar.
 
