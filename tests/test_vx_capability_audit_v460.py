@@ -72,7 +72,7 @@ class VXCapabilityAuditTests(unittest.TestCase):
                            cwd=self.home, capture_output=True, text=True,
                            encoding="utf-8", timeout=20)
         if ok:
-            self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+            self.assertEqual(p.returncode, 0, (p.stdout or "") + (p.stderr or ""))
             return p.stdout
         self.assertNotEqual(p.returncode, 0, p.stdout)
         return p.stderr
