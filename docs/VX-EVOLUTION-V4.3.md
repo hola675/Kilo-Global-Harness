@@ -1,5 +1,7 @@
 # VX Evolution Core V4.3 — Contrato de arquitectura (SOLO Kilo Code)
 
+> **Documento histórico de la fase V4.3.** Conserva el alcance y pendientes originales de esa versión; para estado real V4.5.1, validación local y próximos hitos V4.6–V5, consultar el [roadmap maestro](VX-EVOLUTION-ROADMAP.md). No interpretar sus referencias a V4.4/V4.5 «futuras» como estado del código actual.
+
 **Estado de esta versión:** núcleo local con CLI y esquema SQLite, sin observador activo, sin automatizaciones semanales y sin aprobación automática. Este documento define hechos implementados, restricciones y fases futuras de forma diferenciada.
 
 ## Decisiones fundacionales
