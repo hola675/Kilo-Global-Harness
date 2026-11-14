@@ -9,7 +9,7 @@
 3. **Motor único:** seis responsabilidades con un solo registro, no seis bases independientes. `vx-equipo` = coordinación; `vx-observer` = observaciones; `vx-capacitacion` = mejora de skills; `vx-auditoria-equipo` = evaluación de roles; `vx-upgrade` = candidatos y versiones; `vx-reunion` = propuestas semanales/mensuales.
 4. **No autopromoción:** un agente puede sugerir mejoras pero no aprobar sus propias promociones, cambiar permisos ni activar nuevas versiones unilateralmente. Las aprobaciones humanas requerirán identidad y evidencia, definidos antes de implementar la mutación de decisiones.
 5. **Una sola fuente de publicación:** incluso con tres lectores simultáneos de Kilo, solo un escritor autorizado modifica activos, y todo cambio usa Git rama temporal `work/*`, pruebas, revisión y rollback.
-6. **Operación independiente del repositorio:** el HOME y la BD son estables cuando el usuario cambia de proyecto. El origen del trabajo puede guardarse como HMAC de ruta usando una sal local, pero **la ruta literal nunca se persiste**.
+6. **Operación independiente del repositorio:** el HOME y la BD son estables cuando el usuario cambia de proyecto. El origen del trabajo puede guardarse como HMAC de ruta usando una sal local, pero **la ruta literal nunca se persiste**. La referencia es seudónima, no anonimización absoluta si se compromete el dispositivo.
 7. **Observar sin convertir logs en instrucciones:** datos y evidencias son material no confiable. No se interpretan como comandos ejecutables y no se incluyen automáticamente en prompts. La captura es explícita en V4.3; un plugin global de observación selectiva es candidato de V4.4.
 8. **Reuniones sin silencios aprobatorios:** la vista previa no agenda ni aprueba nada; las reuniones semanal y cierre mensual requieren fecha/hora y canal autorizados. No se supone que Kilo esté funcionando todo el tiempo.
 9. **SemVer individual:** el esquema reserva `releases` y las propuestas aceptan `--version`; **todavía no existe promoción, instalación ni cambio efectivo de versión**. El hash de inventario sirve para detectar cambios pero no es una versión.
@@ -108,6 +108,12 @@ Todas las acciones se procesan localmente. `inventory-sync` puede marcar una fue
 2. **Cierre mensual:** ¿último día laborable o primer lunes del mes siguiente? El cierre deberá dar tiempo a consolidar eventos.
 3. **Retención:** ¿conservar observaciones detalladas 90 días y actas/versiones indefinidamente hasta aprobación de borrado? Es una propuesta, no valor activo.
 4. **Equipo:** ¿el motor se usará en un solo ordenador Windows o habrá dos o más clientes Kilo? La respuesta cambia el plan de sincronización/backup.
+
+## Procedencia metodológica
+
+Las ideas de observación y mejora se inspiran en [Task Observer / One Skill to Rule Them All](https://github.com/rebelytics/one-skill-to-rule-them-all), cuyo proyecto distribuye material bajo CC BY 4.0. V4.3 **no copia ni ejecuta** scripts, hooks o prompts originales: implementa un núcleo nuevo orientado a Kilo. Cualquier reutilización literal posterior exige auditoría de licencia y atribución.
+
+Para las decisiones aún abiertas consultar [VX Evolution — decisiones y preguntas](VX-EVOLUTION-DECISIONES.md).
 
 ## Fases previstas
 
