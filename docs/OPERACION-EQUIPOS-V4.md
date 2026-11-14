@@ -51,6 +51,10 @@ El resultado incluye perfil, `discover_parallel`, `implementation`, `review_para
 
 **No declarar PASS de ejecución multiagente solo porque existan los archivos o porque el selector produzca JSON.**
 
+## Revalidación de hallazgos V4.1
+
+El coordinador debe verificar evidencias en la revisión Git actual antes de declarar FAIL. El comando global `/vx-revalidar` aplica el [protocolo V4.1](PROTOCOLO-REVALIDACION-V4.1.md) y documenta las afirmaciones DESCARTADAS. El estado Git al inicio y final y la diferencia entre tests configurados y tests realmente ejecutados forman parte de la evidencia. El informe de un subagente nunca sustituye una ejecución de pruebas.
+
 ## Contrato de los informes de subagentes
 
 Para cada lector, una salida corta con objetivo, rutas inspeccionadas, hallazgos con evidencia, dudas y recomendaciones. No compartir transcripciones completas, secretos ni afirmaciones sin referencia. Para cada revisor, un tipo de riesgo distinto (QA, seguridad, UX o contratos).
