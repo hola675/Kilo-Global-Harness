@@ -20,7 +20,8 @@ EVIDENCE_SCHEMA = "vx-kilo-competency-evidence/1"
 BASELINE_SCHEMA = "vx-kilo-capability-baseline/1"
 MAX_EVIDENCE_BYTES = 128 * 1024
 MAX_CASES = 200
-IDENTIFIER = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]{0,63}$")
+IDENTIFIER = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]{0,95}$")
+CAPABILITY = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]{0,63}$")
 CASE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$")
 SHA256 = re.compile(r"^[a-fA-F0-9]{64}$")
 OUTCOMES = ("PASS", "FAIL", "BLOCKED")
@@ -34,6 +35,10 @@ class MatrixError(Exception):
 
 def valid_name(name: object) -> bool:
     return isinstance(name, str) and IDENTIFIER.fullmatch(name) is not None
+
+
+def valid_capability(name: object) -> bool:
+    return isinstance(name, str) and CAPABILITY.fullmatch(name) is not None
 
 
 def test_id(component_type: str, component: str, capability: str) -> str:
@@ -69,7 +74,7 @@ def read_evidence(path: str | None, home: Path) -> list[dict]:
                 or not CASE_ID.fullmatch(str(entry["test_id"]))
                 or entry["component_type"] not in ("agent", "skill")
                 or not valid_name(entry["component"])
-                or not valid_name(entry["capability"])
+                or not valid_capability(entry["capability"])
                 or entry["outcome"] not in OUTCOMES
                 or entry["difficulty"] not in DIFFICULTIES
                 or entry["review_source"] not in REVIEW_SOURCES
@@ -114,7 +119,7 @@ def build_matrix(baseline: dict, evidence: list[dict] | None = None) -> dict:
         if not isinstance(agent, dict) or not valid_name(agent.get("name")):
             raise MatrixError("Agente de linea base invalido")
         claims = agent.get("router_capabilities", [])
-        if not isinstance(claims, list) or any(not valid_name(c) for c in claims):
+        if not isinstance(claims, list) or any(not valid_capability(c) for c in claims):
             raise MatrixError("Declaracion de capacidades invalida")
         for cap in (sorted(set(claims)) if claims else ["SIN_DATOS"]):
             key = ("agent", agent["name"], cap)
