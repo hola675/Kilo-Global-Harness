@@ -311,8 +311,10 @@ jobs:
             throw 'La zona horaria no refleja el equipo Windows'
           }
           if ($policy.monthly.day_rule -ne 'first_monday_next_month' -or
-              $null -ne $policy.monthly.local_time) {
-            throw 'El cierre mensual debe ser primer lunes siguiente, sin hora confirmada'
+              $policy.monthly.local_time -ne '09:00' -or
+              !$policy.joint_session.one_session -or
+              !$policy.joint_session.two_independent_sections) {
+            throw 'Cierre mensual debe ser una sola sesion lunes 09:00 con dos secciones'
           }
           if ($policy.weekly.enabled -or $policy.monthly.enabled -or
               $policy.automation.scheduled_task_enabled -or
