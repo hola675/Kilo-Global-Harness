@@ -595,6 +595,7 @@ def migrate_meetings(db, home):
         raise VXError("Ejecute observer-migrate de v1 a v2 antes de meeting-migrate")
     snapshot = backup(db, home)
     with db:
+        db.execute("BEGIN IMMEDIATE")
         db.execute("""CREATE TABLE IF NOT EXISTS meeting_agenda (
             meeting_id TEXT NOT NULL REFERENCES meetings(id),
             proposal_id TEXT NOT NULL REFERENCES proposals(id),
