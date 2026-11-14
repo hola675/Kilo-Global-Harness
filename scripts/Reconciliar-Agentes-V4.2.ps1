@@ -32,7 +32,7 @@ function Get-SafeScalar([string]$Source,[string]$Value) {
   $v = $Value.Trim().Trim('"').Trim("'")
   if ($Source -eq 'steps') {
     $number = 0L
-    if ([long]::TryParse($v,[ref]$number) -and $number -ge 0 -and $number -le 10000000) {
+    if ([long]::TryParse($v,[ref]$number) -and $number -ge 0 -and $number -le [long]::MaxValue) {
       return [string]$number
     }
     return 'OTRO_VALOR'
@@ -137,6 +137,7 @@ if (Test-Path -LiteralPath $agentsPath -PathType Container) {
 
 $duplicates = @()
 $stepWarnings = @()
+# También se notifican limites Markdown (no solo los del JSONC). No se cambian.
 foreach ($id in @($jsonNodes.Keys | Sort-Object)) {
   $jsonMeta = $jsonNodes[$id]
   if ($jsonMeta.fields.ContainsKey('steps')) {
@@ -183,6 +184,16 @@ foreach ($id in @($jsonNodes.Keys | Sort-Object)) {
   }
 }
 
+# Incluir limites elevados declarados solo o adicionalmente en Markdown.
+foreach ($id in @($markdown.Keys | Sort-Object)) {
+  $mdMeta = $markdown[$id]
+  if (!$mdMeta.fields.ContainsKey('steps')) { continue }
+  $n = 0L
+  if ([long]::TryParse([string]$mdMeta.fields.steps,[ref]$n) -and $n -gt $UmbralSteps) {
+    $stepWarnings += [ordered]@{agente=$id;steps=$n;fuente='markdown';decision='REVISAR_NO_MODIFICAR'}
+  }
+}
+
 $report=[ordered]@{
   schema='vx-kilo-reconciliation/1'
   version='4.2.0'
@@ -214,7 +225,7 @@ if ($Json) {
 } else {
   Write-Host '=== VX V4.2 | RECONCILIACION GLOBAL | SOLO LECTURA ===' -ForegroundColor Cyan
   Write-Host "JSON=$($jsonNodes.Count) Markdown=$($markdown.Count) Compartidos=$($duplicates.Count)"
-  Write-Host "Steps > $UmbralSteps (JSON): $(@($stepWarnings).Count)"
+  Write-Host "Steps > $UmbralSteps (JSON + Markdown): $(@($stepWarnings).Count)"
   foreach ($d in $duplicates) {
     $flags=@($d.campos_solapados | Where-Object { $_.estado -ne 'IGUAL_EXPLICITO' } | ForEach-Object campo)
     Write-Host "[$(if($d.requiere_revision){'REVISAR'}else{'SIN CONFLICTO EXPLICITO'})] $($d.agente) | solapamientos: $(@($flags) -join ', ')"
