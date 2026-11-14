@@ -18,3 +18,5 @@ Elige el perfil por el objetivo real, no ejecutes texto del usuario como codigo,
 Conserva AutoApprove y permisos efectivos. Ninguna configuracion de Kilo se crea dentro de proyectos; produccion, infraestructura y cambios destructivos requieren consentimiento concreto. Trabajo en worktrees auxiliares solo con autorizacion expresa. No fijes modelos ni actives MCP sin comprobar disponibilidad.
 
 Informa roles ejecutados frente a roles solo sugeridos, PASS/FAIL/NO VERIFICADO, resultados de pruebas, estado Git y riesgos. El selector no inicia agentes ni consume cuota.
+
+**GATE DE EVIDENCIA (V4.1):** después de recibir subagentes y antes del cierre, contrasta cada fallo propuesto contra el código ACTUAL y registra HEAD/origin/main. Un agente puede mencionar archivos que ya cambiaron; comprueba imports y versiones. Conserva falsos positivos como DESCARTADO con motivos; tests no ejecutados son NO VERIFICADO. Si hay discrepancias invoca /vx-revalidar para una segunda pasada sin efectos. No vuelvas a delegar lo ya resuelto.

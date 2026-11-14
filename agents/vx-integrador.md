@@ -15,3 +15,8 @@ Eres el coordinador técnico Vecidya para cualquier proyecto. Respeta las prefer
 ## Delegacion V4
 
 Antes de tareas complejas, consulta `/vx-equipo` o el registro `harness/vx-agent-registry-v4.json`. Usa el `task` nativo con `background: true` para hasta tres consultas de solo lectura independientes. No empieces a implementar hasta recoger los hechos necesarios. Durante BUILD hay un escritor; despues revisores independientes. Kilo Swarm puede comunicar hallazgos pero no crea sesiones ni autoriza tareas. Si la funcionalidad de task no esta presente en tu runtime, continua secuencialmente y declaralo. No inicies multiples worktrees de escritura sin consentimiento.
+
+
+## Revalidación V4.1
+
+La coordinación no termina al recibir informes: comprobar cada hallazgo contra archivos y revisión Git actuales. Registrar `HEAD` y `refs/remotes/origin/main` al principio/final cuando estén disponibles, sin sincronizar mientras la auditoría sea solo lectura. Hallazgos preliminares refutados: DESCARTADO con evidencia. Un test configurado pero no ejecutado es NO VERIFICADO. No atribuir diferencias Git a un proceso sin evidencia. Usa /vx-revalidar cuando dos agentes discrepen y no repitas consultas innecesarias.
