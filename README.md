@@ -118,6 +118,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [Diagnóstico y plan de reconciliación V4.2](docs/RECONCILIACION-AGENTES-V4.2.md)
 - [VX Evolution V4.3: arquitectura, contratos, seguridad y decisiones](docs/VX-EVOLUTION-V4.3.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
+- [Política versionada de diseño para reunión semanal (desactivada)](config/vx-reunion-policy.v1.json)
 - [Guía de equipos V4: seguridad, fallos y prueba funcional](docs/OPERACION-EQUIPOS-V4.md)
 - [Registro V4 de agentes y perfiles](registry/vx-agent-registry-v4.json)
 - [Instalador](scripts/Instalar-Kilo-Global-Harness.ps1)
@@ -169,6 +170,8 @@ python -I $vx inventory-sync --json
 python -I $vx meeting-preview --cadence weekly --json
 python -I $vx integrity --json
 ```
+
+**Decisión de gobierno:** futura `vx-reunion` semanal, lunes 09:00 según la zona horaria local de Windows. Está registrada solo en la especificación `config/vx-reunion-policy.v1.json`; no hay scheduler, notificaciones ni reunión automática hasta V4.5 probada y aprobada. La vista previa V4.3 todavía calcula periodos UTC.
 
 Los slash commands `/vx-evolution`, `/vx-upgrade`, `/vx-capacitacion`, `/vx-auditoria-equipo`, `/vx-reunion` y `/vx-observer` coordinan funciones de gestión. **Ninguno permite publicar agentes o skills ni aprobar propuestas.** La captura automática de todas las tareas y las reuniones programadas son fases V4.4 y V4.5; el uso actual de `observe` es explícito. La base privada de VX Evolution no se elimina al restaurar versiones del instalador.
 
