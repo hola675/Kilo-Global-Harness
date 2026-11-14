@@ -80,3 +80,8 @@ Se confirma lunes a las **09:00 hora local de Windows**, primer lunes del mes si
 ## VX-D08 confirmada y avance V4.6.0
 
 El usuario confirmó que VX Evolution se usará **únicamente en este PC Windows**. Quedan fuera de alcance las bases compartidas, sincronización, cloud y despliegues multi-PC. V4.6.0 incorpora una auditoría global **de solo lectura** que identifica agentes/skills declarados y diferencias de fuentes, sin escribir SQLite, modificar permisos ni calificar capacidades no evaluadas. Pruebas locales de esta nueva herramienta pendientes; guía [VX Capacidades V4.6.0](VX-CAPACIDADES-V4.6.0.md).
+
+
+## V4.6.1 — Límite de las evidencias (sin nueva autorización)
+
+La V4.6.0 ya fue integrada en `main` y superó CI Windows; su ejecución real en Kilo permanece pendiente. Se implementa V4.6.1 como **matriz de capacidades declaradas y evidencias opcionales también declaradas**, sin asignar rangos, puntuación, permisos ni jerarquías. Incluso un resultado `PASS` con `review_source=other` no acredita revisión independiente: necesita verificación técnica y humana posterior. No se modifica ninguna decisión VX-D01–VX-D12 ni se autoriza activación de programador o reuniones. [Guía V4.6.1](VX-MATRIZ-COMPETENCIAS-V4.6.1.md).
