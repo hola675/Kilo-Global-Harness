@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición:** 2026-11-14 · **Estado:** V4.6.0 integrada (CI Windows PASS); V4.6.1 implementada (CI Windows PASS; validación local pendiente); V4.6.2–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
+**Edición:** 2026-11-14 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 en implementación con ensayos sintéticos no ciegos; V4.6.3–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
 
 ## Fuente de verdad y definición de estados
 
@@ -24,9 +24,10 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | V4.4 | VX Observer Light opt-in, contadores horarios sin payload | Integrado | **Validado**: señales `session_idle=1` y `session_error=1`, integridad OK (muestra puntual) | Esas señales no miden calidad |
 | V4.5 | Calendario, actas y decisiones locales manuales | Integrado | **Validado junto con V4.5.1 mediante SQLite v4** | No hay scheduler |
 | V4.5.1 | **Primera reunión del mes conjunta**, secciones mensual/semanal a las 09:00 | **Integrado y CI Windows PASS** | **Validado**: instalación, SQLite v4, integridad y calendario real 2026-12-07, 09:00 | Observer `light`, scheduler OFF |
-| **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **Integrada en main; CI Windows PASS** | Pendiente de ejecución local del auditor | Sin cambios de permisos, SQLite ni roles |
-| **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **Código completo; CI Windows PASS** | No validada en Windows del usuario | Puntuaciones y seniority sin asignar; solo lectura |
-| V4.6.2–V4.6.3 | Pruebas reproducibles, capacitación y auditoría de equipos | Diseñadas, **PENDIENTES** | No aplica | No crear nuevos agentes, skills o jerarquías automáticamente |
+| **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 39 fuentes agente, 28 agentes, 40 skills, 11 solapamientos, 19 steps elevados | Sin cambios de permisos, SQLite ni roles |
+| **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 76 filas, 15 declaraciones, 0 evidencias | Prueba interactiva Kilo pendiente; seniority sin asignar |
+| **V4.6.2** | Cinco ensayos sintéticos reproducibles y comparación de evidencias declaradas | **En implementación/CI pendiente** | Pendiente | No son pruebas ciegas ni desempeño demostrado; sin escritura |
+| V4.6.3 | Auditoría organizativa y capacitación gobernada | Diseñada, **PENDIENTE** | No aplica | No crear agentes, skills o jerarquías automáticamente |
 | V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseñado | No aplica | Revisión independiente y autorización explícita |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
 | V5.0 | Equipos especializados adaptativos, ascensos y delegación medidos | Conceptual | No aplica | Condicionado a evidencia y controles anteriores |
@@ -37,7 +38,7 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 
 **VX-D08 CONFIRMADA:** una sola instalación en este PC Windows. No crear sincronización multi-PC, servicio de nube, DB compartida ni configuración por proyecto. La ruta operativa sigue bajo el HOME de Kilo. No es necesario migrar de nuevo la base de datos para V4.6.0.
 
-La función nueva V4.6.0 **no escribe SQLite**, no produce evaluaciones de calidad ni cambia archivos de agentes o skills. La prueba de compatibilidad del CLI en el Windows real del usuario se solicitará después de superar CI.
+Las herramientas V4.6.0 y V4.6.1 **no escriben SQLite** ni cambian archivos de agentes o skills. El 2026-11-14 se verificaron sus ejecuciones CLI en el Windows real del usuario; falta prueba de invocación interactiva de Kilo tras /reload. Los estados de desempeño siguen NO_MEDIDO.
 
 ## V4.6: objetivo y principio de mínima complejidad
 
@@ -51,7 +52,7 @@ Convertir `vx-capacitacion` y `vx-auditoria-equipo` de comandos de análisis/pro
 - `vx-observer`: proporciona **solo señales operativas agregadas**; un evento `session_error` no es prueba de incapacidad.
 - `vx-equipo`: sigue operando tareas, con **un escritor máximo** y hasta tres lectores; no reestructura roles en mitad de un desarrollo.
 
-Referencia de línea base: [VX Capacidades V4.6.0](VX-CAPACIDADES-V4.6.0.md). Matriz de evaluación propuesta: [VX V4.6.1](VX-MATRIZ-COMPETENCIAS-V4.6.1.md).
+Referencia de línea base: [VX Capacidades V4.6.0](VX-CAPACIDADES-V4.6.0.md). Matriz de evaluación propuesta: [VX V4.6.1](VX-MATRIZ-COMPETENCIAS-V4.6.1.md). Ensayos sintéticos: [VX V4.6.2](VX-ENSAYOS-COMPETENCIAS-V4.6.2.md).
 
 ### Entregables propuestos
 
@@ -93,9 +94,11 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 **P0 CERRADO** — Instalación V4.5.1 y SQLite v4 verificadas en el Windows del usuario; Observer light y datos conservados.
 
-**P1 CERRADO EN MAIN, PENDIENTE LOCAL** — V4.6.0 auditoría global de solo lectura y mapa de capacidades declaradas integrada en GitHub. Ejecutar auditoría en PC real. No migrar SQLite.
+**P1 CERRADO, CLI LOCAL VALIDADO** — V4.6.0 auditoría global de solo lectura y mapa de capacidades declaradas ejecutada en Windows real: 28 agentes únicos, 40 skills, 11 solapamientos y 19 límites steps elevados. No migrar SQLite.
 
-**P1.1 LISTO EN CÓDIGO, PENDIENTE LOCAL** — V4.6.1 matriz global y evidencia declarada: 20 pruebas unitarias y smoke/rollback de CI Windows PASS. Ejecutar en Windows del usuario antes de cerrar validación local; sin seniority ni pruebas reales automáticas.
+**P1.1 CERRADO, CLI LOCAL VALIDADO** — V4.6.1 matriz global y evidencia declarada: 20 pruebas unitarias y smoke/rollback CI Windows PASS; 76 filas, 15 capacidades declaradas y cero evidencias en equipo real. Prueba interactiva Kilo pendiente. Sin seniority ni pruebas reales automáticas.
+
+**P1.2 EN CURSO** — V4.6.2 cinco ensayos sintéticos y comparación manual, no ciegos: pruebas de harness no implican rendimiento de agentes; ejecutar evaluaciones reales solo con autorización posterior.
 
 **P2** — Probar evaluaciones y propuestas de capacitación/auditoría con fixtures de Kilo, registrar riesgos y presentar a `vx-reunion` para aprobación, nunca auto-publicar.
 
