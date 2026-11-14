@@ -92,6 +92,8 @@ def connect(home, create=False, readonly=False):
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA foreign_keys=ON")
     db.execute("PRAGMA busy_timeout=5000")
+    if not readonly:
+        db.execute("PRAGMA synchronous=FULL")
     version = db.execute("PRAGMA user_version").fetchone()[0]
     if version not in (SCHEMA_VERSION, 0 if create else -1):
         db.close()
