@@ -1,0 +1,36 @@
+{
+  "schema": "vx-reunion-policy/1",
+  "scope": "kilo-code-global",
+  "status": "design-confirmed-implementation-pending",
+  "version": "0.1.0",
+  "weekly": {
+    "weekday": "monday",
+    "local_time": "09:00",
+    "timezone_policy": "system_local",
+    "timezone_source": "windows_host_at_execution",
+    "enabled": false
+  },
+  "monthly": {
+    "day_rule": null,
+    "local_time": null,
+    "timezone_policy": "system_local",
+    "enabled": false
+  },
+  "automation": {
+    "scheduled_task_enabled": false,
+    "notifications_enabled": false,
+    "autonomous_meeting_enabled": false,
+    "activation_gate": "after-v4.5-implementation-tests-and-explicit-approval"
+  },
+  "governance": {
+    "meeting_decisions_require_explicit_user_approval": true,
+    "silence_is_approval": false,
+    "independent_of_active_project": true
+  },
+  "notes": [
+    "Esta politica es una especificacion versionada de diseño, no una configuracion cargada por el runtime V4.3.",
+    "system_local significa la zona horaria configurada en Windows en cada ejecucion, incluidos cambios de horario de verano; no fija Europe/Madrid ni un offset UTC.",
+    "meeting-preview de V4.3 calcula periodos UTC; la logica de horario local se implementara y probara en V4.5.",
+    "No crear tareas de Windows, calendarios, recordatorios ni notificaciones al registrar esta decision."
+  ]
+}

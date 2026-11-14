@@ -294,3 +294,30 @@ jobs:
           if (Test-Path $skill) { throw 'Rollback no retiro la skill V4.3 nueva.' }
           if (!(Test-Path $db)) { throw 'Rollback nunca debe borrar la BD privada.' }
           Write-Host 'KILO-ONLY: INSTALACION Y DATOS AISLADOS, ROLLBACK PASS'
+
+      - name: VX Reunion - política confirmada sin scheduler activo
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $policy = Get-Content 'config/vx-reunion-policy.v1.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($policy.schema -ne 'vx-reunion-policy/1' -or $policy.scope -ne 'kilo-code-global') {
+            throw 'Política VX Reunion inesperada'
+          }
+          if ($policy.weekly.weekday -ne 'monday' -or $policy.weekly.local_time -ne '09:00') {
+            throw 'La preferencia semanal confirmada fue alterada'
+          }
+          if ($policy.weekly.timezone_policy -ne 'system_local' -or
+              $policy.weekly.timezone_source -ne 'windows_host_at_execution') {
+            throw 'La zona horaria no refleja el equipo Windows'
+          }
+          if ($policy.weekly.enabled -or $policy.monthly.enabled -or
+              $policy.automation.scheduled_task_enabled -or
+              $policy.automation.notifications_enabled -or
+              $policy.automation.autonomous_meeting_enabled) {
+            throw 'No se autoriza programar reuniones antes de V4.5 validada'
+          }
+          if ($policy.governance.silence_is_approval -or
+              !$policy.governance.meeting_decisions_require_explicit_user_approval) {
+            throw 'Gobernanza de aprobaciones incorrecta'
+          }
+          Write-Host 'POLITICA VX REUNION: LUNES 09:00 WINDOWS LOCAL; PROGRAMADOR OFF: PASS'
