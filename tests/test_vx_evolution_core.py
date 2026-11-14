@@ -49,11 +49,11 @@ class TestVXCore(unittest.TestCase):
         first = self.initialized()
         second = self.initialized()
         self.assertTrue(first["created"])
-        self.assertEqual(first["schema_version"], 3)
+        self.assertEqual(first["schema_version"], 4)
         self.assertFalse(second["created"])
-        self.assertEqual(second["schema_version"], 3)
+        self.assertEqual(second["schema_version"], 4)
         state = self.parse("status")
-        self.assertEqual(state["schema_version"], 3)
+        self.assertEqual(state["schema_version"], 4)
         self.assertEqual(state["platform"], "Kilo Code only")
         self.assertEqual(state["observer_mode"], "off")
         self.assertFalse(state["scheduled_meetings"])
@@ -173,7 +173,7 @@ class TestVXCore(unittest.TestCase):
         file = self.home / ".config" / "kilo" / "vx-evolution" / "backups" / result["filename"]
         self.assertTrue(file.is_file())
         with closing(sqlite3.connect(file)) as db:
-            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 3)
+            self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 4)
         self.assertTrue(self.parse("integrity")["foreign_keys"])
 
     def test_schema_future_version_rejected(self):
