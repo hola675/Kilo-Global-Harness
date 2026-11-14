@@ -444,30 +444,6 @@ def propose(db, args):
     return {"id": prop_id, "status": "pending_review", "target": target,
             "proposed_version": version, "applied": False, "approved": False}
 
-def meeting_preview(db, cadence):
-    now = datetime.now(timezone.utc)
-    if cadence == "weekly":
-        start = (now - timedelta(days=now.weekday())).date().isoformat()
-        key = now.strftime("%G-W%V")
-    else:
-        start = now.date().replace(day=1).isoformat()
-        key = now.strftime("%Y-%m")
-    recents = db.execute(
-        "SELECT event_type, COUNT(*) n FROM observations WHERE created_utc >= ? "
-        "GROUP BY event_type ORDER BY event_type", (start,)).fetchall()
-    counts = db.execute(
-        "SELECT priority, COUNT(*) n FROM proposals WHERE status='pending_review' "
-        "GROUP BY priority ORDER BY priority").fetchall()
-    proposals = db.execute(
-        "SELECT id,kind,target,title,priority,proposed_version FROM proposals "
-        "WHERE status='pending_review' ORDER BY priority,created_utc LIMIT 5").fetchall()
-    return {"cadence": cadence, "period": key, "start_utc": start,
-            "observations_by_type": {r["event_type"]: r["n"] for r in recents},
-            "pending_by_priority": {r["priority"]: r["n"] for r in counts},
-            "agenda_candidates": [dict(r) for r in proposals],
-            "scheduled": False, "meeting_created": False,
-            "decisions_enabled": False, "changes_applied": False}
-
 def status(db):
     def count(table):
         return db.execute("SELECT COUNT(*) FROM " + table).fetchone()[0]
@@ -480,7 +456,8 @@ def status(db):
                 "status='pending_review'").fetchone()[0],
             "observer_mode": db.execute("SELECT value FROM settings WHERE "
                 "key='observer_mode'").fetchone()[0],
-            "autonomous_promotions": False, "scheduled_meetings": False}
+            "autonomous_promotions": False, "scheduled_meetings": False,
+            "manual_meetings_supported": db.execute("PRAGMA user_version").fetchone()[0] >= 3}
 
 
 def require_observer_v2(db):
@@ -737,7 +714,8 @@ def meeting_preview(db, cadence, on_date=None):
             "pending_by_priority": {r["priority"]: r["n"] for r in pending},
             "agenda_candidates": [dict(r) for r in proposals],
             "scheduled": False, "meeting_created": False,
-            "decisions_enabled": True, "changes_applied": False}
+            "decisions_enabled": db.execute("PRAGMA user_version").fetchone()[0] >= 3,
+            "changes_applied": False}
 
 
 def prepare_meeting(db, cadence, on_date=None):
@@ -906,7 +884,7 @@ def main(argv=None):
         help="HOME de Kilo; usar rutas de prueba solo en CI")
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("init", "status", "inventory-sync", "integrity", "backup",
-                 "observer-migrate", "observer-status"):
+                 "observer-migrate", "observer-status", "meeting-migrate"):
         p = sub.add_parser(name)
         p.add_argument("--json", action="store_true")
     p = sub.add_parser("observer-mode")
@@ -934,26 +912,55 @@ def main(argv=None):
     p.add_argument("--version")
     p.add_argument("--observation")
     p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-calendar")
+    p.add_argument("--cadence", choices=("weekly", "monthly"), default="weekly")
+    p.add_argument("--on-date", help="Fecha LOCAL YYYY-MM-DD; vista previa solamente")
+    p.add_argument("--json", action="store_true")
     p = sub.add_parser("meeting-preview")
     p.add_argument("--cadence", choices=("weekly", "monthly"), default="weekly")
+    p.add_argument("--on-date")
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-prepare")
+    p.add_argument("--cadence", choices=("weekly", "monthly"), required=True)
+    p.add_argument("--on-date", help="Opcional para reproducir ventana; no programa")
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-view")
+    p.add_argument("--id", required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-note")
+    p.add_argument("--id", required=True)
+    p.add_argument("--text", required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-decide")
+    p.add_argument("--id", required=True)
+    p.add_argument("--proposal", required=True)
+    p.add_argument("--decision", choices=("approved","rejected","deferred","revision_requested"),
+                   required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-close")
+    p.add_argument("--id", required=True)
     p.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
     try:
         home = home_path(args.home)
         if args.command == "init":
             result = init(home)
+        elif args.command == "meeting-calendar":
+            result = meeting_calendar(args.cadence, args.on_date)
         elif args.command == "status" and not db_path(home).is_file():
             result = {"initialized": False, "engine": "VX Evolution Core",
                       "platform": "Kilo Code only", "writes": 0}
         else:
-            readonly = args.command in ("status", "meeting-preview", "integrity",
-                                        "observer-report", "observer-status")
+            readonly = args.command in ("status", "meeting-preview", "meeting-view",
+                                        "integrity", "observer-report", "observer-status")
             db = connect(home, readonly=readonly)
             try:
                 if args.command == "status":
                     result = status(db)
                 elif args.command == "observer-migrate":
                     result = migrate_observer(db, home)
+                elif args.command == "meeting-migrate":
+                    result = migrate_meetings(db, home)
                 elif args.command == "observer-status":
                     result = observer_status(db, home)
                 elif args.command == "observer-mode":
@@ -971,7 +978,25 @@ def main(argv=None):
                 elif args.command == "propose":
                     result = propose(db, args)
                 elif args.command == "meeting-preview":
-                    result = meeting_preview(db, args.cadence)
+                    result = meeting_preview(db, args.cadence, args.on_date)
+                elif args.command == "meeting-prepare":
+                    result = prepare_meeting(db, args.cadence, args.on_date)
+                elif args.command == "meeting-view":
+                    result = get_meeting(db, args.id)
+                elif args.command == "meeting-note":
+                    result = meeting_note(db, args.id, args.text)
+                elif args.command == "meeting-decide":
+                    if not any(x["id"] == args.proposal for x in get_meeting(
+                            db, args.id)["agenda"]):
+                        raise VXError("Propuesta no pertenece a la agenda")
+                    local_confirmation("decision", args.decision + " / " + args.proposal)
+                    result = meeting_decide(db, args.id, args.proposal, args.decision)
+                elif args.command == "meeting-close":
+                    state = get_meeting(db, args.id)
+                    if state["unreviewed"]:
+                        raise VXError("Quedan puntos sin decision")
+                    local_confirmation("cierre", args.id)
+                    result = meeting_close(db, args.id)
                 elif args.command == "integrity":
                     check = db.execute("PRAGMA quick_check").fetchone()[0]
                     result = {"database": "ok" if check == "ok" else "error",
