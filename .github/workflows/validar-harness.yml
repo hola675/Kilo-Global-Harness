@@ -402,6 +402,9 @@ jobs:
           await hooks.event({event:{type:"message.updated",properties:{
             content:"CI_MESSAGE_PRIVATE_DO_NOT_COPY"
           }}});
+          // Kilo mantiene vivo el runtime; no cerrar el proceso de prueba
+          // antes de que los subprocess Python hayan podido registrar la señal.
+          await new Promise(resolve => setTimeout(resolve, 2000));
           '@ | Set-Content -LiteralPath $probe -Encoding UTF8
           node $probe
           if ($LASTEXITCODE -ne 0) { throw 'Error al simular eventos de Kilo' }
