@@ -8,7 +8,7 @@
 | VX-D02 | Memoria/registro de trabajo independiente del repositorio | **CONFIRMADA** | SQLite en HOME; referencias a proyectos seudónimas, nunca bases por proyecto |
 | VX-D03 | Reunión semanal y cierre mensual global | **CONFIRMADA** | Los dos tipos existen en contrato; ejecución automática aún no implementada |
 | VX-D04 | En las reuniones el usuario revisa y aprueba propuestas | **CONFIRMADA** | Los agentes solo proponen; V4.3 no implementa decisiones |
-| VX-D05 | Día/hora y zona horaria de reunión semanal | **PENDIENTE** | Sugerencia: día fijo semanal, horario de Windows configurable; no imponer |
+| VX-D05 | Día/hora y zona horaria de reunión semanal | **CONFIRMADA, NO PROGRAMADA** | Lunes a las 09:00, horario local del equipo Windows (`system_local`). No programar ni notificar hasta implementar, probar y recibir aprobación expresa en V4.5. Política de diseño: `config/vx-reunion-policy.v1.json` |
 | VX-D06 | Día/regla de cierre mensual | **PENDIENTE** | Alternativas: último día hábil o primer día hábil siguiente |
 | VX-D07 | Política de retención y borrado | **PENDIENTE** | Propuesta: observaciones detalladas 90 días, agregados y decisiones con histórico versionado; no borrar nada hasta definir |
 | VX-D08 | Única PC Windows o varias instalaciones Kilo | **PENDIENTE** | Una sola PC permite SQLite local sin sincronización; multi-PC requiere otro diseño |
@@ -16,6 +16,13 @@
 | VX-D10 | Identidad y mecanismo para registrar aprobación | **PENDIENTE DE DISEÑO** | Revisión explícita en sesión vs interfaz dedicada; no deducir aprobación del silencio |
 | VX-D11 | Condiciones para ascenso, contratación, fusión y jubilación de agentes | **PENDIENTE** | Métricas reales, auditor independiente, evaluación negativa y rollback |
 | VX-D12 | Reconciliar 11 agentes compartidos y 19 limites steps altos | **PENDIENTE DE EJECUCIÓN** | Mantener auditor V4.2 como pista paralela sin modificar configuración privada |
+
+## Política semanal acordada
+
+- Reunión VX global: **cada lunes a las 09:00**.
+- Zona horaria: **la configurada en Windows en el equipo al momento de ejecutar**; no fijar Europe/Madrid, zona geográfica o desplazamiento UTC, y respetar el cambio estacional que aplique Windows.
+- **Solo especificación hasta V4.5**: no se crean tareas programadas, calendarios, avisos ni reuniones desde V4.3. `meeting-preview` actual calcula periodos en UTC; la hora local requiere implementación y prueba en V4.5.
+- El cierre mensual mantiene día y horario pendientes (VX-D06).
 
 ## Invariantes confirmados
 
@@ -36,7 +43,7 @@ No confundir una tabla vacía `meetings` o `decisions` con una función de reuni
 
 ## Política de revisión
 
-Antes de V4.4 recoger respuestas a VX-D05–VX-D09. Antes de V4.5 concretar VX-D10. No bloquear la preparación de infraestructura global, pero tampoco tomar decisiones organizativas sensibles por defecto.
+VX-D05 está confirmada; antes de V4.4 recoger las respuestas aún pendientes VX-D06–VX-D09. Antes de V4.5 concretar VX-D10 y aprobar explícitamente la activación del programador. No bloquear la preparación de infraestructura global, pero tampoco tomar decisiones organizativas sensibles por defecto.
 
 ## Riesgos que revisaremos de nuevo
 
