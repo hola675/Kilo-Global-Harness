@@ -3,7 +3,7 @@ name: vx-evolution-core
 description: "Gobernanza global y versionada del ecosistema de agentes y skills de Kilo Code: consultar registro, observaciones, propuestas, capacitación, auditoría organizativa y reuniones VX. Activar solo para solicitudes sobre mejorar o administrar el harness, no en cada tarea de programación."
 ---
 
-# VX Evolution Core V4.5 — exclusivo Kilo Code
+# VX Evolution Core V4.6.0 — exclusivo Kilo Code
 
 ## Principios
 - Los datos residen en HOME/.config/kilo/vx-evolution/, separados del repositorio activo. Los archivos de runtime Kilo permanecen en sus rutas globales.
@@ -42,3 +42,7 @@ Consultar `observer-status`, `observer-report --days 7` antes de afirmar que hay
 ## Gobierno conjunto V4.5.1
 
 El primer lunes hay una sola sesión a las 09:00 hora local Windows, con dos secciones independientes: cierre mensual y seguimiento semanal. El motor SQLite v4 requiere migración explícita `joint-migrate` desde v3 con respaldo. `meeting-joint-prepare` crea una sola sesión y `meeting-joint-view` permite revisar dos actas separadas por sección. Las notas/decisiones usan los IDs de cada sección; `meeting-joint-close` cierra todo junto con confirmación TTY. No programar Windows, notificaciones ni publicar agentes/skills por aprobar propuestas.
+
+## V4.6.0 — Auditoría global sin mutaciones
+
+Para revisar agentes JSONC/Markdown, skills en rutas compatibles y capacidades declaradas, invocar `/vx-capacidades` (CLI `python -I $HOME/.config/kilo/harness/scripts/vx_capability_audit.py`). **No abre SQLite, no altera prompts, no añade jerarquías, no publica, no llama a modelos**; devuelve `NO_VERIFICADO` para precedencia y `NO_MEDIDO` para desempeño. VX Evolution funcionará solamente en este PC Windows. No elevar al rango senior ni crear agentes nuevos por tener un SKILL.md, un nombre repetido o un fallo de Kilo Observer. Plan siguiente: V4.6.1 matriz de competencias con pruebas independientes.
