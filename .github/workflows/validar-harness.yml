@@ -364,3 +364,64 @@ jobs:
             throw 'V4.4 no debe programar vx-reunion.'
           }
           Write-Host 'V4.4 PLUGIN OPT-IN + OBSERVADOR INERTE + SQLITE V2 + ROLLBACK: PASS'
+
+      - name: V4.4 - evento sintético plugin a SQLite sin datos de sesión
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx44-e2e-' + [guid]::NewGuid().ToString('N'))
+          $coreFolder = Join-Path $fixture '.config/kilo/harness/scripts'
+          New-Item -ItemType Directory -Force -Path $coreFolder | Out-Null
+          Copy-Item 'scripts/vx_evolution_core.py' (Join-Path $coreFolder 'vx_evolution_core.py')
+          $core = Join-Path $coreFolder 'vx_evolution_core.py'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          python -I $core --home $fixture init --json
+          if ($LASTEXITCODE -ne 0) { throw 'Init e2e falló' }
+          python -I $core --home $fixture observer-mode --mode light --json
+          if ($LASTEXITCODE -ne 0) { throw 'Opt-in e2e falló' }
+          # Sobrescribir HOME SOLO del proceso de prueba, nunca del usuario real.
+          $env:USERPROFILE = $fixture
+          $env:HOME = $fixture
+          $probe = Join-Path $env:RUNNER_TEMP 'vx44-probe.mjs'
+          @'
+          import { resolve } from "node:path";
+          import { pathToFileURL } from "node:url";
+          const file = pathToFileURL(resolve("plugins/vx-observer-light.js")).href;
+          const plugin = (await import(file)).default;
+          const hooks = await plugin.server({});
+          await hooks.event({event:{type:"session.idle",properties:{
+            sessionID:"CI_SESSION_PRIVATE_DO_NOT_COPY",prompt:"CI_PROMPT_PRIVATE_DO_NOT_COPY"
+          }}});
+          await hooks.event({event:{type:"session.error",properties:{
+            sessionID:"CI_SESSION_PRIVATE_DO_NOT_COPY",error:"CI_STACK_PRIVATE_DO_NOT_COPY"
+          }}});
+          await hooks.event({event:{type:"message.updated",properties:{
+            content:"CI_MESSAGE_PRIVATE_DO_NOT_COPY"
+          }}});
+          '@ | Set-Content -LiteralPath $probe -Encoding UTF8
+          node $probe
+          if ($LASTEXITCODE -ne 0) { throw 'Error al simular eventos de Kilo' }
+          $found = $false
+          for ($i=0; $i -lt 40; $i++) {
+            Start-Sleep -Milliseconds 250
+            $r = python -I $core --home $fixture observer-report --days 1 --json |
+              ConvertFrom-Json
+            if ($r.signals.session_idle -eq 1 -and $r.signals.session_error -eq 1) {
+              $found = $true
+              break
+            }
+          }
+          if (!$found) { throw 'Los eventos seleccionados no llegaron a SQLite.' }
+          if ($r.signals.PSObject.Properties.Name -contains 'message_updated') {
+            throw 'Se almacenó un evento fuera de la whitelist.'
+          }
+          $rows = python -c "import sqlite3,sys,json; c=sqlite3.connect(sys.argv[1]); print(json.dumps(c.execute('SELECT * FROM observer_counts').fetchall())); c.close()" $db
+          foreach ($secret in @('CI_SESSION_PRIVATE', 'CI_PROMPT_PRIVATE', 'CI_STACK_PRIVATE',
+                                  'CI_MESSAGE_PRIVATE')) {
+            if ($rows -match $secret) { throw "Se filtró payload privado: $secret" }
+          }
+          python -I $core --home $fixture observer-mode --mode off --json
+          $off = python -I $core --home $fixture observer-event --event session_idle --json |
+            ConvertFrom-Json
+          if ($off.recorded) { throw 'El observador no se apagó.' }
+          Write-Host 'V4.4 E2E SYNTHETIC EVENT + PRIVACY + OFF: PASS'
