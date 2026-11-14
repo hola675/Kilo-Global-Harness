@@ -322,6 +322,11 @@ def analyze(home: Path, steps_limit: int) -> dict:
 
 
 def main(argv=None):
+    # JSON estable en Windows PowerShell, redirecciones y CI: no depender de cp1252.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="VX 4.6.0 solo lectura global Kilo")
     parser.add_argument("--home", default=str(Path.home()))
     parser.add_argument("--steps-limit", type=int, default=400)
