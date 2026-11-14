@@ -533,3 +533,37 @@ jobs:
           python -I $core --home $fixture integrity --json
           if ($LASTEXITCODE -ne 0) { throw 'Integridad SQLite fallo' }
           Write-Host 'V4.5.1 UNA SESION + DOS SECCIONES + SQLITE V4 + SCHEDULER OFF: PASS'
+
+      - name: ROADMAP V4.6 - coherencia de estado y scheduler desactivado
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $roadmap = Get-Content 'docs/VX-EVOLUTION-ROADMAP.md' -Raw -Encoding UTF8
+          $readme = Get-Content 'README.md' -Raw -Encoding UTF8
+          $decisions = Get-Content 'docs/VX-EVOLUTION-DECISIONES.md' -Raw -Encoding UTF8
+          $policy = Get-Content 'config/vx-reunion-policy.v1.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+          foreach ($term in @('V4.5.1','V4.6.0','V4.6.1','V4.6.2','V4.6.3',
+                            'solo Kilo Code','SQLite v4','NO_MEDIDO','PENDIENTE')) {
+            if (!$roadmap.Contains($term)) {
+              throw "Roadmap incompleto: $term"
+            }
+          }
+          if (!$readme.Contains('docs/VX-EVOLUTION-ROADMAP.md') -or
+              !$decisions.Contains('VX-EVOLUTION-ROADMAP.md')) {
+            throw 'README y registro de decisiones deben enlazar roadmap'
+          }
+          if ($policy.weekly.weekday -ne 'monday' -or
+              $policy.weekly.local_time -ne '09:00' -or
+              $policy.monthly.local_time -ne '09:00' -or
+              !$policy.joint_session.one_session -or
+              (($policy.joint_session.section_order -join ',') -ne 'monthly,weekly')) {
+            throw 'Roadmap no puede cambiar el calendario aprobado'
+          }
+          if ($policy.weekly.enabled -or $policy.monthly.enabled -or
+              $policy.joint_session.enabled -or
+              $policy.automation.scheduled_task_enabled -or
+              $policy.automation.notifications_enabled -or
+              $policy.automation.autonomous_meeting_enabled) {
+            throw 'Roadmap no puede activar automatizaciones'
+          }
+          Write-Host 'VX ROADMAP V4.6: DOCUMENTADO + CALENDARIO CONSERVADO + SCHEDULER OFF: PASS'
