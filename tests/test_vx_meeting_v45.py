@@ -39,7 +39,7 @@ class TestVXMeeting(unittest.TestCase):
 
     def init(self):
         r = self.call("init")
-        self.assertEqual(r["schema_version"], 3)
+        self.assertEqual(r["schema_version"], 4)
 
     def proposal(self, suffix="01"):
         return self.call("propose", "--kind", "skill",
@@ -61,8 +61,9 @@ class TestVXMeeting(unittest.TestCase):
                             "--on-date", "2026-11-14")
         self.assertEqual(monthly["meeting_local_date"], "2026-12-07")
         self.assertEqual(monthly["period"], "2026-11")
-        self.assertIsNone(monthly["meeting_local_time"])
-        self.assertFalse(monthly["monthly_hour_confirmed"])
+        self.assertEqual(monthly["meeting_local_time"], "09:00")
+        self.assertTrue(monthly["monthly_hour_confirmed"])
+        self.assertEqual(monthly["session_mode"], "joint")
         dec = self.call("meeting-calendar", "--cadence", "monthly",
                         "--on-date", "2026-12-28")
         self.assertEqual(dec["period"], "2026-12")
@@ -140,9 +141,10 @@ class TestVXMeeting(unittest.TestCase):
         self.assertFalse(view["changes_applied"])
         self.assertFalse(view["approval_identity_verified"])
         self.assertEqual({x["id"] for x in view["agenda"]}, set(ids[:5]))
-        next_meeting = self.call("meeting-prepare", "--cadence", "monthly",
-                                 "--on-date", "2026-11-14")
-        self.assertNotEqual(next_meeting["id"], result["id"])
+        # En V4.5.1 el cierre mensual coincidente requiere sesion conjunta.
+        self.assertIn("meeting-joint-prepare", self.call(
+            "meeting-prepare", "--cadence", "monthly",
+            "--on-date", "2026-11-14", ok=False))
         self.assertEqual(self.call("status")["scheduled_meetings"], False)
         with closing(sqlite3.connect(self.db)) as db:
             self.assertEqual(db.execute("SELECT COUNT(*) FROM decisions").fetchone()[0], 0)
@@ -200,25 +202,35 @@ class TestVXMeeting(unittest.TestCase):
         self.assertEqual(self.call("status")["pending_review"], 2)
         self.assertEqual(self.call("integrity")["foreign_keys"], True)
 
-    def test_monthly_closure_stays_separate_from_weekly_no_scheduler(self):
+    def test_monthly_closure_is_one_joint_session_with_two_sections(self):
         self.init()
-        # El primer lunes coincide, pero no se fusiona ni programa por defecto.
-        w = self.call("meeting-calendar", "--cadence", "weekly",
-                      "--on-date", "2026-12-06")
-        m = self.call("meeting-calendar", "--cadence", "monthly",
-                      "--on-date", "2026-12-06")
-        self.assertEqual(w["meeting_local_date"], m["meeting_local_date"])
-        self.assertEqual(w["meeting_local_date"], "2026-12-07")
-        self.assertEqual(w["meeting_local_time"], "09:00")
-        self.assertIsNone(m["meeting_local_time"])
-        self.assertFalse(w["scheduler_enabled"])
-        self.assertFalse(m["scheduler_enabled"])
-        first = self.call("meeting-prepare", "--cadence", "weekly",
-                          "--on-date", "2026-12-06")
-        second = self.call("meeting-prepare", "--cadence", "monthly",
+        self.assertFalse(self.call("status")["scheduled_meetings"])
+        weekly = self.call("meeting-calendar", "--cadence", "weekly",
                            "--on-date", "2026-12-06")
-        self.assertNotEqual(first["id"], second["id"])
-        self.assertEqual(self.call("status")["scheduled_meetings"], False)
+        monthly = self.call("meeting-calendar", "--cadence", "monthly",
+                            "--on-date", "2026-12-06")
+        self.assertEqual(weekly["meeting_local_date"], monthly["meeting_local_date"])
+        self.assertEqual(monthly["meeting_local_date"], "2026-12-07")
+        self.assertEqual(monthly["meeting_local_time"], "09:00")
+        self.assertEqual(weekly["session_mode"], "joint")
+        self.assertEqual(monthly["section_order"], ["monthly", "weekly"])
+        for cadence in ("weekly", "monthly"):
+            self.assertIn("meeting-joint-prepare", self.call(
+                "meeting-prepare", "--cadence", cadence,
+                "--on-date", "2026-12-06", ok=False))
+        joint = self.call("meeting-joint-prepare", "--on-date", "2026-12-06")
+        self.assertTrue(joint["created"])
+        self.assertEqual(joint["session_count"], 1)
+        self.assertEqual(joint["acta_sections"], 2)
+        view = self.call("meeting-joint-view", "--id", joint["id"])
+        self.assertEqual([x["kind"] for x in view["sections"]], ["monthly", "weekly"])
+        self.assertEqual(len({x["meeting_id"] for x in view["sections"]}), 2)
+        self.assertEqual(view["session"]["local_time"], "09:00")
+        self.assertFalse(view["scheduler_enabled"])
+        again = self.call("meeting-joint-prepare", "--on-date", "2026-12-06")
+        self.assertFalse(again["created"])
+        self.assertEqual(again["id"], joint["id"])
+        self.assertFalse(self.call("status")["scheduled_meetings"])
 
 
 if __name__ == "__main__":
