@@ -1,6 +1,6 @@
 # VX Evolution V4.6.2 — Ensayos sintéticos reproducibles y capacitación candidata
 
-**Edición:** 2026-11-14 · **Ámbito:** un único Windows, Kilo Code global, HOME local. **Estado:** implementación y pruebas en revisión. Scheduler, notificaciones, promociones y publicaciones automáticas: **OFF**.
+**Edición:** 2026-11-14 · **Ámbito:** un único Windows, Kilo Code global, HOME local. **Estado:** CI Windows PASS (27 pruebas, smoke y rollback); instalación real en Windows y evaluación interactiva en Kilo pendientes. Scheduler, notificaciones, promociones y publicaciones automáticas: **OFF**.
 
 ## Punto de partida verificado por el operador
 
