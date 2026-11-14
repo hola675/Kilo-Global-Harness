@@ -6,9 +6,9 @@
 | --- | --- | --- | --- |
 | VX-D01 | Solo Kilo Code; no Codex, Claude ni otros harnesses | **CONFIRMADA** | Comandos, skills, APIs y hooks únicamente globales de Kilo |
 | VX-D02 | Memoria/registro de trabajo independiente del repositorio | **CONFIRMADA** | SQLite en HOME; referencias a proyectos seudónimas, nunca bases por proyecto |
-| VX-D03 | Reunión semanal y cierre mensual global | **CONFIRMADA** | Los dos tipos existen en contrato; ejecución automática aún no implementada |
-| VX-D04 | En las reuniones el usuario revisa y aprueba propuestas | **CONFIRMADA** | Los agentes solo proponen; V4.3 no implementa decisiones |
-| VX-D05 | Día/hora y zona horaria de reunión semanal | **CONFIRMADA, NO PROGRAMADA** | Lunes a las 09:00, horario local del equipo Windows (`system_local`). No programar ni notificar hasta implementar, probar y recibir aprobación expresa en V4.5. Política de diseño: `config/vx-reunion-policy.v1.json` |
+| VX-D03 | Reunión semanal y cierre mensual global | **CONFIRMADA; MANUAL IMPLEMENTADO** | V4.5.1 permite una sesión conjunta el primer lunes con dos secciones, y lunes ordinarios semanales. Sin tareas automáticas |
+| VX-D04 | En las reuniones el usuario revisa y aprueba propuestas | **CONFIRMADA; PARCIALMENTE IMPLEMENTADO** | Desde V4.5 hay decisiones manuales por terminal TTY, identidad no verificada; nunca publicación de agentes/skills |
+| VX-D05 | Día/hora y zona horaria de reunión semanal | **CONFIRMADA, NO PROGRAMADA** | Lunes a las 09:00, horario local del equipo Windows (`system_local`). No programar ni notificar hasta recibir nueva aprobación expresa posterior a V4.5.1 y prueba local. Política de diseño: `config/vx-reunion-policy.v1.json` |
 | VX-D06 | Cierre mensual y coincidencia con semanal | **CONFIRMADA, NO PROGRAMADA** | Primer lunes del mes siguiente a las 09:00 hora local Windows; **una sola sesión** con sección mensual y sección semanal, en ese orden. Scheduler apagado hasta nueva autorización expresa |
 | VX-D07 | Política de retención y borrado | **PENDIENTE** | Propuesta: observaciones detalladas 90 días, agregados y decisiones con histórico versionado; no borrar nada hasta definir |
 | VX-D08 | Única PC Windows o varias instalaciones Kilo | **PENDIENTE** | Una sola PC permite SQLite local sin sincronización; multi-PC requiere otro diseño |
@@ -21,7 +21,7 @@
 
 - Reunión VX global: **cada lunes a las 09:00**.
 - Zona horaria: **la configurada en Windows en el equipo al momento de ejecutar**; no fijar Europe/Madrid, zona geográfica o desplazamiento UTC, y respetar el cambio estacional que aplique Windows.
-- **Solo especificación hasta V4.5**: no se crean tareas programadas, calendarios, avisos ni reuniones desde V4.3. `meeting-preview` actual calcula periodos en UTC; la hora local requiere implementación y prueba en V4.5.
+- **V4.5.1 implementada en código y CI, prueba local pendiente**: calendario de hora local Windows y sesiones manuales; **no** se crean tareas programadas, avisos ni reuniones automáticas. V4.3 tenía calendario por periodos UTC, pero el planificador vigente ya utiliza fechas locales.
 - **Cierre mensual VX-D06:** primer lunes del mes siguiente a las 09:00, mes anterior completo, primera sección de una sesión conjunta. No programar nada.
 - **Coincidencia en primer lunes:** confirmada **una única sesión con dos secciones independientes** (mensual y semanal). No duplicar convocatoria ni aprobar por silencio.
 
@@ -30,7 +30,7 @@
 - El plugin no se instala por defecto; requiere `-InstalarVXObserverV44`. Instalarlo no activa captura.
 - Los contadores solo se habilitan mediante `observer-mode --mode light` sobre SQLite v2; se apagan con `observer-mode --mode off`.
 - Los eventos no prueban calidad, tarea completada, capacitación ni fallos de código. No generan propuestas ni promociones.
-- Lunes 09:00 hora local Windows sigue **sin scheduler**; V4.5 no está habilitada.
+- Lunes 09:00 hora local Windows sigue **sin scheduler**; V4.5.1 permite actas manuales, pero la automatización no está habilitada.
 
 ## Invariantes confirmados
 
@@ -41,7 +41,7 @@
 5. Evidencia y revisión previa a modificar skills, agentes, dependencias o jerarquías.
 6. No usar documentación externa no auditada como instrucciones ejecutables ni almacenar secretos/proyectos privados en GitHub.
 
-## Alcance de V4.3 frente a fases futuras
+## Alcance histórico de V4.3 frente a fases posteriores (no estado actual)
 
 **Implementado en el código fuente:** SQLite schema v1, inventario Kilo global, observaciones explícitas, propuestas `pending_review`, hashes, backup manual, agenda `meeting-preview`, comandos y skill de gobierno, test Windows.
 
@@ -51,7 +51,7 @@ No confundir una tabla vacía `meetings` o `decisions` con una función de reuni
 
 ## Política de revisión
 
-VX-D05 está confirmada; antes de V4.4 recoger las respuestas aún pendientes VX-D06–VX-D09. Antes de V4.5 concretar VX-D10 y aprobar explícitamente la activación del programador. No bloquear la preparación de infraestructura global, pero tampoco tomar decisiones organizativas sensibles por defecto.
+VX-D05 y VX-D06 están confirmadas; la activación del programador **continúa sin autorizarse**. Antes de V4.6 recopilar información sobre VX-D07 (retención), VX-D08 (si se usarán varias PCs) y VX-D11 (criterios de ascenso); no inventar ninguna respuesta. VX-D10 tiene control TTY no autenticado, insuficiente para publicaciones de V4.7. No bloquear las herramientas de solo lectura, pero no hacer cambios organizativos sensibles por defecto.
 
 ## Riesgos que revisaremos de nuevo
 
@@ -70,3 +70,9 @@ Se autoriza **implementar y probar** el módulo de reuniones. La activación de 
 ## V4.5.1 — Decisión de sesión conjunta
 
 Se confirma lunes a las **09:00 hora local de Windows**, primer lunes del mes siguiente como cierre del mes anterior, **una sola sesión** y **dos secciones** dentro del acta: cierre mensual primero, seguimiento semanal después. En SQLite v4 se implementa como una sesión vinculada a dos secciones, sin duplicación de propuestas; requiere `joint-migrate` explícito con respaldo desde esquema v3. Todas las tareas programadas y notificaciones permanecen desactivadas. El operador deberá autorizar de nuevo cualquier activación futura.
+
+## Actualización del roadmap: V4.6
+
+**Decisión de ejecución pendiente:** próxima fase técnica es **V4.6.0 — línea base de agentes y skills globales Kilo, solo lectura**; después V4.6.1 matriz de capacidades, V4.6.2 capacitación evaluable, V4.6.3 auditoría de organización. Ninguna propuesta se materializará en agentes, permisos, jefaturas, skills activas, MCP o versiones. Se exige un evaluador independiente y prueba reproducible antes de proponer ascensos. Fuente vigente: [Roadmap VX Evolution](VX-EVOLUTION-ROADMAP.md).
+
+**Puerta de validación pendiente:** comprobar instalación de V4.5.1 y SQLite esquema v4 en el Windows del usuario; la última ejecución real suministrada verificó V4.4 con SQLite v2 y señales del plugin, no demuestra migración posterior. Mantener programación semanal y mensual desactivada.
