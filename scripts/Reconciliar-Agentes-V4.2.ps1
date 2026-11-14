@@ -55,7 +55,7 @@ function Get-MarkdownMetadata([string]$Path) {
   }
   $front = $match.Groups['body'].Value
   $fields = @{}
-  foreach ($m in [regex]::Matches($front,'(?m)^(?<key>[a-zA-Z][a-zA-Z0-9_-]*):[ \t]*(?<value>[^\r\n]*)$')) {
+  foreach ($m in [regex]::Matches($front,'(?m)^(?<key>[a-zA-Z][a-zA-Z0-9_-]*):[ \t]*(?<value>[^\r\n]*)\r?$')) {
     $name = $m.Groups['key'].Value
     if ($name -in $safeFields) {
       $fields[$name] = Get-SafeScalar $name $m.Groups['value'].Value
@@ -64,7 +64,7 @@ function Get-MarkdownMetadata([string]$Path) {
   $permissions = @{}
   $block = [regex]::Match($front,'(?ms)^permission:[ \t]*\r?\n(?<block>(?:[ \t]+[^\r\n]*(?:\r?\n|$))*)')
   if ($block.Success) {
-    foreach ($m in [regex]::Matches($block.Groups['block'].Value,'(?m)^ {2}(?<key>[a-zA-Z][a-zA-Z0-9_-]*):[ \t]*(?<value>[^\r\n]*)$')) {
+    foreach ($m in [regex]::Matches($block.Groups['block'].Value,'(?m)^ {2}(?<key>[a-zA-Z][a-zA-Z0-9_-]*):[ \t]*(?<value>[^\r\n]*)\r?$')) {
       $name = $m.Groups['key'].Value
       if ($name -in $permissionFields) {
         $permissions[$name] = Get-SafeScalar 'permission' $m.Groups['value'].Value
