@@ -21,3 +21,5 @@ Distinguir con rigor `DECLARADA_NO_PROBADA`, `NO_MEDIDO`, `NO_VERIFICADO` y `SIN
 **No** ejecutar `inventory-sync`, `observe`, `propose` o `meeting-prepare` automáticamente: esos comandos escriben SQLite. No crear procesos residentes, task scheduler, plugins, roles, archivos dentro del proyecto ni nuevos agentes. Si hay brechas verificables, redactar propuestas separadas y consultar al usuario antes de registrarlas. Para evaluar el resultado, trabajar con pruebas reproducibles de V4.6.1+.
 
 Referencia: `docs/VX-CAPACIDADES-V4.6.0.md`.
+
+**V4.6.1:** después de este inventario, usar `/vx-matriz` para vincular capacidades y skills con identificadores de pruebas futuras; no confundir un resultado PASS declarado con evidencia de ejecución real.

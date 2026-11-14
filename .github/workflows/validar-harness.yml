@@ -611,3 +611,49 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           if (Test-Path $audit) { throw 'Rollback no elimino auditor V4.6.0' }
           Write-Host 'VX V4.6.0: AUDITORIA SIN SECRETOS, SOLO LECTURA, GLOBAL Y ROLLBACK PASS'
+
+      - name: V4.6.1 - matriz y evidencias Kilo sin escritura ni autoevaluacion
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_competency_matrix_v461.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron tests V4.6.1' }
+          python -m compileall -q scripts/vx_competency_matrix.py tests/test_vx_competency_matrix_v461.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis V4.6.1' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx461-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          if ($LASTEXITCODE -ne 0) { throw 'Instalacion V4.6.1 fallo' }
+          $matrix = Join-Path $fixture '.config/kilo/harness/scripts/vx_competency_matrix.py'
+          $audit = Join-Path $fixture '.config/kilo/harness/scripts/vx_capability_audit.py'
+          $command = Join-Path $fixture '.config/kilo/commands/vx-matriz.md'
+          $registry = Join-Path $fixture '.config/kilo/harness/vx-agent-registry-v4.json'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (!(Test-Path $matrix) -or !(Test-Path $audit) -or !(Test-Path $command)) {
+            throw 'Recursos V4.6.1 ausentes'
+          }
+          $hash = (Get-FileHash $registry -Algorithm SHA256).Hash
+          $report = python -I $matrix --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Matriz global fallo en Windows' }
+          if ($report.schema -ne 'vx-kilo-competency-matrix/1' -or
+              $report.scope -ne 'HOME_GLOBAL_SOLO_LECTURA_PC_UNICA' -or
+              $report.writes -ne 0 -or $report.database_access -or
+              $report.scheduler_enabled -or $report.promotion_automatic -or
+              $report.grading_automatic -or $report.evidence_provenance_verified -or
+              $report.counts.agents -lt 7 -or $report.counts.matrix_rows -lt 7) {
+            throw 'Contrato de matriz V4.6.1 incumplido'
+          }
+          foreach ($entry in $report.matrix) {
+            if ($entry.score -ne 'NO_MEDIDO' -or $entry.competence_level -ne 'NO_ASIGNADO') {
+              throw 'No debe existir seniority o score automatico'
+            }
+          }
+          if ((Get-FileHash $registry -Algorithm SHA256).Hash -ne $hash -or (Test-Path $db)) {
+            throw 'Matriz altero estado global o SQLite'
+          }
+          & $installer -Modo Verificar -RaizUsuario $fixture
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if (Test-Path $matrix) { throw 'Rollback no retiro matriz V4.6.1' }
+          Write-Host 'VX V4.6.1: MATRIZ DE SOLO LECTURA + 20 TESTS + ROLLBACK PASS'

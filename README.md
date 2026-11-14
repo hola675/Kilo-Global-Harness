@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.6.0
+# VECIDYA · Kilo Code Global Harness V4.6.1
 
-**Versión del código:** 4.6.0 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 incorpora auditoría global de solo lectura; falta validar la nueva herramienta localmente; ninguna reunión automática está habilitada.
+**Versión del código:** 4.6.1 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 ya está integrada en main y validada en CI; V4.6.1 incorpora una matriz de evidencias declaradas con CI Windows PASS. Ambas herramientas están pendientes de validación en el Kilo real del usuario; ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -11,6 +11,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
 - **PC ÚNICA:** VX Evolution usa exclusivamente este Windows. Sin sincronización multi-PC, infraestructura cloud ni configuración Kilo por repositorio.
+- **VX Matriz V4.6.1:** análisis de agentes y skills con test IDs estables y evidencias opcionales declaradas, sin asignar nivel, score o ascensos; no ejecuta pruebas ni escribe SQLite.
 - **VX Capacidades V4.6.0:** auditoría global de metadatos JSONC/Markdown y skills; diferencias de fuentes y capacidades **declaradas, no probadas**; nunca modifica SQLite, agentes, permisos ni skills.
 - **Roadmap canónico:** [VX Evolution — estado verificado y fases V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md). No confundir código/CI con validación del perfil Windows.
 - **VX Reunión V4.5:** cierre mensual y semanal en **una sesión conjunta el primer lunes a las 09:00 hora local Windows**, con dos secciones; resto de lunes, solo semanal. SQLite v4, calendario, agendas, notas y decisiones manuales; sin scheduler, autopromociones ni notificaciones.
@@ -125,6 +126,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [VX Evolution V4.3: arquitectura, contratos, seguridad y decisiones](docs/VX-EVOLUTION-V4.3.md)
 - [VX Observer V4.4: instalación opt-in, privacidad, migración y pruebas](docs/VX-OBSERVER-V4.4.md)
 - [VX Capacidades V4.6.0: diagnóstico solo lectura y contrato de evidencias](docs/VX-CAPACIDADES-V4.6.0.md)
+- [VX Matriz V4.6.1: contrato, evidencias y rúbrica propuesta](docs/VX-MATRIZ-COMPETENCIAS-V4.6.1.md)
 - [VX Reunión V4.5: fechas locales, actas y decisiones manuales](docs/VX-REUNION-V4.5.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Roadmap maestro VX Evolution: estado real, brechas y plan V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md)
@@ -221,7 +223,7 @@ Para crear **voluntariamente** un borrador de acta: `meeting-prepare --cadence w
 
 ## Siguiente fase — V4.6: capacitación y auditoría con evidencia
 
-**Estado: PLANIFICADA, NO IMPLEMENTADA.** Primero verificar V4.5.1 y SQLite v4 en el Windows real (sin preparar reuniones ni activar scheduler), después construir **V4.6.0**: diagnóstico **solo lectura** del inventario global de agentes/skills Kilo y matriz inicial de capacidades verificables.
+**Estado:** V4.6.0 integrada y probada en CI; V4.6.1 implementada y CI Windows PASS; V4.6.2–V4.6.3 pendientes. La V4.5.1 ya fue validada en el Windows del usuario; todavía falta ejecutar allí la auditoría y matriz de V4.6. No activar scheduler.
 
 La capacitación priorizará mejorar skills y especialistas existentes; la auditoría recomendará consolidación, delegación o contratación **solo con evidencia y evaluación independiente**. No introducir agentes, jerarquías, permisos, prompts, MCP ni cambios operativos automáticamente. Los contadores `session_idle` y `session_error` de V4.4 no demuestran calidad.
 
@@ -239,13 +241,27 @@ python -I $audit                 # resumen por defecto, sin nombres individuales
 python -I $audit --json          # informe estructurado, revisión LOCAL
 ```
 
-Esta auditoría recorre únicamente fuentes Kilo **globales** y no abre SQLite ni crea propuestas. Compara fuentes JSONC/Markdown, límites `steps`, permisos simples y skills repetidas por nombre; cruza las **declaraciones** del router. Desempeño de agente y precedencia efectiva = **NO_MEDIDO/NO_VERIFICADO**. Ver [guía V4.6.0](docs/VX-CAPACIDADES-V4.6.0.md) y [roadmap](docs/VX-EVOLUTION-ROADMAP.md). V4.6.1–4.6.3 quedan pendientes de validación y diseño; no se crearán jefes ni agentes automáticamente.
+Esta auditoría recorre únicamente fuentes Kilo **globales** y no abre SQLite ni crea propuestas. Compara fuentes JSONC/Markdown, límites `steps`, permisos simples y skills repetidas por nombre; cruza las **declaraciones** del router. Desempeño de agente y precedencia efectiva = **NO_MEDIDO/NO_VERIFICADO**. Ver [guía V4.6.0](docs/VX-CAPACIDADES-V4.6.0.md) y [roadmap](docs/VX-EVOLUTION-ROADMAP.md). La V4.6.1 añade la matriz local de competencias, sin ejecutar pruebas reales; V4.6.2–4.6.3 siguen pendientes. No se crearán jefes ni agentes automáticamente.
+
+## V4.6.1 — Matriz global de competencias (solo lectura)
+
+Después de instalar la versión integrada, ejecutar `/vx-matriz` o:
+
+```powershell
+$matrix = Join-Path $HOME '.config/kilo/harness/scripts/vx_competency_matrix.py'
+python -I $matrix              # resumen privado, sin nombres individuales
+python -I $matrix --json       # matriz detallada: mantener LOCAL
+```
+
+Cruza declaraciones V4.6.0 con IDs estables para planificar pruebas futuras. Acepta evidencia JSON opcional dentro de HOME, pero **un PASS declarado jamás equivale a competencia verificada**. Niveles y puntuación siguen `NO_ASIGNADO` y `NO_MEDIDO`. Guía: [V4.6.1](docs/VX-MATRIZ-COMPETENCIAS-V4.6.1.md).
 
 ## V4.5.1 — Primera reunión conjunta del mes
 
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **4.6.1 · 2026-11-14:** matriz Kilo global de solo lectura, enlaces agente/skill→capacidad→test ID→evidencia declarada, 20 pruebas unitarias, instalador reversible y CI Windows; sin evaluación ni cambios operativos.
 
 - **4.6.0 · 2026-11-14:** auditoría global de Kilo solo lectura, pruebas de privacidad y regresión, revisión declarativa de agentes/skills, comando `/vx-capacidades`, instalación reversible. Sin cambios en SQLite, horarios, plugins o permisos.
 

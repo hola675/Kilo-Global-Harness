@@ -15,3 +15,5 @@ Las evaluaciones, instalaciones de skill y versiones candidatas reproducibles re
 
 
 **V4.6.0 — línea base:** antes de recomendar crear una skill, consultar `/vx-capacidades` (solo lectura). Su campo `capability_evidence=declaracion_del_router` no demuestra competencia. `profile_skills_not_observed` no prueba ausencia en runtime. Compara las alternativas de capacitar agente existente, mejorar skill existente o crear una candidata, pero **no registres ni instales nada sin petición explícita**. Evaluaciones y tests independientes están pendientes de V4.6.1/4.6.2. No usar las señales `session_error` de Observer como calificación.
+
+**V4.6.1 — matriz de evidencia:** consultar `/vx-matriz` para distinguir `SIN_EVIDENCIA` y `EVIDENCIA_DECLARADA_NO_VERIFICADA` antes de proponer formación. Los IDs de test no significan tests ejecutados; pruebas antes/después serán V4.6.2. Nunca asignar niveles o scores por autoinforme.
