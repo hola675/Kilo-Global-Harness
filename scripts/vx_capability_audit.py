@@ -338,7 +338,7 @@ def main(argv=None):
         home = core.home_path(args.home)
         report = analyze(home, args.steps_limit)
         if args.json:
-            print(json.dumps(report, ensure_ascii=False, sort_keys=True))
+            print(json.dumps(report, ensure_ascii=True, sort_keys=True))
         else:
             counts = report["counts"]
             print("=== VX CAPACIDADES V4.6.0 | KILO GLOBAL | SOLO LECTURA ===")
