@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Code Global Harness V4.6.1
 
-**Versión del código:** 4.6.1 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 ya está integrada en main y validada en CI; V4.6.1 añade una matriz de evidencias declaradas en revisión. Ambas herramientas están pendientes de validación en el Kilo real del usuario; ninguna reunión automática está habilitada.
+**Versión del código:** 4.6.1 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 ya está integrada en main y validada en CI; V4.6.1 incorpora una matriz de evidencias declaradas con CI Windows PASS. Ambas herramientas están pendientes de validación en el Kilo real del usuario; ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -223,7 +223,7 @@ Para crear **voluntariamente** un borrador de acta: `meeting-prepare --cadence w
 
 ## Siguiente fase — V4.6: capacitación y auditoría con evidencia
 
-**Estado:** V4.6.0 integrada y probada en CI; V4.6.1 con código y pruebas en revisión; V4.6.2–V4.6.3 pendientes. La V4.5.1 ya fue validada en el Windows del usuario; todavía falta ejecutar allí la auditoría y matriz de V4.6. No activar scheduler.
+**Estado:** V4.6.0 integrada y probada en CI; V4.6.1 implementada y CI Windows PASS; V4.6.2–V4.6.3 pendientes. La V4.5.1 ya fue validada en el Windows del usuario; todavía falta ejecutar allí la auditoría y matriz de V4.6. No activar scheduler.
 
 La capacitación priorizará mejorar skills y especialistas existentes; la auditoría recomendará consolidación, delegación o contratación **solo con evidencia y evaluación independiente**. No introducir agentes, jerarquías, permisos, prompts, MCP ni cambios operativos automáticamente. Los contadores `session_idle` y `session_error` de V4.4 no demuestran calidad.
 
