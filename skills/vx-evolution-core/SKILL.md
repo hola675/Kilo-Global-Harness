@@ -38,3 +38,7 @@ Consultar `observer-status`, `observer-report --days 7` antes de afirmar que hay
 ## V4.5 — Reuniones sin programación
 
 `meeting-calendar --cadence weekly|monthly` consulta fecha local sin crear BD; `meeting-preview` muestra propuestas y ventanas de revisión. El esquema v3 requiere `meeting-migrate` **explícito**, con backup previo de v2. `meeting-prepare` solo crea agenda cuando lo solicita el operador; `meeting-view` lee acta; `meeting-note` añade notas neutras; `meeting-decide` y `meeting-close` exigen confirmación en una **terminal interactiva local** que no debe responder un agente por su cuenta. La identidad no está verificada criptográficamente: ninguna decisión autoriza publicar agentes o skills. El scheduler semanal y mensual permanece apagado, incluso tras aprobar una propuesta. Referencia: `docs/VX-REUNION-V4.5.md`.
+
+## Gobierno conjunto V4.5.1
+
+El primer lunes hay una sola sesión a las 09:00 hora local Windows, con dos secciones independientes: cierre mensual y seguimiento semanal. El motor SQLite v4 requiere migración explícita `joint-migrate` desde v3 con respaldo. `meeting-joint-prepare` crea una sola sesión y `meeting-joint-view` permite revisar dos actas separadas por sección. Las notas/decisiones usan los IDs de cada sección; `meeting-joint-close` cierra todo junto con confirmación TTY. No programar Windows, notificaciones ni publicar agentes/skills por aprobar propuestas.
