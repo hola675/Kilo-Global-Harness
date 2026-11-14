@@ -1,6 +1,6 @@
 # VX Evolution V4.6.1 — Matriz de competencias y evidencias Kilo
 
-**Versión:** 4.6.1 · **Fecha:** 2026-11-14 · **Alcance:** una sola PC Windows, exclusivamente Kilo Code, HOME global. **Estado:** código candidato; validar CI Windows y después en el equipo real. No activa automatizaciones.
+**Versión:** 4.6.1 · **Fecha:** 2026-11-14 · **Alcance:** una sola PC Windows, exclusivamente Kilo Code, HOME global. **Estado:** CI Windows PASS (20 pruebas y smoke/rollback); validación real en Kilo del usuario pendiente. No activa automatizaciones.
 
 ## Contrato de solo lectura
 
