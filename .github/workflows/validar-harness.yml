@@ -382,10 +382,6 @@ jobs:
           # Sobrescribir HOME SOLO del proceso de prueba, nunca del usuario real.
           $env:USERPROFILE = $fixture
           $env:HOME = $fixture
-          node --input-type=module -e "import os from 'node:os'; console.log('node-home-match=' + (os.homedir() === process.env.USERPROFILE))"
-          $defaultProbe = python -I $core observer-event --event session_compacted --json
-          Write-Host ('python-default-home-exit=' + $LASTEXITCODE)
-          if ($LASTEXITCODE -eq 0) { Write-Host ('python-default-home-event=' + $defaultProbe) }
           $probe = Join-Path $env:RUNNER_TEMP 'vx44-probe.mjs'
           @'
           import { resolve } from "node:path";
