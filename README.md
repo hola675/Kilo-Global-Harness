@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.4
+# VECIDYA · Kilo Code Global Harness V4.5
 
-**Versión del código:** 4.4.0 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.4 implementada en código y sujeta a validación Kilo en el Windows del usuario; el plugin solo se instala con permiso explícito.
+**Versión del código:** 4.5.0 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5 añade reuniones manuales y calendario lógico; su instalación y el runtime Kilo del usuario requieren verificación. Ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -10,6 +10,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
+- **VX Reunión V4.5:** cierre mensual primer lunes del mes siguiente (hora pendiente), semanal lunes 09:00 local Windows. SQLite v3, calendario, agendas, notas y decisiones manuales; sin scheduler, autopromociones ni notificaciones.
 - **VX Observer V4.4:** captura opcional de tres señales Kilo con contadores horarios privados, sin mensajes ni llamadas a modelos.
 - **VX Evolution V4.3:** motor global Kilo-only de inventario, observaciones explícitas, propuestas de versiones y vista previa de reuniones; ninguna aprobación o instalación automática.
 - **Reconciliación V4.2 (solo diagnóstico)**: compara con metadatos seguros las fuentes JSONC y Markdown; no elimina agentes ni cambia sus permisos o pasos.
@@ -120,6 +121,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [Diagnóstico y plan de reconciliación V4.2](docs/RECONCILIACION-AGENTES-V4.2.md)
 - [VX Evolution V4.3: arquitectura, contratos, seguridad y decisiones](docs/VX-EVOLUTION-V4.3.md)
 - [VX Observer V4.4: instalación opt-in, privacidad, migración y pruebas](docs/VX-OBSERVER-V4.4.md)
+- [VX Reunión V4.5: fechas locales, actas y decisiones manuales](docs/VX-REUNION-V4.5.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Política versionada de diseño para reunión semanal (desactivada)](config/vx-reunion-policy.v1.json)
 - [Guía de equipos V4: seguridad, fallos y prueba funcional](docs/OPERACION-EQUIPOS-V4.md)
@@ -195,7 +197,26 @@ Para una base anterior (schema v1), usar explícitamente `python -I $vx observer
 
 No hay instalación de nuevos MCP, cambios en AutoApprove ni servicio residente. El horario de `vx-reunion` del lunes a las 09:00 hora local sigue documentado pero sin programar.
 
+## V4.5 — VX Reunión (manual y global)
+
+La reunión semanal está definida **lunes a las 09:00 hora local Windows** y el cierre mensual para el **primer lunes del mes siguiente**, pero el cierre **no tiene hora aprobada**. Ambos funcionan inicialmente como calendario y actas manuales; el scheduler continúa **deshabilitado**.
+
+```powershell
+$vx = Join-Path $HOME '.config/kilo/harness/scripts/vx_evolution_core.py'
+python -I $vx status --json
+python -I $vx meeting-calendar --cadence weekly --json
+python -I $vx meeting-calendar --cadence monthly --json
+# Migración explícita de SQLite v2 a v3, con backup previo:
+python -I $vx meeting-migrate --json
+python -I $vx meeting-preview --cadence weekly --json
+python -I $vx meeting-preview --cadence monthly --json
+```
+
+Para crear **voluntariamente** un borrador de acta: `meeting-prepare --cadence weekly|monthly --json`. Para consultar usar `meeting-view --id UUID --json`. Las decisiones necesitan una terminal interactiva local y no activan upgrades; ver [guía V4.5](docs/VX-REUNION-V4.5.md).
+
 ## Changelog
+
+- **4.5.0 · 2026-11-14:** calendario local de reuniones, cierre del mes anterior primer lunes siguiente, esquema SQLite v3 con migración backup, agendas de cinco propuestas, notas, decisiones y actas manuales; pruebas Windows. No crea automatizaciones.
 
 - **4.4.0 · 2026-11-14:** plugin Kilo global opcional, captura enumerada de tres señales sin payload, SQLite schema v2 y migración explícita con backup, contadores horarios con límite, opt-in/off reversible, pruebas Windows y documentación de privacidad.
 
