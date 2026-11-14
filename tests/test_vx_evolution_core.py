@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import closing
 import os
 from pathlib import Path
@@ -179,6 +180,19 @@ class TestVXCore(unittest.TestCase):
         self.call("init", ok=False)
         with closing(sqlite3.connect(self.db)) as db:
             self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 99)
+
+    def test_wal_and_concurrent_observations(self):
+        self.initialized()
+        with closing(sqlite3.connect(self.db)) as db:
+            self.assertEqual(db.execute("PRAGMA journal_mode").fetchone()[0], "wal")
+        def record(i):
+            return self.parse("observe", "--type", "success",
+                              "--summary", "Prueba concurrente " + str(i))
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            results = list(pool.map(record, range(8)))
+        self.assertEqual(len({x["id"] for x in results}), 8)
+        self.assertEqual(self.parse("status")["observations"], 8)
+        self.assertEqual(self.parse("integrity")["database"], "ok")
 
     def test_repeated_observations_have_same_fingerprint(self):
         self.initialized()
