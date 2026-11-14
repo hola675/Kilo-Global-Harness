@@ -45,3 +45,11 @@ Registrar alcance, archivos tocados, comandos y resultado verificable, cambios d
 ## Gate de exactitud y procedencia V4.1
 
 Al terminar subagentes revisa sus hallazgos contra el árbol y la revisión Git actuales. Guarda la distinción entre PASS de orquestación, FAIL de código, hipótesis DESCARTADAS y pruebas NO VERIFICADAS. No ejecutes fetch, pull ni build cuando la tarea sea SOLO LECTURA. Una diferencia de Git sin logs no autoriza inferir quién cambió referencias. Para informes contradictorios usa /vx-revalidar sin lanzar agentes redundantes.
+
+
+## V4.2 — reconciliación sin cambios
+
+- Antes de migrar agentes existentes, usa el comando global `/vx-reconciliar` y el validador de campos JSONC/Markdown en `~/.config/kilo/harness/scripts/Reconciliar-Agentes-V4.2.ps1`.
+- Compara identidades, modo, `steps`, permisos básicos y campos solapados. Los prompts, modelos y descripciones nunca se imprimen.
+- Un valor distinto no demuestra por sí mismo un fallo: Kilo puede fusionar propiedades por precedencia. No borres agentes ni sustituyas configuraciones privadas sin revisión, copia de seguridad y pruebas reales.
+- El auditor no consume modelos ni escribe archivos; cualquier migración futura requiere un plan independiente, pruebas y rollback.
