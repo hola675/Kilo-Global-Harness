@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.6.1
+# VECIDYA · Kilo Code Global Harness V4.6.2
 
-**Versión del código:** 4.6.1 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 ya está integrada en main y validada en CI; V4.6.1 incorpora una matriz de evidencias declaradas con CI Windows PASS. Ambas herramientas están pendientes de validación en el Kilo real del usuario; ninguna reunión automática está habilitada.
+**Versión del código:** 4.6.2 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 añade ensayos sintéticos en revisión; ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -11,6 +11,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
 - **PC ÚNICA:** VX Evolution usa exclusivamente este Windows. Sin sincronización multi-PC, infraestructura cloud ni configuración Kilo por repositorio.
+- **VX Ensayos V4.6.2:** cinco escenarios sintéticos para contraste manual antes/después, sin ejecutar agentes, puntuar ni activar roles; evidencia aportada siempre declarada.
 - **VX Matriz V4.6.1:** análisis de agentes y skills con test IDs estables y evidencias opcionales declaradas, sin asignar nivel, score o ascensos; no ejecuta pruebas ni escribe SQLite.
 - **VX Capacidades V4.6.0:** auditoría global de metadatos JSONC/Markdown y skills; diferencias de fuentes y capacidades **declaradas, no probadas**; nunca modifica SQLite, agentes, permisos ni skills.
 - **Roadmap canónico:** [VX Evolution — estado verificado y fases V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md). No confundir código/CI con validación del perfil Windows.
@@ -127,6 +128,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [VX Observer V4.4: instalación opt-in, privacidad, migración y pruebas](docs/VX-OBSERVER-V4.4.md)
 - [VX Capacidades V4.6.0: diagnóstico solo lectura y contrato de evidencias](docs/VX-CAPACIDADES-V4.6.0.md)
 - [VX Matriz V4.6.1: contrato, evidencias y rúbrica propuesta](docs/VX-MATRIZ-COMPETENCIAS-V4.6.1.md)
+- [VX Ensayos V4.6.2: escenarios y comparación declarativa manual](docs/VX-ENSAYOS-COMPETENCIAS-V4.6.2.md)
 - [VX Reunión V4.5: fechas locales, actas y decisiones manuales](docs/VX-REUNION-V4.5.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Roadmap maestro VX Evolution: estado real, brechas y plan V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md)
@@ -223,7 +225,7 @@ Para crear **voluntariamente** un borrador de acta: `meeting-prepare --cadence w
 
 ## Siguiente fase — V4.6: capacitación y auditoría con evidencia
 
-**Estado:** V4.6.0 integrada y probada en CI; V4.6.1 implementada y CI Windows PASS; V4.6.2–V4.6.3 pendientes. La V4.5.1 ya fue validada en el Windows del usuario; todavía falta ejecutar allí la auditoría y matriz de V4.6. No activar scheduler.
+**Estado:** V4.6.0–V4.6.1 validadas mediante CLI local en el Windows del usuario (14-11-2026); V4.6.2 ensayos sintéticos en implementación; V4.6.3 pendiente. La prueba de interacción de comandos dentro de Kilo tras /reload no está acreditada. No activar scheduler.
 
 La capacitación priorizará mejorar skills y especialistas existentes; la auditoría recomendará consolidación, delegación o contratación **solo con evidencia y evaluación independiente**. No introducir agentes, jerarquías, permisos, prompts, MCP ni cambios operativos automáticamente. Los contadores `session_idle` y `session_error` de V4.4 no demuestran calidad.
 
@@ -255,11 +257,26 @@ python -I $matrix --json       # matriz detallada: mantener LOCAL
 
 Cruza declaraciones V4.6.0 con IDs estables para planificar pruebas futuras. Acepta evidencia JSON opcional dentro de HOME, pero **un PASS declarado jamás equivale a competencia verificada**. Niveles y puntuación siguen `NO_ASIGNADO` y `NO_MEDIDO`. Guía: [V4.6.1](docs/VX-MATRIZ-COMPETENCIAS-V4.6.1.md).
 
+## V4.6.2 — Ensayos sintéticos de competencia (sin ejecutar modelos)
+
+Cuando el cambio esté integrado e instalado, utilizar `/vx-ensayos` o:
+
+```powershell
+$trial = Join-Path $HOME '.config/kilo/harness/scripts/vx_competency_trials.py'
+python -I $trial
+python -I $trial --list-cases
+```
+
+La herramienta muestra cinco escenarios de revisión, regresión y calidad de evidencia; no ejecuta agentes y no crea archivos de resultados. Un caso que coincida con su fixture **no demuestra competencia**, ya que las respuestas son declaradas y el banco es público. Ver [V4.6.2](docs/VX-ENSAYOS-COMPETENCIAS-V4.6.2.md).
+
 ## V4.5.1 — Primera reunión conjunta del mes
 
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **4.6.2 · 2026-11-14:** cinco escenarios sintéticos, comparación declarativa antes/después, controles de falsos positivos y privacidad, comando /vx-ensayos y CI Windows. Los resultados no constituyen evaluación real de agentes ni autorizan cambios.
+- **Cierre local 4.6.0–4.6.1 · 2026-11-14:** CLI local ejecutado sin errores: 39 fuentes/28 agentes, 40 skills, 11 solapamientos, 19 límites steps elevados, 76 filas, 15 declaraciones, 0 evidencias. Rama temporal V4.6.1 eliminada y solo main remota; prueba interactiva Kilo pendiente.
 
 - **4.6.1 · 2026-11-14:** matriz Kilo global de solo lectura, enlaces agente/skill→capacidad→test ID→evidencia declarada, 20 pruebas unitarias, instalador reversible y CI Windows; sin evaluación ni cambios operativos.
 
