@@ -353,8 +353,11 @@ jobs:
           if ($state.observer_mode -ne 'off' -or $state.flag_present) {
             throw 'Captura habilitada sin permiso explícito.'
           }
-          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
-            Sort-Object Name -Descending | Select-Object -First 1
+          $backups = @(Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory)
+          if ($backups.Count -ne 2) {
+            throw 'Dos aplicaciones consecutivas deben producir respaldos diferentes.'
+          }
+          $backup = $backups | Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           if (Test-Path $plugin) { throw 'Rollback no eliminó plugin opt-in.' }
           if (!(Test-Path $db)) { throw 'Rollback eliminó la BD privada.' }
