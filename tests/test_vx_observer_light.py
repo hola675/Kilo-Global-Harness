@@ -42,6 +42,7 @@ class TestObserverLight(unittest.TestCase):
         self.assertFalse(self.flag.exists())
         status = self.call("observer-status")
         self.assertFalse(status["migration_required"])
+        self.assertEqual(status["schema_version"], 3)
         self.assertEqual(status["observer_mode"], "off")
         self.assertFalse(status["plugin_file_present"])
         self.assertEqual(status["kilo_runtime_loaded"], "NO_VERIFICADO")
