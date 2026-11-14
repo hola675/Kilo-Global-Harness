@@ -53,7 +53,7 @@ pwsh -NoProfile -File $script -Modo Aplicar -PausarTaskObserver
 pwsh -NoProfile -File $script -Modo Verificar
 ```
 
-Si ya pausaste `task-observer`, la opción no realiza ningún nuevo movimiento. El respaldo se guarda en `~/.config/kilo-harness-backups/AAAAmmdd-HHMMSS` y **nunca debe subirse a GitHub**.
+Si ya pausaste `task-observer`, la opción no realiza ningún nuevo movimiento. El respaldo único por ejecución (incluye milisegundos y sufijo aleatorio) se guarda en `~/.config/kilo-harness-backups/AAAAmmdd-HHMMSS-fff-sufijo` y **nunca debe subirse a GitHub**.
 
 Finalmente, en Kilo ejecuta `/reload`, `/vx-harness-estado` y `/vx-equipo`. Antes de delegaciones automáticas, revisa la [guía operativa V4](docs/OPERACION-EQUIPOS-V4.md).
 
@@ -62,7 +62,7 @@ Finalmente, en Kilo ejecuta `/reload`, `/vx-harness-estado` y `/vx-equipo`. Ante
 Utiliza la ruta de respaldo que imprimió el instalador:
 
 ```powershell
-pwsh -NoProfile -File $script -Modo Restaurar -BackupFolder 'C:\Users\Admin\.config\kilo-harness-backups\AAAAMMDD-HHMMSS'
+pwsh -NoProfile -File $script -Modo Restaurar -BackupFolder 'C:\Users\Admin\.config\kilo-harness-backups\AAAAMMDD-HHMMSS-fff-sufijo'
 ```
 
 Por defecto, si un archivo administrado fue modificado **después de aplicar**, la restauración lo omite para evitar perder cambios. `-ForzarRestauracion` únicamente tras revisar esos cambios.
