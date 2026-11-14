@@ -199,7 +199,7 @@ No hay instalación de nuevos MCP, cambios en AutoApprove ni servicio residente.
 
 ## V4.5 — VX Reunión (manual y global)
 
-La reunión semanal está definida **lunes a las 09:00 hora local Windows** y el cierre mensual para el **primer lunes del mes siguiente**, pero el cierre **no tiene hora aprobada**. Ambos funcionan inicialmente como calendario y actas manuales; el scheduler continúa **deshabilitado**.
+La reunión semanal está definida **lunes a las 09:00 hora local Windows** y el cierre mensual para el **primer lunes del mes siguiente**, pero el cierre se integra con la semanal en **una única sesión el primer lunes a las 09:00**, con dos secciones independientes. El scheduler continúa **deshabilitado**.
 
 ```powershell
 $vx = Join-Path $HOME '.config/kilo/harness/scripts/vx_evolution_core.py'
