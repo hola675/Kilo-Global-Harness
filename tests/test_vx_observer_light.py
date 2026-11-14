@@ -43,6 +43,8 @@ class TestObserverLight(unittest.TestCase):
         status = self.call("observer-status")
         self.assertFalse(status["migration_required"])
         self.assertEqual(status["observer_mode"], "off")
+        self.assertFalse(status["plugin_file_present"])
+        self.assertEqual(status["kilo_runtime_loaded"], "NO_VERIFICADO")
         event = self.call("observer-event", "--event", "session_idle")
         self.assertFalse(event["recorded"])
         self.assertEqual(event["reason"], "observer_off")
