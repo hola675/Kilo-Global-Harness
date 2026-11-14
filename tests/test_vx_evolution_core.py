@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from contextlib import closing
 import os
 from pathlib import Path
 import sqlite3
@@ -80,7 +81,7 @@ class TestVXCore(unittest.TestCase):
         self.assertFalse(report["installed_components_modified"])
         self.assertNotIn("CI_CANARY_SECRET_DO_NOT_COPY",
                          json.dumps(report))
-        with sqlite3.connect(self.db) as db:
+        with closing(sqlite3.connect(self.db)) as db:
             rows = db.execute("SELECT kind,name,source,relative_path "
                               "FROM inventory WHERE present=1").fetchall()
             self.assertEqual(len(rows), 6)
@@ -114,7 +115,7 @@ class TestVXCore(unittest.TestCase):
         self.assertFalse(w["meeting_created"])
         self.assertFalse(w["scheduled"])
         self.assertFalse(w["decisions_enabled"])
-        with sqlite3.connect(self.db) as db:
+        with closing(sqlite3.connect(self.db)) as db:
             self.assertEqual(db.execute("SELECT COUNT(*) FROM decisions").fetchone()[0], 0)
             self.assertEqual(db.execute("SELECT COUNT(*) FROM releases").fetchone()[0], 0)
             self.assertEqual(db.execute("SELECT COUNT(*) FROM meetings").fetchone()[0], 0)
@@ -149,7 +150,7 @@ class TestVXCore(unittest.TestCase):
     def test_malformed_jsonc_does_not_half_sync(self):
         self.initialized()
         cfg = self.home / ".config" / "kilo"
-        cfg.mkdir(parents=True)
+        cfg.mkdir(parents=True, exist_ok=True)
         (cfg / "kilo.jsonc").write_text(
             '{"agent": {"one":{"steps":12}}}', encoding="utf-8")
         self.parse("inventory-sync")
@@ -166,17 +167,17 @@ class TestVXCore(unittest.TestCase):
         self.assertFalse(result["restore_automatic"])
         file = self.home / ".config" / "kilo" / "vx-evolution" / "backups" / result["filename"]
         self.assertTrue(file.is_file())
-        with sqlite3.connect(file) as db:
+        with closing(sqlite3.connect(file)) as db:
             self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 1)
         self.assertTrue(self.parse("integrity")["foreign_keys"])
 
     def test_schema_future_version_rejected(self):
         self.initialized()
-        with sqlite3.connect(self.db) as db:
+        with closing(sqlite3.connect(self.db)) as db:
             db.execute("PRAGMA user_version=99")
         self.call("status", ok=False)
         self.call("init", ok=False)
-        with sqlite3.connect(self.db) as db:
+        with closing(sqlite3.connect(self.db)) as db:
             self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 99)
 
     def test_repeated_observations_have_same_fingerprint(self):
