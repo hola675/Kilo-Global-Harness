@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.5.1
+# VECIDYA · Kilo Code Global Harness V4.6.0
 
-**Versión del código:** 4.5.1 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **migración SQLite v4 y calendario en el Windows del usuario pendientes de verificar**. V4.6 es el siguiente hito de implementación; ninguna reunión automática está habilitada.
+**Versión del código:** 4.6.0 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 incorpora auditoría global de solo lectura; falta validar la nueva herramienta localmente; ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -10,6 +10,8 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
+- **PC ÚNICA:** VX Evolution usa exclusivamente este Windows. Sin sincronización multi-PC, infraestructura cloud ni configuración Kilo por repositorio.
+- **VX Capacidades V4.6.0:** auditoría global de metadatos JSONC/Markdown y skills; diferencias de fuentes y capacidades **declaradas, no probadas**; nunca modifica SQLite, agentes, permisos ni skills.
 - **Roadmap canónico:** [VX Evolution — estado verificado y fases V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md). No confundir código/CI con validación del perfil Windows.
 - **VX Reunión V4.5:** cierre mensual y semanal en **una sesión conjunta el primer lunes a las 09:00 hora local Windows**, con dos secciones; resto de lunes, solo semanal. SQLite v4, calendario, agendas, notas y decisiones manuales; sin scheduler, autopromociones ni notificaciones.
 - **VX Observer V4.4:** captura opcional de tres señales Kilo con contadores horarios privados, sin mensajes ni llamadas a modelos.
@@ -122,6 +124,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [Diagnóstico y plan de reconciliación V4.2](docs/RECONCILIACION-AGENTES-V4.2.md)
 - [VX Evolution V4.3: arquitectura, contratos, seguridad y decisiones](docs/VX-EVOLUTION-V4.3.md)
 - [VX Observer V4.4: instalación opt-in, privacidad, migración y pruebas](docs/VX-OBSERVER-V4.4.md)
+- [VX Capacidades V4.6.0: diagnóstico solo lectura y contrato de evidencias](docs/VX-CAPACIDADES-V4.6.0.md)
 - [VX Reunión V4.5: fechas locales, actas y decisiones manuales](docs/VX-REUNION-V4.5.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Roadmap maestro VX Evolution: estado real, brechas y plan V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md)
@@ -224,11 +227,27 @@ La capacitación priorizará mejorar skills y especialistas existentes; la audit
 
 El roadmap, las puertas de validación, los criterios de aceptación, las fases 4.6.0–4.6.3 y las decisiones pendientes se mantienen en [`docs/VX-EVOLUTION-ROADMAP.md`](docs/VX-EVOLUTION-ROADMAP.md). El cierre mensual sigue siendo una **única sesión el primer lunes a las 09:00, con dos secciones**. Programador y notificaciones permanecen **OFF**.
 
+## V4.6.0 — Diagnóstico global Kilo de capacidades (solo lectura)
+
+La V4.5.1 ya está validada localmente con SQLite v4, integridad OK, Observer `light` y calendario conjunto del 7 de diciembre de 2026 a las 09:00. Se confirmó que esta organización VX funcionará exclusivamente en **un PC Windows**, sin sincronización.
+
+Tras instalar la nueva versión del harness, usar `/vx-capacidades` en Kilo o consultar desde PowerShell:
+
+```powershell
+$audit = Join-Path $HOME '.config/kilo/harness/scripts/vx_capability_audit.py'
+python -I $audit                 # resumen por defecto, sin nombres individuales
+python -I $audit --json          # informe estructurado, revisión LOCAL
+```
+
+Esta auditoría recorre únicamente fuentes Kilo **globales** y no abre SQLite ni crea propuestas. Compara fuentes JSONC/Markdown, límites `steps`, permisos simples y skills repetidas por nombre; cruza las **declaraciones** del router. Desempeño de agente y precedencia efectiva = **NO_MEDIDO/NO_VERIFICADO**. Ver [guía V4.6.0](docs/VX-CAPACIDADES-V4.6.0.md) y [roadmap](docs/VX-EVOLUTION-ROADMAP.md). V4.6.1–4.6.3 quedan pendientes de validación y diseño; no se crearán jefes ni agentes automáticamente.
+
 ## V4.5.1 — Primera reunión conjunta del mes
 
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **4.6.0 · 2026-11-14:** auditoría global de Kilo solo lectura, pruebas de privacidad y regresión, revisión declarativa de agentes/skills, comando `/vx-capacidades`, instalación reversible. Sin cambios en SQLite, horarios, plugins o permisos.
 
 - **2026-11-14 (documentación/roadmap, sin cambios de runtime):** evaluación del cierre V4.5.1 y plan V4.6 con subfases de capacitación, auditoría, pruebas y controles; bloqueo de scheduler conservado.
 
