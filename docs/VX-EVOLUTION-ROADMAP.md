@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición:** 2026-11-14 · **Estado:** roadmap documentado, ejecución V4.6 **PENDIENTE** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
+**Edición:** 2026-11-14 · **Estado:** V4.6.0 en implementación (auditoría de solo lectura); V4.6.1–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
 
 ## Fuente de verdad y definición de estados
 
@@ -22,26 +22,21 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | V4.2 | Reconciliación de agentes JSONC/Markdown | Integrado | Auditor inicial suministrado; consolidación **pendiente** | No fusiona ni toca permisos |
 | V4.3 | VX Evolution Core global, inventario, observaciones y propuestas manuales | Integrado | Base del usuario creada y utilizada | SQLite de operación privada en HOME |
 | V4.4 | VX Observer Light opt-in, contadores horarios sin payload | Integrado | **Validado**: señales `session_idle=1` y `session_error=1`, integridad OK (muestra puntual) | Esas señales no miden calidad |
-| V4.5 | Calendario, actas y decisiones locales manuales | Integrado | **Pendiente** de verificación del esquema v3 en su PC | No hay scheduler |
-| V4.5.1 | **Primera reunión del mes conjunta**, secciones mensual/semanal a las 09:00 | **Integrado y CI Windows PASS** | **Pendiente**: instalación, SQLite v4 y calendario real de Windows | Mantener observador activo y datos |
-| **V4.6** | **Capacitación y auditoría de agentes/skills**, propuestas con evidencias y evaluación | **Siguiente fase (sin implementar aún)** | No aplica | Nunca promocionar ni alterar activos automáticamente |
+| V4.5 | Calendario, actas y decisiones locales manuales | Integrado | **Validado junto con V4.5.1 mediante SQLite v4** | No hay scheduler |
+| V4.5.1 | **Primera reunión del mes conjunta**, secciones mensual/semanal a las 09:00 | **Integrado y CI Windows PASS** | **Validado**: instalación, SQLite v4, integridad y calendario real 2026-12-07, 09:00 | Observer `light`, scheduler OFF |
+| **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **En implementación; CI en curso** | Pendiente de ejecución local de la nueva herramienta | Sin cambios de permisos, SQLite ni roles |
+| V4.6.1–V4.6.3 | Matriz evaluable, capacitación y auditoría de equipos | Diseñadas, **PENDIENTES** | No aplica | No crear nuevos agentes, skills o jerarquías automáticamente |
 | V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseñado | No aplica | Revisión independiente y autorización explícita |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
 | V5.0 | Equipos especializados adaptativos, ascensos y delegación medidos | Conceptual | No aplica | Condicionado a evidencia y controles anteriores |
 
-## Puerta de cierre de V4.5.1 (P0 antes de cambios persistentes V4.6)
+## Validación real V4.5.1 cerrada y alcance de PC única
 
-La V4.4 fue probada realmente por el usuario con SQLite v2, plugin presente y modo `light`. **No hay aún constancia de su migración a SQLite v3/v4.** Ejecutar en el Windows del usuario una vez que haya sincronizado `main` e instalado el código actualizado con respaldo normal; no se solicita ejecutar el instalador ni las migraciones desde un agente autónomo:
+**Confirmado por el usuario el 14 de noviembre de 2026:** instalador V4.5.1 aplicado y verificado; SQLite migrado con respaldo a **schema v4**; `integrity.database=ok`, `foreign_keys=true`, `joint_sessions_supported=true`, Observer `light`, `scheduled_meetings=false`; calendario conjunto del **lunes 7 de diciembre de 2026 a las 09:00** con **una sesión y dos secciones**. El inventario persistido informó **79 entradas**. Las ramas temporales anteriores se eliminaron y el repositorio quedó con `main`.
 
-```powershell
-$vx = Join-Path $HOME '.config/kilo/harness/scripts/vx_evolution_core.py'
-python -I $vx status --json
-python -I $vx integrity --json
-python -I $vx observer-status --json
-python -I $vx meeting-joint-calendar --on-date 2026-11-14 --json
-```
+**VX-D08 CONFIRMADA:** una sola instalación en este PC Windows. No crear sincronización multi-PC, servicio de nube, DB compartida ni configuración por proyecto. La ruta operativa sigue bajo el HOME de Kilo. No es necesario migrar de nuevo la base de datos para V4.6.0.
 
-Si `schema_version=2`, migrar **solo por decisión explícita** con `meeting-migrate` (v2→v3, backup) y luego `joint-migrate` (v3→v4, backup); si es v3, solo `joint-migrate`; si es v4, no migrar. **No ejecutar `meeting-joint-prepare` como smoke test sobre HOME real**, pues crea un acta. Verificar que el calendario devuelve **2026-12-07, 09:00, una sesión y dos secciones**; que `scheduled_meetings=false` y el observador siga en su modo anterior. No hay autorización para activar Windows Task Scheduler ni notificaciones.
+La función nueva V4.6.0 **no escribe SQLite**, no produce evaluaciones de calidad ni cambia archivos de agentes o skills. La prueba de compatibilidad del CLI en el Windows real del usuario se solicitará después de superar CI.
 
 ## V4.6: objetivo y principio de mínima complejidad
 
@@ -54,6 +49,8 @@ Convertir `vx-capacitacion` y `vx-auditoria-equipo` de comandos de análisis/pro
 - `vx-reunion`: recoge decisiones explícitas del usuario en la reunión semanal/mensual; una aprobación funcional nunca es despliegue automático.
 - `vx-observer`: proporciona **solo señales operativas agregadas**; un evento `session_error` no es prueba de incapacidad.
 - `vx-equipo`: sigue operando tareas, con **un escritor máximo** y hasta tres lectores; no reestructura roles en mitad de un desarrollo.
+
+Referencia de implementación de línea base: [VX Capacidades V4.6.0](VX-CAPACIDADES-V4.6.0.md).
 
 ### Entregables propuestos
 
@@ -85,7 +82,7 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 | Ref | Decisión/estado | Efecto |
 | --- | --- | --- |
 | VX-D07 | Retención de observaciones y backups **pendiente** | No añadir limpieza automática. Propuesta a decidir: 90 días horario, agregados más largos. |
-| VX-D08 | ¿Solo esta PC Windows o varios equipos Kilo? **Pendiente** | Diseñar para instancia local; no inventar sincronización ni compartir SQLite por red. |
+| VX-D08 | **CONFIRMADA: solo esta PC Windows** | Sin sincronización multi-PC, nube ni SQLite remoto. |
 | VX-D10 | Terminal TTY permite confirmación deliberada pero **no valida identidad** | Para publicación V4.7 hace falta aprobación más robusta. |
 | VX-D11 | Criterios de ascenso y contratación **pendientes** | En V4.6 usar rúbrica propuesta y validación humana, sin atribuir rangos reales aún. |
 | VX-D12 | Duplicidades de agentes y límites steps históricos **pendientes de auditoría efectiva** | Usar reconciliador V4.2 antes de editar fuentes. |
@@ -93,9 +90,9 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 ## Próximo paso operativo
 
-**P0** — Verificar la instalación y SQLite v4 del usuario de V4.5.1, conservando V4.4 light sin sobrescribir su historial.
+**P0 CERRADO** — Instalación V4.5.1 y SQLite v4 verificadas en el Windows del usuario; Observer light y datos conservados.
 
-**P1** — Abrir una única rama `work/v4-6-...` y completar V4.6.0: inventario global **solo lectura** y matriz inicial de capacidades. No hacer migración adicional de SQLite hasta demostrar que hace falta.
+**P1 EN CURSO** — Integrar V4.6.0: auditoría Kilo global **solo lectura** y mapa de capacidades **declaradas**. No hacer migración adicional de SQLite hasta demostrar que hace falta.
 
 **P2** — Probar evaluaciones y propuestas de capacitación/auditoría con fixtures de Kilo, registrar riesgos y presentar a `vx-reunion` para aprobación, nunca auto-publicar.
 

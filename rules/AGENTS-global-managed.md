@@ -1,7 +1,9 @@
-# VECIDYA GLOBAL HARNESS V4.5 — preferencia vigente
+# VECIDYA GLOBAL HARNESS V4.6.0 — preferencia vigente
 
 Esta seccion global sustituye indicaciones anteriores de este mismo AGENTS.md si entran en conflicto con las preferencias siguientes. Idioma: espanol; nombres de codigo segun el repositorio.
 
+- VX PC UNICA: usuario confirmó solo este equipo Windows; no introducir sincronización de bases, servidores de VX, repositorios por proyecto o perfiles compartidos.
+- VX CAPACIDADES V4.6.0: `/vx-capacidades` lee fuentes globales JSONC/Markdown y SKILL.md, registra únicamente metadatos declarados, sin escribir SQLite ni cambiar permisos; `NO_VERIFICADO` significa precedencia desconocida y `NO_MEDIDO` desempeño sin evidencia. No crear agentes/jerarquías por observar un duplicado.
 - GLOBAL ONLY: agente, skill, MCP, workflow, reglas de Kilo y ajustes de Kilo se instalan SOLO bajo HOME. NO crear carpetas `.kilo`, `.agents`, `.kilocode`, `.claude` ni ficheros `AGENTS.md` o `kilo.jsonc` dentro de ningun proyecto para configurar Kilo. Se permite editar codigo, pruebas y documentacion del proyecto cuando la tarea lo exige.
 - AUTONOMIA: el usuario desea conservar AutoApprove. Ejecutar autonomamente lecturas, ediciones ordinarias, tests, commits y flujo de ramas Git dentro de repositorios autorizados y tareas solicitadas. NO interpretar AutoApprove como autorizacion para exponer secretos, borrar datos ajenos, ejecutar comandos destructivos, desplegar a produccion o cambiar infraestructura.
 - GIT: `main` es la unica rama PERMANENTE deseada. Para tareas no triviales, partir de `main` actualizada, crear UNA rama temporal `work/<tema>`, implementar y verificar; integrar mediante PR o merge permitido por las protecciones del repo; comprobar resultado de `main` antes de borrar SOLO la rama temporal propia (local/remota) si es seguro. No borrar otras ramas, no hacer force push, no usar `reset --hard` ni rebase destructivo de ramas compartidas. Si GitHub impide merge/borrado, informar en lugar de eludir politicas.

@@ -567,3 +567,47 @@ jobs:
             throw 'Roadmap no puede activar automatizaciones'
           }
           Write-Host 'VX ROADMAP V4.6: DOCUMENTADO + CALENDARIO CONSERVADO + SCHEDULER OFF: PASS'
+
+      - name: V4.6.0 - auditoria global Kilo sin efectos en Windows
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_capability_audit_v460.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Pruebas de auditoria V4.6.0 fallaron' }
+          python -m compileall -q scripts/vx_capability_audit.py tests/test_vx_capability_audit_v460.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis Python' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx460-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          $audit = Join-Path $fixture '.config/kilo/harness/scripts/vx_capability_audit.py'
+          $core = Join-Path $fixture '.config/kilo/harness/scripts/vx_evolution_core.py'
+          $registry = Join-Path $fixture '.config/kilo/harness/vx-agent-registry-v4.json'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          $command = Join-Path $fixture '.config/kilo/commands/vx-capacidades.md'
+          if (!(Test-Path $audit) -or !(Test-Path $core) -or
+              !(Test-Path $registry) -or !(Test-Path $command)) {
+            throw 'Assets V4.6.0 ausentes en HOME de prueba'
+          }
+          if (Test-Path $db) { throw 'Instalador no debe iniciar SQLite' }
+          $before = (Get-FileHash $registry -Algorithm SHA256).Hash
+          $output = python -I $audit --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Auditoria Kilo global fallo' }
+          if ($output.scope -ne 'HOME_GLOBAL_SOLO_LECTURA_PC_UNICA' -or
+              $output.writes -ne 0 -or $output.database_access -or
+              $output.effective_precedence_verified -or
+              $output.models_called -or $output.mcp_called -or
+              $output.scheduler_enabled_by_audit -or
+              $output.counts.agent_definitions -lt 7 -or
+              $output.counts.router_profiles -ne 9) {
+            throw 'Contrato de auditoria global de solo lectura incumplido'
+          }
+          if ((Get-FileHash $registry -Algorithm SHA256).Hash -ne $before -or
+              (Test-Path $db)) {
+            throw 'Auditoria modifico el estado global'
+          }
+          & $installer -Modo Verificar -RaizUsuario $fixture
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if (Test-Path $audit) { throw 'Rollback no elimino auditor V4.6.0' }
+          Write-Host 'VX V4.6.0: AUDITORIA SIN SECRETOS, SOLO LECTURA, GLOBAL Y ROLLBACK PASS'

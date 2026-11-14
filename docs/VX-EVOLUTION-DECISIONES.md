@@ -11,7 +11,7 @@
 | VX-D05 | Día/hora y zona horaria de reunión semanal | **CONFIRMADA, NO PROGRAMADA** | Lunes a las 09:00, horario local del equipo Windows (`system_local`). No programar ni notificar hasta recibir nueva aprobación expresa posterior a V4.5.1 y prueba local. Política de diseño: `config/vx-reunion-policy.v1.json` |
 | VX-D06 | Cierre mensual y coincidencia con semanal | **CONFIRMADA, NO PROGRAMADA** | Primer lunes del mes siguiente a las 09:00 hora local Windows; **una sola sesión** con sección mensual y sección semanal, en ese orden. Scheduler apagado hasta nueva autorización expresa |
 | VX-D07 | Política de retención y borrado | **PENDIENTE** | Propuesta: observaciones detalladas 90 días, agregados y decisiones con histórico versionado; no borrar nada hasta definir |
-| VX-D08 | Única PC Windows o varias instalaciones Kilo | **PENDIENTE** | Una sola PC permite SQLite local sin sincronización; multi-PC requiere otro diseño |
+| VX-D08 | Única PC Windows o varias instalaciones Kilo | **CONFIRMADA: SOLO ESTE PC WINDOWS** | Mantener SQLite y las reglas Kilo únicamente en el perfil HOME local; **sin sincronización, base remota ni clientes múltiples** |
 | VX-D09 | Captura ligera de eventos Kilo y nivel de detalle | **IMPLEMENTADA PARCIALMENTE, OPT-IN** | V4.4: plugin global opcional, apagado por defecto; solo contadores horarios de idle/error/compacted sin payload. La captura real de resultados, correcciones y calidad de tareas sigue pendiente y requerirá revisión de privacidad |
 | VX-D10 | Identidad y mecanismo para registrar aprobación | **IMPLEMENTACIÓN PARCIAL, IDENTIDAD NO VERIFICADA** | V4.5: decisiones manuales desde terminal interactiva con confirmación efímera y registro en SQLite; no equivale a autenticación fuerte ni permiso para publicar agentes. V4.7 necesita comprobación adicional |
 | VX-D11 | Condiciones para ascenso, contratación, fusión y jubilación de agentes | **PENDIENTE** | Métricas reales, auditor independiente, evaluación negativa y rollback |
@@ -21,7 +21,7 @@
 
 - Reunión VX global: **cada lunes a las 09:00**.
 - Zona horaria: **la configurada en Windows en el equipo al momento de ejecutar**; no fijar Europe/Madrid, zona geográfica o desplazamiento UTC, y respetar el cambio estacional que aplique Windows.
-- **V4.5.1 implementada en código y CI, prueba local pendiente**: calendario de hora local Windows y sesiones manuales; **no** se crean tareas programadas, avisos ni reuniones automáticas. V4.3 tenía calendario por periodos UTC, pero el planificador vigente ya utiliza fechas locales.
+- **V4.5.1 implementada en código, CI y verificada localmente el 2026-11-14**: SQLite v4, integridad OK, evento Observer `light` conservado, calendario conjunto 2026-12-07 09:00, una sesión con dos secciones; **no** se crean tareas programadas, avisos ni reuniones automáticas. V4.3 tenía calendario por periodos UTC, pero el planificador vigente ya utiliza fechas locales.
 - **Cierre mensual VX-D06:** primer lunes del mes siguiente a las 09:00, mes anterior completo, primera sección de una sesión conjunta. No programar nada.
 - **Coincidencia en primer lunes:** confirmada **una única sesión con dos secciones independientes** (mensual y semanal). No duplicar convocatoria ni aprobar por silencio.
 
@@ -75,4 +75,8 @@ Se confirma lunes a las **09:00 hora local de Windows**, primer lunes del mes si
 
 **Decisión de ejecución pendiente:** próxima fase técnica es **V4.6.0 — línea base de agentes y skills globales Kilo, solo lectura**; después V4.6.1 matriz de capacidades, V4.6.2 capacitación evaluable, V4.6.3 auditoría de organización. Ninguna propuesta se materializará en agentes, permisos, jefaturas, skills activas, MCP o versiones. Se exige un evaluador independiente y prueba reproducible antes de proponer ascensos. Fuente vigente: [Roadmap VX Evolution](VX-EVOLUTION-ROADMAP.md).
 
-**Puerta de validación pendiente:** comprobar instalación de V4.5.1 y SQLite esquema v4 en el Windows del usuario; la última ejecución real suministrada verificó V4.4 con SQLite v2 y señales del plugin, no demuestra migración posterior. Mantener programación semanal y mensual desactivada.
+**Puerta de validación V4.5.1 completada con evidencia local:** el usuario instaló y verificó SQLite schema v4, integridad OK, `joint_sessions_supported=true`, Observer `light` y calendario conjunto (2026-12-07, 09:00, 1 sesión, 2 secciones). El registro global indicó 79 fuentes inventariadas. Mantener programación semanal y mensual desactivada.
+
+## VX-D08 confirmada y avance V4.6.0
+
+El usuario confirmó que VX Evolution se usará **únicamente en este PC Windows**. Quedan fuera de alcance las bases compartidas, sincronización, cloud y despliegues multi-PC. V4.6.0 incorpora una auditoría global **de solo lectura** que identifica agentes/skills declarados y diferencias de fuentes, sin escribir SQLite, modificar permisos ni calificar capacidades no evaluadas. Pruebas locales de esta nueva herramienta pendientes; guía [VX Capacidades V4.6.0](VX-CAPACIDADES-V4.6.0.md).
