@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VX Evolution Core 4.5: registro global SOLO para Kilo Code.
+"""VX Evolution Core 4.5.1: registro global SOLO para Kilo Code.
 
 Sin dependencias externas; no invoca modelos, hooks, MCP, comandos Git ni otros
 harnesses. No lee proyectos: solo consume rutas globales de Kilo y metadatos
@@ -21,11 +21,11 @@ import sys
 import uuid
 from datetime import date, datetime, time as dtime, timedelta, timezone
 
-SCHEMA_VERSION = 3
-SUPPORTED_SCHEMAS = (1, 2, 3)
+SCHEMA_VERSION = 4
+SUPPORTED_SCHEMAS = (1, 2, 3, 4)
 MEETING_WEEKDAY = 0  # Lunes; politica confirmada.
 MEETING_WEEKLY_TIME = '09:00'
-MEETING_MONTHLY_TIME = None  # Aun pendiente de decision humana.
+MEETING_MONTHLY_TIME = '09:00'  # Sesion conjunta, primer lunes del mes.
 OBSERVER_SIGNALS = ('session_idle', 'session_error', 'session_compacted')
 OBSERVER_HOURLY_CAP = 300
 OBSERVER_FLAG = 'observer-light.flag'
@@ -213,6 +213,22 @@ CREATE TABLE IF NOT EXISTS meeting_notes (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS ix_meeting_decision_unique
 ON decisions(meeting_id,proposal_id);
+-- V4.5.1: una sesion presencial/logica, dos secciones independientes.
+CREATE TABLE IF NOT EXISTS meeting_joint_sessions (
+    id TEXT PRIMARY KEY, local_date TEXT NOT NULL, local_time TEXT NOT NULL,
+    weekly_period TEXT NOT NULL, monthly_period TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('in_review','closed')),
+    created_utc TEXT NOT NULL,
+    UNIQUE(monthly_period), UNIQUE(weekly_period)
+);
+CREATE TABLE IF NOT EXISTS meeting_joint_sections (
+    session_id TEXT NOT NULL REFERENCES meeting_joint_sessions(id),
+    meeting_id TEXT NOT NULL UNIQUE REFERENCES meetings(id),
+    section_kind TEXT NOT NULL CHECK(section_kind IN ('monthly','weekly')),
+    section_order INTEGER NOT NULL CHECK(section_order IN (1,2)),
+    PRIMARY KEY(session_id,section_kind),
+    UNIQUE(session_id,section_order)
+);
 """
 
 def init(home):
@@ -457,7 +473,8 @@ def status(db):
             "observer_mode": db.execute("SELECT value FROM settings WHERE "
                 "key='observer_mode'").fetchone()[0],
             "autonomous_promotions": False, "scheduled_meetings": False,
-            "manual_meetings_supported": db.execute("PRAGMA user_version").fetchone()[0] >= 3}
+            "manual_meetings_supported": db.execute("PRAGMA user_version").fetchone()[0] >= 3,
+            "joint_sessions_supported": db.execute("PRAGMA user_version").fetchone()[0] >= 4}
 
 
 def require_observer_v2(db):
@@ -588,8 +605,8 @@ def require_meetings_v3(db):
 def migrate_meetings(db, home):
     """Migracion explicita y monotona de v2 a v3. V1 requiere observer-migrate."""
     version = db.execute("PRAGMA user_version").fetchone()[0]
-    if version == 3:
-        return {"schema_version": 3, "migrated": False, "backup_created": False,
+    if version >= 3:
+        return {"schema_version": version, "migrated": False, "backup_created": False,
                 "scheduler_enabled": False}
     if version != 2:
         raise VXError("Ejecute observer-migrate de v1 a v2 antes de meeting-migrate")
@@ -611,6 +628,41 @@ def migrate_meetings(db, home):
         db.execute("PRAGMA user_version=3")
         append_log(db, "meeting_migrate", "core", "v3")
     return {"schema_version": 3, "migrated": True, "backup_created": True,
+            "backup_filename": snapshot["filename"], "scheduler_enabled": False}
+
+
+def require_joint_v4(db):
+    if db.execute("PRAGMA user_version").fetchone()[0] < 4:
+        raise VXError("Requiere joint-migrate con respaldo antes de reuniones conjuntas")
+
+
+def migrate_joint(db, home):
+    """Migracion explicita de esquema 3 a 4; no convierte actas ya existentes."""
+    version = db.execute("PRAGMA user_version").fetchone()[0]
+    if version == 4:
+        return {"schema_version": 4, "migrated": False, "backup_created": False,
+                "scheduler_enabled": False}
+    if version != 3:
+        raise VXError("Ejecute meeting-migrate hasta v3 antes de joint-migrate")
+    snapshot = backup(db, home)
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        db.execute("""CREATE TABLE meeting_joint_sessions (
+            id TEXT PRIMARY KEY, local_date TEXT NOT NULL, local_time TEXT NOT NULL,
+            weekly_period TEXT NOT NULL, monthly_period TEXT NOT NULL,
+            status TEXT NOT NULL CHECK(status IN ('in_review','closed')),
+            created_utc TEXT NOT NULL,
+            UNIQUE(monthly_period), UNIQUE(weekly_period))""")
+        db.execute("""CREATE TABLE meeting_joint_sections (
+            session_id TEXT NOT NULL REFERENCES meeting_joint_sessions(id),
+            meeting_id TEXT NOT NULL UNIQUE REFERENCES meetings(id),
+            section_kind TEXT NOT NULL CHECK(section_kind IN ('monthly','weekly')),
+            section_order INTEGER NOT NULL CHECK(section_order IN (1,2)),
+            PRIMARY KEY(session_id,section_kind),
+            UNIQUE(session_id,section_order))""")
+        db.execute("PRAGMA user_version=4")
+        append_log(db, "joint_migrate", "core", "v4")
+    return {"schema_version": 4, "migrated": True, "backup_created": True,
             "backup_filename": snapshot["filename"], "scheduler_enabled": False}
 
 
@@ -673,6 +725,7 @@ def meeting_calendar(cadence, on_date=None):
         local_time = MEETING_MONTHLY_TIME
     else:
         raise VXError("Cadencia desconocida")
+    is_joint = next_day == first_monday(next_day.year, next_day.month)
     return {
         "cadence": cadence, "period": key,
         "meeting_local_date": next_day.isoformat(),
@@ -681,8 +734,10 @@ def meeting_calendar(cadence, on_date=None):
         "review_start_local": review_start.isoformat(),
         "review_end_exclusive_local": review_end.isoformat(),
         "scheduler_enabled": False, "notifications_enabled": False,
-        "monthly_hour_confirmed": cadence != "monthly",
-        "collision_policy": "pending_governance",
+        "monthly_hour_confirmed": True,
+        "session_mode": "joint" if is_joint else "weekly",
+        "section_order": ["monthly", "weekly"] if is_joint else ["weekly"],
+        "collision_policy": "joint_first_monday_at_09_local",
     }
 
 
@@ -723,6 +778,8 @@ def prepare_meeting(db, cadence, on_date=None):
     """Crea borrador por peticion explicita; congela top 5 propuestas actuales."""
     require_meetings_v3(db)
     schedule = meeting_calendar(cadence, on_date)
+    if db.execute("PRAGMA user_version").fetchone()[0] >= 4 and schedule["session_mode"] == "joint":
+        raise VXError("Primer lunes requiere meeting-joint-prepare, no dos reuniones separadas")
     with db:
         db.execute("BEGIN IMMEDIATE")
         existing = db.execute(
@@ -835,6 +892,12 @@ def meeting_close(db, meeting_id):
     with db:
         db.execute("BEGIN IMMEDIATE")
         record = get_meeting(db, meeting_id)
+        if db.execute("PRAGMA user_version").fetchone()[0] >= 4:
+            linked = db.execute(
+                "SELECT 1 FROM meeting_joint_sections WHERE meeting_id=?",
+                (meeting_id,)).fetchone()
+            if linked:
+                raise VXError("Seccion conjunta: utilice meeting-joint-close")
         if record["meeting"]["status"] != "in_review":
             raise VXError("Reunion no abierta")
         if record["unreviewed"]:
@@ -844,6 +907,126 @@ def meeting_close(db, meeting_id):
     return {"meeting_id": meeting_id, "status": "closed",
             "unreviewed": 0, "scheduler_enabled": False,
             "changes_applied": False}
+
+
+
+def joint_schedule(on_date=None):
+    monthly = meeting_calendar("monthly", on_date)
+    weekly = meeting_calendar("weekly", monthly["meeting_local_date"])
+    if monthly["meeting_local_date"] != weekly["meeting_local_date"]:
+        raise VXError("Fechas mensual y semanal no coinciden")
+    return {"local_date": monthly["meeting_local_date"], "local_time": MEETING_WEEKLY_TIME,
+            "timezone_policy": "windows_system_local",
+            "sections": [
+                {"kind": "monthly", "period": monthly["period"],
+                 "review_start_local": monthly["review_start_local"],
+                 "review_end_exclusive_local": monthly["review_end_exclusive_local"]},
+                {"kind": "weekly", "period": weekly["period"],
+                 "review_start_local": weekly["review_start_local"],
+                 "review_end_exclusive_local": weekly["review_end_exclusive_local"]}
+            ], "scheduler_enabled": False, "notifications_enabled": False,
+            "session_count": 1, "acta_sections": 2}
+
+
+def joint_prepare(db, on_date=None):
+    """Un acta logica con dos secciones de datos; sin propuestas duplicadas."""
+    require_joint_v4(db)
+    schedule = joint_schedule(on_date)
+    monthly, weekly = schedule["sections"]
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        existing = db.execute(
+            "SELECT id,status FROM meeting_joint_sessions WHERE monthly_period=?",
+            (monthly["period"],)).fetchone()
+        if existing:
+            return {"id": existing["id"], "created": False,
+                    "status": existing["status"], **schedule}
+        # No fusionar silenciosamente actas v3 ya iniciadas por separado.
+        for section in schedule["sections"]:
+            prior = db.execute(
+                "SELECT 1 FROM meetings WHERE period_type=? AND period_key=?",
+                (section["kind"], section["period"])).fetchone()
+            if prior:
+                raise VXError("Hay actas individuales previas; revision manual antes de fusionar")
+        joint_id = str(uuid.uuid4())
+        db.execute("INSERT INTO meeting_joint_sessions VALUES(?,?,?,?,?,?,?)",
+            (joint_id, schedule["local_date"], schedule["local_time"],
+             weekly["period"], monthly["period"], "in_review", utcnow()))
+        # Seleccionar candidatas de manera determinista, sin duplicarlas entre secciones.
+        candidates = db.execute(
+            "SELECT id FROM proposals WHERE status='pending_review' "
+            "ORDER BY priority,created_utc,id LIMIT 10").fetchall()
+        used = 0
+        sections_out = []
+        for index, section in enumerate(schedule["sections"], start=1):
+            meeting_id = str(uuid.uuid4())
+            db.execute("INSERT INTO meetings VALUES(?,?,?,?,?)",
+                (meeting_id, section["kind"], section["period"],
+                 "in_review", utcnow()))
+            db.execute("INSERT INTO meeting_joint_sections VALUES(?,?,?,?)",
+                (joint_id, meeting_id, section["kind"], index))
+            selected = candidates[used:used + 5]
+            used += len(selected)
+            for item in selected:
+                db.execute("INSERT INTO meeting_agenda VALUES(?,?,?)",
+                    (meeting_id, item["id"], utcnow()))
+            sections_out.append({"kind": section["kind"], "meeting_id": meeting_id,
+                                 "agenda_count": len(selected)})
+        append_log(db, "joint_meeting_prepared_manually", "meeting", joint_id)
+    return {"id": joint_id, "created": True, "status": "in_review",
+            **schedule, "section_meetings": sections_out,
+            "changes_applied": False}
+
+
+def joint_view(db, joint_id):
+    require_joint_v4(db)
+    try:
+        uuid.UUID(joint_id)
+    except (TypeError, ValueError, AttributeError):
+        raise VXError("ID de sesion conjunta invalido") from None
+    row = db.execute(
+        "SELECT * FROM meeting_joint_sessions WHERE id=?", (joint_id,)).fetchone()
+    if not row:
+        raise VXError("Sesion conjunta no encontrada")
+    children = db.execute(
+        "SELECT meeting_id,section_kind,section_order FROM meeting_joint_sections "
+        "WHERE session_id=? ORDER BY section_order", (joint_id,)).fetchall()
+    if len(children) != 2 or [r["section_kind"] for r in children] != ["monthly", "weekly"]:
+        raise VXError("Sesion conjunta incompleta; verificar integridad")
+    sections = []
+    for child in children:
+        record = get_meeting(db, child["meeting_id"])
+        sections.append({"kind": child["section_kind"], "meeting_id": child["meeting_id"],
+                         "period": record["meeting"]["period_key"],
+                         "agenda": record["agenda"], "notes": record["notes"],
+                         "unreviewed": record["unreviewed"],
+                         "status": record["meeting"]["status"]})
+    return {"session": dict(row), "sections": sections,
+            "unreviewed": sum(c["unreviewed"] for c in sections),
+            "scheduler_enabled": False, "notifications_enabled": False,
+            "changes_applied": False, "identity_verified": False}
+
+
+def joint_close(db, joint_id):
+    require_joint_v4(db)
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        record = joint_view(db, joint_id)
+        if record["session"]["status"] != "in_review":
+            raise VXError("Sesion conjunta no abierta")
+        if record["unreviewed"]:
+            raise VXError("Quedan puntos sin decision en una o ambas secciones")
+        for section in record["sections"]:
+            if section["status"] != "in_review":
+                raise VXError("Seccion no abierta")
+            db.execute("UPDATE meetings SET status='closed' WHERE id=?",
+                       (section["meeting_id"],))
+        db.execute("UPDATE meeting_joint_sessions SET status='closed' WHERE id=?",
+                   (joint_id,))
+        append_log(db, "joint_meeting_closed_manually", "meeting", joint_id)
+    return {"session_id": joint_id, "status": "closed",
+            "closed_sections": ["monthly", "weekly"], "unreviewed": 0,
+            "scheduler_enabled": False, "changes_applied": False}
 
 
 def local_confirmation(action, description):
@@ -880,12 +1063,12 @@ def backup(db, home):
             "restore_automatic": False}
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="VX Evolution 4.5 - exclusivo Kilo Code")
+    parser = argparse.ArgumentParser(description="VX Evolution 4.5.1 - exclusivo Kilo Code")
     parser.add_argument("--home", default=str(Path.home()),
         help="HOME de Kilo; usar rutas de prueba solo en CI")
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("init", "status", "inventory-sync", "integrity", "backup",
-                 "observer-migrate", "observer-status", "meeting-migrate"):
+                 "observer-migrate", "observer-status", "meeting-migrate", "joint-migrate"):
         p = sub.add_parser(name)
         p.add_argument("--json", action="store_true")
     p = sub.add_parser("observer-mode")
@@ -912,6 +1095,18 @@ def main(argv=None):
     p.add_argument("--priority", choices=PRIORITIES, default="P2")
     p.add_argument("--version")
     p.add_argument("--observation")
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-joint-calendar")
+    p.add_argument("--on-date")
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-joint-prepare")
+    p.add_argument("--on-date")
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-joint-view")
+    p.add_argument("--id", required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-joint-close")
+    p.add_argument("--id", required=True)
     p.add_argument("--json", action="store_true")
     p = sub.add_parser("meeting-calendar")
     p.add_argument("--cadence", choices=("weekly", "monthly"), default="weekly")
@@ -948,12 +1143,15 @@ def main(argv=None):
             result = init(home)
         elif args.command == "meeting-calendar":
             result = meeting_calendar(args.cadence, args.on_date)
+        elif args.command == "meeting-joint-calendar":
+            result = joint_schedule(args.on_date)
         elif args.command == "status" and not db_path(home).is_file():
             result = {"initialized": False, "engine": "VX Evolution Core",
                       "platform": "Kilo Code only", "writes": 0}
         else:
             readonly = args.command in ("status", "meeting-preview", "meeting-view",
-                                        "integrity", "observer-report", "observer-status")
+                                        "meeting-joint-view", "integrity",
+                                        "observer-report", "observer-status")
             db = connect(home, readonly=readonly)
             try:
                 if args.command == "status":
@@ -962,6 +1160,8 @@ def main(argv=None):
                     result = migrate_observer(db, home)
                 elif args.command == "meeting-migrate":
                     result = migrate_meetings(db, home)
+                elif args.command == "joint-migrate":
+                    result = migrate_joint(db, home)
                 elif args.command == "observer-status":
                     result = observer_status(db, home)
                 elif args.command == "observer-mode":
@@ -982,6 +1182,16 @@ def main(argv=None):
                     result = meeting_preview(db, args.cadence, args.on_date)
                 elif args.command == "meeting-prepare":
                     result = prepare_meeting(db, args.cadence, args.on_date)
+                elif args.command == "meeting-joint-prepare":
+                    result = joint_prepare(db, args.on_date)
+                elif args.command == "meeting-joint-view":
+                    result = joint_view(db, args.id)
+                elif args.command == "meeting-joint-close":
+                    state = joint_view(db, args.id)
+                    if state["unreviewed"]:
+                        raise VXError("Quedan puntos sin decision en una o ambas secciones")
+                    local_confirmation("cierre de reunion conjunta", args.id)
+                    result = joint_close(db, args.id)
                 elif args.command == "meeting-view":
                     result = get_meeting(db, args.id)
                 elif args.command == "meeting-note":
@@ -1012,7 +1222,7 @@ def main(argv=None):
         if args.json:
             print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         else:
-            print("=== VX EVOLUTION CORE V4.5 | KILO CODE ONLY ===")
+            print("=== VX EVOLUTION CORE V4.5.1 | KILO CODE ONLY ===")
             for key, value in result.items():
                 print(f"{key}: {json.dumps(value, ensure_ascii=False)}")
         return 0
