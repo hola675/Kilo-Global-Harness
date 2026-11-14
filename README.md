@@ -1,8 +1,8 @@
-# VECIDYA · Kilo Code Global Harness V4.2
+# VECIDYA · Kilo Code Global Harness V4.3
 
-**Versión del código:** 4.2.0 · **Instalador:** manifiesto 4.0.0 (rollback compatible con V3) · **Estado:** candidato a prueba funcional de equipos en Windows tras aprobar CI.
+**Versión del código:** 4.3.0 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** componentes Kilo-only integrados en la rama de desarrollo; carga en el Windows del usuario pendiente.
 
-Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
+Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
 ## Principios
 
@@ -10,6 +10,7 @@ Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala 
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
+- **VX Evolution V4.3:** motor global Kilo-only de inventario, observaciones explícitas, propuestas de versiones y vista previa de reuniones; ninguna aprobación o instalación automática.
 - **Reconciliación V4.2 (solo diagnóstico)**: compara con metadatos seguros las fuentes JSONC y Markdown; no elimina agentes ni cambia sus permisos o pasos.
 - **Verificación V4.1**: `/vx-revalidar` contrasta hallazgos antes de clasificarlos como fallos, preserva descartes y separa CI configurada de tests realmente ejecutados.
 - **Equipos V4 con paralelismo estricto**: hasta tres subagentes de lectura, un escritor, revisión independiente. El selector no inicia agentes.
@@ -75,7 +76,10 @@ Por defecto, si un archivo administrado fue modificado **después de aplicar**, 
 | `agents/vx-*.md` | `~/.config/kilo/agents/` | Coordinador y revisor |
 | `skills/vx-engineering-harness/SKILL.md` | `~/.kilo/skills/` | Orquestación bajo demanda |
 | `registry/vx-agent-registry-v4.json` | `~/.config/kilo/harness/` | Registro de agentes y nueve perfiles |
-| `scripts/{Seleccionar-Equipo-V4,Validar-Registro-V4}.ps1` | `~/.config/kilo/harness/scripts/` | Enrutamiento determinista y validación sin efectos |
+| `scripts/{Seleccionar-Equipo-V4,Validar-Registro-V4,Reconciliar-Agentes-V4.2}.ps1` | `~/.config/kilo/harness/scripts/` | Enrutamiento, validación y diagnóstico |
+| `scripts/vx_evolution_core.py` | `~/.config/kilo/harness/scripts/` | Motor local Kilo-only; no crea BD durante la instalación |
+| `skills/vx-evolution-core/SKILL.md` | `~/.kilo/skills/` | Guía de gobernanza por demanda |
+| `commands/vx-{evolution,observer,upgrade,capacitacion,auditoria-equipo,reunion}.md` | `~/.config/kilo/commands/` | Departamentos lógicos de VX Evolution |
 
 Todos los destinos anteriores están bajo HOME. Si se ejecuta desde `D:\Proyectos`, **no escribe allí**; esa carpeta es exclusivamente la fuente versionada del instalador.
 
@@ -112,6 +116,8 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [Guía operativa y compatibilidad](docs/ARQUITECTURA.md)
 - [Protocolo de revalidación V4.1](docs/PROTOCOLO-REVALIDACION-V4.1.md)
 - [Diagnóstico y plan de reconciliación V4.2](docs/RECONCILIACION-AGENTES-V4.2.md)
+- [VX Evolution V4.3: arquitectura, contratos, seguridad y decisiones](docs/VX-EVOLUTION-V4.3.md)
+- [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Guía de equipos V4: seguridad, fallos y prueba funcional](docs/OPERACION-EQUIPOS-V4.md)
 - [Registro V4 de agentes y perfiles](registry/vx-agent-registry-v4.json)
 - [Instalador](scripts/Instalar-Kilo-Global-Harness.ps1)
@@ -146,7 +152,29 @@ pwsh -NoProfile -File '.\scripts\Reconciliar-Agentes-V4.2.ps1' -Json
 
 Después de instalar, el script queda en `~/.config/kilo/harness/scripts/` y el comando `/vx-reconciliar` queda disponible en Kilo. Los resultados son una propuesta de análisis, **no cambios aplicados**. Ver [protocolo V4.2](docs/RECONCILIACION-AGENTES-V4.2.md).
 
+## V4.3 — VX Evolution Core (Kilo Code únicamente)
+
+Después de instalar, el operador puede consultar el motor **sin crear una base de datos**:
+
+```powershell
+$vx = Join-Path $HOME '.config/kilo/harness/scripts/vx_evolution_core.py'
+python -I $vx status --json
+```
+
+Para comenzar a conservar observaciones globalmente hace falta inicializar **una sola vez** la BD privada de forma explícita:
+
+```powershell
+python -I $vx init --json
+python -I $vx inventory-sync --json
+python -I $vx meeting-preview --cadence weekly --json
+python -I $vx integrity --json
+```
+
+Los slash commands `/vx-evolution`, `/vx-upgrade`, `/vx-capacitacion`, `/vx-auditoria-equipo`, `/vx-reunion` y `/vx-observer` coordinan funciones de gestión. **Ninguno permite publicar agentes o skills ni aprobar propuestas.** La captura automática de todas las tareas y las reuniones programadas son fases V4.4 y V4.5; el uso actual de `observe` es explícito. La base privada de VX Evolution no se elimina al restaurar versiones del instalador.
+
 ## Changelog
+
+- **4.3.0 · 2026-11-14:** núcleo SQLite Kilo-only, inventario global de agentes/skills, observaciones y propuestas locales, agenda semanal/mensual previa, comandos de gobierno, skill, pruebas de privacidad y recuperación. Sin hooks ni scheduler.
 
 - **4.2.0 · 2026-11-14:** herramienta de reconciliación de agentes globales JSONC/Markdown, detección de solapamiento de campos y `steps`, protección de datos sensibles, CI Windows y distribución reversible. No modifica la configuración heredada.
 

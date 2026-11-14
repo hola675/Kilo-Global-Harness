@@ -1,6 +1,6 @@
-# Arquitectura propuesta: Kilo Global Harness V4 (NO IMPLEMENTADO)
+# Arquitectura: Kilo Global Harness V4 (implementación incremental)
 
-**Objetivo:** Agentes globales interoperables, activación contextual, trabajo paralelo seguro, evidencia verificable y control de contexto/costo. La fase presente es diseño; no despliega código ni modifica el perfil Windows.
+**Objetivo:** agentes globales de Kilo, activación contextual, trabajo paralelo seguro, evidencia y control de contexto/costo. **Estado:** V4.0–V4.2 implementados; V4.3 añade base SQLite global y propuestas bajo demanda. El enrutamiento por coste real, plugin observador y reuniones programadas siguen pendientes. Ningún proyecto recibe configuración Kilo local.
 
 ## Motor y capas
 

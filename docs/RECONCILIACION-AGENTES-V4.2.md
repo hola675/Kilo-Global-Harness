@@ -54,8 +54,9 @@ El auditor abre `~/.config/kilo/kilo.jsonc` con un parser JSONC compatible con c
 6. Medir calidad, iteraciones y uso real solo si se dispone de métricas; revertir si hay regresiones.
 7. Repetir gradualmente con los restantes, sin cambiar de golpe los 19 límites elevados. No eliminar un archivo Markdown solo por compartir nombre con JSON.
 
-## Requisitos para una futura V4.3
+## Requisitos pendientes de consolidación de agentes (pista separada de V4.3 Evolution)
 
+- V4.3 Evolution crea el registro global, pero **no** resuelve automáticamente diferencias de permisos ni fusiona los agentes. El comparador de propiedades efectivo sigue pendiente de pruebas de runtime.
 - Un comparador de propiedades efectivo **con pruebas de runtime**, no basado únicamente en nombres.
 - Un migrador explícito con diff, backup, `-Simular`, plan aprobado y rollback; nunca reescribir JSONC con un parser que elimine comentarios.
 - Ensayar límites de `steps` según rol y tipo de tarea; `steps` no representa tokens.

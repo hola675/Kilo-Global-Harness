@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Obtener codigo
         uses: actions/checkout@v4
+      - name: Python 3.13 para VX Evolution
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
       - name: Analisis estatico y smoke test aislado
         shell: pwsh
         run: |
@@ -251,3 +255,42 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fresh -BackupFolder $backup.FullName
           if (Test-Path $installed) { throw 'Rollback no retiro auditor V4.2.' }
           Write-Host 'V4.2 RECONCILIACION + NO SECRETOS + INSTALACION + ROLLBACK: PASS'
+
+      - name: V4.3 - probar VX Evolution Core sin HOME real
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python --version
+          python -I -m unittest discover -s tests -p test_vx_evolution_core.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron las pruebas de VX Evolution Core' }
+          python -m compileall -q scripts/vx_evolution_core.py tests/test_vx_evolution_core.py
+          if ($LASTEXITCODE -ne 0) { throw 'Falló compileall VX Evolution' }
+          Write-Host 'VX EVOLUTION CORE V4.3: PASS'
+
+      - name: V4.3 - instalar código global sin inicializar ni borrar datos
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx-evo-inst-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          $core = Join-Path $fixture '.config/kilo/harness/scripts/vx_evolution_core.py'
+          $skill = Join-Path $fixture '.kilo/skills/vx-evolution-core/SKILL.md'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (!(Test-Path $core) -or !(Test-Path $skill)) { throw 'Falta codigo o skill Kilo V4.3.' }
+          if (Test-Path $db) { throw 'Instalar no debe crear la BD operativa.' }
+          if ((Get-FileHash $core).Hash -ne (Get-FileHash 'scripts/vx_evolution_core.py').Hash) {
+            throw 'El core global difiere del codigo fuente.'
+          }
+          $command = Join-Path $fixture '.config/kilo/commands/vx-reunion.md'
+          if (!(Test-Path $command)) { throw 'Falta comando de reunion global.' }
+          & $installer -Modo Verificar -RaizUsuario $fixture
+          python -I $core --home $fixture init --json
+          if ($LASTEXITCODE -ne 0 -or !(Test-Path $db)) { throw 'No se pudo inicializar global.' }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if (Test-Path $core) { throw 'Rollback no retiro el codigo V4.3 nuevo.' }
+          if (Test-Path $skill) { throw 'Rollback no retiro la skill V4.3 nueva.' }
+          if (!(Test-Path $db)) { throw 'Rollback nunca debe borrar la BD privada.' }
+          Write-Host 'KILO-ONLY: INSTALACION Y DATOS AISLADOS, ROLLBACK PASS'

@@ -20,3 +20,6 @@ Conserva AutoApprove y permisos efectivos. Ninguna configuracion de Kilo se crea
 Informa roles ejecutados frente a roles solo sugeridos, PASS/FAIL/NO VERIFICADO, resultados de pruebas, estado Git y riesgos. El selector no inicia agentes ni consume cuota.
 
 **GATE DE EVIDENCIA (V4.1):** después de recibir subagentes y antes del cierre, contrasta cada fallo propuesto contra el código ACTUAL y registra HEAD/origin/main. Un agente puede mencionar archivos que ya cambiaron; comprueba imports y versiones. Conserva falsos positivos como DESCARTADO con motivos; tests no ejecutados son NO VERIFICADO. Si hay discrepancias invoca /vx-revalidar para una segunda pasada sin efectos. No vuelvas a delegar lo ya resuelto.
+
+
+**Evolución selectiva V4.3:** si una tarea revela una falla recurrente, corrección humana o carencia importante, se puede proponer una observación breve a /vx-observer. No registrar cada tool call ni almacenar código privado, rutas de clientes o credenciales. El inventario/agenda de VX Evolution es global a Kilo e independiente del repositorio actual; este comando no inicia observación continua ni crea nuevos jefes o skills de manera autónoma.

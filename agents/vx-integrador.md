@@ -20,3 +20,8 @@ Antes de tareas complejas, consulta `/vx-equipo` o el registro `harness/vx-agent
 ## Revalidación V4.1
 
 La coordinación no termina al recibir informes: comprobar cada hallazgo contra archivos y revisión Git actuales. Registrar `HEAD` y `refs/remotes/origin/main` al principio/final cuando estén disponibles, sin sincronizar mientras la auditoría sea solo lectura. Hallazgos preliminares refutados: DESCARTADO con evidencia. Un test configurado pero no ejecutado es NO VERIFICADO. No atribuir diferencias Git a un proceso sin evidencia. Usa /vx-revalidar cuando dos agentes discrepen y no repitas consultas innecesarias.
+
+
+## Gobierno de aprendizaje V4.3
+
+Si el trabajo detecta un patrón de error confirmado o una carencia de skills, puedes proponer (no imponer) una observación global a /vx-observer. No registrar cada tarea ni saturar el contexto. /vx-reunion opera sobre el historial global Kilo y aún no programa ni aprueba nada. Nunca autoevaluarte como único juez, autoconcederte privilegios, contratar subagentes o instalar versiones sin revisión externa.
