@@ -148,6 +148,11 @@ function Global-Assets {
     Source=(Join-Path $root 'scripts/vx_capability_audit.py');
     Target=(Join-Path $kiloDir 'harness/scripts/vx_capability_audit.py')
   }
+  # V4.6.1: matriz de competencias y evidencias DECLARADAS, de solo lectura.
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'scripts/vx_competency_matrix.py');
+    Target=(Join-Path $kiloDir 'harness/scripts/vx_competency_matrix.py')
+  }
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'skills/vx-evolution-core/SKILL.md');
     Target=(Join-Path $skillRoot 'vx-evolution-core/SKILL.md')
