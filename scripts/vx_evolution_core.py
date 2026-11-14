@@ -572,9 +572,13 @@ def observer_report(db, days):
 def observer_status(db, home):
     version = db.execute("PRAGMA user_version").fetchone()[0]
     value = db.execute("SELECT value FROM settings WHERE key='observer_mode'").fetchone()
+    installed = (home / ".config" / "kilo" / "plugin" /
+                 "vx-observer-light.js").is_file()
     return {"schema_version": version, "migration_required": version < 2,
             "observer_mode": value["value"] if value else "off",
             "flag_present": flag_path(home).is_file(),
+            "plugin_file_present": installed,
+            "kilo_runtime_loaded": "NO_VERIFICADO",
             "plugin_activation": "separate-opt-in-installer-switch",
             "events_without_model_calls": True,
             "scheduler_enabled": False}
