@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Code Global Harness V4.6.2
 
-**Versión del código:** 4.6.2 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 añade ensayos sintéticos en revisión; ninguna reunión automática está habilitada.
+**Versión del código:** 4.6.2 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 añade ensayos sintéticos con CI Windows PASS; ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -225,7 +225,7 @@ Para crear **voluntariamente** un borrador de acta: `meeting-prepare --cadence w
 
 ## Siguiente fase — V4.6: capacitación y auditoría con evidencia
 
-**Estado:** V4.6.0–V4.6.1 validadas mediante CLI local en el Windows del usuario (14-11-2026); V4.6.2 ensayos sintéticos en implementación; V4.6.3 pendiente. La prueba de interacción de comandos dentro de Kilo tras /reload no está acreditada. No activar scheduler.
+**Estado:** V4.6.0–V4.6.1 validadas mediante CLI local en el Windows del usuario (14-11-2026); V4.6.2 implementada y CI Windows PASS, pendiente instalación local; V4.6.3 pendiente. La prueba de interacción de comandos dentro de Kilo tras /reload no está acreditada. No activar scheduler.
 
 La capacitación priorizará mejorar skills y especialistas existentes; la auditoría recomendará consolidación, delegación o contratación **solo con evidencia y evaluación independiente**. No introducir agentes, jerarquías, permisos, prompts, MCP ni cambios operativos automáticamente. Los contadores `session_idle` y `session_error` de V4.4 no demuestran calidad.
 
