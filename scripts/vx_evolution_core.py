@@ -386,6 +386,17 @@ def propose(db, args):
                                 (args.observation,)).fetchone()
             if not exists:
                 raise VXError("Observacion vinculada inexistente")
+        # No crear propuestas identicas pendientes para el mismo componente/version.
+        existing = db.execute(
+            "SELECT id FROM proposals WHERE kind=? AND target=? "
+            "AND title=? COLLATE NOCASE "
+            "AND COALESCE(proposed_version,'')=COALESCE(?,'') "
+            "AND status='pending_review' LIMIT 1",
+            (args.kind, target, title, version)).fetchone()
+        if existing:
+            return {"id": existing["id"], "status": "already_pending",
+                    "target": target, "proposed_version": version,
+                    "applied": False, "approved": False}
         prop_id = str(uuid.uuid4())
         db.execute("INSERT INTO proposals(id,created_utc,kind,target,title,rationale,"
                    "priority,proposed_version,observation_id,status) VALUES(?,?,?,?,?,?,?,?,?,'pending_review')",
