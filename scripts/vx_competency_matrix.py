@@ -52,9 +52,12 @@ def read_evidence(path: str | None, home: Path) -> list[dict]:
         return []
     candidate = Path(path)
     try:
+        # Windows puede normalizar junctions y mayusculas de ruta al resolver.
+        # Comparar siempre ambas rutas canonicas; nunca solo una de ellas.
+        canonical_home = home.resolve(strict=True)
         if (not candidate.is_file() or candidate.is_symlink()
                 or candidate.stat().st_size > MAX_EVIDENCE_BYTES
-                or not candidate.resolve(strict=True).is_relative_to(home)):
+                or not candidate.resolve(strict=True).is_relative_to(canonical_home)):
             raise MatrixError("Archivo de evidencias no admitido en HOME")
         data = json.loads(candidate.read_text(encoding="utf-8-sig"))
     except (OSError, ValueError, UnicodeError):
