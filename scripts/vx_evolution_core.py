@@ -73,6 +73,9 @@ def connect(home, create=False, readonly=False):
     path = db_path(home)
     if path.is_symlink() or storage(home).is_symlink():
         raise VXError("Ruta de almacenamiento mediante symlink no admitida")
+    # Rechazar redirecciones de carpetas HOME o configuracion a otro arbol.
+    if not storage(home).resolve(strict=False).is_relative_to(home):
+        raise VXError("Almacenamiento fuera de HOME no admitido")
     if not create and not path.is_file():
         raise VXError("Registro no inicializado. Ejecute init desde VX.")
     if create:
@@ -273,6 +276,12 @@ def strip_jsonc(data):
 def discovery(home):
     """Solo metadatos Kilo globales; nunca busca en el proyecto activo."""
     found = []
+    def allowed_file(path):
+        try:
+            return path.resolve(strict=True).is_relative_to(home)
+        except (OSError, ValueError):
+            return False
+
     def add(kind, name, source, path, digest):
         if not NAME_RE.fullmatch(name):
             return
@@ -286,11 +295,13 @@ def discovery(home):
     agentdir = global_kilo / "agents"
     if agentdir.is_dir():
         for file in sorted(agentdir.glob("*.md")):
-            if file.is_file():
+            if file.is_file() and allowed_file(file):
                 add("agent", file.stem, "kilo-agent-markdown",
                     file, hashlib.sha256(file.read_bytes()).hexdigest())
     cfg = global_kilo / "kilo.jsonc"
     if cfg.is_file():
+        if not allowed_file(cfg):
+            raise VXError("Configuracion Kilo apunta fuera de HOME")
         try:
             parsed = json.loads(strip_jsonc(cfg.read_text(encoding="utf-8-sig")))
         except (json.JSONDecodeError, UnicodeError) as exc:
@@ -311,7 +322,7 @@ def discovery(home):
     ]:
         if folder.is_dir():
             for file in sorted(folder.glob("*/SKILL.md")):
-                if file.is_file():
+                if file.is_file() and allowed_file(file):
                     add("skill", file.parent.name, source, file,
                         hashlib.sha256(file.read_bytes()).hexdigest())
     return found
