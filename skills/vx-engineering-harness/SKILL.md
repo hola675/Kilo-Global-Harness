@@ -40,3 +40,8 @@ Registrar alcance, archivos tocados, comandos y resultado verificable, cambios d
 - En modo estricto: lectores independientes simultaneos (max. 3) -> sintesis -> un unico implementador -> revisores con objetivos distintos. Los agentes read-only no ejecutan pruebas ni alteran Git.
 - Perfiles: general, backend, frontend, cloudflare, database, security, refactor, design, docs. Las skills son propuestas condicionadas a disponibilidad, no instalaciones automaticas.
 - El selector local solo produce un plan; no garantiza que se haya llamado a `task` ni reporta tokens que no esten medidos.
+
+
+## Gate de exactitud y procedencia V4.1
+
+Al terminar subagentes revisa sus hallazgos contra el árbol y la revisión Git actuales. Guarda la distinción entre PASS de orquestación, FAIL de código, hipótesis DESCARTADAS y pruebas NO VERIFICADAS. No ejecutes fetch, pull ni build cuando la tarea sea SOLO LECTURA. Una diferencia de Git sin logs no autoriza inferir quién cambió referencias. Para informes contradictorios usa /vx-revalidar sin lanzar agentes redundantes.
