@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  VECIDYA | Kilo Global Harness 4.0 - instalador global, idempotente y reversible.
+  VECIDYA | Kilo Global Harness 4.3 - instalador global, idempotente y reversible.
 .DESCRIPTION
   No instala archivos dentro de ningun repositorio. No altera kilo.jsonc, modelos,
   credenciales, MCP, AutoApprove, steps ni permisos existentes.
@@ -128,6 +128,15 @@ function Global-Assets {
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'skills/vx-engineering-harness/SKILL.md');
     Target=(Join-Path $skillRoot 'vx-engineering-harness/SKILL.md')
+  }
+  # V4.3: nucleo operativo Kilo-only (NO inicializa ni toca la BD privada).
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'scripts/vx_evolution_core.py');
+    Target=(Join-Path $kiloDir 'harness/scripts/vx_evolution_core.py')
+  }
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'skills/vx-evolution-core/SKILL.md');
+    Target=(Join-Path $skillRoot 'vx-evolution-core/SKILL.md')
   }
   # Recursos adicionales V4 - SIEMPRE en perfil global, nunca en repositorios.
   $assets += [pscustomobject]@{
