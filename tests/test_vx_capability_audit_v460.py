@@ -26,7 +26,7 @@ class VXCapabilityAuditTests(unittest.TestCase):
     def file(self, path, text):
         target = self.home / path
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(text, encoding="utf-8")
+        target.write_text(text, encoding="utf-8", newline="")
         return target
 
     def fixture(self):
@@ -138,7 +138,8 @@ class VXCapabilityAuditTests(unittest.TestCase):
                        str(self.home), "https://example.com"):
             self.assertNotIn(secret, raw)
         self.assertIn("vx-reader", raw)
-        self.assertIn(".config/kilo/agents/vx-reader.md", raw)
+        self.assertIn('"source": "kilo-agent-markdown"', raw)
+        self.assertNotIn(".config/kilo/agents/vx-reader.md", raw)
 
     def test_report_never_writes_db_or_changes_files(self):
         self.fixture()
