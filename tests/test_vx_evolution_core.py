@@ -117,7 +117,9 @@ class TestVXCore(unittest.TestCase):
         self.assertIsInstance(w["observations_by_type"], dict)
         self.assertFalse(w["meeting_created"])
         self.assertFalse(w["scheduled"])
-        self.assertFalse(w["decisions_enabled"])
+        # V4.5 permite deliberacion MANUAL en v3, no autoaprobacion ni scheduler.
+        self.assertTrue(w["decisions_enabled"])
+        self.assertFalse(w["changes_applied"])
         with closing(sqlite3.connect(self.db)) as db:
             self.assertEqual(db.execute("SELECT COUNT(*) FROM decisions").fetchone()[0], 0)
             self.assertEqual(db.execute("SELECT COUNT(*) FROM releases").fetchone()[0], 0)
