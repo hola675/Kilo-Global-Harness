@@ -134,7 +134,7 @@ function Global-Assets {
     Source=(Join-Path $root 'registry/vx-agent-registry-v4.json');
     Target=(Join-Path $kiloDir 'harness/vx-agent-registry-v4.json')
   }
-  foreach ($name in @('Seleccionar-Equipo-V4.ps1','Validar-Registro-V4.ps1')) {
+  foreach ($name in @('Seleccionar-Equipo-V4.ps1','Validar-Registro-V4.ps1','Reconciliar-Agentes-V4.2.ps1')) {
     $assets += [pscustomobject]@{
       Source=(Join-Path (Join-Path $root 'scripts') $name);
       Target=(Join-Path (Join-Path $kiloDir 'harness/scripts') $name)
