@@ -23,7 +23,7 @@ Consultar `status`; crear BD con `init` solo cuando esté autorizado; usar `inve
 - `vx-upgrade`: cambios/versiones propuestos, sin desplegar.
 - `vx-capacitacion`: mejora de skills en estado candidato.
 - `vx-auditoria-equipo`: análisis de roles, duplicados, jefes/subordinados.
-- `vx-reunion`: semanal lunes 09:00 hora local Windows; mensual primer lunes del mes siguiente (hora pendiente), actas y decisiones manuales.
+- `vx-reunion`: semanal lunes 09:00 hora local Windows; mensual primer lunes del mes siguiente a las 09:00 en una sola sesión conjunta con dos secciones, actas y decisiones manuales.
 
 ## Gates
 Una observación no es verdad hasta revalidarse. Una propuesta `pending_review` no está aprobada. Un hash no es versión semántica. Una tabla `decisions` vacía no representa permiso. No modificar `kilo.jsonc`. La V4.4 permite instalar el plugin exclusivamente global mediante switch del instalador y habilitar contadores con `observer-mode light` tras una petición explícita. Nunca tomar una señal como resultado evaluado.
