@@ -353,6 +353,9 @@ jobs:
           if ($state.observer_mode -ne 'off' -or $state.flag_present) {
             throw 'Captura habilitada sin permiso explícito.'
           }
+          if (!$state.plugin_file_present -or $state.kilo_runtime_loaded -ne 'NO_VERIFICADO') {
+            throw 'Estado de plugin/rutime incorrecto.'
+          }
           $backups = @(Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory)
           if ($backups.Count -ne 2) {
             throw 'Dos aplicaciones consecutivas deben producir respaldos diferentes.'
