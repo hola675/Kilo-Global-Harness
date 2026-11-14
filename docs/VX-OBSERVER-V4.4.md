@@ -46,7 +46,7 @@ $vx = Join-Path $HOME '.config/kilo/harness/scripts/vx_evolution_core.py'
 python -I $vx observer-status --json
 ```
 
-El instalador **no crea ni migra** SQLite. Si el motor no se inicializó, ejecutar `python -I $vx init --json`. Si el estado indica `schema_version=1` y `migration_required=true`, ejecutar de forma **explícita** `python -I $vx observer-migrate --json`. Ese comando realiza un respaldo SQLite antes de pasar de v1 a v2 y conserva observaciones, propuestas e inventario anteriores. Si ya es v2, no migra ni duplica respaldos.
+El instalador genera una carpeta de respaldo distinta para cada aplicación, incluso si hay varias dentro del mismo segundo. **No crea ni migra** SQLite. Si el motor no se inicializó, ejecutar `python -I $vx init --json`. Si el estado indica `schema_version=1` y `migration_required=true`, ejecutar de forma **explícita** `python -I $vx observer-migrate --json`. Ese comando realiza un respaldo SQLite antes de pasar de v1 a v2 y conserva observaciones, propuestas e inventario anteriores. Si ya es v2, no migra ni duplica respaldos.
 
 Tras revisar compatibilidad de plugins y reiniciar Kilo para que cargue el archivo JS, para activar la captura:
 
