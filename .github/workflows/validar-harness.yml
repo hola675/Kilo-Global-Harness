@@ -144,3 +144,33 @@ jobs:
           $restored = (Get-FileHash (Join-Path $cfg 'kilo.jsonc') -Algorithm SHA256).Hash
           if ($restored -ne $before) { throw 'Rollback altero configuracion privada.' }
           Write-Host 'V4 GLOBAL-ONLY, SEGURIDAD, ROUTING Y ROLLBACK: PASS'
+
+      - name: V4.1 - auditoria de evidencias y comando global
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $cmd = Get-Content 'commands/vx-revalidar.md' -Raw -Encoding UTF8
+          $doc = Get-Content 'docs/PROTOCOLO-REVALIDACION-V4.1.md' -Raw -Encoding UTF8
+          if ($cmd -notmatch '(?ms)\A---\r?\n.*?agent:\s*plan.*?\r?\n---') {
+            throw 'El comando vx-revalidar carece de frontmatter valido.'
+          }
+          foreach ($word in @('DESCARTADO', 'NO VERIFICADO', 'git rev-parse', 'git fetch', 'SOLO LECTURA')) {
+            if (!$cmd.Contains($word)) { throw "Falta condicion del comando: $word" }
+          }
+          foreach ($word in @('PASS', 'FAIL', 'DESCARTADO', 'NO VERIFICADO', 'origin/main', 'HEAD')) {
+            if (!$doc.Contains($word)) { throw "Falta condicion del protocolo: $word" }
+          }
+          $root = Join-Path $env:RUNNER_TEMP ('vx41-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $root
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo instalacion fixture V4.1.' }
+          $installed = Join-Path $root '.config/kilo/commands/vx-revalidar.md'
+          if (!(Test-Path -LiteralPath $installed -PathType Leaf)) {
+            throw 'El comando V4.1 no fue instalado globalmente.'
+          }
+          if ((Get-FileHash $installed).Hash -ne (Get-FileHash 'commands/vx-revalidar.md').Hash) {
+            throw 'No coincide comando global con el repositorio.'
+          }
+          & $installer -Modo Verificar -RaizUsuario $root
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo verificacion V4.1.' }
+          Write-Host 'V4.1 EVIDENCE-GATE Y GLOBAL-ONLY: PASS'
