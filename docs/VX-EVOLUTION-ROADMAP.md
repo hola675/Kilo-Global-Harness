@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición:** 2026-11-14 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 en implementación con ensayos sintéticos no ciegos; V4.6.3–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
+**Edición:** 2026-11-14 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 código implementado y CI Windows PASS; ensayos sintéticos no ciegos pendientes de instalación local; V4.6.3–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
 
 ## Fuente de verdad y definición de estados
 
@@ -26,7 +26,7 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | V4.5.1 | **Primera reunión del mes conjunta**, secciones mensual/semanal a las 09:00 | **Integrado y CI Windows PASS** | **Validado**: instalación, SQLite v4, integridad y calendario real 2026-12-07, 09:00 | Observer `light`, scheduler OFF |
 | **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 39 fuentes agente, 28 agentes, 40 skills, 11 solapamientos, 19 steps elevados | Sin cambios de permisos, SQLite ni roles |
 | **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 76 filas, 15 declaraciones, 0 evidencias | Prueba interactiva Kilo pendiente; seniority sin asignar |
-| **V4.6.2** | Cinco ensayos sintéticos reproducibles y comparación de evidencias declaradas | **En implementación/CI pendiente** | Pendiente | No son pruebas ciegas ni desempeño demostrado; sin escritura |
+| **V4.6.2** | Cinco ensayos sintéticos reproducibles y comparación de evidencias declaradas | **Código + CI Windows PASS (27 tests)** | Instalación/CLI local pendientes | No son pruebas ciegas ni desempeño demostrado; sin escritura |
 | V4.6.3 | Auditoría organizativa y capacitación gobernada | Diseñada, **PENDIENTE** | No aplica | No crear agentes, skills o jerarquías automáticamente |
 | V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseñado | No aplica | Revisión independiente y autorización explícita |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
@@ -98,7 +98,7 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 **P1.1 CERRADO, CLI LOCAL VALIDADO** — V4.6.1 matriz global y evidencia declarada: 20 pruebas unitarias y smoke/rollback CI Windows PASS; 76 filas, 15 capacidades declaradas y cero evidencias en equipo real. Prueba interactiva Kilo pendiente. Sin seniority ni pruebas reales automáticas.
 
-**P1.2 EN CURSO** — V4.6.2 cinco ensayos sintéticos y comparación manual, no ciegos: pruebas de harness no implican rendimiento de agentes; ejecutar evaluaciones reales solo con autorización posterior.
+**P1.2 CÓDIGO Y CI PASS, PENDIENTE LOCAL** — V4.6.2 cinco ensayos sintéticos y comparación declarativa; 27 tests + instalación/rollback Windows PASS. No probaron agentes, no son ciegos: medición real y calibración humana pendientes.
 
 **P2** — Probar evaluaciones y propuestas de capacitación/auditoría con fixtures de Kilo, registrar riesgos y presentar a `vx-reunion` para aprobación, nunca auto-publicar.
 
