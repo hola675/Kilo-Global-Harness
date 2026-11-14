@@ -1,6 +1,6 @@
 # VX Evolution V4.6.2 — Ensayos sintéticos reproducibles y capacitación candidata
 
-**Edición:** 2026-11-14 · **Ámbito:** un único Windows, Kilo Code global, HOME local. **Estado:** CI Windows PASS (27 pruebas, smoke y rollback); instalación real en Windows y evaluación interactiva en Kilo pendientes. Scheduler, notificaciones, promociones y publicaciones automáticas: **OFF**.
+**Edición:** 2026-11-14 · **Ámbito:** un único Windows, Kilo Code global, HOME local. **Estado:** CI Windows PASS (27 pruebas, smoke y rollback); CLI real en Windows validado el 2026-11-14; la invocación desde Kilo fue bloqueada por política y la evaluación interactiva de agentes sigue pendiente. [Evidencia y puerta manual](VX-VALIDACION-CLI-V4.6.2-20261114.md). Scheduler, notificaciones, promociones y publicaciones automáticas: **OFF**.
 
 ## Punto de partida verificado por el operador
 
@@ -90,7 +90,7 @@ Para todas las hipótesis: definir línea base real, prueba repetible con criter
 
 1. Unit tests de clasificación, regresiones aparentes, control de falsos positivos, campos prohibidos, rutas fuera de HOME, symlinks y no escritura.
 2. CI Windows: instalación/rollback sobre un HOME aislado, ejecución sin respuestas, auditorías V4.6.0 y V4.6.1 coherentes, base SQLite inexistente antes y después.
-3. Validación en Windows del usuario: ejecución CLI y **prueba opcional explícita en Kilo** después de `/reload`.
+3. **CLI Windows validado el 2026-11-14:** cinco casos y cinco destinos observados, cero respuestas, cero evidencias; ejecutar PowerShell en Kilo fue bloqueado por política de herramientas. La prueba opcional de razonamiento con el especialista dentro de Kilo sigue pendiente y no requiere cambiar permisos.
 4. Evaluación real futura con casos ciegos, registro de ejecución verificable y revisión independiente; **V4.6.3 no podrá considerar estos fixtures como ascensos demostrados**.
 
 No ejecutar autónomamente un modelo, no abrir el proyecto activo, no programar tareas Windows, no crear backups ni archivos de evidencias sin orden expresa. Un solo escritor máximo, hasta tres lectores. Mantener una sola rama temporal y `main`.
