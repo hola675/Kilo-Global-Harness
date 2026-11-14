@@ -1,8 +1,8 @@
 {
   "schema": "vx-reunion-policy/1",
   "scope": "kilo-code-global",
-  "status": "dates-confirmed-manual-v4.5-no-automation",
-  "version": "0.2.0",
+  "status": "joint-first-monday-confirmed-manual-v4-5-1-no-automation",
+  "version": "0.3.0",
   "weekly": {
     "weekday": "monday",
     "local_time": "09:00",
@@ -12,7 +12,7 @@
   },
   "monthly": {
     "day_rule": "first_monday_next_month",
-    "local_time": null,
+    "local_time": "09:00",
     "timezone_policy": "system_local",
     "enabled": false
   },
@@ -20,7 +20,7 @@
     "scheduled_task_enabled": false,
     "notifications_enabled": false,
     "autonomous_meeting_enabled": false,
-    "activation_gate": "after-v4.5-tests-runtime-check-and-new-explicit-user-approval"
+    "activation_gate": "after-v4.5.1-tests-windows-runtime-check-and-new-explicit-user-approval"
   },
   "governance": {
     "meeting_decisions_require_explicit_user_approval": true,
@@ -28,12 +28,22 @@
     "independent_of_active_project": true
   },
   "notes": [
-    "Reunión semanal: lunes a las 09:00, zona horaria configurada localmente en Windows.",
-    "Cierre mensual: primer lunes del mes siguiente, para revisar el mes anterior.",
-    "La hora del cierre mensual NO ha sido acordada; conservar null, nunca deducir 09:00.",
-    "La coincidencia semanal/mensual del primer lunes NO tiene regla de combinación aprobada.",
-    "Este documento no activa el scheduler; la V4.5 solo crea borradores, actas y decisiones manuales.",
-    "Las decisiones de reuniones no autorizan publicar agentes ni skills; se requiere revisión posterior.",
-    "Antes de instalar tareas programadas en Windows obtener confirmación explícita adicional."
-  ]
+    "Semanal: lunes a las 09:00, horario local del equipo Windows.",
+    "Primer lunes de cada mes: una sola sesión conjunta a las 09:00, con dos secciones en acta, cierre mensual y agenda semanal.",
+    "El cierre mensual revisa el mes anterior completo; la semanal revisa la semana previa.",
+    "No crear dos convocatorias, no aprobar por silencio, no modificar agentes/skills a partir del acta.",
+    "La política define la lógica manual y NO activa tareas programadas ni notificaciones.",
+    "Activación de scheduler exige aprobación humana nueva y separada, posterior a validación funcional en Windows."
+  ],
+  "joint_session": {
+    "first_monday": true,
+    "local_time": "09:00",
+    "section_order": [
+      "monthly",
+      "weekly"
+    ],
+    "one_session": true,
+    "two_independent_sections": true,
+    "enabled": false
+  }
 }
