@@ -117,6 +117,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [Protocolo de revalidación V4.1](docs/PROTOCOLO-REVALIDACION-V4.1.md)
 - [Diagnóstico y plan de reconciliación V4.2](docs/RECONCILIACION-AGENTES-V4.2.md)
 - [VX Evolution V4.3: arquitectura, contratos, seguridad y decisiones](docs/VX-EVOLUTION-V4.3.md)
+- [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Guía de equipos V4: seguridad, fallos y prueba funcional](docs/OPERACION-EQUIPOS-V4.md)
 - [Registro V4 de agentes y perfiles](registry/vx-agent-registry-v4.json)
 - [Instalador](scripts/Instalar-Kilo-Global-Harness.ps1)
