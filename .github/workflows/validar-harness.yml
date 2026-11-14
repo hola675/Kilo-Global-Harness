@@ -310,6 +310,10 @@ jobs:
               $policy.weekly.timezone_source -ne 'windows_host_at_execution') {
             throw 'La zona horaria no refleja el equipo Windows'
           }
+          if ($policy.monthly.day_rule -ne 'first_monday_next_month' -or
+              $null -ne $policy.monthly.local_time) {
+            throw 'El cierre mensual debe ser primer lunes siguiente, sin hora confirmada'
+          }
           if ($policy.weekly.enabled -or $policy.monthly.enabled -or
               $policy.automation.scheduled_task_enabled -or
               $policy.automation.notifications_enabled -or
@@ -434,3 +438,44 @@ jobs:
             ConvertFrom-Json
           if ($off.recorded) { throw 'El observador no se apagó.' }
           Write-Host 'V4.4 E2E SYNTHETIC EVENT + PRIVACY + OFF: PASS'
+
+
+      - name: V4.5 - calendario, reuniones manuales y migración sin scheduler
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_meeting_v45.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas de reunion V4.5' }
+          python -I -m unittest discover -s tests -p 'test_vx_observer_light.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.4' }
+          python -I -m unittest discover -s tests -p 'test_vx_evolution_core.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.3' }
+          python -m compileall -q scripts/vx_evolution_core.py tests/test_vx_meeting_v45.py
+          if ($LASTEXITCODE -ne 0) { throw 'Compileall V4.5 fallo' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx45-inst-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          $core = Join-Path $fixture '.config/kilo/harness/scripts/vx_evolution_core.py'
+          if (!(Test-Path $core)) { throw 'Core V4.5 no instalado globalmente' }
+          $schedule = python -I $core --home $fixture meeting-calendar --cadence monthly --on-date 2026-11-14 --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $schedule.meeting_local_date -ne '2026-12-07' -or
+              $null -ne $schedule.meeting_local_time -or $schedule.scheduler_enabled) {
+            throw 'Calendario mensual V4.5 no coincide con la decisión'
+          }
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (Test-Path $db) { throw 'No inicializar BD ni crear reuniones desde el instalador' }
+          python -I $core --home $fixture init --json
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo init V4.5' }
+          $preview = python -I $core --home $fixture meeting-preview --cadence weekly --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $preview.scheduled -or $preview.meeting_created) {
+            throw 'La vista previa ha programado/creado una reunion'
+          }
+          $status = python -I $core --home $fixture status --json | ConvertFrom-Json
+          if ($status.scheduled_meetings -or !$status.manual_meetings_supported) {
+            throw 'V4.5 debe permitir borradores manuales sin scheduler'
+          }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if (!(Test-Path $db)) { throw 'Rollback no debe eliminar actas SQLite' }
+          Write-Host 'VX REUNION V4.5: CALENDARIO + DB + MANUAL + PRIVACIDAD + ROLLBACK PASS'

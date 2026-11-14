@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VX Evolution Core 4.4: registro global SOLO para Kilo Code.
+"""VX Evolution Core 4.5: registro global SOLO para Kilo Code.
 
 Sin dependencias externas; no invoca modelos, hooks, MCP, comandos Git ni otros
 harnesses. No lee proyectos: solo consume rutas globales de Kilo y metadatos
@@ -8,6 +8,7 @@ introducidos explicitamente. Las propuestas no se aprueban ni publican aqui.
 from __future__ import annotations
 
 import argparse
+import calendar
 import hashlib
 import hmac
 import json
@@ -18,10 +19,13 @@ import secrets
 import sqlite3
 import sys
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, time as dtime, timedelta, timezone
 
-SCHEMA_VERSION = 2
-SUPPORTED_SCHEMAS = (1, 2)
+SCHEMA_VERSION = 3
+SUPPORTED_SCHEMAS = (1, 2, 3)
+MEETING_WEEKDAY = 0  # Lunes; politica confirmada.
+MEETING_WEEKLY_TIME = '09:00'
+MEETING_MONTHLY_TIME = None  # Aun pendiente de decision humana.
 OBSERVER_SIGNALS = ('session_idle', 'session_error', 'session_compacted')
 OBSERVER_HOURLY_CAP = 300
 OBSERVER_FLAG = 'observer-light.flag'
@@ -152,8 +156,8 @@ CREATE TABLE IF NOT EXISTS proposals (
         CHECK(status IN ('pending_review','deferred','rejected','approved','validated','active','rolled_back'))
 );
 CREATE INDEX IF NOT EXISTS ix_proposals_status ON proposals(status,priority);
--- Contratos para versiones, dependencias, decisiones y reuniones FUTURAS.
--- Ninguna accion de CLI activa agentes o aprueba cambios.
+-- Estructura de versiones y relaciones reservada para fases futuras.
+-- V4.5 agrega actas y decisiones manuales; no activa ni publica agentes.
 CREATE TABLE IF NOT EXISTS releases (
     id TEXT PRIMARY KEY, kind TEXT NOT NULL, target TEXT NOT NULL,
     semver TEXT NOT NULL, content_sha256 TEXT NOT NULL,
@@ -194,6 +198,21 @@ CREATE TABLE IF NOT EXISTS observer_counts (
     updated_utc TEXT NOT NULL,
     PRIMARY KEY(hour_utc,signal)
 );
+-- V4.5: agenda congelada en apertura manual; nunca agenda automatica.
+CREATE TABLE IF NOT EXISTS meeting_agenda (
+    meeting_id TEXT NOT NULL REFERENCES meetings(id),
+    proposal_id TEXT NOT NULL REFERENCES proposals(id),
+    added_utc TEXT NOT NULL,
+    PRIMARY KEY(meeting_id, proposal_id)
+);
+CREATE TABLE IF NOT EXISTS meeting_notes (
+    id TEXT PRIMARY KEY,
+    meeting_id TEXT NOT NULL REFERENCES meetings(id),
+    text TEXT NOT NULL,
+    created_utc TEXT NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS ix_meeting_decision_unique
+ON decisions(meeting_id,proposal_id);
 """
 
 def init(home):
@@ -425,30 +444,6 @@ def propose(db, args):
     return {"id": prop_id, "status": "pending_review", "target": target,
             "proposed_version": version, "applied": False, "approved": False}
 
-def meeting_preview(db, cadence):
-    now = datetime.now(timezone.utc)
-    if cadence == "weekly":
-        start = (now - timedelta(days=now.weekday())).date().isoformat()
-        key = now.strftime("%G-W%V")
-    else:
-        start = now.date().replace(day=1).isoformat()
-        key = now.strftime("%Y-%m")
-    recents = db.execute(
-        "SELECT event_type, COUNT(*) n FROM observations WHERE created_utc >= ? "
-        "GROUP BY event_type ORDER BY event_type", (start,)).fetchall()
-    counts = db.execute(
-        "SELECT priority, COUNT(*) n FROM proposals WHERE status='pending_review' "
-        "GROUP BY priority ORDER BY priority").fetchall()
-    proposals = db.execute(
-        "SELECT id,kind,target,title,priority,proposed_version FROM proposals "
-        "WHERE status='pending_review' ORDER BY priority,created_utc LIMIT 5").fetchall()
-    return {"cadence": cadence, "period": key, "start_utc": start,
-            "observations_by_type": {r["event_type"]: r["n"] for r in recents},
-            "pending_by_priority": {r["priority"]: r["n"] for r in counts},
-            "agenda_candidates": [dict(r) for r in proposals],
-            "scheduled": False, "meeting_created": False,
-            "decisions_enabled": False, "changes_applied": False}
-
 def status(db):
     def count(table):
         return db.execute("SELECT COUNT(*) FROM " + table).fetchone()[0]
@@ -461,20 +456,21 @@ def status(db):
                 "status='pending_review'").fetchone()[0],
             "observer_mode": db.execute("SELECT value FROM settings WHERE "
                 "key='observer_mode'").fetchone()[0],
-            "autonomous_promotions": False, "scheduled_meetings": False}
+            "autonomous_promotions": False, "scheduled_meetings": False,
+            "manual_meetings_supported": db.execute("PRAGMA user_version").fetchone()[0] >= 3}
 
 
 def require_observer_v2(db):
     version = db.execute("PRAGMA user_version").fetchone()[0]
-    if version != 2:
+    if version < 2:
         raise VXError("Requiere observer-migrate (backup automatico) antes de V4.4")
 
 
 def migrate_observer(db, home):
     """Migracion explicita 1->2; backup previo sin tocar activos de Kilo."""
     version = db.execute("PRAGMA user_version").fetchone()[0]
-    if version == 2:
-        return {"schema_version": 2, "migrated": False, "backup_created": False}
+    if version >= 2:
+        return {"schema_version": version, "migrated": False, "backup_created": False}
     if version != 1:
         raise VXError("Esquema anterior no reconocido")
     snapshot = backup(db, home)
@@ -583,6 +579,288 @@ def observer_status(db, home):
             "events_without_model_calls": True,
             "scheduler_enabled": False}
 
+
+def require_meetings_v3(db):
+    if db.execute("PRAGMA user_version").fetchone()[0] < 3:
+        raise VXError("Requiere meeting-migrate (backup automatico) antes de V4.5")
+
+
+def migrate_meetings(db, home):
+    """Migracion explicita y monotona de v2 a v3. V1 requiere observer-migrate."""
+    version = db.execute("PRAGMA user_version").fetchone()[0]
+    if version == 3:
+        return {"schema_version": 3, "migrated": False, "backup_created": False,
+                "scheduler_enabled": False}
+    if version != 2:
+        raise VXError("Ejecute observer-migrate de v1 a v2 antes de meeting-migrate")
+    snapshot = backup(db, home)
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        db.execute("""CREATE TABLE IF NOT EXISTS meeting_agenda (
+            meeting_id TEXT NOT NULL REFERENCES meetings(id),
+            proposal_id TEXT NOT NULL REFERENCES proposals(id),
+            added_utc TEXT NOT NULL,
+            PRIMARY KEY(meeting_id, proposal_id))""")
+        db.execute("""CREATE TABLE IF NOT EXISTS meeting_notes (
+            id TEXT PRIMARY KEY,
+            meeting_id TEXT NOT NULL REFERENCES meetings(id),
+            text TEXT NOT NULL,
+            created_utc TEXT NOT NULL)""")
+        db.execute("""CREATE UNIQUE INDEX IF NOT EXISTS ix_meeting_decision_unique
+                      ON decisions(meeting_id,proposal_id)""")
+        db.execute("PRAGMA user_version=3")
+        append_log(db, "meeting_migrate", "core", "v3")
+    return {"schema_version": 3, "migrated": True, "backup_created": True,
+            "backup_filename": snapshot["filename"], "scheduler_enabled": False}
+
+
+def local_today():
+    return datetime.now().astimezone().date()
+
+
+def first_monday(year, month):
+    d = date(year, month, 1)
+    return d + timedelta(days=(MEETING_WEEKDAY - d.weekday()) % 7)
+
+
+def next_month(year, month):
+    return (year + 1, 1) if month == 12 else (year, month + 1)
+
+
+def previous_month(year, month):
+    return (year - 1, 12) if month == 1 else (year, month - 1)
+
+
+def read_local_date(raw):
+    if raw is None:
+        return local_today()
+    try:
+        parsed = date.fromisoformat(raw)
+    except ValueError:
+        raise VXError("Fecha local invalida; usar YYYY-MM-DD") from None
+    if len(raw) != 10:
+        raise VXError("Fecha local debe ser YYYY-MM-DD")
+    return parsed
+
+
+def meeting_calendar(cadence, on_date=None):
+    """Fecha local, sin programar. El mes revisado se cierra el primer lunes siguiente."""
+    today = read_local_date(on_date)
+    if cadence == "weekly":
+        next_day = today + timedelta(days=(MEETING_WEEKDAY - today.weekday()) % 7)
+        if on_date is None and next_day == today:
+            local_clock = datetime.now().astimezone().time()
+            if local_clock >= dtime(9, 0):
+                next_day += timedelta(days=7)
+        year, week, _ = next_day.isocalendar()
+        key = f"{year}-W{week:02d}"
+        review_start = next_day - timedelta(days=7)
+        review_end = next_day
+        local_time = MEETING_WEEKLY_TIME
+    elif cadence == "monthly":
+        first_current = first_monday(today.year, today.month)
+        if today <= first_current:
+            next_day = first_current
+            review_year, review_month = previous_month(today.year, today.month)
+        else:
+            review_year, review_month = today.year, today.month
+            following_y, following_m = next_month(today.year, today.month)
+            next_day = first_monday(following_y, following_m)
+        key = f"{review_year:04d}-{review_month:02d}"
+        review_start = date(review_year, review_month, 1)
+        end_y, end_m = next_month(review_year, review_month)
+        review_end = date(end_y, end_m, 1)
+        local_time = MEETING_MONTHLY_TIME
+    else:
+        raise VXError("Cadencia desconocida")
+    return {
+        "cadence": cadence, "period": key,
+        "meeting_local_date": next_day.isoformat(),
+        "meeting_local_time": local_time,
+        "timezone_policy": "windows_system_local",
+        "review_start_local": review_start.isoformat(),
+        "review_end_exclusive_local": review_end.isoformat(),
+        "scheduler_enabled": False, "notifications_enabled": False,
+        "monthly_hour_confirmed": cadence != "monthly",
+        "collision_policy": "pending_governance",
+    }
+
+
+def meeting_window_utc(schedule):
+    """Windows aplica reglas locales de DST al convertir cada limite calendario."""
+    start = datetime.combine(
+        date.fromisoformat(schedule["review_start_local"]), dtime.min
+    ).astimezone(timezone.utc)
+    end = datetime.combine(
+        date.fromisoformat(schedule["review_end_exclusive_local"]), dtime.min
+    ).astimezone(timezone.utc)
+    return start.isoformat(timespec="seconds"), end.isoformat(timespec="seconds")
+
+
+def meeting_preview(db, cadence, on_date=None):
+    schedule = meeting_calendar(cadence, on_date)
+    start, end = meeting_window_utc(schedule)
+    obs = db.execute(
+        "SELECT event_type,COUNT(*) n FROM observations "
+        "WHERE created_utc >= ? AND created_utc < ? GROUP BY event_type "
+        "ORDER BY event_type", (start, end)).fetchall()
+    pending = db.execute(
+        "SELECT priority,COUNT(*) n FROM proposals WHERE status='pending_review' "
+        "GROUP BY priority ORDER BY priority").fetchall()
+    proposals = db.execute(
+        "SELECT id,kind,target,title,priority,proposed_version FROM proposals "
+        "WHERE status='pending_review' ORDER BY priority,created_utc LIMIT 5").fetchall()
+    return {**schedule, "start_utc": start, "end_utc": end,
+            "observations_by_type": {r["event_type"]: r["n"] for r in obs},
+            "pending_by_priority": {r["priority"]: r["n"] for r in pending},
+            "agenda_candidates": [dict(r) for r in proposals],
+            "scheduled": False, "meeting_created": False,
+            "decisions_enabled": db.execute("PRAGMA user_version").fetchone()[0] >= 3,
+            "changes_applied": False}
+
+
+def prepare_meeting(db, cadence, on_date=None):
+    """Crea borrador por peticion explicita; congela top 5 propuestas actuales."""
+    require_meetings_v3(db)
+    schedule = meeting_calendar(cadence, on_date)
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        existing = db.execute(
+            "SELECT id,status FROM meetings WHERE period_type=? AND period_key=?",
+            (cadence, schedule["period"])).fetchone()
+        if existing:
+            return {"id": existing["id"], "status": existing["status"],
+                    "created": False, "period": schedule["period"],
+                    "scheduler_enabled": False}
+        meeting_id = str(uuid.uuid4())
+        db.execute("INSERT INTO meetings VALUES(?,?,?,?,?)", (
+            meeting_id, cadence, schedule["period"], "in_review", utcnow()))
+        candidates = db.execute(
+            "SELECT id FROM proposals WHERE status='pending_review' "
+            "ORDER BY priority,created_utc LIMIT 5").fetchall()
+        for item in candidates:
+            db.execute("INSERT INTO meeting_agenda VALUES(?,?,?)",
+                       (meeting_id, item["id"], utcnow()))
+        append_log(db, "meeting_prepared_manually", cadence, meeting_id)
+    return {"id": meeting_id, "status": "in_review", "created": True,
+            "period": schedule["period"], "agenda_count": len(candidates),
+            "scheduler_enabled": False, "notifications_enabled": False,
+            "changes_applied": False}
+
+
+def get_meeting(db, meeting_id):
+    require_meetings_v3(db)
+    try:
+        uuid.UUID(meeting_id)
+    except (ValueError, AttributeError):
+        raise VXError("ID de reunion invalido") from None
+    row = db.execute(
+        "SELECT id,period_type,period_key,status,created_utc FROM meetings WHERE id=?",
+        (meeting_id,)).fetchone()
+    if not row:
+        raise VXError("Reunion no encontrada")
+    agenda = db.execute(
+        """SELECT p.id,p.kind,p.target,p.title,p.priority,p.proposed_version,
+                  d.decision,d.decided_utc
+           FROM meeting_agenda a JOIN proposals p ON p.id=a.proposal_id
+           LEFT JOIN decisions d ON d.meeting_id=a.meeting_id AND d.proposal_id=a.proposal_id
+           WHERE a.meeting_id=? ORDER BY p.priority,p.created_utc""",
+        (meeting_id,)).fetchall()
+    notes = db.execute(
+        "SELECT id,text,created_utc FROM meeting_notes WHERE meeting_id=? "
+        "ORDER BY created_utc,id", (meeting_id,)).fetchall()
+    undecided = sum(item["decision"] is None for item in agenda)
+    return {"meeting": dict(row), "agenda": [dict(x) for x in agenda],
+            "notes": [dict(x) for x in notes],
+            "unreviewed": undecided,
+            "scheduled": False, "changes_applied": False,
+            "approval_identity_verified": False}
+
+
+def meeting_note(db, meeting_id, note):
+    require_meetings_v3(db)
+    value = validate_text(note, "nota del acta", 500)
+    with db:
+        row = db.execute("SELECT status FROM meetings WHERE id=?", (meeting_id,)).fetchone()
+        if not row or row["status"] != "in_review":
+            raise VXError("Reunion inexistente o cerrada")
+        note_id = str(uuid.uuid4())
+        db.execute("INSERT INTO meeting_notes VALUES(?,?,?,?)",
+                   (note_id, meeting_id, value, utcnow()))
+        append_log(db, "meeting_note_recorded", "meeting", meeting_id)
+    return {"note_id": note_id, "meeting_id": meeting_id,
+            "status": "noted", "automated": False}
+
+
+def meeting_decide(db, meeting_id, proposal_id, choice):
+    """Se invoca SOLO tras el control interactivo local de terminal."""
+    require_meetings_v3(db)
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        meeting = db.execute(
+            "SELECT status FROM meetings WHERE id=?", (meeting_id,)).fetchone()
+        if not meeting or meeting["status"] != "in_review":
+            raise VXError("La reunion no esta abierta")
+        agenda = db.execute(
+            "SELECT 1 FROM meeting_agenda WHERE meeting_id=? AND proposal_id=?",
+            (meeting_id, proposal_id)).fetchone()
+        if not agenda:
+            raise VXError("La propuesta no forma parte de esta agenda")
+        if db.execute(
+            "SELECT 1 FROM decisions WHERE meeting_id=? AND proposal_id=?",
+            (meeting_id, proposal_id)).fetchone():
+            raise VXError("Propuesta ya decidida en esta reunion")
+        row = db.execute(
+            "SELECT status FROM proposals WHERE id=?", (proposal_id,)).fetchone()
+        if not row or row["status"] not in ("pending_review",):
+            raise VXError("Propuesta no disponible para aprobar en esta reunion")
+        decision_id = str(uuid.uuid4())
+        db.execute("INSERT INTO decisions VALUES(?,?,?,?,?,?)",
+                   (decision_id, proposal_id, meeting_id, choice, utcnow(),
+                    "local_operator_unverified"))
+        next_state = {"approved": "approved", "rejected": "rejected",
+                      "deferred": "pending_review",
+                      "revision_requested": "pending_review"}[choice]
+        db.execute("UPDATE proposals SET status=? WHERE id=?",
+                   (next_state, proposal_id))
+        append_log(db, "meeting_decision_recorded", "decision", decision_id)
+    return {"decision_id": decision_id, "decision": choice, "meeting_id": meeting_id,
+            "proposal_status": next_state, "activation_allowed": False,
+            "agent_or_skill_changed": False,
+            "identity_verified": False, "actor": "local_operator_unverified"}
+
+
+def meeting_close(db, meeting_id):
+    require_meetings_v3(db)
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        record = get_meeting(db, meeting_id)
+        if record["meeting"]["status"] != "in_review":
+            raise VXError("Reunion no abierta")
+        if record["unreviewed"]:
+            raise VXError("Quedan puntos sin decision; no cerrar ni aprobar por silencio")
+        db.execute("UPDATE meetings SET status='closed' WHERE id=?", (meeting_id,))
+        append_log(db, "meeting_closed_manually", "meeting", meeting_id)
+    return {"meeting_id": meeting_id, "status": "closed",
+            "unreviewed": 0, "scheduler_enabled": False,
+            "changes_applied": False}
+
+
+def local_confirmation(action, description):
+    """No es autenticacion; requiere teclado local interactivo y accion deliberada."""
+    if not sys.stdin.isatty():
+        raise VXError("Para decidir/cerrar use una terminal interactiva local; sin TTY denegado")
+    token = "VX-" + secrets.token_hex(3).upper()
+    print("Confirmacion local de " + action + ": " + description, file=sys.stderr)
+    print("No verifica identidad ni autoriza publicar versiones.", file=sys.stderr)
+    try:
+        reply = input("Escriba " + token + " para confirmar: ")
+    except (EOFError, KeyboardInterrupt):
+        raise VXError("Confirmacion cancelada") from None
+    if reply.strip() != token:
+        raise VXError("Confirmacion no coincide")
+    return True
+
 def backup(db, home):
     backupdir = storage(home) / "backups"
     backupdir.mkdir(parents=True, exist_ok=True)
@@ -602,12 +880,12 @@ def backup(db, home):
             "restore_automatic": False}
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="VX Evolution 4.3 - exclusivo Kilo Code")
+    parser = argparse.ArgumentParser(description="VX Evolution 4.5 - exclusivo Kilo Code")
     parser.add_argument("--home", default=str(Path.home()),
         help="HOME de Kilo; usar rutas de prueba solo en CI")
     sub = parser.add_subparsers(dest="command", required=True)
     for name in ("init", "status", "inventory-sync", "integrity", "backup",
-                 "observer-migrate", "observer-status"):
+                 "observer-migrate", "observer-status", "meeting-migrate"):
         p = sub.add_parser(name)
         p.add_argument("--json", action="store_true")
     p = sub.add_parser("observer-mode")
@@ -635,26 +913,55 @@ def main(argv=None):
     p.add_argument("--version")
     p.add_argument("--observation")
     p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-calendar")
+    p.add_argument("--cadence", choices=("weekly", "monthly"), default="weekly")
+    p.add_argument("--on-date", help="Fecha LOCAL YYYY-MM-DD; vista previa solamente")
+    p.add_argument("--json", action="store_true")
     p = sub.add_parser("meeting-preview")
     p.add_argument("--cadence", choices=("weekly", "monthly"), default="weekly")
+    p.add_argument("--on-date")
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-prepare")
+    p.add_argument("--cadence", choices=("weekly", "monthly"), required=True)
+    p.add_argument("--on-date", help="Opcional para reproducir ventana; no programa")
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-view")
+    p.add_argument("--id", required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-note")
+    p.add_argument("--id", required=True)
+    p.add_argument("--text", required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-decide")
+    p.add_argument("--id", required=True)
+    p.add_argument("--proposal", required=True)
+    p.add_argument("--decision", choices=("approved","rejected","deferred","revision_requested"),
+                   required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("meeting-close")
+    p.add_argument("--id", required=True)
     p.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
     try:
         home = home_path(args.home)
         if args.command == "init":
             result = init(home)
+        elif args.command == "meeting-calendar":
+            result = meeting_calendar(args.cadence, args.on_date)
         elif args.command == "status" and not db_path(home).is_file():
             result = {"initialized": False, "engine": "VX Evolution Core",
                       "platform": "Kilo Code only", "writes": 0}
         else:
-            readonly = args.command in ("status", "meeting-preview", "integrity",
-                                        "observer-report", "observer-status")
+            readonly = args.command in ("status", "meeting-preview", "meeting-view",
+                                        "integrity", "observer-report", "observer-status")
             db = connect(home, readonly=readonly)
             try:
                 if args.command == "status":
                     result = status(db)
                 elif args.command == "observer-migrate":
                     result = migrate_observer(db, home)
+                elif args.command == "meeting-migrate":
+                    result = migrate_meetings(db, home)
                 elif args.command == "observer-status":
                     result = observer_status(db, home)
                 elif args.command == "observer-mode":
@@ -672,7 +979,25 @@ def main(argv=None):
                 elif args.command == "propose":
                     result = propose(db, args)
                 elif args.command == "meeting-preview":
-                    result = meeting_preview(db, args.cadence)
+                    result = meeting_preview(db, args.cadence, args.on_date)
+                elif args.command == "meeting-prepare":
+                    result = prepare_meeting(db, args.cadence, args.on_date)
+                elif args.command == "meeting-view":
+                    result = get_meeting(db, args.id)
+                elif args.command == "meeting-note":
+                    result = meeting_note(db, args.id, args.text)
+                elif args.command == "meeting-decide":
+                    if not any(x["id"] == args.proposal for x in get_meeting(
+                            db, args.id)["agenda"]):
+                        raise VXError("Propuesta no pertenece a la agenda")
+                    local_confirmation("decision", args.decision + " / " + args.proposal)
+                    result = meeting_decide(db, args.id, args.proposal, args.decision)
+                elif args.command == "meeting-close":
+                    state = get_meeting(db, args.id)
+                    if state["unreviewed"]:
+                        raise VXError("Quedan puntos sin decision")
+                    local_confirmation("cierre", args.id)
+                    result = meeting_close(db, args.id)
                 elif args.command == "integrity":
                     check = db.execute("PRAGMA quick_check").fetchone()[0]
                     result = {"database": "ok" if check == "ok" else "error",
@@ -687,7 +1012,7 @@ def main(argv=None):
         if args.json:
             print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         else:
-            print("=== VX EVOLUTION CORE V4.3 | KILO CODE ONLY ===")
+            print("=== VX EVOLUTION CORE V4.5 | KILO CODE ONLY ===")
             for key, value in result.items():
                 print(f"{key}: {json.dumps(value, ensure_ascii=False)}")
         return 0

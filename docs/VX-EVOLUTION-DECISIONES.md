@@ -9,11 +9,11 @@
 | VX-D03 | Reunión semanal y cierre mensual global | **CONFIRMADA** | Los dos tipos existen en contrato; ejecución automática aún no implementada |
 | VX-D04 | En las reuniones el usuario revisa y aprueba propuestas | **CONFIRMADA** | Los agentes solo proponen; V4.3 no implementa decisiones |
 | VX-D05 | Día/hora y zona horaria de reunión semanal | **CONFIRMADA, NO PROGRAMADA** | Lunes a las 09:00, horario local del equipo Windows (`system_local`). No programar ni notificar hasta implementar, probar y recibir aprobación expresa en V4.5. Política de diseño: `config/vx-reunion-policy.v1.json` |
-| VX-D06 | Día/regla de cierre mensual | **PENDIENTE** | Alternativas: último día hábil o primer día hábil siguiente |
+| VX-D06 | Día/regla de cierre mensual | **CONFIRMADA, NO PROGRAMADA** | Primer lunes del mes siguiente; revisar el mes anterior completo. Hora mensual **NO CONFIRMADA**. Sin scheduler hasta nuevas pruebas y aprobación explícita |
 | VX-D07 | Política de retención y borrado | **PENDIENTE** | Propuesta: observaciones detalladas 90 días, agregados y decisiones con histórico versionado; no borrar nada hasta definir |
 | VX-D08 | Única PC Windows o varias instalaciones Kilo | **PENDIENTE** | Una sola PC permite SQLite local sin sincronización; multi-PC requiere otro diseño |
 | VX-D09 | Captura ligera de eventos Kilo y nivel de detalle | **IMPLEMENTADA PARCIALMENTE, OPT-IN** | V4.4: plugin global opcional, apagado por defecto; solo contadores horarios de idle/error/compacted sin payload. La captura real de resultados, correcciones y calidad de tareas sigue pendiente y requerirá revisión de privacidad |
-| VX-D10 | Identidad y mecanismo para registrar aprobación | **PENDIENTE DE DISEÑO** | Revisión explícita en sesión vs interfaz dedicada; no deducir aprobación del silencio |
+| VX-D10 | Identidad y mecanismo para registrar aprobación | **IMPLEMENTACIÓN PARCIAL, IDENTIDAD NO VERIFICADA** | V4.5: decisiones manuales desde terminal interactiva con confirmación efímera y registro en SQLite; no equivale a autenticación fuerte ni permiso para publicar agentes. V4.7 necesita comprobación adicional |
 | VX-D11 | Condiciones para ascenso, contratación, fusión y jubilación de agentes | **PENDIENTE** | Métricas reales, auditor independiente, evaluación negativa y rollback |
 | VX-D12 | Reconciliar 11 agentes compartidos y 19 limites steps altos | **PENDIENTE DE EJECUCIÓN** | Mantener auditor V4.2 como pista paralela sin modificar configuración privada |
 
@@ -22,7 +22,8 @@
 - Reunión VX global: **cada lunes a las 09:00**.
 - Zona horaria: **la configurada en Windows en el equipo al momento de ejecutar**; no fijar Europe/Madrid, zona geográfica o desplazamiento UTC, y respetar el cambio estacional que aplique Windows.
 - **Solo especificación hasta V4.5**: no se crean tareas programadas, calendarios, avisos ni reuniones desde V4.3. `meeting-preview` actual calcula periodos en UTC; la hora local requiere implementación y prueba en V4.5.
-- El cierre mensual mantiene día y horario pendientes (VX-D06).
+- **Cierre mensual VX-D06:** primer lunes del mes siguiente (mes anterior completo). Su hora sigue pendiente de confirmación. No programar nada.
+- **Coincidencia en primer lunes:** aún no se ha confirmado si cierre mensual sustituye a la semanal o se celebran ambas por separado.
 
 ## Límite confirmado de Observer V4.4
 
@@ -60,3 +61,8 @@ VX-D05 está confirmada; antes de V4.4 recoger las respuestas aún pendientes VX
 - Calidad de métricas cuando Kilo no reporte tokens/costo.
 - Corrupción SQLite, apagones, migraciones y backups.
 - Sesgos en evaluaciones que podrían promocionar agentes mediocres o retirar especialistas útiles.
+
+
+## Decisión adicional de V4.5: funcionamiento manual sin scheduler
+
+Se autoriza **implementar y probar** el módulo de reuniones. La activación de cualquier tarea recurrente, notificación o automatización requiere aprobación expresa **posterior**; confirmar día u hora no equivale a activarla. Las decisiones registradas en actas no constituyen autorización técnica de despliegue de agentes/skills. Consultar [VX Reunión V4.5](VX-REUNION-V4.5.md).
