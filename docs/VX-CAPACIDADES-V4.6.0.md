@@ -84,3 +84,5 @@ Los valores `NO_MEDIDO`, `NO_VERIFICADO` y `SIN_DATOS` deben mantenerse hasta re
 Reuniones de VX: lunes 09:00 hora local Windows y primera reunión mensual conjunta con dos secciones. **Scheduler, notificaciones y autopromociones siguen OFF**.
 
 **Continuidad V4.6.1:** la matriz de competencias de solo lectura consume esta línea base sin alterar sus estados de verificación. Véase [VX Matriz V4.6.1](VX-MATRIZ-COMPETENCIAS-V4.6.1.md).
+
+**Verificación CLI local 2026-11-14:** 39 fuentes de agentes/28 nombres, 40 skills, 11 solapamientos y 19 límites altos. Estado de precedencia y rendimiento **NO_VERIFICADO/NO_MEDIDO**. El instalador y el auditor CLI fueron ejecutados en Windows del usuario, pero la interacción posterior dentro de Kilo requiere `/reload` y una prueba independiente.
