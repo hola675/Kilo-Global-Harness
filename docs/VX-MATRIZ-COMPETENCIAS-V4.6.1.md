@@ -1,6 +1,6 @@
 # VX Evolution V4.6.1 — Matriz de competencias y evidencias Kilo
 
-**Versión:** 4.6.1 · **Fecha:** 2026-11-14 · **Alcance:** una sola PC Windows, exclusivamente Kilo Code, HOME global. **Estado:** CI Windows PASS (20 pruebas y smoke/rollback); validación real en Kilo del usuario pendiente. No activa automatizaciones.
+**Versión:** 4.6.1 · **Fecha:** 2026-11-14 · **Alcance:** una sola PC Windows, exclusivamente Kilo Code, HOME global. **Estado:** CI Windows PASS (20 pruebas y smoke/rollback); CLI audit/matriz validado en Windows del usuario 14-11-2026; ejecución interactiva en Kilo después de /reload pendiente. No activa automatizaciones.
 
 ## Contrato de solo lectura
 
@@ -19,7 +19,7 @@ python -I $matriz
 python -I $matriz --json
 ```
 
-El comando Kilo correspondiente es `/vx-matriz`. La ejecución inicial debe devolver todos los componentes con evidencia ausente. **V4.6.0 en el ordenador del usuario aún requiere la ejecución real del auditor**; los datos de CI y la fotografía histórica de 79 entradas no sustituyen esa ejecución.
+El comando Kilo correspondiente es `/vx-matriz`. La ejecución inicial debe devolver todos los componentes con evidencia ausente. **V4.6.0 y V4.6.1 ya se ejecutaron mediante CLI en el Windows real:** 28 agentes, 40 skills, 76 filas y 0 evidencias. Falta validar invocación interactiva del comando en Kilo tras /reload.
 
 ### Evidencias opcionales declaradas (nunca pruebas verificadas)
 
@@ -73,4 +73,4 @@ Estas categorías son **un diseño para futuras evaluaciones**. V4.6.1 no asigna
 - El informe real no debe compartirse públicamente sin revisar nombres de componentes.
 - Un solo ordenador Windows, sin sincronización entre equipos, sin tareas residentes o programadas.
 
-**Siguiente fase:** V4.6.2, diseño de pruebas de ejecución y capacitación comparativa con evidencia reproducible. Sin ascensos ni autopublicación.
+**Continuación:** [V4.6.2 — ensayos sintéticos manuales](VX-ENSAYOS-COMPETENCIAS-V4.6.2.md); aún no equivalen a pruebas reales de agentes, que requerirán ejecución y evaluación independiente. Sin ascensos ni autopublicación.
