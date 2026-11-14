@@ -321,3 +321,46 @@ jobs:
             throw 'Gobernanza de aprobaciones incorrecta'
           }
           Write-Host 'POLITICA VX REUNION: LUNES 09:00 WINDOWS LOCAL; PROGRAMADOR OFF: PASS'
+
+      - name: V4.4 - Observer ligero Kilo-only y migración aislada
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_observer_light.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Falló V4.4 observer tests.' }
+          python -I -m unittest discover -s tests -p 'test_vx_evolution_core.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Regresión en V4.3.' }
+          python -m compileall -q scripts/vx_evolution_core.py tests/test_vx_observer_light.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error compilación Python.' }
+          node --check 'plugins/vx-observer-light.js'
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis plugin Node ESM.' }
+          node --input-type=module -e "import p from './plugins/vx-observer-light.js'; if (p.id !== 'vx-observer-light') process.exit(2); const hook = await p.server({}); if (typeof hook.event !== 'function') process.exit(3); await hook.event({event:{type:'message.updated', properties:{prompt:'CI_SECRET_DO_NOT_LOG'}}});"
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato Kilo event hook inválido.' }
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx44-inst-' + [guid]::NewGuid().ToString('N'))
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          $plugin = Join-Path $fixture '.config/kilo/plugin/vx-observer-light.js'
+          if (Test-Path $plugin) { throw 'Plugin instalado sin opt-in.' }
+          & $installer -Modo Aplicar -RaizUsuario $fixture -InstalarVXObserverV44
+          & $installer -Modo Verificar -RaizUsuario $fixture -InstalarVXObserverV44
+          if (!(Test-Path $plugin)) { throw 'Plugin opt-in ausente.' }
+          $core = Join-Path $fixture '.config/kilo/harness/scripts/vx_evolution_core.py'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (Test-Path $db) { throw 'Instalación V4.4 inicializó BD sin permiso.' }
+          python -I $core --home $fixture init --json
+          if ($LASTEXITCODE -ne 0) { throw 'Inicialización de fixture fallida.' }
+          $state = python -I $core --home $fixture observer-status --json | ConvertFrom-Json
+          if ($state.observer_mode -ne 'off' -or $state.flag_present) {
+            throw 'Captura habilitada sin permiso explícito.'
+          }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if (Test-Path $plugin) { throw 'Rollback no eliminó plugin opt-in.' }
+          if (!(Test-Path $db)) { throw 'Rollback eliminó la BD privada.' }
+          $policy = Get-Content 'config/vx-reunion-policy.v1.json' -Raw | ConvertFrom-Json
+          if ($policy.weekly.enabled -or $policy.automation.scheduled_task_enabled -or
+              $policy.automation.notifications_enabled) {
+            throw 'V4.4 no debe programar vx-reunion.'
+          }
+          Write-Host 'V4.4 PLUGIN OPT-IN + OBSERVADOR INERTE + SQLITE V2 + ROLLBACK: PASS'
