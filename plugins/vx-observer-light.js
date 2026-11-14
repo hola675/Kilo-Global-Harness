@@ -52,7 +52,9 @@ export default {
   server: async () => ({
     event: async ({ event }) => {
       // El hook se llama para MUCHOS eventos; no inspeccionar otros payloads.
-      const signal = TYPES[event?.type];
+      const kind = event?.type;
+      const signal = typeof kind === "string" && Object.hasOwn(TYPES, kind)
+        ? TYPES[kind] : undefined;
       if (!signal) return;
       if (!existsSync(FLAG) || !existsSync(CORE)) return;
       const now = Date.now();
