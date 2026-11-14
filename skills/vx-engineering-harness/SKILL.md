@@ -3,7 +3,7 @@ name: vx-engineering-harness
 description: "Dirigir tareas complejas de desarrollo autónomo de extremo a extremo en Kilo: diagnóstico, arquitectura, implementación, Git work branch, pruebas, revisión, integración a main y cierre verificable; activar para tareas de programación multi-etapa o coordinación de agentes, no para preguntas rápidas."
 ---
 
-# VX Engineering Harness V3
+# VX Engineering Harness V4.3 (origen V3)
 
 **Global-only:** nunca crear `.kilo`, `.agents`, `.kilocode`, `AGENTS.md`, MCP o skills de Kilo dentro del repositorio activo.
 
@@ -53,3 +53,8 @@ Al terminar subagentes revisa sus hallazgos contra el árbol y la revisión Git 
 - Compara identidades, modo, `steps`, permisos básicos y campos solapados. Los prompts, modelos y descripciones nunca se imprimen.
 - Un valor distinto no demuestra por sí mismo un fallo: Kilo puede fusionar propiedades por precedencia. No borres agentes ni sustituyas configuraciones privadas sin revisión, copia de seguridad y pruebas reales.
 - El auditor no consume modelos ni escribe archivos; cualquier migración futura requiere un plan independiente, pruebas y rollback.
+
+
+## Observación selectiva V4.3
+
+VX Evolution pertenece exclusivamente a Kilo. No cargar el skill de gobernanza para tareas triviales. Después de una corrección importante o un fallo repetido, ofrecer una observación breve, neutra y verificada mediante /vx-observer, sin copiar detalles de clientes. El historial global se escribe solo tras invocación explícita; ninguna propuesta se aprueba o instala automáticamente. Las reuniones semanales/mensuales no están programadas hasta V4.5.
