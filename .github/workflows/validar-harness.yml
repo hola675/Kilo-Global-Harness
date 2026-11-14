@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Obtener codigo
         uses: actions/checkout@v4
+      - name: Python 3.13 para VX Evolution
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
       - name: Analisis estatico y smoke test aislado
         shell: pwsh
         run: |
@@ -251,3 +255,14 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fresh -BackupFolder $backup.FullName
           if (Test-Path $installed) { throw 'Rollback no retiro auditor V4.2.' }
           Write-Host 'V4.2 RECONCILIACION + NO SECRETOS + INSTALACION + ROLLBACK: PASS'
+
+      - name: V4.3 - probar VX Evolution Core sin HOME real
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python --version
+          python -I -m unittest discover -s tests -p test_vx_evolution_core.py -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron las pruebas de VX Evolution Core' }
+          python -m compileall -q scripts/vx_evolution_core.py tests/test_vx_evolution_core.py
+          if ($LASTEXITCODE -ne 0) { throw 'Falló compileall VX Evolution' }
+          Write-Host 'VX EVOLUTION CORE V4.3: PASS'
