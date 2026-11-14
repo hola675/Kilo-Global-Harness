@@ -82,3 +82,5 @@ Los valores `NO_MEDIDO`, `NO_VERIFICADO` y `SIN_DATOS` deben mantenerse hasta re
 **V4.6.1:** matriz de capacidad con evidencias, puntuación defendible y casos de prueba; ningún nivel de agente se asigna sin revisión externa. **V4.6.2:** capacitación candidata y comparación con baseline; **V4.6.3:** auditoría organizativa, necesidades de jefes/subordinados y propuestas de reestructuración, con aprobación humana previa a cualquier cambio.
 
 Reuniones de VX: lunes 09:00 hora local Windows y primera reunión mensual conjunta con dos secciones. **Scheduler, notificaciones y autopromociones siguen OFF**.
+
+**Continuidad V4.6.1:** la matriz de competencias de solo lectura consume esta línea base sin alterar sus estados de verificación. Véase [VX Matriz V4.6.1](VX-MATRIZ-COMPETENCIAS-V4.6.1.md).
