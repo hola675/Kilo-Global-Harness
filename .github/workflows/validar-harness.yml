@@ -226,6 +226,7 @@ jobs:
             throw 'No identifica coincidencias o pasos excesivos.'
           }
           $a = @($report.coincidencias)[0]
+          Write-Host ('FIXTURE V4.2: ' + ($a | ConvertTo-Json -Depth 12 -Compress))
           foreach ($field in @('steps','mode','permission.edit')) {
             $hit = @($a.campos_solapados | Where-Object { $_.campo -eq $field })
             if ($hit.Count -ne 1 -or $hit[0].estado -ne 'DIFERENCIA_EXPLICITA') {
