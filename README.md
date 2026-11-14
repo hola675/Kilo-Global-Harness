@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Code Global Harness V4.5.1
 
-**Versión del código:** 4.5.1 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5 añade reuniones manuales y calendario lógico; su instalación y el runtime Kilo del usuario requieren verificación. Ninguna reunión automática está habilitada.
+**Versión del código:** 4.5.1 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **migración SQLite v4 y calendario en el Windows del usuario pendientes de verificar**. V4.6 es el siguiente hito de implementación; ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -10,6 +10,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
+- **Roadmap canónico:** [VX Evolution — estado verificado y fases V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md). No confundir código/CI con validación del perfil Windows.
 - **VX Reunión V4.5:** cierre mensual y semanal en **una sesión conjunta el primer lunes a las 09:00 hora local Windows**, con dos secciones; resto de lunes, solo semanal. SQLite v4, calendario, agendas, notas y decisiones manuales; sin scheduler, autopromociones ni notificaciones.
 - **VX Observer V4.4:** captura opcional de tres señales Kilo con contadores horarios privados, sin mensajes ni llamadas a modelos.
 - **VX Evolution V4.3:** motor global Kilo-only de inventario, observaciones explícitas, propuestas de versiones y vista previa de reuniones; ninguna aprobación o instalación automática.
@@ -123,6 +124,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [VX Observer V4.4: instalación opt-in, privacidad, migración y pruebas](docs/VX-OBSERVER-V4.4.md)
 - [VX Reunión V4.5: fechas locales, actas y decisiones manuales](docs/VX-REUNION-V4.5.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
+- [Roadmap maestro VX Evolution: estado real, brechas y plan V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md)
 - [Política versionada de diseño para reunión semanal (desactivada)](config/vx-reunion-policy.v1.json)
 - [Guía de equipos V4: seguridad, fallos y prueba funcional](docs/OPERACION-EQUIPOS-V4.md)
 - [Registro V4 de agentes y perfiles](registry/vx-agent-registry-v4.json)
@@ -214,11 +216,21 @@ python -I $vx meeting-preview --cadence monthly --json
 
 Para crear **voluntariamente** un borrador de acta: `meeting-prepare --cadence weekly|monthly --json`. Para consultar usar `meeting-view --id UUID --json`. Las decisiones necesitan una terminal interactiva local y no activan upgrades; ver [guía V4.5](docs/VX-REUNION-V4.5.md).
 
+## Siguiente fase — V4.6: capacitación y auditoría con evidencia
+
+**Estado: PLANIFICADA, NO IMPLEMENTADA.** Primero verificar V4.5.1 y SQLite v4 en el Windows real (sin preparar reuniones ni activar scheduler), después construir **V4.6.0**: diagnóstico **solo lectura** del inventario global de agentes/skills Kilo y matriz inicial de capacidades verificables.
+
+La capacitación priorizará mejorar skills y especialistas existentes; la auditoría recomendará consolidación, delegación o contratación **solo con evidencia y evaluación independiente**. No introducir agentes, jerarquías, permisos, prompts, MCP ni cambios operativos automáticamente. Los contadores `session_idle` y `session_error` de V4.4 no demuestran calidad.
+
+El roadmap, las puertas de validación, los criterios de aceptación, las fases 4.6.0–4.6.3 y las decisiones pendientes se mantienen en [`docs/VX-EVOLUTION-ROADMAP.md`](docs/VX-EVOLUTION-ROADMAP.md). El cierre mensual sigue siendo una **única sesión el primer lunes a las 09:00, con dos secciones**. Programador y notificaciones permanecen **OFF**.
+
 ## V4.5.1 — Primera reunión conjunta del mes
 
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **2026-11-14 (documentación/roadmap, sin cambios de runtime):** evaluación del cierre V4.5.1 y plan V4.6 con subfases de capacitación, auditoría, pruebas y controles; bloqueo de scheduler conservado.
 
 - **4.5.1 · 2026-11-14:** sesión conjunta con dos secciones, migración SQLite v4 respaldada, pruebas de coincidencia, privacidad y cierre indivisible; programador OFF.
 
