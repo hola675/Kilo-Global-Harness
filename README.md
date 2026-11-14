@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.5
+# VECIDYA · Kilo Code Global Harness V4.5.1
 
-**Versión del código:** 4.5.0 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5 añade reuniones manuales y calendario lógico; su instalación y el runtime Kilo del usuario requieren verificación. Ninguna reunión automática está habilitada.
+**Versión del código:** 4.5.1 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5 añade reuniones manuales y calendario lógico; su instalación y el runtime Kilo del usuario requieren verificación. Ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -10,7 +10,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
-- **VX Reunión V4.5:** cierre mensual primer lunes del mes siguiente (hora pendiente), semanal lunes 09:00 local Windows. SQLite v3, calendario, agendas, notas y decisiones manuales; sin scheduler, autopromociones ni notificaciones.
+- **VX Reunión V4.5:** cierre mensual y semanal en **una sesión conjunta el primer lunes a las 09:00 hora local Windows**, con dos secciones; resto de lunes, solo semanal. SQLite v4, calendario, agendas, notas y decisiones manuales; sin scheduler, autopromociones ni notificaciones.
 - **VX Observer V4.4:** captura opcional de tres señales Kilo con contadores horarios privados, sin mensajes ni llamadas a modelos.
 - **VX Evolution V4.3:** motor global Kilo-only de inventario, observaciones explícitas, propuestas de versiones y vista previa de reuniones; ninguna aprobación o instalación automática.
 - **Reconciliación V4.2 (solo diagnóstico)**: compara con metadatos seguros las fuentes JSONC y Markdown; no elimina agentes ni cambia sus permisos o pasos.
@@ -199,7 +199,7 @@ No hay instalación de nuevos MCP, cambios en AutoApprove ni servicio residente.
 
 ## V4.5 — VX Reunión (manual y global)
 
-La reunión semanal está definida **lunes a las 09:00 hora local Windows** y el cierre mensual para el **primer lunes del mes siguiente**, pero el cierre **no tiene hora aprobada**. Ambos funcionan inicialmente como calendario y actas manuales; el scheduler continúa **deshabilitado**.
+La reunión semanal está definida **lunes a las 09:00 hora local Windows** y el cierre mensual para el **primer lunes del mes siguiente**, pero el cierre se integra con la semanal en **una única sesión el primer lunes a las 09:00**, con dos secciones independientes. El scheduler continúa **deshabilitado**.
 
 ```powershell
 $vx = Join-Path $HOME '.config/kilo/harness/scripts/vx_evolution_core.py'
@@ -214,7 +214,13 @@ python -I $vx meeting-preview --cadence monthly --json
 
 Para crear **voluntariamente** un borrador de acta: `meeting-prepare --cadence weekly|monthly --json`. Para consultar usar `meeting-view --id UUID --json`. Las decisiones necesitan una terminal interactiva local y no activan upgrades; ver [guía V4.5](docs/VX-REUNION-V4.5.md).
 
+## V4.5.1 — Primera reunión conjunta del mes
+
+Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
+
 ## Changelog
+
+- **4.5.1 · 2026-11-14:** sesión conjunta con dos secciones, migración SQLite v4 respaldada, pruebas de coincidencia, privacidad y cierre indivisible; programador OFF.
 
 - **4.5.0 · 2026-11-14:** calendario local de reuniones, cierre del mes anterior primer lunes siguiente, esquema SQLite v3 con migración backup, agendas de cinco propuestas, notas, decisiones y actas manuales; pruebas Windows. No crea automatizaciones.
 

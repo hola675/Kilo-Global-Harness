@@ -311,8 +311,10 @@ jobs:
             throw 'La zona horaria no refleja el equipo Windows'
           }
           if ($policy.monthly.day_rule -ne 'first_monday_next_month' -or
-              $null -ne $policy.monthly.local_time) {
-            throw 'El cierre mensual debe ser primer lunes siguiente, sin hora confirmada'
+              $policy.monthly.local_time -ne '09:00' -or
+              !$policy.joint_session.one_session -or
+              !$policy.joint_session.two_independent_sections) {
+            throw 'Cierre mensual debe ser una sola sesion lunes 09:00 con dos secciones'
           }
           if ($policy.weekly.enabled -or $policy.monthly.enabled -or
               $policy.automation.scheduled_task_enabled -or
@@ -459,7 +461,8 @@ jobs:
           if (!(Test-Path $core)) { throw 'Core V4.5 no instalado globalmente' }
           $schedule = python -I $core --home $fixture meeting-calendar --cadence monthly --on-date 2026-11-14 --json | ConvertFrom-Json
           if ($LASTEXITCODE -ne 0 -or $schedule.meeting_local_date -ne '2026-12-07' -or
-              $null -ne $schedule.meeting_local_time -or $schedule.scheduler_enabled) {
+              $schedule.meeting_local_time -ne '09:00' -or
+              $schedule.session_mode -ne 'joint' -or $schedule.scheduler_enabled) {
             throw 'Calendario mensual V4.5 no coincide con la decisión'
           }
           $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
@@ -479,3 +482,54 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           if (!(Test-Path $db)) { throw 'Rollback no debe eliminar actas SQLite' }
           Write-Host 'VX REUNION V4.5: CALENDARIO + DB + MANUAL + PRIVACIDAD + ROLLBACK PASS'
+
+      - name: V4.5.1 - reunion conjunta sin duplicación ni programador
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_joint_meeting_v451.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Pruebas reunion conjunta fallaron' }
+          python -I -m unittest discover -s tests -p 'test_vx_meeting_v45.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.5' }
+          python -I -m unittest discover -s tests -p 'test_vx_observer_light.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.4' }
+          python -I -m unittest discover -s tests -p 'test_vx_evolution_core.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.3' }
+          $policy = Get-Content 'config/vx-reunion-policy.v1.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($policy.weekly.local_time -ne '09:00' -or
+              $policy.monthly.local_time -ne '09:00' -or
+              $policy.monthly.day_rule -ne 'first_monday_next_month') {
+            throw 'Horario local confirmado incorrecto'
+          }
+          if (!$policy.joint_session.one_session -or
+              !$policy.joint_session.two_independent_sections -or
+              $policy.joint_session.local_time -ne '09:00' -or
+              (($policy.joint_session.section_order -join ',') -ne 'monthly,weekly')) {
+            throw 'La politica ya no representa una sesion de dos secciones'
+          }
+          if ($policy.weekly.enabled -or $policy.monthly.enabled -or
+              $policy.joint_session.enabled -or
+              $policy.automation.scheduled_task_enabled -or
+              $policy.automation.notifications_enabled -or
+              $policy.automation.autonomous_meeting_enabled) {
+            throw 'PROHIBIDO activar scheduler/notificaciones sin nueva aprobacion'
+          }
+          $core = (Resolve-Path 'scripts/vx_evolution_core.py').Path
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx451-' + [guid]::NewGuid().ToString('N'))
+          $data = python -I $core --home $fixture meeting-joint-calendar --on-date 2026-11-14 --json |
+            ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $data.local_date -ne '2026-12-07' -or
+              $data.local_time -ne '09:00' -or $data.session_count -ne 1 -or
+              $data.acta_sections -ne 2 -or $data.scheduler_enabled) {
+            throw 'Calendario conjunto incorrecto'
+          }
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (Test-Path $db) { throw 'Vista previa escribio SQLite inesperadamente' }
+          python -I $core --home $fixture init --json
+          if ($LASTEXITCODE -ne 0) { throw 'Init fixture fallo' }
+          $status = python -I $core --home $fixture status --json | ConvertFrom-Json
+          if ($status.schema_version -ne 4 -or !$status.joint_sessions_supported -or
+              $status.scheduled_meetings) { throw 'SQLite v4 o politica OFF no confirmada' }
+          python -I $core --home $fixture integrity --json
+          if ($LASTEXITCODE -ne 0) { throw 'Integridad SQLite fallo' }
+          Write-Host 'V4.5.1 UNA SESION + DOS SECCIONES + SQLITE V4 + SCHEDULER OFF: PASS'

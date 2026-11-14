@@ -9,7 +9,7 @@
 | VX-D03 | Reunión semanal y cierre mensual global | **CONFIRMADA** | Los dos tipos existen en contrato; ejecución automática aún no implementada |
 | VX-D04 | En las reuniones el usuario revisa y aprueba propuestas | **CONFIRMADA** | Los agentes solo proponen; V4.3 no implementa decisiones |
 | VX-D05 | Día/hora y zona horaria de reunión semanal | **CONFIRMADA, NO PROGRAMADA** | Lunes a las 09:00, horario local del equipo Windows (`system_local`). No programar ni notificar hasta implementar, probar y recibir aprobación expresa en V4.5. Política de diseño: `config/vx-reunion-policy.v1.json` |
-| VX-D06 | Día/regla de cierre mensual | **CONFIRMADA, NO PROGRAMADA** | Primer lunes del mes siguiente; revisar el mes anterior completo. Hora mensual **NO CONFIRMADA**. Sin scheduler hasta nuevas pruebas y aprobación explícita |
+| VX-D06 | Cierre mensual y coincidencia con semanal | **CONFIRMADA, NO PROGRAMADA** | Primer lunes del mes siguiente a las 09:00 hora local Windows; **una sola sesión** con sección mensual y sección semanal, en ese orden. Scheduler apagado hasta nueva autorización expresa |
 | VX-D07 | Política de retención y borrado | **PENDIENTE** | Propuesta: observaciones detalladas 90 días, agregados y decisiones con histórico versionado; no borrar nada hasta definir |
 | VX-D08 | Única PC Windows o varias instalaciones Kilo | **PENDIENTE** | Una sola PC permite SQLite local sin sincronización; multi-PC requiere otro diseño |
 | VX-D09 | Captura ligera de eventos Kilo y nivel de detalle | **IMPLEMENTADA PARCIALMENTE, OPT-IN** | V4.4: plugin global opcional, apagado por defecto; solo contadores horarios de idle/error/compacted sin payload. La captura real de resultados, correcciones y calidad de tareas sigue pendiente y requerirá revisión de privacidad |
@@ -22,8 +22,8 @@
 - Reunión VX global: **cada lunes a las 09:00**.
 - Zona horaria: **la configurada en Windows en el equipo al momento de ejecutar**; no fijar Europe/Madrid, zona geográfica o desplazamiento UTC, y respetar el cambio estacional que aplique Windows.
 - **Solo especificación hasta V4.5**: no se crean tareas programadas, calendarios, avisos ni reuniones desde V4.3. `meeting-preview` actual calcula periodos en UTC; la hora local requiere implementación y prueba en V4.5.
-- **Cierre mensual VX-D06:** primer lunes del mes siguiente (mes anterior completo). Su hora sigue pendiente de confirmación. No programar nada.
-- **Coincidencia en primer lunes:** aún no se ha confirmado si cierre mensual sustituye a la semanal o se celebran ambas por separado.
+- **Cierre mensual VX-D06:** primer lunes del mes siguiente a las 09:00, mes anterior completo, primera sección de una sesión conjunta. No programar nada.
+- **Coincidencia en primer lunes:** confirmada **una única sesión con dos secciones independientes** (mensual y semanal). No duplicar convocatoria ni aprobar por silencio.
 
 ## Límite confirmado de Observer V4.4
 
@@ -66,3 +66,7 @@ VX-D05 está confirmada; antes de V4.4 recoger las respuestas aún pendientes VX
 ## Decisión adicional de V4.5: funcionamiento manual sin scheduler
 
 Se autoriza **implementar y probar** el módulo de reuniones. La activación de cualquier tarea recurrente, notificación o automatización requiere aprobación expresa **posterior**; confirmar día u hora no equivale a activarla. Las decisiones registradas en actas no constituyen autorización técnica de despliegue de agentes/skills. Consultar [VX Reunión V4.5](VX-REUNION-V4.5.md).
+
+## V4.5.1 — Decisión de sesión conjunta
+
+Se confirma lunes a las **09:00 hora local de Windows**, primer lunes del mes siguiente como cierre del mes anterior, **una sola sesión** y **dos secciones** dentro del acta: cierre mensual primero, seguimiento semanal después. En SQLite v4 se implementa como una sesión vinculada a dos secciones, sin duplicación de propuestas; requiere `joint-migrate` explícito con respaldo desde esquema v3. Todas las tareas programadas y notificaciones permanecen desactivadas. El operador deberá autorizar de nuevo cualquier activación futura.
