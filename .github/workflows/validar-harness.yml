@@ -321,3 +321,116 @@ jobs:
             throw 'Gobernanza de aprobaciones incorrecta'
           }
           Write-Host 'POLITICA VX REUNION: LUNES 09:00 WINDOWS LOCAL; PROGRAMADOR OFF: PASS'
+
+      - name: V4.4 - Observer ligero Kilo-only y migración aislada
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_observer_light.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Falló V4.4 observer tests.' }
+          python -I -m unittest discover -s tests -p 'test_vx_evolution_core.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Regresión en V4.3.' }
+          python -m compileall -q scripts/vx_evolution_core.py tests/test_vx_observer_light.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error compilación Python.' }
+          node --check 'plugins/vx-observer-light.js'
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis plugin Node ESM.' }
+          node --input-type=module -e "import p from './plugins/vx-observer-light.js'; if (p.id !== 'vx-observer-light') process.exit(2); const hook = await p.server({}); if (typeof hook.event !== 'function') process.exit(3); await hook.event({event:{type:'message.updated', properties:{prompt:'CI_SECRET_DO_NOT_LOG'}}});"
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato Kilo event hook inválido.' }
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx44-inst-' + [guid]::NewGuid().ToString('N'))
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          $plugin = Join-Path $fixture '.config/kilo/plugin/vx-observer-light.js'
+          if (Test-Path $plugin) { throw 'Plugin instalado sin opt-in.' }
+          & $installer -Modo Aplicar -RaizUsuario $fixture -InstalarVXObserverV44
+          & $installer -Modo Verificar -RaizUsuario $fixture -InstalarVXObserverV44
+          if (!(Test-Path $plugin)) { throw 'Plugin opt-in ausente.' }
+          $core = Join-Path $fixture '.config/kilo/harness/scripts/vx_evolution_core.py'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (Test-Path $db) { throw 'Instalación V4.4 inicializó BD sin permiso.' }
+          python -I $core --home $fixture init --json
+          if ($LASTEXITCODE -ne 0) { throw 'Inicialización de fixture fallida.' }
+          $state = python -I $core --home $fixture observer-status --json | ConvertFrom-Json
+          if ($state.observer_mode -ne 'off' -or $state.flag_present) {
+            throw 'Captura habilitada sin permiso explícito.'
+          }
+          if (!$state.plugin_file_present -or $state.kilo_runtime_loaded -ne 'NO_VERIFICADO') {
+            throw 'Estado de plugin/rutime incorrecto.'
+          }
+          $backups = @(Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory)
+          if ($backups.Count -ne 2) {
+            throw 'Dos aplicaciones consecutivas deben producir respaldos diferentes.'
+          }
+          $backup = $backups | Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if (Test-Path $plugin) { throw 'Rollback no eliminó plugin opt-in.' }
+          if (!(Test-Path $db)) { throw 'Rollback eliminó la BD privada.' }
+          $policy = Get-Content 'config/vx-reunion-policy.v1.json' -Raw | ConvertFrom-Json
+          if ($policy.weekly.enabled -or $policy.automation.scheduled_task_enabled -or
+              $policy.automation.notifications_enabled) {
+            throw 'V4.4 no debe programar vx-reunion.'
+          }
+          Write-Host 'V4.4 PLUGIN OPT-IN + OBSERVADOR INERTE + SQLITE V2 + ROLLBACK: PASS'
+
+      - name: V4.4 - evento sintético plugin a SQLite sin datos de sesión
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx44-e2e-' + [guid]::NewGuid().ToString('N'))
+          $coreFolder = Join-Path $fixture '.config/kilo/harness/scripts'
+          New-Item -ItemType Directory -Force -Path $coreFolder | Out-Null
+          Copy-Item 'scripts/vx_evolution_core.py' (Join-Path $coreFolder 'vx_evolution_core.py')
+          $core = Join-Path $coreFolder 'vx_evolution_core.py'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          python -I $core --home $fixture init --json
+          if ($LASTEXITCODE -ne 0) { throw 'Init e2e falló' }
+          python -I $core --home $fixture observer-mode --mode light --json
+          if ($LASTEXITCODE -ne 0) { throw 'Opt-in e2e falló' }
+          # Sobrescribir HOME SOLO del proceso de prueba, nunca del usuario real.
+          $env:USERPROFILE = $fixture
+          $env:HOME = $fixture
+          $probe = Join-Path $env:RUNNER_TEMP 'vx44-probe.mjs'
+          @'
+          import { resolve } from "node:path";
+          import { pathToFileURL } from "node:url";
+          const file = pathToFileURL(resolve("plugins/vx-observer-light.js")).href;
+          const plugin = (await import(file)).default;
+          const hooks = await plugin.server({});
+          await hooks.event({event:{type:"session.idle",properties:{
+            sessionID:"CI_SESSION_PRIVATE_DO_NOT_COPY",prompt:"CI_PROMPT_PRIVATE_DO_NOT_COPY"
+          }}});
+          await hooks.event({event:{type:"session.error",properties:{
+            sessionID:"CI_SESSION_PRIVATE_DO_NOT_COPY",error:"CI_STACK_PRIVATE_DO_NOT_COPY"
+          }}});
+          await hooks.event({event:{type:"message.updated",properties:{
+            content:"CI_MESSAGE_PRIVATE_DO_NOT_COPY"
+          }}});
+          // Kilo mantiene vivo el runtime; no cerrar el proceso de prueba
+          // antes de que los subprocess Python hayan podido registrar la señal.
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          '@ | Set-Content -LiteralPath $probe -Encoding UTF8
+          node $probe
+          if ($LASTEXITCODE -ne 0) { throw 'Error al simular eventos de Kilo' }
+          $found = $false
+          for ($i=0; $i -lt 40; $i++) {
+            Start-Sleep -Milliseconds 250
+            $r = python -I $core --home $fixture observer-report --days 1 --json |
+              ConvertFrom-Json
+            if ($r.signals.session_idle -eq 1 -and $r.signals.session_error -eq 1) {
+              $found = $true
+              break
+            }
+          }
+          if (!$found) { throw 'Los eventos seleccionados no llegaron a SQLite.' }
+          if ($r.signals.PSObject.Properties.Name -contains 'message_updated') {
+            throw 'Se almacenó un evento fuera de la whitelist.'
+          }
+          $rows = python -c "import sqlite3,sys,json; c=sqlite3.connect(sys.argv[1]); print(json.dumps(c.execute('SELECT * FROM observer_counts').fetchall())); c.close()" $db
+          foreach ($secret in @('CI_SESSION_PRIVATE', 'CI_PROMPT_PRIVATE', 'CI_STACK_PRIVATE',
+                                  'CI_MESSAGE_PRIVATE')) {
+            if ($rows -match $secret) { throw "Se filtró payload privado: $secret" }
+          }
+          python -I $core --home $fixture observer-mode --mode off --json
+          $off = python -I $core --home $fixture observer-event --event session_idle --json |
+            ConvertFrom-Json
+          if ($off.recorded) { throw 'El observador no se apagó.' }
+          Write-Host 'V4.4 E2E SYNTHETIC EVENT + PRIVACY + OFF: PASS'

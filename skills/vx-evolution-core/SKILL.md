@@ -3,7 +3,7 @@ name: vx-evolution-core
 description: "Gobernanza global y versionada del ecosistema de agentes y skills de Kilo Code: consultar registro, observaciones, propuestas, capacitación, auditoría organizativa y reuniones VX. Activar solo para solicitudes sobre mejorar o administrar el harness, no en cada tarea de programación."
 ---
 
-# VX Evolution Core V4.3 — exclusivo Kilo Code
+# VX Evolution Core V4.4 — exclusivo Kilo Code
 
 ## Principios
 - Los datos residen en HOME/.config/kilo/vx-evolution/, separados del repositorio activo. Los archivos de runtime Kilo permanecen en sus rutas globales.
@@ -19,13 +19,17 @@ Consultar `status`; crear BD con `init` solo cuando esté autorizado; usar `inve
 
 ## Responsables lógicos
 - `vx-equipo`: coordinación de tareas actuales.
-- `vx-observer`: señales significativas, en V4.3 manual.
+- `vx-observer`: observaciones de calidad manuales; en V4.4 puede contar tres señales del runtime mediante plugin global opcional y explícitamente activado.
 - `vx-upgrade`: cambios/versiones propuestos, sin desplegar.
 - `vx-capacitacion`: mejora de skills en estado candidato.
 - `vx-auditoria-equipo`: análisis de roles, duplicados, jefes/subordinados.
 - `vx-reunion`: revisión de propuestas semanales y cierre mensual.
 
 ## Gates
-Una observación no es verdad hasta revalidarse. Una propuesta `pending_review` no está aprobada. Un hash no es versión semántica. Una tabla `decisions` vacía no representa permiso. No modificar `kilo.jsonc` ni instalar hooks en V4.3.
+Una observación no es verdad hasta revalidarse. Una propuesta `pending_review` no está aprobada. Un hash no es versión semántica. Una tabla `decisions` vacía no representa permiso. No modificar `kilo.jsonc`. La V4.4 permite instalar el plugin exclusivamente global mediante switch del instalador y habilitar contadores con `observer-mode light` tras una petición explícita. Nunca tomar una señal como resultado evaluado.
 
 Documentación fuente: `docs/VX-EVOLUTION-V4.3.md` en la versión de desarrollo del harness; en el HOME instalado usar este skill y los comandos, sin buscar documentos de otros clientes.
+
+## Observabilidad segura V4.4
+
+Consultar `observer-status`, `observer-report --days 7` antes de afirmar que hay datos. Solo esquema SQLite v2; para historial v1, migración `observer-migrate` explícita con backup. El hook no captura tareas terminadas ni métricas de tokens: solo recuenta `session_idle`, `session_error`, `session_compacted`. No crear propuestas, aprobaciones o evaluaciones automáticamente a partir de esos números. La instalación del plugin y la activación son opt-ins separados y reversibles. Ver `docs/VX-OBSERVER-V4.4.md`.

@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  VECIDYA | Kilo Global Harness 4.3 - instalador global, idempotente y reversible.
+  VECIDYA | Kilo Global Harness 4.4 - instalador global, idempotente y reversible.
 .DESCRIPTION
   No instala archivos dentro de ningun repositorio. No altera kilo.jsonc, modelos,
   credenciales, MCP, AutoApprove, steps ni permisos existentes.
@@ -19,6 +19,7 @@ param(
   [ValidateSet('Diagnostico','Simular','Aplicar','Verificar','Restaurar')]
   [string]$Modo = 'Diagnostico',
   [switch]$PausarTaskObserver,
+  [switch]$InstalarVXObserverV44,
   [string]$BackupFolder,
   [switch]$ForzarRestauracion,
   [string]$RaizUsuario
@@ -129,6 +130,14 @@ function Global-Assets {
     Source=(Join-Path $root 'skills/vx-engineering-harness/SKILL.md');
     Target=(Join-Path $skillRoot 'vx-engineering-harness/SKILL.md')
   }
+  # V4.4: plugin opt-in SOLO cuando el operador lo solicita.
+  # Al instalarlo, sigue INERTE hasta activar observer-mode light en la BD.
+  if ($InstalarVXObserverV44) {
+    $assets += [pscustomobject]@{
+      Source=(Join-Path $root 'plugins/vx-observer-light.js');
+      Target=(Join-Path $kiloDir 'plugin/vx-observer-light.js')
+    }
+  }
   # V4.3: nucleo operativo Kilo-only (NO inicializa ni toca la BD privada).
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'scripts/vx_evolution_core.py');
@@ -187,6 +196,7 @@ function Report-State {
   $dups = @(($global + $compatible + $legacy) | Group-Object | Where-Object { $_.Count -gt 1 })
   Write-Host "Skills repetidas por nombre: $($dups.Count)"
   Write-Host "task-observer activa: $(Test-Path $observerPath)"
+  Write-Host "VX Observer instalado: $(Test-Path (Join-Path $kiloDir 'plugin/vx-observer-light.js')) (modo de captura independiente)"
   if (!$RaizUsuario -and $env:APPDATA) {
     $settingsFile = Join-Path $env:APPDATA 'Code/User/settings.json'
     if (Test-Path $settingsFile) {
@@ -280,7 +290,7 @@ if ($Modo -eq 'Verificar') {
 }
 
 # Modo Aplicar; por diseno solo toca rutas globales y archivos VX del paquete.
-$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+$stamp = (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + ([guid]::NewGuid().ToString('N').Substring(0,8))
 $backupDir = Join-Path $backupRoot $stamp
 New-Item -Path $backupDir -ItemType Directory -Force | Out-Null
 $manifest = [ordered]@{
@@ -325,6 +335,6 @@ try {
   Restore-Manifest $backupDir $true
   throw "No se completo Aplicar: $msg"
 }
-Write-Host 'APLICACION V4 COMPLETADA: solo rutas globales; AutoApprove, modelos, MCP y JSONC intactos.' -ForegroundColor Green
+Write-Host 'APLICACION V4.4 COMPLETADA: solo rutas globales; AutoApprove, modelos, MCP y JSONC intactos.' -ForegroundColor Green
 Write-Host "BACKUP PRIVADO (NO SUBIR): $backupDir" -ForegroundColor Yellow
 Write-Host 'Ejecuta -Modo Verificar, luego /reload en Kilo.'

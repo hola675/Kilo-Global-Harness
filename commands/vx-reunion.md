@@ -16,3 +16,6 @@ El resultado de V4.3 es SOLO VISTA PREVIA: no se ha programado calendario, no se
 Cada propuesta necesita evidencia, riesgos, test, rollback y decisión humana: `aprobar/rechazar/aplazar/solicitar revisión`. Hasta que exista el módulo de decisiones V4.5, recoge las respuestas en la conversación sin afirmar que quedaron persistidas en SQLite.
 
 La reunión semanal evalúa operación y capacitación; el cierre mensual evalúa rendimiento, equipos, ascensos y prioridades. No inventes tokens, costos, resultados de tests ni efectividad. Ningún proyecto es fuente exclusiva de estos datos.
+
+
+V4.4 puede proporcionar únicamente un reporte agregado de señales de Kilo mediante `observer-report --days 7 --json`, si el observador está activado. Esos contadores son indicadores operativos débiles, **nunca equivalen a tareas completadas, calidad o fallos verificados**. No hacer del resultado una propuesta automática. Ninguna reunión está programada.

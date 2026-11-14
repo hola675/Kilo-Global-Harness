@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VX Evolution Core 4.3: registro global SOLO para Kilo Code.
+"""VX Evolution Core 4.4: registro global SOLO para Kilo Code.
 
 Sin dependencias externas; no invoca modelos, hooks, MCP, comandos Git ni otros
 harnesses. No lee proyectos: solo consume rutas globales de Kilo y metadatos
@@ -20,7 +20,11 @@ import sys
 import uuid
 from datetime import datetime, timedelta, timezone
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
+SUPPORTED_SCHEMAS = (1, 2)
+OBSERVER_SIGNALS = ('session_idle', 'session_error', 'session_compacted')
+OBSERVER_HOURLY_CAP = 300
+OBSERVER_FLAG = 'observer-light.flag'
 SUBDIR = Path(".config") / "kilo" / "vx-evolution"
 NAME_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]{0,95}$")
 SEMVER_RE = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:[0-9A-Za-z-]+\.)*[0-9A-Za-z-]+)?$")
@@ -69,6 +73,9 @@ def storage(home):
 def db_path(home):
     return storage(home) / "vx-evolution.sqlite3"
 
+def flag_path(home):
+    return storage(home) / OBSERVER_FLAG
+
 def connect(home, create=False, readonly=False):
     path = db_path(home)
     if path.is_symlink() or storage(home).is_symlink():
@@ -95,7 +102,7 @@ def connect(home, create=False, readonly=False):
     if not readonly:
         db.execute("PRAGMA synchronous=FULL")
     version = db.execute("PRAGMA user_version").fetchone()[0]
-    if version not in (SCHEMA_VERSION, 0 if create else -1):
+    if version not in SUPPORTED_SCHEMAS and not (version == 0 and create):
         db.close()
         raise VXError("Version de esquema incompatible; no se migra automaticamente")
     if version == 0 and not create:
@@ -179,6 +186,14 @@ CREATE TABLE IF NOT EXISTS activity_log (
     id TEXT PRIMARY KEY, created_utc TEXT NOT NULL,
     action TEXT NOT NULL, object_type TEXT NOT NULL, object_id TEXT NOT NULL
 );
+-- V4.4: solo contadores horarios; nunca prompts, rutas, errores, tokens ni IDs de sesion.
+CREATE TABLE IF NOT EXISTS observer_counts (
+    hour_utc TEXT NOT NULL,
+    signal TEXT NOT NULL CHECK(signal IN ('session_idle','session_error','session_compacted')),
+    observed_count INTEGER NOT NULL CHECK(observed_count >= 0),
+    updated_utc TEXT NOT NULL,
+    PRIMARY KEY(hour_utc,signal)
+);
 """
 
 def init(home):
@@ -203,14 +218,16 @@ def init(home):
                 db.execute("INSERT INTO settings(key,value) VALUES('observer_mode','off')")
                 db.execute("INSERT INTO settings(key,value) VALUES('retention_policy','pending_governance')")
                 db.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
-            elif current != SCHEMA_VERSION:
+                current = SCHEMA_VERSION
+            elif current not in SUPPORTED_SCHEMAS:
                 raise VXError("Version de datos incompatible")
         if os.name != "nt" and path.is_file():
             os.chmod(path, 0o600)
     finally:
         db.close()
-    return {"initialized": True, "created": not existed, "schema_version": SCHEMA_VERSION,
-            "root": "HOME/.config/kilo/vx-evolution", "observer_mode": "off"}
+    return {"initialized": True, "created": not existed,
+            "schema_version": current, "root": "HOME/.config/kilo/vx-evolution",
+            "observer_mode": "off" if current == 1 else "off"}
 
 def strip_jsonc(data):
     """Parser pequeño: comentarios JSONC y trailing commas sin corromper strings."""
@@ -446,6 +463,126 @@ def status(db):
                 "key='observer_mode'").fetchone()[0],
             "autonomous_promotions": False, "scheduled_meetings": False}
 
+
+def require_observer_v2(db):
+    version = db.execute("PRAGMA user_version").fetchone()[0]
+    if version != 2:
+        raise VXError("Requiere observer-migrate (backup automatico) antes de V4.4")
+
+
+def migrate_observer(db, home):
+    """Migracion explicita 1->2; backup previo sin tocar activos de Kilo."""
+    version = db.execute("PRAGMA user_version").fetchone()[0]
+    if version == 2:
+        return {"schema_version": 2, "migrated": False, "backup_created": False}
+    if version != 1:
+        raise VXError("Esquema anterior no reconocido")
+    snapshot = backup(db, home)
+    with db:
+        db.execute("""CREATE TABLE IF NOT EXISTS observer_counts (
+            hour_utc TEXT NOT NULL,
+            signal TEXT NOT NULL CHECK(signal IN
+              ('session_idle','session_error','session_compacted')),
+            observed_count INTEGER NOT NULL CHECK(observed_count >= 0),
+            updated_utc TEXT NOT NULL,
+            PRIMARY KEY(hour_utc,signal)
+        )""")
+        db.execute("PRAGMA user_version=2")
+        append_log(db, "observer_migrate", "core", "v2")
+    return {"schema_version": 2, "migrated": True,
+            "backup_created": True, "backup_filename": snapshot["filename"],
+            "observer_mode": "off"}
+
+
+def observer_mode(db, home, mode):
+    require_observer_v2(db)
+    flag = flag_path(home)
+    if flag.is_symlink():
+        raise VXError("Flag del observador apunta a symlink")
+    if mode == "light":
+        # El flag se crea SOLO despues de confirmar la configuracion en SQLite.
+        with db:
+            db.execute("UPDATE settings SET value='light' WHERE key='observer_mode'")
+            append_log(db, "observer_mode_light", "core", "observer")
+        tmp = storage(home) / (".observer-" + uuid.uuid4().hex + ".tmp")
+        try:
+            tmp.write_text("vx-observer/1\n", encoding="ascii")
+            if os.name != "nt":
+                os.chmod(tmp, 0o600)
+            os.replace(tmp, flag)
+        finally:
+            if tmp.exists():
+                tmp.unlink()
+    else:
+        # Apagar la captura primero, antes de realizar cualquier nueva escritura SQLite.
+        if flag.exists():
+            flag.unlink()
+        with db:
+            db.execute("UPDATE settings SET value='off' WHERE key='observer_mode'")
+            append_log(db, "observer_mode_off", "core", "observer")
+    return {"observer_mode": mode, "enabled": mode == "light",
+            "events_collected_by_cli": False,
+            "restart_kilo_required_after_plugin_install": True}
+
+
+def observer_event(db, home, signal):
+    """Solo entrada validada; agregados horarios sin informacion de la sesion."""
+    require_observer_v2(db)
+    mode = db.execute("SELECT value FROM settings WHERE key='observer_mode'").fetchone()
+    flag = flag_path(home)
+    if not mode or mode["value"] != "light" or flag.is_symlink() or not flag.is_file():
+        return {"recorded": False, "reason": "observer_off"}
+    if flag.read_text(encoding="ascii") != "vx-observer/1\n":
+        return {"recorded": False, "reason": "invalid_flag"}
+    now = datetime.now(timezone.utc)
+    period = now.strftime("%Y-%m-%dT%H:00Z")
+    with db:
+        db.execute("BEGIN IMMEDIATE")
+        # Revalidar el estado dentro de la transaccion, por si se apago en otro proceso.
+        live = db.execute("SELECT value FROM settings WHERE key='observer_mode'").fetchone()
+        if not live or live["value"] != "light" or not flag.is_file():
+            return {"recorded": False, "reason": "observer_off"}
+        total = db.execute(
+            "SELECT COALESCE(SUM(observed_count),0) FROM observer_counts WHERE hour_utc=?",
+            (period,)).fetchone()[0]
+        if total >= OBSERVER_HOURLY_CAP:
+            return {"recorded": False, "reason": "hourly_cap", "cap": OBSERVER_HOURLY_CAP}
+        db.execute("""INSERT INTO observer_counts(hour_utc,signal,observed_count,updated_utc)
+           VALUES(?,?,1,?) ON CONFLICT(hour_utc,signal) DO UPDATE SET
+           observed_count=observed_count+1,updated_utc=excluded.updated_utc""",
+           (period, signal, utcnow()))
+    return {"recorded": True, "signal": signal, "hour_utc": period,
+            "session_data_stored": False, "tokens_spent": 0}
+
+
+def observer_report(db, days):
+    require_observer_v2(db)
+    after = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%dT%H:00Z")
+    rows = db.execute(
+        "SELECT signal, SUM(observed_count) AS n FROM observer_counts "
+        "WHERE hour_utc >= ? GROUP BY signal ORDER BY signal", (after,)).fetchall()
+    mode = db.execute("SELECT value FROM settings WHERE key='observer_mode'").fetchone()
+    return {"scope": "global_kilo_only", "days": days, "observer_mode": mode["value"],
+            "signals": {r["signal"]: r["n"] for r in rows},
+            "meaning": "eventos del runtime, no numero de tareas completadas ni calidad",
+            "raw_text_stored": False, "session_ids_stored": False,
+            "agent_changes": False, "tokens_measured": False}
+
+
+def observer_status(db, home):
+    version = db.execute("PRAGMA user_version").fetchone()[0]
+    value = db.execute("SELECT value FROM settings WHERE key='observer_mode'").fetchone()
+    installed = (home / ".config" / "kilo" / "plugin" /
+                 "vx-observer-light.js").is_file()
+    return {"schema_version": version, "migration_required": version < 2,
+            "observer_mode": value["value"] if value else "off",
+            "flag_present": flag_path(home).is_file(),
+            "plugin_file_present": installed,
+            "kilo_runtime_loaded": "NO_VERIFICADO",
+            "plugin_activation": "separate-opt-in-installer-switch",
+            "events_without_model_calls": True,
+            "scheduler_enabled": False}
+
 def backup(db, home):
     backupdir = storage(home) / "backups"
     backupdir.mkdir(parents=True, exist_ok=True)
@@ -469,9 +606,19 @@ def main(argv=None):
     parser.add_argument("--home", default=str(Path.home()),
         help="HOME de Kilo; usar rutas de prueba solo en CI")
     sub = parser.add_subparsers(dest="command", required=True)
-    for name in ("init", "status", "inventory-sync", "integrity", "backup"):
+    for name in ("init", "status", "inventory-sync", "integrity", "backup",
+                 "observer-migrate", "observer-status"):
         p = sub.add_parser(name)
         p.add_argument("--json", action="store_true")
+    p = sub.add_parser("observer-mode")
+    p.add_argument("--mode", choices=("off", "light"), required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("observer-event")
+    p.add_argument("--event", choices=OBSERVER_SIGNALS, required=True)
+    p.add_argument("--json", action="store_true")
+    p = sub.add_parser("observer-report")
+    p.add_argument("--days", type=int, choices=(1, 7, 30), default=7)
+    p.add_argument("--json", action="store_true")
     p = sub.add_parser("observe")
     p.add_argument("--type", choices=OBS_TYPES, required=True)
     p.add_argument("--summary", required=True)
@@ -500,11 +647,22 @@ def main(argv=None):
             result = {"initialized": False, "engine": "VX Evolution Core",
                       "platform": "Kilo Code only", "writes": 0}
         else:
-            readonly = args.command in ("status", "meeting-preview", "integrity")
+            readonly = args.command in ("status", "meeting-preview", "integrity",
+                                        "observer-report", "observer-status")
             db = connect(home, readonly=readonly)
             try:
                 if args.command == "status":
                     result = status(db)
+                elif args.command == "observer-migrate":
+                    result = migrate_observer(db, home)
+                elif args.command == "observer-status":
+                    result = observer_status(db, home)
+                elif args.command == "observer-mode":
+                    result = observer_mode(db, home, args.mode)
+                elif args.command == "observer-event":
+                    result = observer_event(db, home, args.event)
+                elif args.command == "observer-report":
+                    result = observer_report(db, args.days)
                 elif args.command == "inventory-sync":
                     result = sync_inventory(db, home)
                 elif args.command == "observe":
