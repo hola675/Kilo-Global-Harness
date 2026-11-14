@@ -1,8 +1,8 @@
 {
   "schema": "vx-reunion-policy/1",
   "scope": "kilo-code-global",
-  "status": "design-confirmed-implementation-pending",
-  "version": "0.1.0",
+  "status": "dates-confirmed-manual-v4.5-no-automation",
+  "version": "0.2.0",
   "weekly": {
     "weekday": "monday",
     "local_time": "09:00",
@@ -11,7 +11,7 @@
     "enabled": false
   },
   "monthly": {
-    "day_rule": null,
+    "day_rule": "first_monday_next_month",
     "local_time": null,
     "timezone_policy": "system_local",
     "enabled": false
@@ -20,7 +20,7 @@
     "scheduled_task_enabled": false,
     "notifications_enabled": false,
     "autonomous_meeting_enabled": false,
-    "activation_gate": "after-v4.5-implementation-tests-and-explicit-approval"
+    "activation_gate": "after-v4.5-tests-runtime-check-and-new-explicit-user-approval"
   },
   "governance": {
     "meeting_decisions_require_explicit_user_approval": true,
@@ -28,9 +28,12 @@
     "independent_of_active_project": true
   },
   "notes": [
-    "Esta politica es una especificacion versionada de diseño, no una configuracion cargada por el runtime V4.3.",
-    "system_local significa la zona horaria configurada en Windows en cada ejecucion, incluidos cambios de horario de verano; no fija Europe/Madrid ni un offset UTC.",
-    "meeting-preview de V4.3 calcula periodos UTC; la logica de horario local se implementara y probara en V4.5.",
-    "No crear tareas de Windows, calendarios, recordatorios ni notificaciones al registrar esta decision."
+    "Reunión semanal: lunes a las 09:00, zona horaria configurada localmente en Windows.",
+    "Cierre mensual: primer lunes del mes siguiente, para revisar el mes anterior.",
+    "La hora del cierre mensual NO ha sido acordada; conservar null, nunca deducir 09:00.",
+    "La coincidencia semanal/mensual del primer lunes NO tiene regla de combinación aprobada.",
+    "Este documento no activa el scheduler; la V4.5 solo crea borradores, actas y decisiones manuales.",
+    "Las decisiones de reuniones no autorizan publicar agentes ni skills; se requiere revisión posterior.",
+    "Antes de instalar tareas programadas en Windows obtener confirmación explícita adicional."
   ]
 }
