@@ -1203,6 +1203,12 @@ def main(argv=None):
                     local_confirmation("decision", args.decision + " / " + args.proposal)
                     result = meeting_decide(db, args.id, args.proposal, args.decision)
                 elif args.command == "meeting-close":
+                    if db.execute("PRAGMA user_version").fetchone()[0] >= 4:
+                        linked = db.execute(
+                            "SELECT 1 FROM meeting_joint_sections WHERE meeting_id=?",
+                            (args.id,)).fetchone()
+                        if linked:
+                            raise VXError("Seccion conjunta: utilice meeting-joint-close")
                     state = get_meeting(db, args.id)
                     if state["unreviewed"]:
                         raise VXError("Quedan puntos sin decision")
