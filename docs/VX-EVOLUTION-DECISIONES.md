@@ -12,7 +12,7 @@
 | VX-D06 | Día/regla de cierre mensual | **PENDIENTE** | Alternativas: último día hábil o primer día hábil siguiente |
 | VX-D07 | Política de retención y borrado | **PENDIENTE** | Propuesta: observaciones detalladas 90 días, agregados y decisiones con histórico versionado; no borrar nada hasta definir |
 | VX-D08 | Única PC Windows o varias instalaciones Kilo | **PENDIENTE** | Una sola PC permite SQLite local sin sincronización; multi-PC requiere otro diseño |
-| VX-D09 | Captura de tareas automática y nivel de detalle | **PENDIENTE DE DISEÑO** | V4.4: plugin global ligero, eventos de cierre/fallo; nunca volcar cada tool call |
+| VX-D09 | Captura ligera de eventos Kilo y nivel de detalle | **IMPLEMENTADA PARCIALMENTE, OPT-IN** | V4.4: plugin global opcional, apagado por defecto; solo contadores horarios de idle/error/compacted sin payload. La captura real de resultados, correcciones y calidad de tareas sigue pendiente y requerirá revisión de privacidad |
 | VX-D10 | Identidad y mecanismo para registrar aprobación | **PENDIENTE DE DISEÑO** | Revisión explícita en sesión vs interfaz dedicada; no deducir aprobación del silencio |
 | VX-D11 | Condiciones para ascenso, contratación, fusión y jubilación de agentes | **PENDIENTE** | Métricas reales, auditor independiente, evaluación negativa y rollback |
 | VX-D12 | Reconciliar 11 agentes compartidos y 19 limites steps altos | **PENDIENTE DE EJECUCIÓN** | Mantener auditor V4.2 como pista paralela sin modificar configuración privada |
@@ -23,6 +23,13 @@
 - Zona horaria: **la configurada en Windows en el equipo al momento de ejecutar**; no fijar Europe/Madrid, zona geográfica o desplazamiento UTC, y respetar el cambio estacional que aplique Windows.
 - **Solo especificación hasta V4.5**: no se crean tareas programadas, calendarios, avisos ni reuniones desde V4.3. `meeting-preview` actual calcula periodos en UTC; la hora local requiere implementación y prueba en V4.5.
 - El cierre mensual mantiene día y horario pendientes (VX-D06).
+
+## Límite confirmado de Observer V4.4
+
+- El plugin no se instala por defecto; requiere `-InstalarVXObserverV44`. Instalarlo no activa captura.
+- Los contadores solo se habilitan mediante `observer-mode --mode light` sobre SQLite v2; se apagan con `observer-mode --mode off`.
+- Los eventos no prueban calidad, tarea completada, capacitación ni fallos de código. No generan propuestas ni promociones.
+- Lunes 09:00 hora local Windows sigue **sin scheduler**; V4.5 no está habilitada.
 
 ## Invariantes confirmados
 
