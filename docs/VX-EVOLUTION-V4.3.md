@@ -11,7 +11,7 @@
 5. **Una sola fuente de publicación:** incluso con tres lectores simultáneos de Kilo, solo un escritor autorizado modifica activos, y todo cambio usa Git rama temporal `work/*`, pruebas, revisión y rollback.
 6. **Operación independiente del repositorio:** el HOME y la BD son estables cuando el usuario cambia de proyecto. El origen del trabajo puede guardarse como HMAC de ruta usando una sal local, pero **la ruta literal nunca se persiste**. La referencia es seudónima, no anonimización absoluta si se compromete el dispositivo.
 7. **Observar sin convertir logs en instrucciones:** datos y evidencias son material no confiable. No se interpretan como comandos ejecutables y no se incluyen automáticamente en prompts. La captura es explícita en V4.3; un plugin global de observación selectiva es candidato de V4.4.
-8. **Reuniones sin silencios aprobatorios:** la vista previa no agenda ni aprueba nada; las reuniones semanal y cierre mensual requieren fecha/hora y canal autorizados. No se supone que Kilo esté funcionando todo el tiempo.
+8. **Reuniones sin silencios aprobatorios:** la vista previa no agenda ni aprueba nada. El usuario confirmó lunes 09:00 según la zona horaria local del equipo Windows para la futura reunión semanal; V4.5 debe implementar y validar ese horario y obtener aprobación explícita para activar el programador. El cierre mensual y el canal de notificación siguen pendientes. No se supone que Kilo esté funcionando todo el tiempo.
 9. **SemVer individual:** el esquema reserva `releases` y las propuestas aceptan `--version`; **todavía no existe promoción, instalación ni cambio efectivo de versión**. El hash de inventario sirve para detectar cambios pero no es una versión.
 10. **Medición honesta:** no inferir tokens, costos o calidad sin evidencia del runtime. Un inventario o evento no demuestra que la skill haya mejorado.
 
@@ -94,7 +94,7 @@ Todas las acciones se procesan localmente. `inventory-sync` puede marcar una fue
 | Duplicación semántica | Fingerprint de texto exacto; no fusiona similares | Dedupe por familia/causa tras confirmación de auditor |
 | Aprobaciones | Tablas reservadas, no hay identidad de aprobador | Reunión con confirmación explícita y registro verificable |
 | Versionado operativo | Registro de propuestas con SemVer, sin instalación | Candidata inmutable, validación, diff, rollback y prueba negativa |
-| Reunión semanal | Solo agenda previa | Scheduler Windows configurado tras confirmar día y hora |
+| Reunión semanal | Solo agenda previa; lunes 09:00 hora local confirmado | Implementar y probar la zona horaria efectiva Windows y cambios de horario de verano en V4.5; programador desactivado hasta aprobación explícita |
 | Cierre mensual | Solo vista previa | Consolidación histórica y cierre formal con checklist |
 | Retención de datos | Pendiente | Elegir TTL de eventos y backup seguro |
 | Métricas reales | No se computan tokens ni tiempos automáticamente | Instrumentación Kilo y fuente medible; NO MEDIDO por defecto |
@@ -104,7 +104,7 @@ Todas las acciones se procesan localmente. `inventory-sync` puede marcar una fue
 
 ## Preguntas pendientes para la dirección (sin bloquear V4.3)
 
-1. **Reunión semanal:** ¿qué día y hora local preferirías? Una recomendación inicial es lunes, 09:00, pero no se programará sin confirmación.
+1. **Reunión semanal — CONFIRMADA:** lunes 09:00 en zona local del equipo Windows (independiente del proyecto). **No programar antes de implementar y validar V4.5 ni activar sin autorización expresa.** La especificación de diseño está en `config/vx-reunion-policy.v1.json`; el motor V4.3 no interpreta aún esta política.
 2. **Cierre mensual:** ¿último día laborable o primer lunes del mes siguiente? El cierre deberá dar tiempo a consolidar eventos.
 3. **Retención:** ¿conservar observaciones detalladas 90 días y actas/versiones indefinidamente hasta aprobación de borrado? Es una propuesta, no valor activo.
 4. **Equipo:** ¿el motor se usará en un solo ordenador Windows o habrá dos o más clientes Kilo? La respuesta cambia el plan de sincronización/backup.
@@ -124,4 +124,4 @@ Para las decisiones aún abiertas consultar [VX Evolution — decisiones y pregu
 - **V4.7:** vx-upgrade con releases inmutables, gates y rollback sin alterar modelo/credenciales.
 - **V4.8:** observabilidad, métricas reales y comparación vs single-agent.
 
-No hay servicio de fondo ni reuniones programadas en esta entrega.
+No hay servicio de fondo ni reuniones programadas en esta entrega. La decisión semanal está documentada pero la vista previa V4.3 usa periodos UTC y no implementa el disparador local.
