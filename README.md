@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.3
+# VECIDYA · Kilo Code Global Harness V4.4
 
-**Versión del código:** 4.3.0 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** componentes Kilo-only integrados en la rama de desarrollo; carga en el Windows del usuario pendiente.
+**Versión del código:** 4.4.0 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.4 implementada en código y sujeta a validación Kilo en el Windows del usuario; el plugin solo se instala con permiso explícito.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -10,6 +10,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
+- **VX Observer V4.4:** captura opcional de tres señales Kilo con contadores horarios privados, sin mensajes ni llamadas a modelos.
 - **VX Evolution V4.3:** motor global Kilo-only de inventario, observaciones explícitas, propuestas de versiones y vista previa de reuniones; ninguna aprobación o instalación automática.
 - **Reconciliación V4.2 (solo diagnóstico)**: compara con metadatos seguros las fuentes JSONC y Markdown; no elimina agentes ni cambia sus permisos o pasos.
 - **Verificación V4.1**: `/vx-revalidar` contrasta hallazgos antes de clasificarlos como fallos, preserva descartes y separa CI configurada de tests realmente ejecutados.
@@ -80,6 +81,7 @@ Por defecto, si un archivo administrado fue modificado **después de aplicar**, 
 | `scripts/vx_evolution_core.py` | `~/.config/kilo/harness/scripts/` | Motor local Kilo-only; no crea BD durante la instalación |
 | `skills/vx-evolution-core/SKILL.md` | `~/.kilo/skills/` | Guía de gobernanza por demanda |
 | `commands/vx-{evolution,observer,upgrade,capacitacion,auditoria-equipo,reunion}.md` | `~/.config/kilo/commands/` | Departamentos lógicos de VX Evolution |
+| `plugins/vx-observer-light.js` | `~/.config/kilo/plugin/` | **Solo opt-in** con `-InstalarVXObserverV44`; permanece apagado hasta `observer-mode light` |
 
 Todos los destinos anteriores están bajo HOME. Si se ejecuta desde `D:\Proyectos`, **no escribe allí**; esa carpeta es exclusivamente la fuente versionada del instalador.
 
@@ -117,6 +119,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [Protocolo de revalidación V4.1](docs/PROTOCOLO-REVALIDACION-V4.1.md)
 - [Diagnóstico y plan de reconciliación V4.2](docs/RECONCILIACION-AGENTES-V4.2.md)
 - [VX Evolution V4.3: arquitectura, contratos, seguridad y decisiones](docs/VX-EVOLUTION-V4.3.md)
+- [VX Observer V4.4: instalación opt-in, privacidad, migración y pruebas](docs/VX-OBSERVER-V4.4.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Política versionada de diseño para reunión semanal (desactivada)](config/vx-reunion-policy.v1.json)
 - [Guía de equipos V4: seguridad, fallos y prueba funcional](docs/OPERACION-EQUIPOS-V4.md)
@@ -173,9 +176,28 @@ python -I $vx integrity --json
 
 **Decisión de gobierno:** futura `vx-reunion` semanal, lunes 09:00 según la zona horaria local de Windows. Está registrada solo en la especificación `config/vx-reunion-policy.v1.json`; no hay scheduler, notificaciones ni reunión automática hasta V4.5 probada y aprobada. La vista previa V4.3 todavía calcula periodos UTC.
 
-Los slash commands `/vx-evolution`, `/vx-upgrade`, `/vx-capacitacion`, `/vx-auditoria-equipo`, `/vx-reunion` y `/vx-observer` coordinan funciones de gestión. **Ninguno permite publicar agentes o skills ni aprobar propuestas.** La captura automática de todas las tareas y las reuniones programadas son fases V4.4 y V4.5; el uso actual de `observe` es explícito. La base privada de VX Evolution no se elimina al restaurar versiones del instalador.
+Los slash commands `/vx-evolution`, `/vx-upgrade`, `/vx-capacitacion`, `/vx-auditoria-equipo`, `/vx-reunion` y `/vx-observer` coordinan funciones de gestión. **Ninguno permite publicar agentes o skills ni aprobar propuestas.** V4.4 introduce señales mínimas del runtime mediante un plugin opcional; **no** captura automáticamente resultados o calidad de cada tarea. Las reuniones programadas siguen pendientes de V4.5; el comando `observe` continúa siendo explícito. La base privada de VX Evolution no se elimina al restaurar versiones del instalador.
+
+## V4.4 — Observer ligero de Kilo (instalación opcional)
+
+No se instala ni activa automáticamente en una actualización normal. Para incorporarlo, ejecutar el instalador con `-InstalarVXObserverV44` (y `-Modo Verificar` con el mismo switch). El plugin permanece **inerte** hasta realizar la activación explícita `observer-mode --mode light`.
+
+```powershell
+$installer = '.\scripts\Instalar-Kilo-Global-Harness.ps1'
+pwsh -NoProfile -File $installer -Modo Simular -InstalarVXObserverV44
+pwsh -NoProfile -File $installer -Modo Aplicar -InstalarVXObserverV44
+pwsh -NoProfile -File $installer -Modo Verificar -InstalarVXObserverV44
+$vx = Join-Path $HOME '.config/kilo/harness/scripts/vx_evolution_core.py'
+python -I $vx observer-status --json
+```
+
+Para una base anterior (schema v1), usar explícitamente `python -I $vx observer-migrate --json`, con backup previo automático. Para una instalación limpia, `python -I $vx init --json`. Tras reiniciar Kilo y revisar otros plugins, `python -I $vx observer-mode --mode light --json` autoriza solo señales agregadas; `python -I $vx observer-report --days 7 --json` las resume. Para apagar inmediatamente: `python -I $vx observer-mode --mode off --json`.
+
+No hay instalación de nuevos MCP, cambios en AutoApprove ni servicio residente. El horario de `vx-reunion` del lunes a las 09:00 hora local sigue documentado pero sin programar.
 
 ## Changelog
+
+- **4.4.0 · 2026-11-14:** plugin Kilo global opcional, captura enumerada de tres señales sin payload, SQLite schema v2 y migración explícita con backup, contadores horarios con límite, opt-in/off reversible, pruebas Windows y documentación de privacidad.
 
 - **4.3.0 · 2026-11-14:** núcleo SQLite Kilo-only, inventario global de agentes/skills, observaciones y propuestas locales, agenda semanal/mensual previa, comandos de gobierno, skill, pruebas de privacidad y recuperación. Sin hooks ni scheduler.
 
