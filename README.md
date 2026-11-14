@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.0
+# VECIDYA · Kilo Code Global Harness V4.1
 
-**Versión del código:** 4.0.0 · **Instalador:** manifiesto 4.0.0 (rollback compatible con V3) · **Estado:** candidato a prueba funcional de equipos en Windows tras aprobar CI.
+**Versión del código:** 4.1.0 · **Instalador:** manifiesto 4.0.0 (rollback compatible con V3) · **Estado:** candidato a prueba funcional de equipos en Windows tras aprobar CI.
 
 Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -10,6 +10,7 @@ Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala 
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
+- **Verificación V4.1**: `/vx-revalidar` contrasta hallazgos antes de clasificarlos como fallos, preserva descartes y separa CI configurada de tests realmente ejecutados.
 - **Equipos V4 con paralelismo estricto**: hasta tres subagentes de lectura, un escritor, revisión independiente. El selector no inicia agentes.
 - **Instalación segura**: diagnóstico, simulación, backup, aplicación idempotente, verificación y restauración con comprobación de hashes.
 - **Sin actualización silenciosa** de skills, MCP, extensiones ni modelos; el instalador no gestiona actualizaciones de Windows o VS Code.
@@ -108,6 +109,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 
 - [Auditoría actualizada](AUDITORIA-DETALLADA.md)
 - [Guía operativa y compatibilidad](docs/ARQUITECTURA.md)
+- [Protocolo de revalidación V4.1](docs/PROTOCOLO-REVALIDACION-V4.1.md)
 - [Guía de equipos V4: seguridad, fallos y prueba funcional](docs/OPERACION-EQUIPOS-V4.md)
 - [Registro V4 de agentes y perfiles](registry/vx-agent-registry-v4.json)
 - [Instalador](scripts/Instalar-Kilo-Global-Harness.ps1)
@@ -132,6 +134,8 @@ pwsh -NoProfile -File .\scripts\Seleccionar-Equipo-V4.ps1 -Tarea 'Auditar UI Rea
 La V4 **no modifica** los 12 agentes mezclados entre JSON/Markdown ni los 19 limites `steps: 10000000`: quedan pendientes de reconciliación con pruebas de compatibilidad. El selector no controla realmente el costo del modelo; solo acota delegaciones propuestas.
 
 ## Changelog
+
+- **4.1.0 · 2026-11-14:** comando global `/vx-revalidar`, snapshots Git de solo lectura, descarte explícito de falsos positivos y diferenciación de evidencia de código frente a tests ejecutados. Sin cambios de permisos/modelos/MCP.
 
 - **4.0.0 · 2026-11-13:** registro global, cinco subagentes read-only, `/vx-equipo`, selector, validador, instalador reversible y pruebas en CI Windows.
 - **3.1.0 · 2026-11-13:** auditoría global de solo lectura (sin secretos), comando de verificación ImageGen sin generación automática, aclaración de precedencia de agentes y plugins.
