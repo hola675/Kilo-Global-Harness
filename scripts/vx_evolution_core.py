@@ -218,6 +218,7 @@ def init(home):
                 db.execute("INSERT INTO settings(key,value) VALUES('observer_mode','off')")
                 db.execute("INSERT INTO settings(key,value) VALUES('retention_policy','pending_governance')")
                 db.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
+                current = SCHEMA_VERSION
             elif current not in SUPPORTED_SCHEMAS:
                 raise VXError("Version de datos incompatible")
         if os.name != "nt" and path.is_file():
