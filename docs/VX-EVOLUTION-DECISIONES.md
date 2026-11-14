@@ -85,3 +85,10 @@ El usuario confirmó que VX Evolution se usará **únicamente en este PC Windows
 ## V4.6.1 — Límite de las evidencias (sin nueva autorización)
 
 La V4.6.0 ya fue integrada en `main` y superó CI Windows; su ejecución real en Kilo permanece pendiente. Se implementa V4.6.1 como **matriz de capacidades declaradas y evidencias opcionales también declaradas**, sin asignar rangos, puntuación, permisos ni jerarquías. Incluso un resultado `PASS` con `review_source=other` no acredita revisión independiente: necesita verificación técnica y humana posterior. No se modifica ninguna decisión VX-D01–VX-D12 ni se autoriza activación de programador o reuniones. [Guía V4.6.1](VX-MATRIZ-COMPETENCIAS-V4.6.1.md).
+
+
+## Validación local V4.6.0–V4.6.1 y avance de ensayos V4.6.2
+
+El usuario ejecutó en este Windows el 14-11-2026 la instalación de V4.6.1 (`Simular`, `Aplicar`, `Verificar`), auditoría de capacidades y matriz global; el CLI devolvió PASS. Se observaron 39 fuentes de agente/28 agentes, 40 skills, 11 agentes superpuestos JSONC/Markdown, 19 límites `steps > 400`, 76 filas de matriz, 15 capacidades declaradas y cero evidencias. Git quedó actualizado y se eliminó la rama temporal remota V4.6.1; `main` es la única rama permanente. Aún falta prueba interactiva dentro de Kilo luego de `/reload`; no registrar precedencia efectiva, competencia o seniority sin pruebas independientes.
+
+V4.6.2 implementa **solo escenarios sintéticos no ciegos y un comparador declarativo, sin ejecución autónoma ni puntuación real**. La revisión de una brecha de evidencia no equivale a fallo de un agente. No hay autorización para escribir propuestas SQLite, instalar habilidades, activar tareas programadas, ascender o contratar. [Guía V4.6.2](VX-ENSAYOS-COMPETENCIAS-V4.6.2.md).
