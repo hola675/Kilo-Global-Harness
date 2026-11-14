@@ -162,8 +162,8 @@ jobs:
           }
           $root = Join-Path $env:RUNNER_TEMP ('vx41-' + [guid]::NewGuid().ToString('N'))
           $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          # PowerShell & script no redefine LASTEXITCODE: validar manifest y archivos; el instalador lanza excepcion al fallar.
           & $installer -Modo Aplicar -RaizUsuario $root
-          if ($LASTEXITCODE -ne 0) { throw 'Fallo instalacion fixture V4.1.' }
           $installed = Join-Path $root '.config/kilo/commands/vx-revalidar.md'
           if (!(Test-Path -LiteralPath $installed -PathType Leaf)) {
             throw 'El comando V4.1 no fue instalado globalmente.'
@@ -172,5 +172,4 @@ jobs:
             throw 'No coincide comando global con el repositorio.'
           }
           & $installer -Modo Verificar -RaizUsuario $root
-          if ($LASTEXITCODE -ne 0) { throw 'Fallo verificacion V4.1.' }
           Write-Host 'V4.1 EVIDENCE-GATE Y GLOBAL-ONLY: PASS'
