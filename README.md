@@ -10,7 +10,7 @@ Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala 
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
-- **Reconcilicación V4.2 (solo diagnóstico)**: compara con metadatos seguros las fuentes JSONC y Markdown; no elimina agentes ni cambia sus permisos o pasos.
+- **Reconciliación V4.2 (solo diagnóstico)**: compara con metadatos seguros las fuentes JSONC y Markdown; no elimina agentes ni cambia sus permisos o pasos.
 - **Verificación V4.1**: `/vx-revalidar` contrasta hallazgos antes de clasificarlos como fallos, preserva descartes y separa CI configurada de tests realmente ejecutados.
 - **Equipos V4 con paralelismo estricto**: hasta tres subagentes de lectura, un escritor, revisión independiente. El selector no inicia agentes.
 - **Instalación segura**: diagnóstico, simulación, backup, aplicación idempotente, verificación y restauración con comprobación de hashes.
