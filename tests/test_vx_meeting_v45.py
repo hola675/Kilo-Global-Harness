@@ -168,7 +168,7 @@ class TestVXMeeting(unittest.TestCase):
         self.assertIn("Quedan puntos sin decision",
                       self.call("meeting-close", "--id", mid, ok=False))
         # Prueba del núcleo transaccional: la interfaz CLI exige TTY adicional.
-        with core.connect(self.home) as db:
+        with closing(core.connect(self.home)) as db:
             x = core.meeting_decide(db, mid, a, "approved")
             y = core.meeting_decide(db, mid, b, "deferred")
             self.assertFalse(x["activation_allowed"])
@@ -191,7 +191,7 @@ class TestVXMeeting(unittest.TestCase):
         m = self.call("meeting-prepare", "--cadence", "weekly",
                       "--on-date", "2026-11-14")
         other = self.proposal("not-in-agenda")["id"]
-        with core.connect(self.home) as db:
+        with closing(core.connect(self.home)) as db:
             with self.assertRaises(core.VXError):
                 core.meeting_decide(db, m["id"], other, "approved")
             core.meeting_decide(db, m["id"], a, "revision_requested")
