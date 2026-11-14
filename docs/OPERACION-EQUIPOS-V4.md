@@ -90,6 +90,10 @@ El mismo instalador reconoce manifiestos 3.0.0 y 4.0.0. Sin `-ForzarRestauracion
 
 El catálogo de 44 repositorios es solo investigación. La V4 **no copia** agentes ajenos ni ejecuta hooks o instaladores externos. Para incorporar un rol de tercero: URL + commit fijado + licencia del archivo + revisión de instrucciones/seguridad + adaptación a Markdown Kilo + fixture + prueba pequeña + aprobación. Prohibida la autoactualización silenciosa y la ejecución directa de hooks no revisados.
 
+## Auditoría de reconciliación V4.2
+
+El nuevo comando `/vx-reconciliar` utiliza el auditor PowerShell instalado en HOME. Reporta agentes definidos en `kilo.jsonc` y Markdown, campos compartidos, diferencias evidentes y límites elevados de `steps`, sin exponer instrucciones ni secretos. No deduce permisos efectivos de YAML complejo y **no cambia automáticamente** configuraciones heredadas. Ver [procedimiento y limitaciones](RECONCILIACION-AGENTES-V4.2.md).
+
 ## Límites conocidos y siguientes auditorías
 
 - 12 agentes en dos fuentes de configuración: Kilo fusiona propiedades; comparar efectividad antes de limpiar.

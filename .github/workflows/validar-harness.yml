@@ -173,3 +173,81 @@ jobs:
           }
           & $installer -Modo Verificar -RaizUsuario $root
           Write-Host 'V4.1 EVIDENCE-GATE Y GLOBAL-ONLY: PASS'
+
+      - name: V4.2 - reconciliar agentes de forma segura
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $script = (Resolve-Path 'scripts/Reconciliar-Agentes-V4.2.ps1').Path
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            $script,[ref]$tokens,[ref]$errors
+          ) | Out-Null
+          if ($errors.Count -gt 0) { throw "Error sintaxis V4.2: $($errors | Out-String)" }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx42-' + [guid]::NewGuid().ToString('N'))
+          $cfg = Join-Path $fixture '.config/kilo'
+          New-Item -ItemType Directory -Force -Path (Join-Path $cfg 'agents') | Out-Null
+          @'
+          {
+            // Solo datos ficticios de CI.
+            "agent": {
+              "architect": {
+                "mode": "primary",
+                "steps": 10000000,
+                "description": "CI_CANARY_ONLY_NOT_REAL_123",
+                "prompt": "CI_CANARY_ONLY_NOT_REAL_123",
+                "permission": { "edit": "allow", "bash": { "*": "deny" } },
+              },
+              "code": { "steps": 10000000 },
+              "only-json": { "steps": 24 }
+            }
+          }
+          '@ | Set-Content (Join-Path $cfg 'kilo.jsonc') -Encoding UTF8
+          @'
+          ---
+          description: "CI_CANARY_ONLY_NOT_REAL_123"
+          mode: subagent
+          steps: 45
+          permission:
+            edit: deny
+            bash: deny
+          ---
+          CI_CANARY_ONLY_NOT_REAL_123
+          '@ | Set-Content (Join-Path $cfg 'agents/architect.md') -Encoding UTF8
+          $before = (Get-FileHash (Join-Path $cfg 'kilo.jsonc') -Algorithm SHA256).Hash
+          $out = (& $script -RaizUsuario $fixture -Json | Out-String)
+          if ($out -match 'CI_CANARY_ONLY_NOT_REAL_123') { throw 'El informe muestra contenido privado.' }
+          $report = $out | ConvertFrom-Json
+          if ($report.agentes_json -ne 3 -or $report.agentes_markdown -ne 1) {
+            throw 'Conteo de fuentes V4.2 incorrecto.'
+          }
+          if ($report.agentes_en_ambos -ne 1 -or $report.limites_steps_superiores_al_umbral -ne 2) {
+            throw 'No identifica coincidencias o pasos excesivos.'
+          }
+          $a = @($report.coincidencias)[0]
+          foreach ($field in @('steps','mode','permission.edit')) {
+            $hit = @($a.campos_solapados | Where-Object { $_.campo -eq $field })
+            if ($hit.Count -ne 1 -or $hit[0].estado -ne 'DIFERENCIA_EXPLICITA') {
+              throw "No se detecto conflicto explicito: $field"
+            }
+          }
+          $bash = @($a.campos_solapados | Where-Object { $_.campo -eq 'permission.bash' })
+          if ($bash.Count -ne 1 -or $bash[0].estado -ne 'REGLAS_COMPUESTAS_REVISAR_PRECEDENCIA') {
+            throw 'No se detecto permiso compuesto.'
+          }
+          $after = (Get-FileHash (Join-Path $cfg 'kilo.jsonc') -Algorithm SHA256).Hash
+          if ($before -ne $after) { throw 'El auditor cambio kilo.jsonc.' }
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          $fresh = Join-Path $env:RUNNER_TEMP ('vx42-inst-' + [guid]::NewGuid().ToString('N'))
+          & $installer -Modo Aplicar -RaizUsuario $fresh
+          $installed = Join-Path $fresh '.config/kilo/harness/scripts/Reconciliar-Agentes-V4.2.ps1'
+          if (!(Test-Path -LiteralPath $installed -PathType Leaf)) { throw 'Falta auditor V4.2 global.' }
+          $audit = & $installed -RaizUsuario $fixture -Json | Out-String | ConvertFrom-Json
+          if ($audit.agentes_en_ambos -ne 1) { throw 'Auditor global V4.2 no ejecuta.' }
+          & $installer -Modo Verificar -RaizUsuario $fresh
+          $backup = Get-ChildItem (Join-Path $fresh '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fresh -BackupFolder $backup.FullName
+          if (Test-Path $installed) { throw 'Rollback no retiro auditor V4.2.' }
+          Write-Host 'V4.2 RECONCILIACION + NO SECRETOS + INSTALACION + ROLLBACK: PASS'
