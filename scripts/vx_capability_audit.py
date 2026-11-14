@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import sys
 
+sys.dont_write_bytecode = True  # No generar __pycache__ ni alterar el repositorio durante la auditoria.
 SCRIPT_DIR = Path(__file__).resolve().parent
 CORE_PATH = SCRIPT_DIR / "vx_evolution_core.py"
 CORE_SPEC = importlib.util.spec_from_file_location("vx_audit_core_private", CORE_PATH)
@@ -52,7 +53,8 @@ def allowed(home: Path, file: Path) -> bool:
 
 
 def valid_component(value: object) -> bool:
-    return isinstance(value, str) and core.NAME_RE.fullmatch(value) is not None
+    return (isinstance(value, str) and core.NAME_RE.fullmatch(value) is not None
+            and core.SECRET_RE.search(value) is None)
 
 
 def allowed_numeric(value: object):
@@ -124,7 +126,7 @@ def markdown_agent(home: Path, filename: Path, warnings: list[dict], name: str) 
     front = match.group("front")
     scalars = {k: v.strip().strip("'\"") for k, v in KEY_RE.findall(front)}
     fields = set(scalars).intersection(METADATA_FIELDS)
-    if "permission" in front:
+    if PERMISSION_RE.search(front) or "permission" in scalars:
         fields.add("permission")
     mode = scalars.get("mode")
     mode = mode if mode in ALLOWED_MODES else None
@@ -208,7 +210,7 @@ def scan_skills(home: Path, source_items: list, warnings: list[dict]):
 def analyze(home: Path, steps_limit: int) -> dict:
     warnings: list[dict] = []
     # discovery() valida rutas y nunca escribe; reutiliza el unico indice existente.
-    raw = core.discovery(home)
+    raw = [item for item in core.discovery(home) if valid_component(item[1])]
     jdata = jsonc_agents(home, warnings)
     declared, profiles, profile_skills = installed_registry(home, warnings)
     skills = scan_skills(home, raw, warnings)
