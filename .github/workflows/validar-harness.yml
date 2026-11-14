@@ -657,3 +657,57 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           if (Test-Path $matrix) { throw 'Rollback no retiro matriz V4.6.1' }
           Write-Host 'VX V4.6.1: MATRIZ DE SOLO LECTURA + 20 TESTS + ROLLBACK PASS'
+
+      - name: V4.6.2 - cinco ensayos sintéticos sin ejecución de agentes ni cambios
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_competency_trials_v462.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas de ensayos V4.6.2' }
+          python -m compileall -q scripts/vx_competency_trials.py tests/test_vx_competency_trials_v462.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis ensayos V4.6.2' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx462-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          if ($LASTEXITCODE -ne 0) { throw 'Instalacion del fixture V4.6.2 fallo' }
+          $trial = Join-Path $fixture '.config/kilo/harness/scripts/vx_competency_trials.py'
+          $matrix = Join-Path $fixture '.config/kilo/harness/scripts/vx_competency_matrix.py'
+          $command = Join-Path $fixture '.config/kilo/commands/vx-ensayos.md'
+          $registry = Join-Path $fixture '.config/kilo/harness/vx-agent-registry-v4.json'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (!(Test-Path $trial) -or !(Test-Path $matrix) -or !(Test-Path $command)) {
+            throw 'Recursos V4.6.2 ausentes en HOME aislado'
+          }
+          if (Test-Path $db) { throw 'El instalador no debe crear SQLite' }
+          $hash = (Get-FileHash $registry -Algorithm SHA256).Hash
+          $result = python -I $trial --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Ensayos sin respuestas fallaron' }
+          $catalog = python -I $trial --home $fixture --list-cases | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Catalogo de ensayos fallo' }
+          if ($result.schema -ne 'vx-kilo-competency-trials/1' -or
+              $result.counts.planned_cases -ne 5 -or
+              $result.counts.targets_observed -ne 5 -or
+              $result.writes -ne 0 -or $result.database_access -or
+              $result.models_called -or $result.mcp_called -or
+              $result.live_agent_execution -or $result.autopromotion_enabled -or
+              $result.scheduler_enabled -or
+              $result.real_world_performance -ne 'NO_MEDIDO' -or
+              $catalog.cases.Count -ne 5) {
+            throw 'Contrato no ejecutable V4.6.2 incumplido'
+          }
+          foreach ($case in $result.cases) {
+            if ($case.baseline_result -ne 'SIN_RESPUESTA' -or
+                $case.candidate_result -ne 'SIN_RESPUESTA' -or
+                $case.qualification -ne 'NO_ASIGNADO') {
+              throw 'Ensayos no deben inventar evidencia o rangos'
+            }
+          }
+          if ((Get-FileHash $registry -Algorithm SHA256).Hash -ne $hash -or (Test-Path $db)) {
+            throw 'Ensayos alteraron registro global o SQLite'
+          }
+          & $installer -Modo Verificar -RaizUsuario $fixture
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if (Test-Path $trial) { throw 'Rollback no retiro el motor de ensayos' }
+          Write-Host 'VX V4.6.2: TESTS + CATALOGO + ROLLBACK WINDOWS PASS'
