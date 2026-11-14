@@ -290,7 +290,7 @@ if ($Modo -eq 'Verificar') {
 }
 
 # Modo Aplicar; por diseno solo toca rutas globales y archivos VX del paquete.
-$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+$stamp = (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + ([guid]::NewGuid().ToString('N').Substring(0,8))
 $backupDir = Join-Path $backupRoot $stamp
 New-Item -Path $backupDir -ItemType Directory -Force | Out-Null
 $manifest = [ordered]@{
