@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición:** 2026-11-14 · **Estado:** V4.6.0 en implementación (auditoría de solo lectura); V4.6.1–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
+**Edición:** 2026-11-14 · **Estado:** V4.6.0 integrada (CI Windows PASS); V4.6.1 en implementación (matriz de solo lectura); V4.6.2–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
 
 ## Fuente de verdad y definición de estados
 
@@ -24,8 +24,9 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | V4.4 | VX Observer Light opt-in, contadores horarios sin payload | Integrado | **Validado**: señales `session_idle=1` y `session_error=1`, integridad OK (muestra puntual) | Esas señales no miden calidad |
 | V4.5 | Calendario, actas y decisiones locales manuales | Integrado | **Validado junto con V4.5.1 mediante SQLite v4** | No hay scheduler |
 | V4.5.1 | **Primera reunión del mes conjunta**, secciones mensual/semanal a las 09:00 | **Integrado y CI Windows PASS** | **Validado**: instalación, SQLite v4, integridad y calendario real 2026-12-07, 09:00 | Observer `light`, scheduler OFF |
-| **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **En implementación; CI en curso** | Pendiente de ejecución local de la nueva herramienta | Sin cambios de permisos, SQLite ni roles |
-| V4.6.1–V4.6.3 | Matriz evaluable, capacitación y auditoría de equipos | Diseñadas, **PENDIENTES** | No aplica | No crear nuevos agentes, skills o jerarquías automáticamente |
+| **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **Integrada en main; CI Windows PASS** | Pendiente de ejecución local del auditor | Sin cambios de permisos, SQLite ni roles |
+| **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **En implementación, pruebas/CI pendientes** | No validada en Windows del usuario | Puntuaciones y seniority sin asignar; solo lectura |
+| V4.6.2–V4.6.3 | Pruebas reproducibles, capacitación y auditoría de equipos | Diseñadas, **PENDIENTES** | No aplica | No crear nuevos agentes, skills o jerarquías automáticamente |
 | V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseñado | No aplica | Revisión independiente y autorización explícita |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
 | V5.0 | Equipos especializados adaptativos, ascensos y delegación medidos | Conceptual | No aplica | Condicionado a evidencia y controles anteriores |
@@ -50,7 +51,7 @@ Convertir `vx-capacitacion` y `vx-auditoria-equipo` de comandos de análisis/pro
 - `vx-observer`: proporciona **solo señales operativas agregadas**; un evento `session_error` no es prueba de incapacidad.
 - `vx-equipo`: sigue operando tareas, con **un escritor máximo** y hasta tres lectores; no reestructura roles en mitad de un desarrollo.
 
-Referencia de implementación de línea base: [VX Capacidades V4.6.0](VX-CAPACIDADES-V4.6.0.md).
+Referencia de línea base: [VX Capacidades V4.6.0](VX-CAPACIDADES-V4.6.0.md). Matriz de evaluación propuesta: [VX V4.6.1](VX-MATRIZ-COMPETENCIAS-V4.6.1.md).
 
 ### Entregables propuestos
 
@@ -92,7 +93,9 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 **P0 CERRADO** — Instalación V4.5.1 y SQLite v4 verificadas en el Windows del usuario; Observer light y datos conservados.
 
-**P1 EN CURSO** — Integrar V4.6.0: auditoría Kilo global **solo lectura** y mapa de capacidades **declaradas**. No hacer migración adicional de SQLite hasta demostrar que hace falta.
+**P1 CERRADO EN MAIN, PENDIENTE LOCAL** — V4.6.0 auditoría global de solo lectura y mapa de capacidades declaradas integrada en GitHub. Ejecutar auditoría en PC real. No migrar SQLite.
+
+**P1.1 EN CURSO** — V4.6.1 matriz global y evidencia declarada: integrar pruebas y CI Windows, luego validar localmente; no inferir seniority ni ejecutar pruebas reales en automático.
 
 **P2** — Probar evaluaciones y propuestas de capacitación/auditoría con fixtures de Kilo, registrar riesgos y presentar a `vx-reunion` para aprobación, nunca auto-publicar.
 
