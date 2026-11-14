@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.1
+# VECIDYA · Kilo Code Global Harness V4.2
 
-**Versión del código:** 4.1.0 · **Instalador:** manifiesto 4.0.0 (rollback compatible con V3) · **Estado:** candidato a prueba funcional de equipos en Windows tras aprobar CI.
+**Versión del código:** 4.2.0 · **Instalador:** manifiesto 4.0.0 (rollback compatible con V3) · **Estado:** candidato a prueba funcional de equipos en Windows tras aprobar CI.
 
 Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -10,6 +10,7 @@ Harness de ingeniería autónoma para Kilo Code en VS Code/VSCodium. Se instala 
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
+- **Reconcilicación V4.2 (solo diagnóstico)**: compara con metadatos seguros las fuentes JSONC y Markdown; no elimina agentes ni cambia sus permisos o pasos.
 - **Verificación V4.1**: `/vx-revalidar` contrasta hallazgos antes de clasificarlos como fallos, preserva descartes y separa CI configurada de tests realmente ejecutados.
 - **Equipos V4 con paralelismo estricto**: hasta tres subagentes de lectura, un escritor, revisión independiente. El selector no inicia agentes.
 - **Instalación segura**: diagnóstico, simulación, backup, aplicación idempotente, verificación y restauración con comprobación de hashes.
@@ -110,6 +111,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [Auditoría actualizada](AUDITORIA-DETALLADA.md)
 - [Guía operativa y compatibilidad](docs/ARQUITECTURA.md)
 - [Protocolo de revalidación V4.1](docs/PROTOCOLO-REVALIDACION-V4.1.md)
+- [Diagnóstico y plan de reconciliación V4.2](docs/RECONCILIACION-AGENTES-V4.2.md)
 - [Guía de equipos V4: seguridad, fallos y prueba funcional](docs/OPERACION-EQUIPOS-V4.md)
 - [Registro V4 de agentes y perfiles](registry/vx-agent-registry-v4.json)
 - [Instalador](scripts/Instalar-Kilo-Global-Harness.ps1)
@@ -133,7 +135,20 @@ pwsh -NoProfile -File .\scripts\Seleccionar-Equipo-V4.ps1 -Tarea 'Auditar UI Rea
 
 La V4 **no modifica** los 12 agentes mezclados entre JSON/Markdown ni los 19 limites `steps: 10000000`: quedan pendientes de reconciliación con pruebas de compatibilidad. El selector no controla realmente el costo del modelo; solo acota delegaciones propuestas.
 
+## V4.2 — Auditoría de compatibilidad de agentes
+
+Sin editar `kilo.jsonc` ni copiar credenciales, ejecuta:
+
+```powershell
+pwsh -NoProfile -File '.\scripts\Reconciliar-Agentes-V4.2.ps1'
+pwsh -NoProfile -File '.\scripts\Reconciliar-Agentes-V4.2.ps1' -Json
+```
+
+Después de instalar, el script queda en `~/.config/kilo/harness/scripts/` y el comando `/vx-reconciliar` queda disponible en Kilo. Los resultados son una propuesta de análisis, **no cambios aplicados**. Ver [protocolo V4.2](docs/RECONCILIACION-AGENTES-V4.2.md).
+
 ## Changelog
+
+- **4.2.0 · 2026-11-14:** herramienta de reconciliación de agentes globales JSONC/Markdown, detección de solapamiento de campos y `steps`, protección de datos sensibles, CI Windows y distribución reversible. No modifica la configuración heredada.
 
 - **4.1.0 · 2026-11-14:** comando global `/vx-revalidar`, snapshots Git de solo lectura, descarte explícito de falsos positivos y diferenciación de evidencia de código frente a tests ejecutados. Sin cambios de permisos/modelos/MCP.
 
