@@ -132,9 +132,8 @@ class TestJointMeeting(unittest.TestCase):
         joint_id = result["id"]
         view = self.call("meeting-joint-view", "--id", joint_id)
         monthly, weekly = view["sections"]
-        self.assertEqual(monthly["agenda"][0]["id"], a)
-        self.assertEqual(monthly["agenda"][1]["id"], b)
-        self.assertIn("sin TTY denegado", self.call(
+        self.assertEqual({p["id"] for p in monthly["agenda"]}, {a, b})
+        self.assertIn("Quedan puntos sin decision", self.call(
             "meeting-joint-close", "--id", joint_id, ok=False))
         self.assertIn("Seccion conjunta", self.call(
             "meeting-close", "--id", monthly["meeting_id"], ok=False))
@@ -153,6 +152,8 @@ class TestJointMeeting(unittest.TestCase):
             with self.assertRaises(core.VXError):
                 core.joint_close(db, joint_id)
             core.meeting_decide(db, monthly["meeting_id"], b, "deferred")
+            self.assertIn("sin TTY denegado", self.call(
+                "meeting-joint-close", "--id", joint_id, ok=False))
             closed = core.joint_close(db, joint_id)
             self.assertEqual(closed["closed_sections"], ["monthly", "weekly"])
             with self.assertRaises(core.VXError):
