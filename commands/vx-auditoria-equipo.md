@@ -15,3 +15,5 @@ Mantén un único escritor de archivos; conserva las configuraciones privadas, A
 
 
 **V4.6.0 — diagnóstico primero:** usar `/vx-capacidades` como línea base **solo lectura**, y `/vx-reconciliar` como comprobador complementario de campos y límites. No afirmar precedencia de JSONC/Markdown, jerarquía, desempeño o rangos a partir de nombres, fingerprints o permisos declarados. Analizar el inventario global de Kilo **en una sola PC Windows**; no requerir nuevos MCP ni sincronización. La decisión de ascenso, jefatura, fusión o retiro quedará como propuesta pendiente de pruebas y aprobación humana independiente. `NO_VERIFICADO` y `NO_MEDIDO` son resultados válidos. Consultar `docs/VX-CAPACIDADES-V4.6.0.md`.
+
+**V4.6.1 — revisión rigurosa:** usar `/vx-matriz` como referencia de competencias declaradas y de test IDs. No calificar roles ni proponer ascenso por contar PASS de un JSON; la rúbrica de aprendiz/especialista/senior/líder/principal es futura y requiere resultados independientes. Referencia: `docs/VX-MATRIZ-COMPETENCIAS-V4.6.1.md`.
