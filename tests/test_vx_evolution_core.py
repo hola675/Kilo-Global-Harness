@@ -181,6 +181,20 @@ class TestVXCore(unittest.TestCase):
         with closing(sqlite3.connect(self.db)) as db:
             self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 99)
 
+    def test_duplicate_pending_proposals_are_not_multiplied(self):
+        self.initialized()
+        common = ["propose", "--kind", "agent", "--target", "vx-researcher",
+                  "--title", "Mejorar verificacion", "--reason", "Evidencia repetida",
+                  "--priority", "P1", "--version", "1.1.0"]
+        a = self.parse(*common)
+        b = self.parse(*common)
+        self.assertEqual(a["id"], b["id"])
+        self.assertEqual(b["status"], "already_pending")
+        self.assertEqual(self.parse("status")["proposals"], 1)
+        other = self.parse(*common[:-1], "1.2.0")
+        self.assertNotEqual(a["id"], other["id"])
+        self.assertEqual(self.parse("status")["proposals"], 2)
+
     def test_wal_and_concurrent_observations(self):
         self.initialized()
         with closing(sqlite3.connect(self.db)) as db:
