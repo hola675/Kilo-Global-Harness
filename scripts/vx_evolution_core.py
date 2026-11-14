@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VX Evolution Core 4.4: registro global SOLO para Kilo Code.
+"""VX Evolution Core 4.5: registro global SOLO para Kilo Code.
 
 Sin dependencias externas; no invoca modelos, hooks, MCP, comandos Git ni otros
 harnesses. No lee proyectos: solo consume rutas globales de Kilo y metadatos
@@ -8,6 +8,7 @@ introducidos explicitamente. Las propuestas no se aprueban ni publican aqui.
 from __future__ import annotations
 
 import argparse
+import calendar
 import hashlib
 import hmac
 import json
@@ -18,10 +19,13 @@ import secrets
 import sqlite3
 import sys
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, time as dtime, timedelta, timezone
 
-SCHEMA_VERSION = 2
-SUPPORTED_SCHEMAS = (1, 2)
+SCHEMA_VERSION = 3
+SUPPORTED_SCHEMAS = (1, 2, 3)
+MEETING_WEEKDAY = 0  # Lunes; politica confirmada.
+MEETING_WEEKLY_TIME = '09:00'
+MEETING_MONTHLY_TIME = None  # Aun pendiente de decision humana.
 OBSERVER_SIGNALS = ('session_idle', 'session_error', 'session_compacted')
 OBSERVER_HOURLY_CAP = 300
 OBSERVER_FLAG = 'observer-light.flag'
@@ -152,8 +156,8 @@ CREATE TABLE IF NOT EXISTS proposals (
         CHECK(status IN ('pending_review','deferred','rejected','approved','validated','active','rolled_back'))
 );
 CREATE INDEX IF NOT EXISTS ix_proposals_status ON proposals(status,priority);
--- Contratos para versiones, dependencias, decisiones y reuniones FUTURAS.
--- Ninguna accion de CLI activa agentes o aprueba cambios.
+-- Estructura de versiones y relaciones reservada para fases futuras.
+-- V4.5 agrega actas y decisiones manuales; no activa ni publica agentes.
 CREATE TABLE IF NOT EXISTS releases (
     id TEXT PRIMARY KEY, kind TEXT NOT NULL, target TEXT NOT NULL,
     semver TEXT NOT NULL, content_sha256 TEXT NOT NULL,
@@ -194,6 +198,21 @@ CREATE TABLE IF NOT EXISTS observer_counts (
     updated_utc TEXT NOT NULL,
     PRIMARY KEY(hour_utc,signal)
 );
+-- V4.5: agenda congelada en apertura manual; nunca agenda automatica.
+CREATE TABLE IF NOT EXISTS meeting_agenda (
+    meeting_id TEXT NOT NULL REFERENCES meetings(id),
+    proposal_id TEXT NOT NULL REFERENCES proposals(id),
+    added_utc TEXT NOT NULL,
+    PRIMARY KEY(meeting_id, proposal_id)
+);
+CREATE TABLE IF NOT EXISTS meeting_notes (
+    id TEXT PRIMARY KEY,
+    meeting_id TEXT NOT NULL REFERENCES meetings(id),
+    text TEXT NOT NULL,
+    created_utc TEXT NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS ix_meeting_decision_unique
+ON decisions(meeting_id,proposal_id);
 """
 
 def init(home):
@@ -466,15 +485,15 @@ def status(db):
 
 def require_observer_v2(db):
     version = db.execute("PRAGMA user_version").fetchone()[0]
-    if version != 2:
+    if version < 2:
         raise VXError("Requiere observer-migrate (backup automatico) antes de V4.4")
 
 
 def migrate_observer(db, home):
     """Migracion explicita 1->2; backup previo sin tocar activos de Kilo."""
     version = db.execute("PRAGMA user_version").fetchone()[0]
-    if version == 2:
-        return {"schema_version": 2, "migrated": False, "backup_created": False}
+    if version >= 2:
+        return {"schema_version": version, "migrated": False, "backup_created": False}
     if version != 1:
         raise VXError("Esquema anterior no reconocido")
     snapshot = backup(db, home)
@@ -602,7 +621,7 @@ def backup(db, home):
             "restore_automatic": False}
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="VX Evolution 4.3 - exclusivo Kilo Code")
+    parser = argparse.ArgumentParser(description="VX Evolution 4.5 - exclusivo Kilo Code")
     parser.add_argument("--home", default=str(Path.home()),
         help="HOME de Kilo; usar rutas de prueba solo en CI")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -687,7 +706,7 @@ def main(argv=None):
         if args.json:
             print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         else:
-            print("=== VX EVOLUTION CORE V4.3 | KILO CODE ONLY ===")
+            print("=== VX EVOLUTION CORE V4.5 | KILO CODE ONLY ===")
             for key, value in result.items():
                 print(f"{key}: {json.dumps(value, ensure_ascii=False)}")
         return 0
