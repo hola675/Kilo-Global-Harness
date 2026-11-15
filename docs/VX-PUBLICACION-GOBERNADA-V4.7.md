@@ -4,7 +4,7 @@
 
 ## Contrato `vx-component-manifest/1`
 
-Cada componente declara `id` estable (`[a-z][a-z0-9-]{0,63}`), `version` SemVer 2.0.0, `state`, dependencias de versión exacta y una lista no vacía de archivos. Cada archivo incluye rutas relativas `source`/`target` y SHA-256 minúsculo de los bytes de origen. El CLI vuelve a calcular el hash antes de planear; una discrepancia, ruta insegura, componente duplicado, destino duplicado o dependencia inválida detiene el plan completo.
+Cada componente declara `id` estable (`[a-z][a-z0-9-]{0,63}`), `version` SemVer 2.0.0, `state`, dependencias de versión exacta y una lista no vacía de archivos. Cada archivo incluye rutas relativas `source`/`target` y SHA-256 minúsculo de los bytes de origen. El CLI vuelve a calcular el hash antes de planear; una discrepancia, ruta insegura, componente duplicado, destino duplicado (comparado con `casefold()` para evitar colisiones en Windows) o dependencia inválida detiene el plan completo.
 
 Estados del contrato: `PREPARADO`, `CI_PASS`, `VERIFICADO_EN_PC`, `APROBADO`, `APLICADO`, `ROLLBACK` y `NO_VERIFICADO`. El preview admite únicamente `PREPARADO` y `NO_VERIFICADO`: reporta `PREPARADO` para la propuesta y no afirma resultados de fases posteriores. Un hash garantiza integridad de bytes comparados; no valida autoría, firma, procedencia ni autorización.
 
@@ -27,7 +27,7 @@ Ejemplo mínimo del manifiesto (el hash corresponde exactamente a los bytes `can
 }
 ```
 
-El preview admite solo componentes `vx-*` y limita cada destino a la ruta administrada del mismo componente (por ejemplo `.config/kilo/agents/<id>.md`, `.config/kilo/commands/<id>.md`, `.config/kilo/rules/<id>.md`, `.config/kilo/harness/<id>/...` o `*/skills/<id>/SKILL.md`). Rechaza traversal, enlaces y reparse points (incluidas junctions Windows), y prohíbe explícitamente `kilo.jsonc`, settings, permisos, modelos, MCP, SQLite y manifiestos de instalación. Informa acciones `CREAR`, `ACTUALIZAR` o `SIN_CAMBIOS`, hashes y un SHA-256 canónico del plan. No crea directorios, archivos temporales, backups o manifiestos. `apply_supported=false` es parte del informe y no existe comando de aplicación en este módulo. Como el preview no bloquea escrituras concurrentes de terceros, el árbol del paquete y el HOME sintético deben permanecer estables durante la lectura; un plan no es autorización ni una captura transaccional.
+El preview admite solo componentes `vx-*` y limita cada destino a la ruta administrada del mismo componente (por ejemplo `.config/kilo/agents/<id>.md`, `.config/kilo/commands/<id>.md`, `.config/kilo/rules/<id>.md`, `.config/kilo/harness/<id>/...` o `*/skills/<id>/SKILL.md`). Rechaza traversal, enlaces y reparse points (incluidas junctions Windows), incluso symlinks colgantes; prohíbe explícitamente `kilo.jsonc`, settings, permisos, modelos, MCP, SQLite y manifiestos de instalación. Informa acciones `CREAR`, `ACTUALIZAR` o `SIN_CAMBIOS`, hashes y un SHA-256 canónico del plan que cubre esquema, componentes ordenados, versiones, estados, dependencias normalizadas y cambios propuestos. No crea directorios, archivos temporales, backups o manifiestos. `apply_supported=false` es parte del informe y no existe comando de aplicación en este módulo. Como el preview no bloquea escrituras concurrentes de terceros, el árbol del paquete y el HOME sintético deben permanecer estables durante la lectura; un plan no es autorización ni una captura transaccional.
 
 ## Prueba
 
@@ -35,7 +35,7 @@ El preview admite solo componentes `vx-*` y limita cada destino a la ruta admini
 python -I -m unittest discover -s tests -p 'test_vx_publish_preview_v470.py' -v
 ```
 
-Las pruebas crean HOME sintético bajo `TemporaryDirectory`, fijan archivos protegidos ficticios y comparan su snapshot. En Windows, la prueba de enlaces puede quedar `SKIPPED` si el host no permite symlinks; ese skip no acredita el rechazo en runtime. El workflow de CI debe ejecutar esta suite en `windows-latest`. Esto no equivale a validación en Kilo Desktop ni HOME real.
+Las pruebas crean HOME sintético bajo `TemporaryDirectory`, fijan archivos protegidos ficticios y comparan su snapshot. En Windows, las pruebas de symlink pueden quedar `SKIPPED` si el host no permite crearlos; el test controlado de guard cubre que se revise la ruta aun cuando `exists()` sea falso, pero no se presenta como validación del symlink nativo de Windows. El workflow de CI debe ejecutar esta suite en `windows-latest`. Esto no equivale a validación en Kilo Desktop ni HOME real.
 
 ## Aprobación y rollback de fases futuras (NO IMPLEMENTADOS)
 

@@ -71,6 +71,26 @@ class PublishPreviewTests(unittest.TestCase):
         self.assertEqual(result["changes"][0]["target"],
                          ".kilo/skills/vx-demo/SKILL.md")
 
+    def test_plan_hash_covers_dependency_versions_and_is_deterministic(self):
+        baseline = publish.build_preview(self.repo, self.home, self.manifest)
+        repeated = publish.build_preview(self.repo, self.home, self.manifest)
+        updated_dependency = json.loads(json.dumps(self.manifest))
+        updated_dependency["components"][0]["dependencies"][0]["version"] = "2.0.1"
+        changed = publish.build_preview(self.repo, self.home, updated_dependency)
+        self.assertEqual(baseline["plan_sha256"], repeated["plan_sha256"])
+        self.assertNotEqual(baseline["plan_sha256"], changed["plan_sha256"])
+
+    def test_rejects_case_insensitive_duplicate_windows_targets(self):
+        candidate = json.loads(json.dumps(self.manifest))
+        candidate["components"][0]["files"] = [
+            {"source": "fixture.txt", "target": ".config/kilo/harness/vx-demo/Config.json",
+             "sha256": hashlib.sha256(b"candidate\n").hexdigest()},
+            {"source": "fixture.txt", "target": ".config/kilo/harness/vx-demo/config.json",
+             "sha256": hashlib.sha256(b"candidate\n").hexdigest()},
+        ]
+        with self.assertRaises(publish.PreviewError):
+            publish.validate_manifest(candidate)
+
     def test_rejects_protected_or_unauthorized_target(self):
         for target in (".config/kilo/kilo.jsonc",
                        ".config/kilo/agents/../../settings.json",
@@ -122,6 +142,31 @@ class PublishPreviewTests(unittest.TestCase):
                                side_effect=lambda path: path.name == "agents"):
             with self.assertRaises(publish.PreviewError):
                 publish.build_preview(self.repo, self.home, self.manifest)
+
+    def test_rejects_dangling_symlink(self):
+        parent = self.home / ".config/kilo/harness/vx-demo"
+        parent.mkdir(parents=True)
+        link = parent / "dangling.json"
+        try:
+            link.symlink_to(self.base / "missing-target.json")
+        except OSError:
+            self.skipTest("Windows impide crear un symlink colgante real")
+        candidate = json.loads(json.dumps(self.manifest))
+        candidate["components"][0]["files"][0]["target"] = (
+            ".config/kilo/harness/vx-demo/dangling.json")
+        with self.assertRaises(publish.PreviewError):
+            publish.build_preview(self.repo, self.home, candidate)
+
+    def test_dangling_path_guard_is_called_without_exists_check(self):
+        parent = self.home / ".config/kilo/harness/vx-demo"
+        parent.mkdir(parents=True)
+        candidate = json.loads(json.dumps(self.manifest))
+        candidate["components"][0]["files"][0]["target"] = (
+            ".config/kilo/harness/vx-demo/dangling.json")
+        with mock.patch.object(publish, "_is_reparse_point",
+                               side_effect=lambda path: path.name == "dangling.json"):
+            with self.assertRaises(publish.PreviewError):
+                publish.build_preview(self.repo, self.home, candidate)
 
     def test_cli_integration_reports_proposal_without_mutating_home(self):
         cfg = self.home / ".config/kilo"

@@ -107,17 +107,21 @@ def validate_manifest(manifest: Any) -> dict[str, Any]:
                     any(part.lower() in PROTECTED_PARTS for part in target_path.parts) or
                     not _target_belongs_to_component(component_id, target_path)):
                 raise PreviewError("Destino no autorizado o protegido.")
-            if target_norm in seen_targets:
+            target_key = target_norm.casefold()
+            if target_key in seen_targets:
                 raise PreviewError("Destino duplicado en el plan.")
-            seen_targets.add(target_norm)
+            seen_targets.add(target_key)
             if not isinstance(digest, str) or not SHA256.fullmatch(digest):
                 raise PreviewError("SHA-256 inválido.")
             clean_files.append({"source": source_path.as_posix(),
                                 "target": target_norm, "sha256": digest})
+        dependencies = _validate_dependencies(component.get("dependencies", []))
         clean_components.append({"id": component_id, "version": version,
                                  "state": state,
-                                 "dependencies": _validate_dependencies(component.get("dependencies", [])),
-                                 "files": clean_files})
+                                 "dependencies": sorted(dependencies, key=lambda item: item["id"]),
+                                 "files": sorted(clean_files,
+                                                 key=lambda item: item["target"].casefold())})
+    clean_components.sort(key=lambda item: item["id"])
     return {"schema": CONTRACT_SCHEMA, "components": clean_components}
 
 
@@ -159,7 +163,11 @@ def _safe_existing_path(root: Path, relative: str) -> Path:
     current = root
     for part in PurePosixPath(relative).parts:
         current = current / part
-        if current.exists() and _is_reparse_point(current):
+        try:
+            is_reparse_point = _is_reparse_point(current)
+        except FileNotFoundError:
+            is_reparse_point = False
+        if is_reparse_point:
             raise PreviewError("No se admiten enlaces ni reparse points en las rutas.")
     resolved_root = root.resolve()
     resolved = path.resolve(strict=False)
@@ -173,7 +181,10 @@ def _is_reparse_point(path: Path) -> bool:
     is_junction = getattr(path, "is_junction", None)
     if path.is_symlink() or (callable(is_junction) and is_junction()):
         return True
-    attributes = getattr(path.lstat(), "st_file_attributes", 0)
+    try:
+        attributes = getattr(path.lstat(), "st_file_attributes", 0)
+    except FileNotFoundError:
+        return False
     reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
     return bool(attributes & reparse_flag)
 
@@ -210,7 +221,9 @@ def build_preview(repo_root: Path, home_root: Path, manifest: Any) -> dict[str, 
                              "current_sha256": current_hash,
                              "proposed_sha256": source_hash})
     proposed.sort(key=lambda row: (row["component"], row["target"]))
-    canonical = json.dumps(proposed, ensure_ascii=True, sort_keys=True,
+    plan = {"schema": CONTRACT_SCHEMA, "components": manifest["components"],
+            "changes": proposed}
+    canonical = json.dumps(plan, ensure_ascii=True, sort_keys=True,
                            separators=(",", ":")).encode("utf-8")
     return {"schema": REPORT_SCHEMA, "mode": "DRY_RUN", "state": "PREPARADO",
             "writes": 0, "approval_required_for_apply": True,
