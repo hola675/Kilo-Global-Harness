@@ -1,0 +1,382 @@
+{
+  "schema": "vx-organization-graph/1",
+  "version": "0.1.0-draft",
+  "status": "DESIGN_ONLY_DO_NOT_LOAD_OR_INSTALL",
+  "decision_state": {
+    "scope": "VX-D14_CONFIRMED",
+    "clean_profile": "VX-D16_CONFIRMED",
+    "mcp": "VX-D17_CONFIRMED",
+    "backup": "VX-D18_CONFIRMED",
+    "team_names": "THREE_USER_EXAMPLES_FOUR_PROPOSED",
+    "parallel_runtime_activation": "PENDING_EXPLICIT_AUTHORIZATION"
+  },
+  "identity": {
+    "human_operator_external": true,
+    "aliases_not_real_people": true,
+    "alias_is_not_authentication": true,
+    "technical_ids_immutable": true
+  },
+  "execution": {
+    "default_mode": "STRICT",
+    "future_mode": "PARALLEL_WORKTREES",
+    "parallel_enabled": false,
+    "strict_max_writers": 1,
+    "strict_max_parallel_readers": 3,
+    "proposed_parallel_max_writers": 2,
+    "writer_requires_isolated_git_worktree": true,
+    "main_only_permanent_branch": true,
+    "parallel_temp_branch_exception_requires_approval": true,
+    "agent_manager_capability_runtime_unverified": true,
+    "task_shared_workspace_read_only_delegates": true
+  },
+  "seniority_rubric": {
+    "states": [
+      "SIN_EVALUAR",
+      "EN_EVALUACION",
+      "EVIDENCIA_INSUFICIENTE",
+      "COMPETENCIA_VERIFICADA"
+    ],
+    "levels": [
+      "aprendiz",
+      "especialista",
+      "senior",
+      "lider",
+      "principal"
+    ],
+    "levels_not_assigned": true,
+    "evaluation_requires": "Independent tests with known difficulty and regressions; compare against baseline, real task outcomes and costs if available.",
+    "promotion_requires": "human review; no automatic permission change"
+  },
+  "nodes": [
+    {
+      "id": "vx-integrador",
+      "alias": "Yoan",
+      "display_title": "Líder de Equipo",
+      "kind": "vx-custom-agent",
+      "mode": "primary",
+      "existing_source": "agents/vx-integrador.md",
+      "department": "coordination",
+      "manager_id": null,
+      "specialty": "integrate",
+      "persona": {
+        "version": "0.1.0-draft",
+        "communication_style": "Organizador transparente y pragmático. Delimita alcance, separa hechos de hipótesis, coordina ejecución y revisión; no presume autoridad humana."
+      },
+      "experience": {
+        "evaluated_level": "SIN_EVALUAR",
+        "confidence": "NO_MEDIDO",
+        "independent_evidence_count": 0
+      },
+      "permissions": {
+        "status": "DECLARED_NOT_RUNTIME_VERIFIED",
+        "current_role": "coordinator_tool_permissions_inherited_or_explicit_check_required",
+        "future_write_eligible": true
+      },
+      "promotion": {
+        "allowed_only_after_evaluation": true,
+        "never_grants_permissions_automatically": true
+      },
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "vx-frontend-adviser",
+      "alias": "Daniela",
+      "display_title": "Diseño Web y UX/UI",
+      "kind": "vx-custom-agent",
+      "mode": "subagent",
+      "existing_source": "agents/vx-frontend-adviser.md",
+      "department": "product",
+      "manager_id": "vx-integrador",
+      "specialty": "frontend-review",
+      "persona": {
+        "version": "0.1.0-draft",
+        "communication_style": "Creativa y rigurosa con experiencia de usuario; pide pruebas visuales y de accesibilidad cuando no hay evidencia."
+      },
+      "experience": {
+        "evaluated_level": "SIN_EVALUAR",
+        "confidence": "NO_MEDIDO",
+        "independent_evidence_count": 0
+      },
+      "permissions": {
+        "status": "DECLARED_NOT_RUNTIME_VERIFIED",
+        "current_role": "read_only_except_inspector_git_allowlist",
+        "future_write_eligible": true
+      },
+      "promotion": {
+        "allowed_only_after_evaluation": true,
+        "never_grants_permissions_automatically": true
+      },
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "vx-test-analyst",
+      "alias": "Rafael",
+      "display_title": "Testeo y Calidad",
+      "kind": "vx-custom-agent",
+      "mode": "subagent",
+      "existing_source": "agents/vx-test-analyst.md",
+      "department": "quality",
+      "manager_id": "vx-integrador",
+      "specialty": "test-design",
+      "persona": {
+        "version": "0.1.0-draft",
+        "communication_style": "Crítico y reproducible; diseña casos límite, nunca declara pruebas no ejecutadas como PASS."
+      },
+      "experience": {
+        "evaluated_level": "SIN_EVALUAR",
+        "confidence": "NO_MEDIDO",
+        "independent_evidence_count": 0
+      },
+      "permissions": {
+        "status": "DECLARED_NOT_RUNTIME_VERIFIED",
+        "current_role": "read_only_except_inspector_git_allowlist",
+        "future_write_eligible": true
+      },
+      "promotion": {
+        "allowed_only_after_evaluation": true,
+        "never_grants_permissions_automatically": true
+      },
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "vx-researcher",
+      "alias": "Sofía",
+      "display_title": "Investigación y Arquitectura",
+      "kind": "vx-custom-agent",
+      "mode": "subagent",
+      "existing_source": "agents/vx-researcher.md",
+      "department": "research",
+      "manager_id": "vx-integrador",
+      "specialty": "research",
+      "persona": {
+        "version": "0.1.0-draft",
+        "communication_style": "Curiosa, metódica y orientada a fuentes; identifica incertidumbres y dependencias."
+      },
+      "experience": {
+        "evaluated_level": "SIN_EVALUAR",
+        "confidence": "NO_MEDIDO",
+        "independent_evidence_count": 0
+      },
+      "permissions": {
+        "status": "DECLARED_NOT_RUNTIME_VERIFIED",
+        "current_role": "read_only_except_inspector_git_allowlist",
+        "future_write_eligible": false
+      },
+      "promotion": {
+        "allowed_only_after_evaluation": true,
+        "never_grants_permissions_automatically": true
+      },
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "vx-security-reviewer",
+      "alias": "Valentina",
+      "display_title": "Ciberseguridad",
+      "kind": "vx-custom-agent",
+      "mode": "subagent",
+      "existing_source": "agents/vx-security-reviewer.md",
+      "department": "security",
+      "manager_id": "vx-integrador",
+      "specialty": "security-review",
+      "persona": {
+        "version": "0.1.0-draft",
+        "communication_style": "Prudente, independiente y precisa con modelo de amenazas; no confunde hipótesis con vulnerabilidades."
+      },
+      "experience": {
+        "evaluated_level": "SIN_EVALUAR",
+        "confidence": "NO_MEDIDO",
+        "independent_evidence_count": 0
+      },
+      "permissions": {
+        "status": "DECLARED_NOT_RUNTIME_VERIFIED",
+        "current_role": "read_only_except_inspector_git_allowlist",
+        "future_write_eligible": false
+      },
+      "promotion": {
+        "allowed_only_after_evaluation": true,
+        "never_grants_permissions_automatically": true
+      },
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "vx-inspector",
+      "alias": "Lucas",
+      "display_title": "Auditoría y Revisión",
+      "kind": "vx-custom-agent",
+      "mode": "subagent",
+      "existing_source": "agents/vx-inspector.md",
+      "department": "quality",
+      "manager_id": "vx-integrador",
+      "specialty": "independent-review",
+      "persona": {
+        "version": "0.1.0-draft",
+        "communication_style": "Imparcial, conciso y exigente con versiones del diff; no autoevalúa cambios propios."
+      },
+      "experience": {
+        "evaluated_level": "SIN_EVALUAR",
+        "confidence": "NO_MEDIDO",
+        "independent_evidence_count": 0
+      },
+      "permissions": {
+        "status": "DECLARED_NOT_RUNTIME_VERIFIED",
+        "current_role": "read_only_except_inspector_git_allowlist",
+        "future_write_eligible": false
+      },
+      "promotion": {
+        "allowed_only_after_evaluation": true,
+        "never_grants_permissions_automatically": true
+      },
+      "version": "0.1.0-draft"
+    },
+    {
+      "id": "vx-workers-adviser",
+      "alias": "Mateo",
+      "display_title": "Cloudflare y Serverless",
+      "kind": "vx-custom-agent",
+      "mode": "subagent",
+      "existing_source": "agents/vx-workers-adviser.md",
+      "department": "platform",
+      "manager_id": "vx-integrador",
+      "specialty": "workers-review",
+      "persona": {
+        "version": "0.1.0-draft",
+        "communication_style": "Operacional y preventivo; separa planes de validación del despliegue efectivo."
+      },
+      "experience": {
+        "evaluated_level": "SIN_EVALUAR",
+        "confidence": "NO_MEDIDO",
+        "independent_evidence_count": 0
+      },
+      "permissions": {
+        "status": "DECLARED_NOT_RUNTIME_VERIFIED",
+        "current_role": "read_only_except_inspector_git_allowlist",
+        "future_write_eligible": true
+      },
+      "promotion": {
+        "allowed_only_after_evaluation": true,
+        "never_grants_permissions_automatically": true
+      },
+      "version": "0.1.0-draft"
+    }
+  ],
+  "edges": [
+    {
+      "from": "vx-frontend-adviser",
+      "to": "vx-integrador",
+      "type": "reports_to",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-test-analyst",
+      "to": "vx-integrador",
+      "type": "reports_to",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-researcher",
+      "to": "vx-integrador",
+      "type": "reports_to",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-security-reviewer",
+      "to": "vx-integrador",
+      "type": "reports_to",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-inspector",
+      "to": "vx-integrador",
+      "type": "reports_to",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-workers-adviser",
+      "to": "vx-integrador",
+      "type": "reports_to",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-researcher",
+      "to": "vx-test-analyst",
+      "type": "consults",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-frontend-adviser",
+      "to": "vx-test-analyst",
+      "type": "consults",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-workers-adviser",
+      "to": "vx-security-reviewer",
+      "type": "consults",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-test-analyst",
+      "to": "vx-inspector",
+      "type": "handoff_review",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    },
+    {
+      "from": "vx-integrador",
+      "to": "vx-inspector",
+      "type": "requests_independent_review",
+      "status": "PROPOSED_NOT_RUNTIME_ENFORCED"
+    }
+  ],
+  "department_templates": [
+    {
+      "id": "coordination",
+      "title": "Coordinación y Delivery",
+      "active_as_department": false
+    },
+    {
+      "id": "product",
+      "title": "Ingeniería de Producto y UX",
+      "active_as_department": false
+    },
+    {
+      "id": "quality",
+      "title": "Calidad y Evaluación",
+      "active_as_department": false
+    },
+    {
+      "id": "research",
+      "title": "Investigación y Arquitectura",
+      "active_as_department": false
+    },
+    {
+      "id": "security",
+      "title": "Seguridad",
+      "active_as_department": false
+    },
+    {
+      "id": "platform",
+      "title": "Infraestructura y Plataforma",
+      "active_as_department": false
+    }
+  ],
+  "growth_rule": {
+    "default": "reuse_agents_and_skills_first",
+    "new_agent_requires": [
+      "observable_repeated_need",
+      "independent_evaluation",
+      "no_existing_skill_suffices",
+      "scoped_permissions_tested",
+      "version_and_rollback",
+      "human_approval"
+    ],
+    "new_department_requires": [
+      "at_least_two_persistent_specialized_workstreams",
+      "clear_reporting_dag",
+      "demonstrated_coordination_benefit",
+      "human_approval"
+    ],
+    "reporting_must_be_acyclic": true,
+    "collaboration_can_be_bidirectional": true,
+    "task_dependency_graph_must_be_acyclic": true
+  }
+}
