@@ -89,6 +89,8 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 | VX-D10 | Terminal TTY permite confirmación deliberada pero **no valida identidad** | Para publicación V4.7 hace falta aprobación más robusta. |
 | VX-D11 | Criterios de ascenso y contratación **pendientes** | En V4.6 usar rúbrica propuesta y validación humana, sin atribuir rangos reales aún. |
 | VX-D12 | Duplicidades de agentes y límites steps históricos **pendientes de auditoría efectiva** | Usar reconciliador V4.2 antes de editar fuentes. |
+| VX-D14 | **CONFIRMADO: alcance C** — gobernar únicamente componentes VX propios | El inventario/respaldo puntual del resto de Kilo es preparatorio, no administración continua ni autorización de borrado. |
+| VX-D15 | **Pack inicial todo-en-uno propuesto, aún no aprobado** | Definir convivencia con Kilo existente, formato nativo, catálogo MCP, seguridad de backups y actualización por consentimiento. |
 | Scheduler VX | **Desactivado por decisión explícita del usuario** | Ningún trabajo crea tarea Windows, recordatorio, notificación o reunión autónoma. |
 
 ## Próximo paso operativo
@@ -116,5 +118,7 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 **P3.2 CORRECCIÓN DE TESTS TTY EN PR INDEPENDIENTE** — Los dos fixtures heredados de reuniones fijan `stdin=subprocess.PIPE` para garantizar entrada no interactiva en Windows: el primer ensayo con `subprocess.DEVNULL` falló en CI porque Windows NUL puede devolver `isatty()=True`. El cambio de PIPE se está revalidando en CI. No cambia `local_confirmation()` ni los permisos. La prueba completa local interactiva debe repetirse en Windows del operador tras CI y merge. [Alcance y verificación](VX-REPRODUCIBILIDAD-TTY-V4.7.1.md).
 
 **P4 V4.7.2 — SIGUIENTE FASE EN DISEÑO** — Analizar autenticación y separación de funciones; comprobar el modelo de confianza y antirreplay, primero en un entorno aislado. No exponer `apply` ni permitir aprobaciones activas sin un mecanismo autenticado, respaldos y autorización explícita.
+
+**P4 NUEVA ÉPICA PROPUESTA: PACK VX BOOTSTRAP GLOBAL (SIN IMPLEMENTAR)** — Decisión C confirmada: VX gobierna únicamente componentes VX propios. El operador propone un paquete inicial versionado con agentes/skills/comandos VX, respaldo preinstalación del perfil existente, preservación de agentes built-in de Kilo, inventario/comparación de MCP y soporte de actualización reversible. No confundir backup total, instalador actual que solo respalda destinos administrados, ni lista de MCP con conectividad real. Quedan decisiones previas (convivencia/limpieza, nativo/custom, MCP opcional, protección de copias). [Acta alcance C y preguntas](VX-ALCANCE-C-PACK-BOOTSTRAP-20261115.md). **No instalar ni modificar Kilo hasta aprobación del diseño.**
 
 Se considera **finalizada la planificación** cuando este documento, el README y el registro de decisiones describen las mismas fases y se validan los invariantes en CI. Ningún cambio de runtime en V4.6 se autoriza con solo publicar este roadmap.
