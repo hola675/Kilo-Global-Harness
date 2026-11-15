@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición:** 2026-11-14 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 integrada, CI Windows PASS y CLI local probado; batería conversacional sintética 5/5 coincidencias declaradas (sin verificación de ejecutores); V4.6.3 código/CI Windows PASS y CLI local VALIDADO: 30 hallazgos de revisión estática (11 solapamientos, 19 steps elevados, 0 diferencias explícitas); procedencia y precedencia del runtime no verificadas; V4.7–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
+**Edición:** 2026-11-15 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 integrada, CI Windows PASS y CLI local probado; batería conversacional sintética 5/5 coincidencias declaradas (sin verificación de ejecutores); V4.6.3 código/CI Windows PASS y CLI local VALIDADO; V4.7.0/1 integradas con CI Windows PASS, aprobaciones efectivas todavía deshabilitadas; V4.7.2 en diseño/pruebas aisladas · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
 
 ## Fuente de verdad y definición de estados
 
@@ -29,7 +29,8 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | **V4.6.2** | Cinco ensayos sintéticos reproducibles y comparación de evidencias declaradas | **Código + CI Windows PASS (27 tests)** | **CLI Windows PASS; chat: 5/5 respuestas coincidentes**. Delegaciones/skills sin traza independiente | Fixture público no ciego; calidad NO_MEDIDO, sin escritura |
 | **V4.6.3** | Auditoría organizativa declarativa: duplicados, steps, perfiles y procedencia no verificada | **Código y CI Windows PASS (26 tests)** | **CLI Windows PASS:** 11 solapamientos, 19 steps elevados, 0 diferencias explícitas; 30 hallazgos | Ninguna colisión/identidad certificada, sin cambios activos |
 | V4.7.0 | Publicación gobernada, SemVer y preview DRY_RUN | Integrada en main (`36a73e01`); CI Windows PASS | Tests con HOME sintético | Sin instalación, aprobación autenticada ni rollback activo |
-| V4.7.1 | Contrato de solicitud/verificación de aprobación | En implementación sobre rama de trabajo | Pruebas aisladas pendientes | Verificación estructural no autentica ni habilita apply |
+| V4.7.1 | Contrato estructural de solicitud/verificación de aprobación | Integrada en main (`11b48695`); CI Windows PASS | Pruebas con HOME sintético | No autentica ni habilita apply |
+| V4.7.2 | Diseño de identidad, separación, replay, revocación y auditoría | Propuesta de contratos/tests aislados en rama | Sin enrolamiento ni persistencia operativa | `approval_granted=false`; `apply_supported=false` |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
 | V5.0 | Equipos especializados adaptativos, ascensos y delegación medidos | Conceptual | No aplica | Condicionado a evidencia y controles anteriores |
 

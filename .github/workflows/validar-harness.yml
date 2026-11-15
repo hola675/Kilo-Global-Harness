@@ -732,6 +732,16 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.1 approval contract' }
           Write-Host 'VX V4.7.1: STRICT REQUEST/ASSERTION + HOME AISLADO + SIN AUTH/APPLY: PASS'
 
+      - name: V4.7.2 - contratos de seguridad aislados y aprobaciones deshabilitadas
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_approval_security_v472.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V4.7.2 approval security' }
+          python -m compileall -q scripts/vx_approval_security_v472.py tests/test_vx_approval_security_v472.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.2 approval security' }
+          Write-Host 'VX V4.7.2: WEBAUTHN STRUCTURE ONLY + IN-MEMORY MODELS + NO EFFECTIVE APPROVAL/APPLY: PASS'
+
       - name: V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura
         shell: pwsh
         run: |
