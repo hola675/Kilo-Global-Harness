@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición:** 2026-11-14 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 integrada, CI Windows PASS y CLI local probado; batería conversacional sintética 5/5 coincidencias declaradas (sin verificación de ejecutores); V4.6.3 código/CI Windows PASS, validación CLI en Windows del usuario pendiente; V4.7–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
+**Edición:** 2026-11-14 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 integrada, CI Windows PASS y CLI local probado; batería conversacional sintética 5/5 coincidencias declaradas (sin verificación de ejecutores); V4.6.3 código/CI Windows PASS y CLI local VALIDADO: 30 hallazgos de revisión estática (11 solapamientos, 19 steps elevados, 0 diferencias explícitas); procedencia y precedencia del runtime no verificadas; V4.7–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
 
 ## Fuente de verdad y definición de estados
 
@@ -27,7 +27,7 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 39 fuentes agente, 28 agentes, 40 skills, 11 solapamientos, 19 steps elevados | Sin cambios de permisos, SQLite ni roles |
 | **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 76 filas, 15 declaraciones, 0 evidencias | Prueba interactiva Kilo pendiente; seniority sin asignar |
 | **V4.6.2** | Cinco ensayos sintéticos reproducibles y comparación de evidencias declaradas | **Código + CI Windows PASS (27 tests)** | **CLI Windows PASS; chat: 5/5 respuestas coincidentes**. Delegaciones/skills sin traza independiente | Fixture público no ciego; calidad NO_MEDIDO, sin escritura |
-| **V4.6.3** | Auditoría organizativa declarativa: duplicados, steps, perfiles y procedencia no verificada | **Código y CI Windows PASS (26 tests)** | Validación CLI local pendiente | Ninguna colisión/identidad certificada, sin cambios activos |
+| **V4.6.3** | Auditoría organizativa declarativa: duplicados, steps, perfiles y procedencia no verificada | **Código y CI Windows PASS (26 tests)** | **CLI Windows PASS:** 11 solapamientos, 19 steps elevados, 0 diferencias explícitas; 30 hallazgos | Ninguna colisión/identidad certificada, sin cambios activos |
 | V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseñado | No aplica | Revisión independiente y autorización explícita |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
 | V5.0 | Equipos especializados adaptativos, ascensos y delegación medidos | Conceptual | No aplica | Condicionado a evidencia y controles anteriores |
@@ -100,9 +100,9 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 **P1.2 BATERÍA SINTÉTICA CERRADA, SIN CERTIFICACIÓN DE COMPETENCIA** — V4.6.2: 27 tests y smoke/rollback CI Windows PASS; 5 casos/5 destinos en CLI local; después, 5/5 respuestas de chat coincidentes con fixture público, sin traza independiente de subagentes, sin archivos de comparación antes/después y sin evaluación ciega. La restricción PowerShell en Kilo continúa; no requiere levantarse. [Validación CLI](VX-VALIDACION-CLI-V4.6.2-20261114.md) · [Cierre de batería interactiva](VX-CIERRE-BATERIA-V4.6.2-20261114.md).
 
-**P2.1 V4.6.3 CÓDIGO Y CI WINDOWS PASS; PENDIENTE LOCAL** — Auditoría solo lectura de solapamientos, límites steps, skills no observadas y declaraciones del router. La procedencia de subagentes y prioridad efectiva siguen NO_VERIFICADO; no se ejecutan modelos ni se crean propuestas SQLite. [Guía V4.6.3](VX-AUDITORIA-ORGANIZATIVA-V4.6.3.md).
+**P2.1 V4.6.3 CLI LOCAL VALIDADO; AUDITORÍA ESTÁTICA CERRADA** — Instalación reversible y verificación PASS en Windows real; 11 solapamientos de nombre con 0 diferencias explícitas comparables, 19 declaraciones steps sobre el umbral y 30 hallazgos de revisión. Skills duplicadas, skills de perfil no observadas y agentes router no observados = 0. La precedencia y autoría real siguen NO_VERIFICADO. [Acta V4.6.3](VX-VALIDACION-LOCAL-V4.6.3-20261114.md) · [Guía V4.6.3](VX-AUDITORIA-ORGANIZATIVA-V4.6.3.md).
 
-**P2.2 PENDIENTE** — Tras validar V4.6.3 en el Windows del usuario, examinar evidencias mínimas de delegación y diseñar evaluaciones independientes/ciegas; cualquier propuesta de capacitación o reorganización requiere aprobación expresa y pruebas antes de aplicarse.
+**P2.2 PENDIENTE DE EVIDENCIA DE RUNTIME** — Examinar, por vía manual autorizada, trazas mínimas de ejecución de subagentes (sin copiar sesiones completas) y diseñar evaluaciones independientes/ciegas. Revisar diferencias semánticas no cubiertas y las seis declaraciones de acceso edit/bash allow sin cambiar permisos. Cualquier propuesta de capacitación o reorganización requiere aprobación expresa y pruebas antes de aplicarse.
 
 **P3** — Después del cierre y pruebas de V4.6, diseñar V4.7 de versiones, validación y rollback.
 
