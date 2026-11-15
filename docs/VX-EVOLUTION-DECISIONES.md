@@ -120,3 +120,10 @@ El operador enumeró los once agentes con fuentes JSONC/Markdown superpuestas. D
 ### Comprobación declarada en interfaz Kilo de dos agentes (V4.6.3)
 
 El operador verificó manualmente **Pasos máximos = 10000000** en los editores visuales de `architect` y `code-reviewer`. Los dos valores coinciden con las declaraciones `kilo-agent-jsonc` ya inventariadas. Esto incrementa la evidencia del valor **mostrado**, pero no demuestra la procedencia efectiva de la combinación JSONC/Markdown ni que Kilo aplique ese límite en una sesión. Sin cambios de archivos, políticas, AutoApprove, agentes ni scheduler. La siguiente prueba será comparar únicamente metadatos de ambas fuentes en V4.6.0 y, si hace falta, revisar de forma manual el comportamiento autorizado de Kilo, nunca mediante una reconfiguración de prueba. [Registro de evidencias](VX-REVISION-STEPS-PRECEDENCIA-V4.6.3-20261114.md).
+
+
+### VX-D13 — Evidencia Desktop y próxima fase V4.7 (registro sin cambio activo)
+
+Se recibió el inventario visual de Kilo Desktop con los siete agentes VX en `All workspaces`, junto a las skills VX `vx-engineering-harness` y `vx-evolution-core`. Una prueba nueva ejecutó `task` hacia `vx-inspector` y reportó la sesión hija `completed`; no se obtuvo metadato independiente del ejecutor ni llamada interna observable `skill`. Por ello, el uso de la skill permanece `DECLARADO` y su invocación `NO_VERIFICADO`, no se etiqueta como error. Las tres tareas sintéticas A/B/C previas tuvieron resultados correctos y tres delegaciones visibles, sin evaluación ciega ni calidad medida.
+
+**Decisión conservadora:** no repetir las mismas pruebas sin nueva evidencia, no cambiar límites `steps`, permisos, agentes o skills activos. Diseñar V4.7 con manifiestos versionados, simulación, CI en HOME aislado, aprobación expresa vinculada al hash y rollback; cualquier aplicación al HOME Windows requiere autorización específica. Cuatro MCP Cloudflare marcados `Needs sign-in` no bloquean el alcance de VX. [Acta y puerta V4.7](VX-DESKTOP-VALIDACION-Y-PUERTA-V4.7-20261114.md).
