@@ -27,7 +27,7 @@ class TestJointMeeting(unittest.TestCase):
 
     def call(self, *args, ok=True):
         p = subprocess.run([sys.executable, "-I", str(SCRIPT), "--home", str(self.home),
-                            *args, "--json"], cwd=self.home, capture_output=True,
+                            *args, "--json"], cwd=self.home, capture_output=True, stdin=subprocess.PIPE,
                            encoding="utf-8", text=True, timeout=20)
         if ok:
             self.assertEqual(p.returncode, 0, p.stderr + p.stdout)
