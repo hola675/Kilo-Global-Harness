@@ -711,3 +711,62 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           if (Test-Path $trial) { throw 'Rollback no retiro el motor de ensayos' }
           Write-Host 'VX V4.6.2: TESTS + CATALOGO + ROLLBACK WINDOWS PASS'
+
+      - name: V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_organizational_audit_v463.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron tests V4.6.3' }
+          python -m compileall -q scripts/vx_organizational_audit.py tests/test_vx_organizational_audit_v463.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.6.3' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx463-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo instalador V4.6.3' }
+          $org = Join-Path $fixture '.config/kilo/harness/scripts/vx_organizational_audit.py'
+          $audit = Join-Path $fixture '.config/kilo/harness/scripts/vx_capability_audit.py'
+          $cmd = Join-Path $fixture '.config/kilo/commands/vx-organizacion.md'
+          $reg = Join-Path $fixture '.config/kilo/harness/vx-agent-registry-v4.json'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (!(Test-Path $org) -or !(Test-Path $audit) -or !(Test-Path $cmd)) {
+            throw 'Archivos V4.6.3 no instalados globalmente'
+          }
+          if (Test-Path $db) { throw 'Instalacion no debe crear SQLite' }
+          $hash = (Get-FileHash $reg -Algorithm SHA256).Hash
+          $report = python -I $org --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo CLI V4.6.3' }
+          $baseline = python -I $audit --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo linea base V4.6.0 en CI V4.6.3' }
+          if ($report.schema -ne 'vx-kilo-organizational-audit/1' -or
+              $report.scope -ne 'HOME_GLOBAL_SOLO_LECTURA_PC_UNICA' -or
+              $report.writes -ne 0 -or $report.database_access -or
+              $report.models_called -or $report.mcp_called -or
+              $report.live_agent_execution -or $report.session_logs_read -or
+              $report.delegation_provenance_verified -or
+              $report.effective_source_verified -or
+              $report.organizational_change_authorized -or $report.scheduler_enabled -or
+              $report.competence -ne 'NO_MEDIDO' -or
+              $report.seniority -ne 'NO_ASIGNADO' -or
+              $report.counts.agent_source_overlaps -ne $baseline.counts.agents_jsonc_and_markdown -or
+              $report.counts.steps_above_configured_threshold -ne $baseline.counts.steps_above_threshold) {
+            throw 'Contrato V4.6.3 incumplido'
+          }
+          foreach ($finding in $report.findings) {
+            if ($finding.automatic_action -ne 'NINGUNA' -or $finding.effective_runtime_verified) {
+              throw 'V4.6.3 no debe activar ni inferir runtime'
+            }
+          }
+          if ((Get-FileHash $reg -Algorithm SHA256).Hash -ne $hash -or (Test-Path $db)) {
+            throw 'V4.6.3 modifico registro o SQLite'
+          }
+          & $installer -Modo Verificar -RaizUsuario $fixture
+          if ($LASTEXITCODE -ne 0) { throw 'Verificacion V4.6.3 fallo' }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          if (!$backup) { throw 'No existe backup de rollback V4.6.3' }
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if ($LASTEXITCODE -ne 0 -or (Test-Path $org)) {
+            throw 'Rollback V4.6.3 incompleto'
+          }
+          Write-Host 'VX V4.6.3: 26 UNIT TESTS + HOME ISOLADO + ROLLBACK WINDOWS PASS'

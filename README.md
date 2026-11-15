@@ -1,6 +1,6 @@
-# VECIDYA · Kilo Code Global Harness V4.6.2
+# VECIDYA · Kilo Code Global Harness V4.6.3
 
-**Versión del código:** 4.6.2 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 tiene CI Windows PASS y CLI local validado (5 casos y destinos); después se recibieron 5/5 respuestas coincidentes en chat con fixtures sintéticos públicos. Atribución efectiva a especialistas/skills y competencia real NO_VERIFICADAS. PowerShell dentro de Kilo permanece bloqueado por política. Ninguna reunión automática está habilitada.
+**Versión del código:** 4.6.3 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 tiene CI Windows PASS y CLI local validado (5 casos y destinos); después se recibieron 5/5 respuestas coincidentes en chat con fixtures sintéticos públicos. Atribución efectiva a especialistas/skills y competencia real NO_VERIFICADAS. PowerShell dentro de Kilo permanece bloqueado por política. V4.6.3 introduce un diagnóstico declarativo de organización con CI Windows PASS, pendiente de validación CLI local, sin evaluar competencias ni cambiar perfiles. Ninguna reunión automática está habilitada.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -11,6 +11,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
 - **PC ÚNICA:** VX Evolution usa exclusivamente este Windows. Sin sincronización multi-PC, infraestructura cloud ni configuración Kilo por repositorio.
+- **VX Organización V4.6.3:** informe solo lectura de solapamientos, steps declarados, perfiles y fuentes Kilo; no afirma precedencia, procedencia de subagentes, jerarquías ni rendimiento.
 - **VX Ensayos V4.6.2:** cinco escenarios sintéticos para contraste manual antes/después, sin ejecutar agentes, puntuar ni activar roles; evidencia aportada siempre declarada.
 - **VX Matriz V4.6.1:** análisis de agentes y skills con test IDs estables y evidencias opcionales declaradas, sin asignar nivel, score o ascensos; no ejecuta pruebas ni escribe SQLite.
 - **VX Capacidades V4.6.0:** auditoría global de metadatos JSONC/Markdown y skills; diferencias de fuentes y capacidades **declaradas, no probadas**; nunca modifica SQLite, agentes, permisos ni skills.
@@ -131,6 +132,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [VX Ensayos V4.6.2: escenarios y comparación declarativa manual](docs/VX-ENSAYOS-COMPETENCIAS-V4.6.2.md)
 - [Cierre de CLI V4.6.2 en Windows y bloqueo de herramienta en Kilo](docs/VX-VALIDACION-CLI-V4.6.2-20261114.md)
 - [Cierre de batería sintética V4.6.2: cinco respuestas coincidentes y límites de evidencia](docs/VX-CIERRE-BATERIA-V4.6.2-20261114.md)
+- [VX Auditoría organizativa V4.6.3: criterios y validación](docs/VX-AUDITORIA-ORGANIZATIVA-V4.6.3.md)
 - [VX Reunión V4.5: fechas locales, actas y decisiones manuales](docs/VX-REUNION-V4.5.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Roadmap maestro VX Evolution: estado real, brechas y plan V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md)
@@ -227,7 +229,7 @@ Para crear **voluntariamente** un borrador de acta: `meeting-prepare --cadence w
 
 ## Siguiente fase — V4.6: capacitación y auditoría con evidencia
 
-**Estado:** V4.6.0–V4.6.1 validadas mediante CLI local en el Windows del usuario (14-11-2026); V4.6.2 implementada y CI Windows PASS, pendiente instalación local; V4.6.3 pendiente. La prueba de interacción de comandos dentro de Kilo tras /reload no está acreditada. No activar scheduler.
+**Estado:** V4.6.0–V4.6.2 integradas y CLI Windows locales validados, V4.6.2 batería conversacional 5/5 respuestas de fixtures públicos (no certificada); V4.6.3 código y CI Windows PASS, instalación/CLI local pendientes. La ejecución de PowerShell desde Kilo está bloqueada por política, sin necesidad de ampliarla. Scheduler OFF.
 
 La capacitación priorizará mejorar skills y especialistas existentes; la auditoría recomendará consolidación, delegación o contratación **solo con evidencia y evaluación independiente**. No introducir agentes, jerarquías, permisos, prompts, MCP ni cambios operativos automáticamente. Los contadores `session_idle` y `session_error` de V4.4 no demuestran calidad.
 
@@ -276,6 +278,8 @@ La herramienta muestra cinco escenarios de revisión, regresión y calidad de ev
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **4.6.3 · 2026-11-14:** auditor de organización Kilo declarativa, comando global /vx-organizacion, pruebas de metadatos y CI Windows; no ejecuta modelos ni modifica agentes, skills o SQLite. Validación local pendiente.
 
 - **Cierre de batería 4.6.2 · 2026-11-14:** cinco respuestas coinciden con fixtures públicos, una retransmisión duplicada no se contabilizó, sesiones atribuidas no verificadas; 0 niveles asignados. Solo documentos, sin modificaciones operativas.
 
