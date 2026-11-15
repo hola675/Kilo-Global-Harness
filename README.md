@@ -281,6 +281,8 @@ Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**,
 
 ## Changelog
 
+- **Inventario steps V4.6.3 cerrado · 2026-11-14:** 19/19 entradas por encima de 400 tienen steps=10000000 en JSONC. Fuente efectiva, rondas consumidas, impacto y límites alternativos NO_VERIFICADOS; propuesta de evaluación sin cambios operativos.
+
 - **Revisión de límites 4.6.3 · 2026-11-14:** 11 agentes con nombres superpuestos y ninguna diferencia en los metadatos simples cotejados; 10 de 19 entradas steps elevadas muestran 10 millones. Documentación oficial de Kilo consultada; funcionamiento en esta instalación y las nueve entradas restantes todavía pendientes. Solo documentación, sin cambio de límites.
 
 - **Cierre local V4.6.3 · 2026-11-14:** instalación y CLI Windows PASS; 11 solapamientos, 0 diferencias explícitas, 19 valores steps elevados, 30 hallazgos de metadatos; sin prueba de precedencia o delegación real. Solo actualización documental, scheduler OFF.
