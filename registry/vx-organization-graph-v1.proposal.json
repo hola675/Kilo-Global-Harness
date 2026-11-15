@@ -1,20 +1,22 @@
 {
   "schema": "vx-organization-graph/1",
-  "version": "0.1.0-draft",
+  "version": "0.1.1-draft",
   "status": "DESIGN_ONLY_DO_NOT_LOAD_OR_INSTALL",
   "decision_state": {
     "scope": "VX-D14_CONFIRMED",
     "clean_profile": "VX-D16_CONFIRMED",
     "mcp": "VX-D17_CONFIRMED",
     "backup": "VX-D18_CONFIRMED",
-    "team_names": "THREE_USER_EXAMPLES_FOUR_PROPOSED",
-    "parallel_runtime_activation": "PENDING_EXPLICIT_AUTHORIZATION"
+    "team_names": "SEVEN_CONFIRMED_BY_OPERATOR_2026_11_15",
+    "parallel_runtime_activation": "GOAL_CONFIRMED_RUNTIME_NOT_AUTHORIZED"
   },
   "identity": {
     "human_operator_external": true,
     "aliases_not_real_people": true,
     "alias_is_not_authentication": true,
-    "technical_ids_immutable": true
+    "technical_ids_immutable": true,
+    "aliases_confirmed": true,
+    "aliases_confirmed_at": "2026-11-15"
   },
   "execution": {
     "default_mode": "STRICT",
@@ -59,8 +61,10 @@
       "manager_id": null,
       "specialty": "integrate",
       "persona": {
-        "version": "0.1.0-draft",
-        "communication_style": "Organizador transparente y pragmático. Delimita alcance, separa hechos de hipótesis, coordina ejecución y revisión; no presume autoridad humana."
+        "version": "0.1.1-draft",
+        "communication_style": "Organizador transparente y pragmático. Delimita alcance, separa hechos de hipótesis, coordina ejecución y revisión; no presume autoridad humana.",
+        "alias_approved": true,
+        "alias_approval_scope": "DISPLAY_NAME_ONLY_NOT_TOOL_AUTHORIZATION"
       },
       "experience": {
         "evaluated_level": "SIN_EVALUAR",
@@ -76,7 +80,7 @@
         "allowed_only_after_evaluation": true,
         "never_grants_permissions_automatically": true
       },
-      "version": "0.1.0-draft"
+      "version": "0.1.1-draft"
     },
     {
       "id": "vx-frontend-adviser",
@@ -89,8 +93,10 @@
       "manager_id": "vx-integrador",
       "specialty": "frontend-review",
       "persona": {
-        "version": "0.1.0-draft",
-        "communication_style": "Creativa y rigurosa con experiencia de usuario; pide pruebas visuales y de accesibilidad cuando no hay evidencia."
+        "version": "0.1.1-draft",
+        "communication_style": "Creativa y rigurosa con experiencia de usuario; pide pruebas visuales y de accesibilidad cuando no hay evidencia.",
+        "alias_approved": true,
+        "alias_approval_scope": "DISPLAY_NAME_ONLY_NOT_TOOL_AUTHORIZATION"
       },
       "experience": {
         "evaluated_level": "SIN_EVALUAR",
@@ -106,7 +112,7 @@
         "allowed_only_after_evaluation": true,
         "never_grants_permissions_automatically": true
       },
-      "version": "0.1.0-draft"
+      "version": "0.1.1-draft"
     },
     {
       "id": "vx-test-analyst",
@@ -119,8 +125,10 @@
       "manager_id": "vx-integrador",
       "specialty": "test-design",
       "persona": {
-        "version": "0.1.0-draft",
-        "communication_style": "Crítico y reproducible; diseña casos límite, nunca declara pruebas no ejecutadas como PASS."
+        "version": "0.1.1-draft",
+        "communication_style": "Crítico y reproducible; diseña casos límite, nunca declara pruebas no ejecutadas como PASS.",
+        "alias_approved": true,
+        "alias_approval_scope": "DISPLAY_NAME_ONLY_NOT_TOOL_AUTHORIZATION"
       },
       "experience": {
         "evaluated_level": "SIN_EVALUAR",
@@ -136,7 +144,7 @@
         "allowed_only_after_evaluation": true,
         "never_grants_permissions_automatically": true
       },
-      "version": "0.1.0-draft"
+      "version": "0.1.1-draft"
     },
     {
       "id": "vx-researcher",
@@ -149,8 +157,10 @@
       "manager_id": "vx-integrador",
       "specialty": "research",
       "persona": {
-        "version": "0.1.0-draft",
-        "communication_style": "Curiosa, metódica y orientada a fuentes; identifica incertidumbres y dependencias."
+        "version": "0.1.1-draft",
+        "communication_style": "Curiosa, metódica y orientada a fuentes; identifica incertidumbres y dependencias.",
+        "alias_approved": true,
+        "alias_approval_scope": "DISPLAY_NAME_ONLY_NOT_TOOL_AUTHORIZATION"
       },
       "experience": {
         "evaluated_level": "SIN_EVALUAR",
@@ -166,7 +176,7 @@
         "allowed_only_after_evaluation": true,
         "never_grants_permissions_automatically": true
       },
-      "version": "0.1.0-draft"
+      "version": "0.1.1-draft"
     },
     {
       "id": "vx-security-reviewer",
@@ -179,8 +189,10 @@
       "manager_id": "vx-integrador",
       "specialty": "security-review",
       "persona": {
-        "version": "0.1.0-draft",
-        "communication_style": "Prudente, independiente y precisa con modelo de amenazas; no confunde hipótesis con vulnerabilidades."
+        "version": "0.1.1-draft",
+        "communication_style": "Prudente, independiente y precisa con modelo de amenazas; no confunde hipótesis con vulnerabilidades.",
+        "alias_approved": true,
+        "alias_approval_scope": "DISPLAY_NAME_ONLY_NOT_TOOL_AUTHORIZATION"
       },
       "experience": {
         "evaluated_level": "SIN_EVALUAR",
@@ -196,7 +208,7 @@
         "allowed_only_after_evaluation": true,
         "never_grants_permissions_automatically": true
       },
-      "version": "0.1.0-draft"
+      "version": "0.1.1-draft"
     },
     {
       "id": "vx-inspector",
@@ -209,8 +221,10 @@
       "manager_id": "vx-integrador",
       "specialty": "independent-review",
       "persona": {
-        "version": "0.1.0-draft",
-        "communication_style": "Imparcial, conciso y exigente con versiones del diff; no autoevalúa cambios propios."
+        "version": "0.1.1-draft",
+        "communication_style": "Imparcial, conciso y exigente con versiones del diff; no autoevalúa cambios propios.",
+        "alias_approved": true,
+        "alias_approval_scope": "DISPLAY_NAME_ONLY_NOT_TOOL_AUTHORIZATION"
       },
       "experience": {
         "evaluated_level": "SIN_EVALUAR",
@@ -226,7 +240,7 @@
         "allowed_only_after_evaluation": true,
         "never_grants_permissions_automatically": true
       },
-      "version": "0.1.0-draft"
+      "version": "0.1.1-draft"
     },
     {
       "id": "vx-workers-adviser",
@@ -239,8 +253,10 @@
       "manager_id": "vx-integrador",
       "specialty": "workers-review",
       "persona": {
-        "version": "0.1.0-draft",
-        "communication_style": "Operacional y preventivo; separa planes de validación del despliegue efectivo."
+        "version": "0.1.1-draft",
+        "communication_style": "Operacional y preventivo; separa planes de validación del despliegue efectivo.",
+        "alias_approved": true,
+        "alias_approval_scope": "DISPLAY_NAME_ONLY_NOT_TOOL_AUTHORIZATION"
       },
       "experience": {
         "evaluated_level": "SIN_EVALUAR",
@@ -256,7 +272,7 @@
         "allowed_only_after_evaluation": true,
         "never_grants_permissions_automatically": true
       },
-      "version": "0.1.0-draft"
+      "version": "0.1.1-draft"
     }
   ],
   "edges": [
