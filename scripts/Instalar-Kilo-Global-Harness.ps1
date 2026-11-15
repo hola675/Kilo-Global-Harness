@@ -158,6 +158,11 @@ function Global-Assets {
     Source=(Join-Path $root 'scripts/vx_competency_trials.py');
     Target=(Join-Path $kiloDir 'harness/scripts/vx_competency_trials.py')
   }
+  # V4.6.3: diagnóstico organizativo de metadatos sin cambiar el runtime.
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'scripts/vx_organizational_audit.py');
+    Target=(Join-Path $kiloDir 'harness/scripts/vx_organizational_audit.py')
+  }
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'skills/vx-evolution-core/SKILL.md');
     Target=(Join-Path $skillRoot 'vx-evolution-core/SKILL.md')
