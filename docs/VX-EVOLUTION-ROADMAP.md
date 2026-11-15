@@ -2,6 +2,8 @@
 
 **Edición consolidada:** 2026-11-15 · **Fuente:** `main` en `11b4869589dcb34a9d4aa74e01ce945f2b879e22`; PR documental #28 en revisión; PR #29 V4.7.2 abierta, CI Windows PASS del HEAD de PR, **NO integrada en main**. **Operación activa:** instalación real probada hasta V4.6.3 según actas, V4.7.0 y V4.7.1 integradas en el REPOSITORIO (DRY_RUN / aprobación sin autenticar), sin despliegue de estos módulos al HOME por el instalador V4. Paquete limpio, respaldo integral, catálogo MCP, equipo multi-escritor, promociones y departamentos: **diseño, NO activos**.
 
+**Ámbito vinculante:** solo Kilo Code global en una PC Windows; no Codex/Claude, no configuración de agentes en repositorios ni sincronización multi-PC. 
+
 ## Resumen ejecutivo del estado y puertas del siguiente tema
 
 | Línea de producto | Qué construye | Estado comprobable | Puerta para avanzar |
