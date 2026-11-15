@@ -87,7 +87,7 @@ flowchart TD
     Y -->|"consulta Cloudflare según tarea"| M
 ```
 
-**Solo se representa una coordinación propuesta**; no es un árbol de delegación ejecutado. En el estado actual los seis subagentes tienen prohibido `task`; no crean descendientes. El operador humano es una autoridad *externa* de aprobación, **no un agente IA**.
+**Solo se representa una coordinación propuesta**; no es un árbol de delegación ejecutado. En el estado actual los seis subagentes tienen prohibido `task`; no crean descendientes. Las relaciones de consulta no se limitan al manager y podrán ser cruzadas/bidireccionales por contratos. El operador humano es una autoridad *externa* de aprobación, **no un agente IA**.
 
 ### Grafo de trabajo: distinto del organigrama
 
@@ -118,11 +118,35 @@ La dependencia de **tests** exige resultados reales, no solamente un informe del
 - `may_delegate_to`: lista autorizada explícita de Kilo `permission.task`, validada en runtime; no deducirla de la jerarquía.
 - `approval_gate`: firma/consentimiento humano externo, separado del nombre `Yoan` y de cualquier mensaje de subagente.
 
-**No permitir ciclos de supervisión**, autoaprobación ni relaciones de escritor/revisor consigo mismo.
+**No permitir ciclos de supervisión** ni de dependencias bloqueantes de tareas; las aristas de colaboración e intercambio de información **sí** pueden ser bidireccionales. Prohibidos autoaprobación y revisión única de cambios propios.
+
+## Equipo real concurrente: del organigrama al trabajo simultáneo
+
+En el diseño final, **Yoan coordina y sincroniza tareas**, no asume personalmente toda la programación. Kilo Agent Manager permite varias sesiones independientes; cada escritor autorizado tiene un worktree y rama `work/*` propios, contrato de archivos/artefactos y criterios de aceptación. En la primera versión **los seis asesores VX actuales siguen siendo de solo lectura**; las escrituras paralelas, cuando se aprueben, se harán primero mediante sesiones del agente nativo `code` de Kilo con los permisos de sus respectivas sesiones, no elevando automáticamente a Daniela o Rafael. Después podrá promoverse un especialista VX a implementador con una versión de permisos distinta y ensayos de regresión.
+
+```mermaid
+flowchart TD
+    Y["Yoan: coordinación e integración"]
+    R["Sofía/Rafael/Valentina: lectores VX"]
+    W1["Kilo Code sesión A: worktree A"]
+    W2["Kilo Code sesión B: worktree B"]
+    Q["Lucas: revisión independiente"]
+    M["PR/CI e integración en main"]
+    Y -->|"scope y contratos"| W1
+    Y -->|"scope y contratos"| W2
+    Y -->|"consultas de lectura"| R
+    R -->|"informes"| Y
+    W1 -->|"commit + contrato API"| Y
+    W2 -->|"commit + pruebas"| Y
+    Y -->|"diff integrado"| Q
+    Q -->|"revisión con evidencia"| M
+```
+
+Se debe distinguir el **grafo de dependencias de tareas** (DAG sin ciclos), el **árbol `reports_to`** (DAG jerárquico) y el **grafo de colaboración** (con aristas bidireccionales y ciclos permitidos). Cada agente conserva identidad `vx-*`, versión, área, capacidades evaluadas y nivel de experiencia **SIN_EVALUAR** hasta la evaluación independiente. Véase [registro estructurado de organización — no ejecutable](../registry/vx-organization-graph-v1.proposal.json).
 
 ## Arquitectura de crecimiento futura
 
-Al principio existen **capacidades funcionales**, no seis departamentos con gerentes o procesos residentes. Los departamentos se proponen a partir de demanda real y evaluación V4.8:
+Al principio existen **capacidades funcionales**, no seis departamentos con gerentes o procesos residentes. Para que el equipo programe de verdad, el modo **PARALLEL_WORKTREES** futuro usará varios escritores en carpetas Git aisladas y un integrador que revalide el conjunto; el modo STRICT conserva un solo escritor en el mismo árbol. Los departamentos se proponen a partir de demanda real y evaluación V4.8:
 
 | Unidad futura | Roles iniciales | Ejemplo de crecimiento condicionado |
 | --- | --- | --- |
@@ -133,7 +157,7 @@ Al principio existen **capacidades funcionales**, no seis departamentos con gere
 | Arquitectura e Investigación | Sofía | Arquitecto de datos, investigador de APIs |
 | Plataforma | Mateo | Ingeniero Cloudflare, administrador de MCP, automatización segura |
 
-**Puerta de creación de un nuevo agente:** evidencia repetible de una función no cubierta; comparar con una skill nueva para agente existente; revisar costes y beneficio real; definir contrato, pruebas y herramientas; evaluación independiente; aprobación humana; versión del Pack, opción de reversión; incorporar nodo y arista al DAG. No habilitar escritor adicional simultáneo por contratar un nuevo agente.
+**Puerta de creación de un nuevo agente:** evidencia repetible de una función no cubierta; comparar con una skill nueva para agente existente; revisar costes y beneficio real; definir contrato, pruebas y herramientas; evaluación independiente; aprobación humana; versión del Pack, opción de reversión; incorporar nodo y arista al DAG. **El número de agentes creados no determina el paralelismo**: éste solo se permite tras verificar permisos, aislamiento por worktree y contratos de archivos independientes. [Autonomía y colaboración](VX-PERMISOS-Y-AUTONOMIA-V1-20261115.md).
 
 ## Fuentes para diseño (sin importar runtimes)
 
@@ -144,4 +168,4 @@ Al principio existen **capacidades funcionales**, no seis departamentos con gere
 - [CrewAI hierarchy](https://docs.crewai.com/en/concepts/processes) — modelo conceptual de manager y trabajadores, sin instalar.
 - [Anthropic: Building effective agents](https://www.anthropic.com/research/building-effective-agents) — orquestación por tarea y no multiplicar agentes sin necesidad.
 
-**No afecta las reglas del operador:** Kilo global y una PC Windows, `main` única permanente, una rama temporal por tarea, un escritor simultáneo, scheduler OFF, MCP existentes preservados (VX-D17), backup previo (VX-D18), ninguna publicación real ni cambio HOME.
+**No afecta la operación activa:** Kilo global y una PC Windows, `main` única permanente, modo STRICT actual con una rama temporal y un escritor por worktree. El **modo paralelo futuro** constituye una excepción a la regla de una única rama temporal y requiere autorización específica, worktrees aislados y pruebas. Scheduler OFF, MCP existentes preservados (VX-D17), backup previo (VX-D18), ninguna publicación real ni cambio HOME.
