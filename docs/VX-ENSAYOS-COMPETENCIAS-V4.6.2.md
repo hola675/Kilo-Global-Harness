@@ -94,3 +94,8 @@ Para todas las hipótesis: definir línea base real, prueba repetible con criter
 4. Evaluación real futura con casos ciegos, registro de ejecución verificable y revisión independiente; **V4.6.3 no podrá considerar estos fixtures como ascensos demostrados**.
 
 No ejecutar autónomamente un modelo, no abrir el proyecto activo, no programar tareas Windows, no crear backups ni archivos de evidencias sin orden expresa. Un solo escritor máximo, hasta tres lectores. Mantener una sola rama temporal y `main`.
+
+
+## Observaciones conversacionales posteriores (2026-11-14)
+
+Después de la validación CLI, el operador compartió cinco respuestas de Kilo a los cinco escenarios: todos los pares enumerados coincidieron con los fixtures conocidos. Esto no constituye prueba ciega ni validación independiente de los ejecutores. El CLI no persistió estas respuestas en los archivos comparativos. [Cierre y límites de inferencia](VX-CIERRE-BATERIA-V4.6.2-20261114.md).

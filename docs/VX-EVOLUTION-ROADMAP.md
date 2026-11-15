@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición:** 2026-11-14 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 integrada y CI Windows PASS, CLI local probado (cinco casos y cero evidencias); ejecución por PowerShell desde Kilo bloqueada por política; V4.6.3–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
+**Edición:** 2026-11-14 · **Estado:** V4.6.0–V4.6.1 integradas (CI Windows PASS y CLI local validado); V4.6.2 integrada, CI Windows PASS y CLI local probado; batería conversacional sintética 5/5 coincidencias declaradas (sin verificación de ejecutores); V4.6.3–V5.0 **PENDIENTES** · **Ámbito:** **solo Kilo Code**, instalación **global** del usuario Windows, independiente del repositorio de cada proyecto.
 
 ## Fuente de verdad y definición de estados
 
@@ -26,7 +26,7 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | V4.5.1 | **Primera reunión del mes conjunta**, secciones mensual/semanal a las 09:00 | **Integrado y CI Windows PASS** | **Validado**: instalación, SQLite v4, integridad y calendario real 2026-12-07, 09:00 | Observer `light`, scheduler OFF |
 | **V4.6.0** | **Línea base global de agentes/skills, solo lectura** | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 39 fuentes agente, 28 agentes, 40 skills, 11 solapamientos, 19 steps elevados | Sin cambios de permisos, SQLite ni roles |
 | **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 76 filas, 15 declaraciones, 0 evidencias | Prueba interactiva Kilo pendiente; seniority sin asignar |
-| **V4.6.2** | Cinco ensayos sintéticos reproducibles y comparación de evidencias declaradas | **Código + CI Windows PASS (27 tests)** | **CLI Windows PASS:** cinco casos y cinco destinos; Kilo no ejecutó PowerShell por política | No hay pruebas de agentes ni puntuaciones; sin escritura |
+| **V4.6.2** | Cinco ensayos sintéticos reproducibles y comparación de evidencias declaradas | **Código + CI Windows PASS (27 tests)** | **CLI Windows PASS; chat: 5/5 respuestas coincidentes**. Delegaciones/skills sin traza independiente | Fixture público no ciego; calidad NO_MEDIDO, sin escritura |
 | V4.6.3 | Auditoría organizativa y capacitación gobernada | Diseñada, **PENDIENTE** | No aplica | No crear agentes, skills o jerarquías automáticamente |
 | V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseñado | No aplica | Revisión independiente y autorización explícita |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
@@ -98,7 +98,7 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 **P1.1 CERRADO, CLI LOCAL VALIDADO** — V4.6.1 matriz global y evidencia declarada: 20 pruebas unitarias y smoke/rollback CI Windows PASS; 76 filas, 15 capacidades declaradas y cero evidencias en equipo real. Prueba interactiva Kilo pendiente. Sin seniority ni pruebas reales automáticas.
 
-**P1.2 CLI LOCAL VALIDADO; KILO BLOQUEADO POR POLÍTICA** — V4.6.2: 27 tests, instalación/rollback CI Windows PASS; 5 casos y 5 destinos detectados en consola del usuario; 0 respuestas y 0 evidencias. Kilo reconoció el comando pero no pudo invocar PowerShell por política. La prueba interactiva del especialista y la revisión independiente están pendientes. [Acta técnica de validación](VX-VALIDACION-CLI-V4.6.2-20261114.md).
+**P1.2 BATERÍA SINTÉTICA CERRADA, SIN CERTIFICACIÓN DE COMPETENCIA** — V4.6.2: 27 tests y smoke/rollback CI Windows PASS; 5 casos/5 destinos en CLI local; después, 5/5 respuestas de chat coincidentes con fixture público, sin traza independiente de subagentes, sin archivos de comparación antes/después y sin evaluación ciega. La restricción PowerShell en Kilo continúa; no requiere levantarse. [Validación CLI](VX-VALIDACION-CLI-V4.6.2-20261114.md) · [Cierre de batería interactiva](VX-CIERRE-BATERIA-V4.6.2-20261114.md).
 
 **P2** — Probar evaluaciones y propuestas de capacitación/auditoría con fixtures de Kilo, registrar riesgos y presentar a `vx-reunion` para aprobación, nunca auto-publicar.
 
