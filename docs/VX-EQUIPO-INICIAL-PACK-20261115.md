@@ -1,6 +1,6 @@
 # VX Evolution — Equipo inicial de desarrollo del Pack VX (propuesta de diseño)
 
-**Fecha:** 2026-11-15. **Estado:** PROPUESTA PARA DECISIÓN; no crear ni cambiar agentes activos, skills, permisos, MCP, `kilo.jsonc`, modelos, HOME, scheduler ni scripts de instalación. **Propiedad:** únicamente agentes y skills del Pack VX (VX-D14). **Entorno objetivo:** Kilo built-in más componentes personalizados VX (VX-D16).
+**Fecha:** 2026-11-15. **Estado:** catálogo/personas y colaboración PARA DISEÑO; los alias Yoan, Daniela y Rafael proceden de ejemplos del operador; los cuatro restantes son propuestas. El modelo de equipo paralelo es un objetivo explícito, pero NO está habilitado en el runtime. No crear ni cambiar agentes activos, skills, permisos, MCP, `kilo.jsonc`, modelos, HOME, scheduler ni scripts de instalación. **Propiedad:** únicamente agentes y skills del Pack VX (VX-D14). **Entorno objetivo:** Kilo built-in más componentes personalizados VX (VX-D16).
 
 ## 1. Diferenciar tres conceptos
 
@@ -41,17 +41,17 @@ Las skills dan instrucciones bajo demanda; los MCP exponen herramientas externas
 - **QA final:** `vx-inspector` después del diff. Su dictamen no sustituye pruebas ni aprobación humana.
 - **Especialistas opcionales:** `vx-frontend-adviser` y `vx-workers-adviser` solo en proyectos de esas clases.
 
-**Regla de capacidad inicial:** hasta 3 lectores concurrentes **cuando sea útil** y **un escritor máximo**. No invocar los seis subagentes en cada cambio; tareas triviales pueden usar cero. Los subagentes no ejecutan ni manipulan archivos: el coordinador debe ejecutar y comprobar pruebas reales si cuenta con permisos. Las skills del Pack actual son `vx-engineering-harness` y `vx-evolution-core`; otras citadas en perfiles V4 son sugerencias, **no son componentes automáticamente incluidos**.
+**Regla de capacidad inicial en modo STRICT actual:** hasta 3 lectores concurrentes **cuando sea útil** y **un escritor máximo en el mismo worktree**. **Objetivo futuro explícito: modo PARALLEL_WORKTREES con dos o más escritores simultáneos, cada uno en un worktree y rama temporal distintos, supervisados por Yoan y con integración serializada.** La excepción a una sola rama temporal y los permisos de nuevos escritores requerirán autorización independiente y tests; no están activados hoy. No invocar los seis subagentes en cada cambio; tareas triviales pueden usar cero. Los subagentes no ejecutan ni manipulan archivos: el coordinador debe ejecutar y comprobar pruebas reales si cuenta con permisos. Las skills del Pack actual son `vx-engineering-harness` y `vx-evolution-core`; otras citadas en perfiles V4 son sugerencias, **no son componentes automáticamente incluidos**.
 
 ## 3. Primer ciclo de desarrollo propuesto
 
 1. **Solicitud:** operador describe objetivo, alcance, aceptación, repositorio y riesgos. El coordinador abre expediente mínimo con tarea y versión.
 2. **Diagnóstico:** `vx-researcher` localiza fuentes; `vx-test-analyst` define pruebas; seguridad/UX/Workers entra solo si corresponde.
 3. **Plan:** el coordinador sintetiza hallazgos, distingue `HECHO`, `DECLARADO`, `NO_VERIFICADO`, `NO_MEDIDO`, acuerda cambios mínimos. No cambiar permisos ni publicar automáticamente.
-4. **Construcción:** crear una única rama `work/*` solo si procede y el entorno está limpio; **un único escritor** (`vx-integrador` o un turno separado de Kilo `code`). Sin worktrees paralelos salvo consentimiento explícito.
+4. **Construcción:** usar modo STRICT con una rama `work/*` y un escritor en el mismo worktree para tareas pequeñas. **Cuando se autorice PARALLEL_WORKTREES**: Yoan descompone la tarea en contratos independientes, abre una rama temporal y un worktree por escritor, ejecuta sesiones Kilo Agent Manager aisladas, conserva `main` única rama permanente y prepara integración de PRs según DAG y CI. Sin worktrees paralelos sin consentimiento explícito; los subagentes `task` actuales continúan solo lectura.
 5. **Pruebas:** ejecutor autorizado corre unit/integration/build y registra códigos de salida; el analista de pruebas no afirma haberlas ejecutado. Tests sintéticos no equivalen a validación en Kilo real.
 6. **Revisión:** `vx-inspector` revisa diff y cobertura; `vx-security-reviewer` analiza solo riesgos específicos distintos. Corregir, volver a comprobar, abrir PR.
-7. **Integración:** CI PASS, revisión, autorización de merge según política, validación de `main`, limpieza de rama temporal propia. No deploy ni tocar HOME real sin autorización específica.
+7. **Integración:** combinar las ramas de implementación en orden de dependencias, revisar interfaces/artefactos y conflicts, ejecutar CI de integración, revisión independiente, autorización de merge según política, validación de `main`, limpieza de cada rama temporal propia. No deploy ni tocar HOME real sin autorización específica.
 8. **Evolución:** con evidencia real, VX registra oportunidad de mejorar un componente VX, genera candidato versionado y lo somete al mismo ciclo. No promoción automática ni autoaprobación.
 
 ### Ejemplos de selección contextual
@@ -63,6 +63,14 @@ Las skills dan instrucciones bajo demanda; los MCP exponen herramientas externas
 | Interfaz de diagnóstico VX | Frontend + Test (Researcher opcional) | Integrador o Code por turno | Inspector + pruebas visuales reales cuando disponibles |
 | MCP catálogo VX | Researcher + Security | Integrador | Test + Inspector (sin conectar servidores de terceros) |
 | Cambios en Workers ajenos a VX | Fuera de la administración **VX Evolution**; solo equipo Kilo usado para desarrollo autorizado del proyecto del usuario, no evolución del agente ajeno | Kilo Code según tarea autorizada | Nunca publicar tercero como actualización VX |
+
+## 3.1. Organización colaborativa real (objetivo futuro)
+
+El equipo **no se limita a reuniones de agentes lectores**: el resultado esperado es que varios implementadores programen simultáneamente, compartan contratos e integren entregas. En el Pack inicial, el único perfil VX de coordinación es `vx-integrador`, mientras los seis subagentes son **solo lectura**. Para arrancar sin crear roles redundantes se podrán usar sesiones independientes del agente **nativo `code` de Kilo** como escritores bajo Agent Manager, cada una con worktree propio y asignación exclusiva; esto queda sujeto a validación del runtime y autorización puntual. A medio plazo se podrá ampliar el permiso de Daniela para frontend, Rafael para tests y otros perfiles **solo mediante nuevas versiones auditadas**, no por cambiar nombres.
+
+La **comunicación de una misma sesión** puede apoyarse en resultados de `task` o Swarm, mientras que las sesiones independientes de Agent Manager necesitan artefactos de coordinación/versiones explícitas; no se garantiza un bus común. Cada línea de trabajo deberá entregar contrato, diff, pruebas y dependencias, y Yoan deberá incorporar todo en orden. [Personas y relaciones](VX-PERSONAS-RELACIONES-V1-20261115.md) · [Permisos](VX-PERMISOS-Y-AUTONOMIA-V1-20261115.md) · [Registro declarativo](../registry/vx-organization-graph-v1.proposal.json).
+
+**La estructura futura se hace ramificada cuando haga falta**, pero no se crea un manager por un subordinado ni se asignan niveles de experiencia sin pruebas. `reports_to` es jerárquico y acíclico; las consultas cruzadas son libres; dependencias de tareas deben formar DAG. La creación de nuevos agentes y departamentos se vincula a calidad/costo medidos en V4.8 y a aprobación humana.
 
 ## 4. Expansión futura, sin crear agentes ahora
 
