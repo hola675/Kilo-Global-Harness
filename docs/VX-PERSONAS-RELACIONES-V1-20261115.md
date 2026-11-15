@@ -1,12 +1,12 @@
 # VX Evolution — Personas, organigrama y relaciones del equipo inicial
 
-**Versión documental:** 1.0.0-draft · **Fecha:** 2026-11-15 · **Estado:** diseño inactivo; **sin cambios a Kilo, agentes, permisos, HOME, MCP, SQLite o scheduler**.
+**Versión documental:** 1.0.0-draft · **Fecha:** 2026-11-15 · **Estado:** alias de siete personas IA confirmados, organigrama y permisos en diseño inactivo; **sin cambios a Kilo, agentes, permisos, HOME, MCP, SQLite o scheduler**.
 
 ## Concepto
 
 Se construye una organización de **agentes IA especializados**, con alias humanos para comunicación y puestos técnicos verificables. Las personas son **personas de software**, no personas reales ni empleados; nunca suplantan al operador ni lo autentican. El agente llamado «Yoan» **no equivale** al usuario humano ni puede aprobar cambios. Los nombres descriptivos no reemplazan los IDs estables `vx-*` por los que Kilo invoca `task`. La implementación de alias visibles en la UI dependerá de capacidades verificadas del runtime; por ahora solo son metadatos de diseño.
 
-**Nombres sugeridos por el operador:** Yoan (líder), Daniela (diseño web), Rafael (testeo). **Resto propuesto por diseño:** Sofía, Valentina, Lucas, Mateo. El operador aún podrá ajustar los cuatro restantes antes de integrar nombres a los archivos de agentes.
+**Nombres CONFIRMADOS por el operador:** Yoan (líder), Daniela (diseño web), Rafael (testeo), Sofía (investigación), Valentina (seguridad), Lucas (auditoría) y Mateo (Cloudflare). Solo nombres de presentación: la configuración real de Kilo sigue sin cambios.
 
 ## Personas del Pack VX
 
