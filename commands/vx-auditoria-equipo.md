@@ -19,3 +19,6 @@ Mantén un único escritor de archivos; conserva las configuraciones privadas, A
 **V4.6.1 — revisión rigurosa:** usar `/vx-matriz` como referencia de competencias declaradas y de test IDs. No calificar roles ni proponer ascenso por contar PASS de un JSON; la rúbrica de aprendiz/especialista/senior/líder/principal es futura y requiere resultados independientes. Referencia: `docs/VX-MATRIZ-COMPETENCIAS-V4.6.1.md`.
 
 **V4.6.2 — no confundir escenarios con calidad:** `/vx-ensayos` sólo compara archivos locales de decisiones enumeradas frente a fixtures públicos. Los posibles errores y regresiones son hipótesis de capacitación, no justificación de ascenso, retiro, contratación, permisos o jerarquías. CI de harness tampoco mide agentes.
+
+
+**V4.6.3 — primer diagnóstico obligatorio por demanda:** `/vx-organizacion` consulta solapamientos y fuentes como metadatos, sin ejecución Kilo ni lectura SQLite. Ningún solapamiento prueba colisión de runtime; steps elevados no son fallos. La presencia de `ses_*` en el historial no verifica al subagente. Antes de sugerir fusión, ascenso, formación o nueva jefatura, exigir evidencia verificable y presentar la propuesta solo al usuario, sin modificar activos.
