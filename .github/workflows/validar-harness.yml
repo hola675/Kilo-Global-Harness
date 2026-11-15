@@ -722,6 +722,16 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.0 preview' }
           Write-Host 'VX V4.7.0: CONTRATO + HOME TEMPORAL + DRY-RUN SIN ESCRITURA: PASS'
 
+      - name: V4.7.1 - solicitud de aprobación estructural sin autorización
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_approval_contract_v471.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V4.7.1 approval contract' }
+          python -m compileall -q scripts/vx_approval_contract.py tests/test_vx_approval_contract_v471.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.1 approval contract' }
+          Write-Host 'VX V4.7.1: STRICT REQUEST/ASSERTION + HOME AISLADO + SIN AUTH/APPLY: PASS'
+
       - name: V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura
         shell: pwsh
         run: |

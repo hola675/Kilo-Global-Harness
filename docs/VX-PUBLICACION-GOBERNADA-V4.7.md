@@ -1,6 +1,6 @@
 # VX Evolution V4.7.0 — contrato de publicación gobernada (fase inicial)
 
-**Estado:** implementado como diseño de contrato y `DRY_RUN`; no instala, aplica, aprueba, restaura ni cambia el HOME real. El flujo usa un HOME Windows temporal sintético para pruebas. Scheduler, reuniones automáticas y procesos residentes no forman parte de esta fase.
+**Estado:** integrado en `main` mediante `36a73e01fe46d17573f46baf82cf8c88bf5d7559`; CI Windows PASS. Implementado como diseño de contrato y `DRY_RUN`; no instala, aplica, aprueba, restaura ni cambia el HOME real. El flujo usa un HOME Windows temporal sintético para pruebas. Scheduler, reuniones automáticas y procesos residentes no forman parte de esta fase.
 
 ## Contrato `vx-component-manifest/1`
 
