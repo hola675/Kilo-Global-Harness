@@ -29,7 +29,7 @@ class TestVXMeeting(unittest.TestCase):
         run = subprocess.run(
             [sys.executable, "-I", str(SCRIPT), "--home", str(self.home),
              *cmd, "--json"],
-            cwd=str(self.home), capture_output=True, text=True,
+            cwd=str(self.home), capture_output=True, stdin=subprocess.DEVNULL, text=True,
             encoding="utf-8", timeout=20)
         if ok:
             self.assertEqual(run.returncode, 0, run.stderr + run.stdout)
