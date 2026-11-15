@@ -16,6 +16,8 @@
 | VX-D10 | Identidad y mecanismo para registrar aprobación | **IMPLEMENTACIÓN PARCIAL, IDENTIDAD NO VERIFICADA** | V4.5: decisiones manuales desde terminal interactiva con confirmación efímera y registro en SQLite; no equivale a autenticación fuerte ni permiso para publicar agentes. V4.7 necesita comprobación adicional |
 | VX-D11 | Condiciones para ascenso, contratación, fusión y jubilación de agentes | **PENDIENTE** | Métricas reales, auditor independiente, evaluación negativa y rollback |
 | VX-D12 | Reconciliar 11 agentes compartidos y 19 limites steps altos | **PENDIENTE DE EJECUCIÓN** | Mantener auditor V4.2 como pista paralela sin modificar configuración privada |
+| VX-D14 | Alcance VX Evolution: opción C | **CONFIRMADA (2026-11-15)** | Solo evaluar, administrar, versionar y mejorar componentes propios VX. Inventario y backup de componentes externos únicamente para preflight/migración explícita, sin gobernarlos, eliminarlos, sustituirlos ni actualizarlos automáticamente. [Registro y diseño de pack](VX-ALCANCE-C-PACK-BOOTSTRAP-20261115.md) |
+| VX-D15 | Pack todo-en-uno: respaldo previo, bootstrap limpio, MCP opcionales y versiones | **DISEÑO PROPUESTO; DECISIONES PENDIENTES** | Requiere definir convivencia con agentes/skills existentes, distinción built-in/custom, catálogo MCP por perfil, credenciales/backup y modelo de consentimiento; no habilita ejecución ni instalaciones. [Preguntas](VX-ALCANCE-C-PACK-BOOTSTRAP-20261115.md) |
 
 ## Política semanal acordada
 
@@ -131,3 +133,10 @@ En rama de trabajo se propone `vx-component-manifest/1` con versiones SemVer, SH
 Se recibió el inventario visual de Kilo Desktop con los siete agentes VX en `All workspaces`, junto a las skills VX `vx-engineering-harness` y `vx-evolution-core`. Una prueba nueva ejecutó `task` hacia `vx-inspector` y reportó la sesión hija `completed`; no se obtuvo metadato independiente del ejecutor ni llamada interna observable `skill`. Por ello, el uso de la skill permanece `DECLARADO` y su invocación `NO_VERIFICADO`, no se etiqueta como error. Las tres tareas sintéticas A/B/C previas tuvieron resultados correctos y tres delegaciones visibles, sin evaluación ciega ni calidad medida.
 
 **Decisión conservadora:** no repetir las mismas pruebas sin nueva evidencia, no cambiar límites `steps`, permisos, agentes o skills activos. Diseñar V4.7 con manifiestos versionados, simulación, CI en HOME aislado, aprobación expresa vinculada al hash y rollback; cualquier aplicación al HOME Windows requiere autorización específica. Cuatro MCP Cloudflare marcados `Needs sign-in` no bloquean el alcance de VX. [Acta y puerta V4.7](VX-DESKTOP-VALIDACION-Y-PUERTA-V4.7-20261114.md).
+
+
+## Decisión VX-D14: alcance C y relación con el Pack VX (2026-11-15)
+
+El operador **confirma la opción C**: VX Evolution se limita a analizar, administrar, formar, versionar y evolucionar componentes propios VX. El respaldo e inventario puntual de la configuración Kilo existente, agentes, skills y MCP externos es permitido como diagnóstico/seguridad del proceso de instalación, **no** como autorización para administrar o borrar terceros. La propiedad de componentes deberá acreditarse mediante manifiestos de procedencia y no solo por prefijo de nombre. El bootstrap todo-en-uno, su composición y sus operaciones están **aún por definir** mediante las preguntas de [VX-D15](VX-ALCANCE-C-PACK-BOOTSTRAP-20261115.md).
+
+**La decisión no activa instalación, cambios de perfil, observación nueva, conexiones MCP, migraciones, actualizaciones, scheduler ni permisos.** V4.7.0 sigue solo DRY_RUN y V4.7.1 sin autenticación/aplicación. Mantener V4.7.2 independiente.
