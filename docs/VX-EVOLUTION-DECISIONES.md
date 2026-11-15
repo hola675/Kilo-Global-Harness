@@ -115,3 +115,8 @@ El operador ejecutó instalación Simular/Aplicar/Verificar y `vx_organizational
 ### Revisión complementaria V4.6.3 de límites y precedencia
 
 El operador enumeró los once agentes con fuentes JSONC/Markdown superpuestas. Después completó las **19 de 19 definiciones con steps superiores a 400**: todas declaran `steps = 10000000` en `kilo-agent-jsonc`; no hay otros valores elevados en esta muestra. La [documentación oficial Kilo](https://kilo.ai/docs/customize/custom-modes) define steps como rondas de llamadas a herramientas hasta forzar texto, y explica fusión y precedencia de configuración. La regla documentada **no prueba** prioridad efectiva en la sesión instalada ni que se hayan consumido millones de rondas. Los cambios de límites y permisos requieren autorización separada y evaluación funcional. [Acta de observaciones](VX-REVISION-STEPS-PRECEDENCIA-V4.6.3-20261114.md).
+
+
+### Comprobación declarada en interfaz Kilo de dos agentes (V4.6.3)
+
+El operador verificó manualmente **Pasos máximos = 10000000** en los editores visuales de `architect` y `code-reviewer`. Los dos valores coinciden con las declaraciones `kilo-agent-jsonc` ya inventariadas. Esto incrementa la evidencia del valor **mostrado**, pero no demuestra la procedencia efectiva de la combinación JSONC/Markdown ni que Kilo aplique ese límite en una sesión. Sin cambios de archivos, políticas, AutoApprove, agentes ni scheduler. La siguiente prueba será comparar únicamente metadatos de ambas fuentes en V4.6.0 y, si hace falta, revisar de forma manual el comportamiento autorizado de Kilo, nunca mediante una reconfiguración de prueba. [Registro de evidencias](VX-REVISION-STEPS-PRECEDENCIA-V4.6.3-20261114.md).
