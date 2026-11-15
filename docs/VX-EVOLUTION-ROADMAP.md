@@ -113,7 +113,7 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 **P3.1 V4.7.1 — INTEGRADO EN MAIN** — PR #26 fusionada por squash con commit `d7f954c6d6b6cf237594b27e2a6a69734a4df4b8`; CI posterior al merge en revisión. Contrato de solicitud/aserción estructural, sin autenticación, firma, anti-replay ni capacidad de aplicar. `approval_granted=false` y `apply_supported=false`. Deben mantenerse estas restricciones hasta desarrollo y autorización de una fase posterior.
 
-**P3.2 CORRECCIÓN DE TESTS TTY EN PR INDEPENDIENTE** — Los dos fixtures heredados de reuniones ahora fijan `stdin=subprocess.DEVNULL` para evitar depender del stdin interactivo heredado. No cambia `local_confirmation()` ni los permisos. La prueba completa local interactiva debe repetirse en Windows del operador tras CI y merge. [Alcance y verificación](VX-REPRODUCIBILIDAD-TTY-V4.7.1.md).
+**P3.2 CORRECCIÓN DE TESTS TTY EN PR INDEPENDIENTE** — Los dos fixtures heredados de reuniones fijan `stdin=subprocess.PIPE` para garantizar entrada no interactiva en Windows: el primer ensayo con `subprocess.DEVNULL` falló en CI porque Windows NUL puede devolver `isatty()=True`. El cambio de PIPE se está revalidando en CI. No cambia `local_confirmation()` ni los permisos. La prueba completa local interactiva debe repetirse en Windows del operador tras CI y merge. [Alcance y verificación](VX-REPRODUCIBILIDAD-TTY-V4.7.1.md).
 
 **P4 V4.7.2 — SIGUIENTE FASE EN DISEÑO** — Analizar autenticación y separación de funciones; comprobar el modelo de confianza y antirreplay, primero en un entorno aislado. No exponer `apply` ni permitir aprobaciones activas sin un mecanismo autenticado, respaldos y autorización explícita.
 
