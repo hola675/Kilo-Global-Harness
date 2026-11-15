@@ -11,6 +11,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
 - **PC ÚNICA:** VX Evolution usa exclusivamente este Windows. Sin sincronización multi-PC, infraestructura cloud ni configuración Kilo por repositorio.
+- **Kilo Desktop V4.6.3:** siete agentes VX y dos skills VX visibles globalmente; `task` completó una sesión hija, pero identidad interna y llamada `skill` siguen sin certificar. [Evidencia y puerta de V4.7](docs/VX-DESKTOP-VALIDACION-Y-PUERTA-V4.7-20261114.md).
 - **VX Organización V4.6.3:** informe solo lectura de solapamientos, steps declarados, perfiles y fuentes Kilo; no afirma precedencia, procedencia de subagentes, jerarquías ni rendimiento.
 - **VX Ensayos V4.6.2:** cinco escenarios sintéticos para contraste manual antes/después, sin ejecutar agentes, puntuar ni activar roles; evidencia aportada siempre declarada.
 - **VX Matriz V4.6.1:** análisis de agentes y skills con test IDs estables y evidencias opcionales declaradas, sin asignar nivel, score o ascensos; no ejecuta pruebas ni escribe SQLite.
@@ -280,6 +281,8 @@ La herramienta muestra cinco escenarios de revisión, regresión y calidad de ev
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **Validación Desktop · 2026-11-14:** inventario global VX y delegación de tarea confirmados con limitaciones, sin certificar carga de skill. Próxima fase V4.7: diseño de publicación segura, pruebas aisladas y aprobación explícita; ningún cambio activo.
 
 - **Inventario steps V4.6.3 cerrado · 2026-11-14:** 19/19 entradas por encima de 400 tienen steps=10000000 en JSONC. Fuente efectiva, rondas consumidas, impacto y límites alternativos NO_VERIFICADOS; propuesta de evaluación sin cambios operativos.
 
