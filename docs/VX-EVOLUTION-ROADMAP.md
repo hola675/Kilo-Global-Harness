@@ -28,7 +28,7 @@ La referencia canónica de decisiones es [VX-EVOLUTION-DECISIONES.md](VX-EVOLUTI
 | **V4.6.1** | Matriz agente/skill→capacidad→test→evidencia declarada | **Integrada en main; CI Windows PASS** | **CLI local PASS:** 76 filas, 15 declaraciones, 0 evidencias | Prueba interactiva Kilo pendiente; seniority sin asignar |
 | **V4.6.2** | Cinco ensayos sintéticos reproducibles y comparación de evidencias declaradas | **Código + CI Windows PASS (27 tests)** | **CLI Windows PASS; chat: 5/5 respuestas coincidentes**. Delegaciones/skills sin traza independiente | Fixture público no ciego; calidad NO_MEDIDO, sin escritura |
 | **V4.6.3** | Auditoría organizativa declarativa: duplicados, steps, perfiles y procedencia no verificada | **Código y CI Windows PASS (26 tests)** | **CLI Windows PASS:** 11 solapamientos, 19 steps elevados, 0 diferencias explícitas; 30 hallazgos | Ninguna colisión/identidad certificada, sin cambios activos |
-| V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseñado | No aplica | Revisión independiente y autorización explícita |
+| V4.7 | Publicación gobernada, SemVer individual, validación/rollback | Diseño implementable registrado; código pendiente | No aplica | Primera implementación solo en HOME aislado; aprobación separada antes de instalar |
 | V4.8 | Métricas fiables, coste y duración reales, comparación de eficacia | Diseñado | No aplica | Datos ausentes = `NO_MEDIDO` |
 | V5.0 | Equipos especializados adaptativos, ascensos y delegación medidos | Conceptual | No aplica | Condicionado a evidencia y controles anteriores |
 
@@ -106,6 +106,8 @@ Los contadores horarios de observer solo informan de uso/errores del runtime; **
 
 **P2.3 CONFIRMACIÓN DE INTERFAZ, AÚN SIN PRUEBA DE RUNTIME** — El operador verificó que Kilo Code muestra `Pasos máximos = 10000000` en los agentes `architect` y `code-reviewer`, en coincidencia con el inventario JSONC. **No** prueba cuál fuente JSONC/Markdown define el campo final ni que el límite se aplique durante una sesión. Próximo paso: inspección de metadatos de `sources[].fields/steps/mode` para estos dos agentes mediante el auditor V4.6.0, solo lectura y sin exportar prompts. [Evidencia y guía](VX-REVISION-STEPS-PRECEDENCIA-V4.6.3-20261114.md).
 
-**P3** — Después del cierre y pruebas de V4.6, diseñar V4.7 de versiones, validación y rollback.
+**P2.4 DESKTOP VALIDADO PARCIALMENTE** — El operador confirmó en Kilo Desktop los siete agentes VX y las skills `vx-engineering-harness`/`vx-evolution-core` como `All workspaces`; una nueva delegación `task` a `vx-inspector` devolvió sesión hija `completed`. La identidad interna y la herramienta `skill` dentro del subagente siguen NO_VERIFICADO; no repetir pruebas sin nueva observabilidad. Los MCP Cloudflare marcados `Needs sign-in` no bloquean estas funciones locales. [Acta Kilo Desktop y puerta V4.7](VX-DESKTOP-VALIDACION-Y-PUERTA-V4.7-20261114.md).
+
+**P3 V4.7 — DISEÑO IMPLEMENTABLE, AÚN NO DESPLEGADO** — Desarrollar en el repositorio un contrato de publicación/versión por componente, simulación de cambios, aprobación explícita vinculada a hash, CI Windows aislado y rollback conservador; la intervención en HOME real requerirá autorización separada. No hay promoción, reclutamiento, edición de agents/skills activos ni cambio de `kilo.jsonc`. [Puerta V4.7](VX-DESKTOP-VALIDACION-Y-PUERTA-V4.7-20261114.md).
 
 Se considera **finalizada la planificación** cuando este documento, el README y el registro de decisiones describen las mismas fases y se validan los invariantes en CI. Ningún cambio de runtime en V4.6 se autoriza con solo publicar este roadmap.
