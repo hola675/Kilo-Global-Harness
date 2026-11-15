@@ -121,6 +121,10 @@ El operador enumeró los once agentes con fuentes JSONC/Markdown superpuestas. D
 
 El operador verificó manualmente **Pasos máximos = 10000000** en los editores visuales de `architect` y `code-reviewer`. Los dos valores coinciden con las declaraciones `kilo-agent-jsonc` ya inventariadas. Esto incrementa la evidencia del valor **mostrado**, pero no demuestra la procedencia efectiva de la combinación JSONC/Markdown ni que Kilo aplique ese límite en una sesión. Sin cambios de archivos, políticas, AutoApprove, agentes ni scheduler. La siguiente prueba será comparar únicamente metadatos de ambas fuentes en V4.6.0 y, si hace falta, revisar de forma manual el comportamiento autorizado de Kilo, nunca mediante una reconfiguración de prueba. [Registro de evidencias](VX-REVISION-STEPS-PRECEDENCIA-V4.6.3-20261114.md).
 
+## V4.7.0 — fase inicial de preview solamente
+
+En rama de trabajo se propone `vx-component-manifest/1` con versiones SemVer, SHA-256 de fuentes, dependencias exactas y estados diferenciados. La implementación inicial solo construye planes `DRY_RUN` y opera en pruebas con HOME temporal; no agrega operación de publicación ni instala componentes en HOME. Los estados de aprobación, aplicación, validación en PC y rollback son marcadores contractuales, no permisos ni resultados inferidos. Cualquier fase de escritura requerirá autorización humana explícita ligada al objeto y hash exactos, verificación, respaldo y rollback conservador separados. No se cambia VX-D01–VX-D12, scheduler, AutoApprove, modelos, MCP, configuración activa o SQLite real. [Contrato de publicación V4.7](VX-PUBLICACION-GOBERNADA-V4.7.md).
+
 
 ### VX-D13 — Evidencia Desktop y próxima fase V4.7 (registro sin cambio activo)
 
