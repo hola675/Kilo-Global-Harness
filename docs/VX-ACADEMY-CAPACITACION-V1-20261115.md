@@ -52,7 +52,7 @@ El núcleo mínimo compartido es **la política de seguridad/trazabilidad** y no
 | **Lucas** `vx-inspector` | `review.diff-audit`, `review.false-positive-control`, `review.evidence-integrity` | Lectura + Git status/diff/log por allowlist declarada, resto denegado | **Candidata:** `vx-independent-review` (NO EXISTE) | Revisión independiente; no será auditor único de su propia capacitación |
 | **Mateo** `vx-workers-adviser` | `cloudflare.bindings`, `cloudflare.retry-idempotency`, `cloudflare.dev-stage-review` | `read/glob/grep/lsp`; sin MCP/Wrangler/DEPLOY | **Candidata:** `vx-workers-audit` (NO EXISTE) | Asesor de infraestructura; demostraciones con entorno sintético antes de ampliar herramientas |
 
-**Importante:** las seis skills candidatas están nombradas para explorar necesidades; **no se generan ni instalan en esta fase**. La fuente principal contiene exactamente **dos** skills propias VX en `skills/`. Los nueve perfiles de `registry/vx-agent-registry-v4.json` citan nombres como `frontend-design`, `wrangler` o `verification-before-completion`: son **recomendaciones de origen externo o disponibilidad NO_VERIFICADA**, no assets que deba empaquetar VX o instalar sin consentimiento.
+**Importante:** las siete skills candidatas están nombradas para explorar necesidades; **no se generan ni instalan en esta fase**. La fuente principal contiene exactamente **dos** skills propias VX en `skills/`. Los nueve perfiles de `registry/vx-agent-registry-v4.json` citan nombres como `frontend-design`, `wrangler` o `verification-before-completion`: son **recomendaciones de origen externo o disponibilidad NO_VERIFICADA**, no assets que deba empaquetar VX o instalar sin consentimiento.
 
 ### Currículos de equipo y departamento
 
@@ -113,6 +113,8 @@ Un agente puede **dirigir** un equipo solo si tiene capacidad organizativa evalu
 Dado `task_contract`, el selector construirá `eligible_capabilities` desde rol, tarea, versiones aprobadas y evidencia; recomendará solo **1–3 skills relevantes (umbral inicial a medir)** y el conjunto mínimo de herramientas necesarias. `resolved_tools = installed_and_connected ∩ runtime_allowed ∩ task_approved ∩ role_need`; una recomendación nunca vence un `deny`. Si falta herramienta, generar `NEEDS_APPROVAL` o `BLOCKED`, nunca autoañadir MCP.
 
 Para medir si realmente evitamos sobrecarga: capturar **solo si están disponibles** nombre/version de skills elegidas, invocación observada, redundancias, tasa de tareas completadas, conflictos de herramientas, regresiones, tokens y tiempo. Distinguir **costo del catálogo de metadatos** de **costo de cargar skill completa** y **costo de inyectar instrucciones MCP**. Las métricas de tokens/costo permanecen `NO_MEDIDO` hasta disponer de origen verificable. Comparar el selector con el método simple para no crear un «academia» que cuesta más de lo que ahorra.
+
+**Estado concreto del catálogo:** [`registry/vx-academy-catalog-v1.proposal.json`](../registry/vx-academy-catalog-v1.proposal.json) contiene siete identidades VX, 22 capacidades curriculares declaradas (no verificadas), **2 skills VX existentes en el repositorio**, **7 candidatas aún no creadas**, **9 referencias de skills externas no verificadas** provenientes del router, seis plantillas de departamentos inactivas y **cero registros de experiencia, capacitación o enseñanza real**. Ese JSON es solo un documento de diseño, no un registro de habilidades certificadas. 
 
 ## 9. Gobierno de versiones y grafo de dependencias
 
