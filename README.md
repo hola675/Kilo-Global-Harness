@@ -134,6 +134,7 @@ La salida nunca incluye secretos. Los agentes definidos en JSON y Markdown se **
 - [Cierre de batería sintética V4.6.2: cinco respuestas coincidentes y límites de evidencia](docs/VX-CIERRE-BATERIA-V4.6.2-20261114.md)
 - [VX Auditoría organizativa V4.6.3: criterios y validación](docs/VX-AUDITORIA-ORGANIZATIVA-V4.6.3.md)
 - [Validación CLI en Windows de V4.6.3: 30 hallazgos estáticos, sin cambios activos](docs/VX-VALIDACION-LOCAL-V4.6.3-20261114.md)
+- [Revisión de 11 solapamientos y límites steps declarados de diez millones](docs/VX-REVISION-STEPS-PRECEDENCIA-V4.6.3-20261114.md)
 - [VX Reunión V4.5: fechas locales, actas y decisiones manuales](docs/VX-REUNION-V4.5.md)
 - [Decisiones aprobadas y pendientes sobre reuniones, retención y autonomía](docs/VX-EVOLUTION-DECISIONES.md)
 - [Roadmap maestro VX Evolution: estado real, brechas y plan V4.6–V5](docs/VX-EVOLUTION-ROADMAP.md)
@@ -279,6 +280,8 @@ La herramienta muestra cinco escenarios de revisión, regresión y calidad de ev
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **Revisión de límites 4.6.3 · 2026-11-14:** 11 agentes con nombres superpuestos y ninguna diferencia en los metadatos simples cotejados; 10 de 19 entradas steps elevadas muestran 10 millones. Documentación oficial de Kilo consultada; funcionamiento en esta instalación y las nueve entradas restantes todavía pendientes. Solo documentación, sin cambio de límites.
 
 - **Cierre local V4.6.3 · 2026-11-14:** instalación y CLI Windows PASS; 11 solapamientos, 0 diferencias explícitas, 19 valores steps elevados, 30 hallazgos de metadatos; sin prueba de precedencia o delegación real. Solo actualización documental, scheduler OFF.
 
