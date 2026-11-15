@@ -19,3 +19,6 @@ Las evaluaciones, instalaciones de skill y versiones candidatas reproducibles re
 **V4.6.1 — matriz de evidencia:** consultar `/vx-matriz` para distinguir `SIN_EVIDENCIA` y `EVIDENCIA_DECLARADA_NO_VERIFICADA` antes de proponer formación. Los IDs de test no significan tests ejecutados; pruebas antes/después serán V4.6.2. Nunca asignar niveles o scores por autoinforme.
 
 **V4.6.2 — ensayos sintéticos:** consultar `/vx-ensayos` para preparar cinco escenarios y criterios anteriores/posteriores. Sus coincidencias son declaraciones no verificadas: ninguna mejora ni necesidad de capacitación se considera demostrada sin una ejecución externa auténtica, casos negativos y revisión independiente. No generar propuestas ni instalar skills sin instrucción.
+
+
+**V4.6.3:** usar `/vx-organizacion` como diagnóstico de metadatos para distinguir skills no observadas en rutas globales de skills realmente ausentes en runtime; ninguna hipótesis de brecha se convierte automáticamente en curso, skill instalada, ascenso o promoción. Validación independiente primero.
