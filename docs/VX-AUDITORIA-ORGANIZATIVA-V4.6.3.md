@@ -1,6 +1,6 @@
 # VX Evolution V4.6.3 — Auditoría organizativa declarativa y revisión de procedencia
 
-**Edición:** 2026-11-14 · **Alcance:** un solo equipo Windows, Kilo Code global en HOME · **Estado:** 26 pruebas unitarias y smoke/rollback CI Windows PASS; validación del CLI en el PC del usuario pendiente. **No modifica runtime ni activa scheduler**.
+**Edición:** 2026-11-14 · **Alcance:** un solo equipo Windows, Kilo Code global en HOME · **Estado:** 26 pruebas unitarias y smoke/rollback CI Windows PASS; instalador y CLI en el PC del usuario PASS (2026-11-14); evaluación del runtime y procedencia de subagentes pendientes. [Acta de validación](VX-VALIDACION-LOCAL-V4.6.3-20261114.md). **No modifica runtime ni activa scheduler**.
 
 ## Punto de partida confirmado
 
@@ -37,7 +37,7 @@ python -I $org --json
 
 Comando Kilo: `/vx-organizacion`. Si la política bloquea PowerShell dentro de Kilo, **no ampliarla para realizar esta auditoría**: es válido ejecutar la herramienta desde PowerShell local como operador. Ver el resumen y revisar los datos antes de copiar cualquier informe; no subir el JSON completo del HOME a GitHub.
 
-Esperable con línea base estable: 11 hallazgos de `AGENT_SOURCE_OVERLAP` y 19 de `AGENT_STEPS_REVIEW`. Los totales de diferencias explícitas, skills de perfil no observadas y router sin coincidencia se calculan al ejecutar, nunca se infieren del inventario resumido.
+**Ejecutado localmente:** 11 hallazgos de `AGENT_SOURCE_OVERLAP`, 19 de `AGENT_STEPS_REVIEW` y **0 diferencias explícitas comparables**; skill repetidas, skills de perfil no observadas y router sin coincidencia = 0. Total **30** hallazgos para revisión, no 30 errores. Esta observación corresponde a una foto del equipo y puede cambiar con la configuración global.
 
 ## Cómo verificar procedencia de subagentes
 
