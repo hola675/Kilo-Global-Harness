@@ -712,6 +712,16 @@ jobs:
           if (Test-Path $trial) { throw 'Rollback no retiro el motor de ensayos' }
           Write-Host 'VX V4.6.2: TESTS + CATALOGO + ROLLBACK WINDOWS PASS'
 
+      - name: V4.7.0 - contrato SemVer y dry-run sin publicación
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_publish_preview_v470.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V4.7.0 preview' }
+          python -m compileall -q scripts/vx_publish_preview.py tests/test_vx_publish_preview_v470.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.0 preview' }
+          Write-Host 'VX V4.7.0: CONTRATO + HOME TEMPORAL + DRY-RUN SIN ESCRITURA: PASS'
+
       - name: V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura
         shell: pwsh
         run: |
