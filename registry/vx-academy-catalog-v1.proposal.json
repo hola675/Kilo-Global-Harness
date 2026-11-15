@@ -25,7 +25,8 @@
     "real_home_modified": false,
     "publication_apply_supported": false,
     "experience_event_count": 0,
-    "proposed_max_skills_per_task": 3
+    "proposed_max_skills_per_task": 3,
+    "curriculum_selector_implemented": false
   },
   "capabilities": [
     {
@@ -230,7 +231,6 @@
       "id": "changelog-generator",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     },
@@ -238,7 +238,6 @@
       "id": "frontend-design",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     },
@@ -246,7 +245,6 @@
       "id": "supabase-postgres-best-practices",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     },
@@ -254,7 +252,6 @@
       "id": "systematic-debugging",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     },
@@ -262,7 +259,6 @@
       "id": "test-driven-development",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     },
@@ -270,7 +266,6 @@
       "id": "verification-before-completion",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     },
@@ -278,7 +273,6 @@
       "id": "webapp-testing",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     },
@@ -286,7 +280,6 @@
       "id": "workers-best-practices",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     },
@@ -294,7 +287,6 @@
       "id": "wrangler",
       "status": "EXTERNAL_OR_UNVERIFIED",
       "included_in_vx_pack": false,
-      "installed": false,
       "installed_status_actual": "NO_VERIFICADO",
       "update_scope": "OUTSIDE_VX"
     }
@@ -409,7 +401,25 @@
       "experience_level": "SIN_EVALUAR",
       "training_progress": "SIN_EVIDENCIA",
       "teaching_qualified_capabilities": [],
-      "may_grant_permissions": false
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "git",
+          "operation": "git_worktree_and_pr",
+          "gate": "ASK_ONLY_AFTER_APPROVAL",
+          "scope": "PARALLEL_TARGET",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        },
+        {
+          "tool_id": "kilo-agent-manager",
+          "operation": "separate_worktree_sessions",
+          "gate": "ASK_ONLY_AFTER_APPROVAL",
+          "scope": "PARALLEL_TARGET",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
     },
     {
       "id": "vx-frontend-adviser",
@@ -438,7 +448,25 @@
       "experience_level": "SIN_EVALUAR",
       "training_progress": "SIN_EVIDENCIA",
       "teaching_qualified_capabilities": [],
-      "may_grant_permissions": false
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "browser-visual-tests",
+          "operation": "rendered-ui-evaluation",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        },
+        {
+          "tool_id": "playwright",
+          "operation": "read-only-e2e-viz",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
     },
     {
       "id": "vx-test-analyst",
@@ -467,7 +495,17 @@
       "experience_level": "SIN_EVALUAR",
       "training_progress": "SIN_EVIDENCIA",
       "teaching_qualified_capabilities": [],
-      "may_grant_permissions": false
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "test-runner",
+          "operation": "execute-isolated-test-suite",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
     },
     {
       "id": "vx-researcher",
@@ -496,7 +534,17 @@
       "experience_level": "SIN_EVALUAR",
       "training_progress": "SIN_EVIDENCIA",
       "teaching_qualified_capabilities": [],
-      "may_grant_permissions": false
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "web-research",
+          "operation": "verify-external-docs",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
     },
     {
       "id": "vx-security-reviewer",
@@ -525,7 +573,17 @@
       "experience_level": "SIN_EVALUAR",
       "training_progress": "SIN_EVIDENCIA",
       "teaching_qualified_capabilities": [],
-      "may_grant_permissions": false
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "static-security-scanner",
+          "operation": "inspect-synthetic-code",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
     },
     {
       "id": "vx-inspector",
@@ -556,7 +614,17 @@
       "experience_level": "SIN_EVALUAR",
       "training_progress": "SIN_EVIDENCIA",
       "teaching_qualified_capabilities": [],
-      "may_grant_permissions": false
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "ci-logs-reader",
+          "operation": "review-ci-reports",
+          "gate": "ASK_ONLY_AFTER_APPROVAL",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
     },
     {
       "id": "vx-workers-adviser",
@@ -585,13 +653,132 @@
       "experience_level": "SIN_EVALUAR",
       "training_progress": "SIN_EVIDENCIA",
       "teaching_qualified_capabilities": [],
-      "may_grant_permissions": false
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "wrangler",
+          "operation": "non-production-inspection",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        },
+        {
+          "tool_id": "cloudflare-mcp",
+          "operation": "read-only-infrastructure-catalog",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
     }
   ],
   "experience_records": [],
   "training_assignments": [],
   "teaching_qualifications": [],
-  "tool_requirements": [],
+  "tool_requirements": [
+    {
+      "agent_id": "vx-integrador",
+      "tool_id": "git",
+      "operation": "git_worktree_and_pr",
+      "gate": "ASK_ONLY_AFTER_APPROVAL",
+      "scope": "PARALLEL_TARGET",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-integrador",
+      "tool_id": "kilo-agent-manager",
+      "operation": "separate_worktree_sessions",
+      "gate": "ASK_ONLY_AFTER_APPROVAL",
+      "scope": "PARALLEL_TARGET",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-frontend-adviser",
+      "tool_id": "browser-visual-tests",
+      "operation": "rendered-ui-evaluation",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-frontend-adviser",
+      "tool_id": "playwright",
+      "operation": "read-only-e2e-viz",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-test-analyst",
+      "tool_id": "test-runner",
+      "operation": "execute-isolated-test-suite",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-researcher",
+      "tool_id": "web-research",
+      "operation": "verify-external-docs",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-security-reviewer",
+      "tool_id": "static-security-scanner",
+      "operation": "inspect-synthetic-code",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-inspector",
+      "tool_id": "ci-logs-reader",
+      "operation": "review-ci-reports",
+      "gate": "ASK_ONLY_AFTER_APPROVAL",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-workers-adviser",
+      "tool_id": "wrangler",
+      "operation": "non-production-inspection",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-workers-adviser",
+      "tool_id": "cloudflare-mcp",
+      "operation": "read-only-infrastructure-catalog",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "MCP_EXTERNAL_REFERENCE",
+      "auto_install": false
+    }
+  ],
   "state_model": {
     "competence": [
       "SIN_EVALUAR",
