@@ -1,6 +1,6 @@
 # VX Evolution V4.6.3 — Auditoría organizativa declarativa y revisión de procedencia
 
-**Edición:** 2026-11-14 · **Alcance:** un solo equipo Windows, Kilo Code global en HOME · **Estado:** código de auditoría en evaluación; CI Windows y validación CLI local según resultados posteriores. **No modifica runtime ni activa scheduler**.
+**Edición:** 2026-11-14 · **Alcance:** un solo equipo Windows, Kilo Code global en HOME · **Estado:** 26 pruebas unitarias y smoke/rollback CI Windows PASS; validación del CLI en el PC del usuario pendiente. **No modifica runtime ni activa scheduler**.
 
 ## Punto de partida confirmado
 
