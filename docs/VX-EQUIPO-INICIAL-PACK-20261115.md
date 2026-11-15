@@ -1,6 +1,6 @@
 # VX Evolution — Equipo inicial de desarrollo del Pack VX (propuesta de diseño)
 
-**Fecha:** 2026-11-15. **Estado:** catálogo/personas y colaboración PARA DISEÑO; los alias Yoan, Daniela y Rafael proceden de ejemplos del operador; los cuatro restantes son propuestas. El modelo de equipo paralelo es un objetivo explícito, pero NO está habilitado en el runtime. No crear ni cambiar agentes activos, skills, permisos, MCP, `kilo.jsonc`, modelos, HOME, scheduler ni scripts de instalación. **Propiedad:** únicamente agentes y skills del Pack VX (VX-D14). **Entorno objetivo:** Kilo built-in más componentes personalizados VX (VX-D16).
+**Fecha:** 2026-11-15. **Estado:** catálogo/personas y colaboración PARA DISEÑO; **los siete alias (Yoan, Daniela, Rafael, Sofía, Valentina, Lucas y Mateo) están CONFIRMADOS por el operador**; su aplicación a Kilo y sus permisos NO están autorizados. El modelo de equipo paralelo es un objetivo explícito, pero NO está habilitado en el runtime. No crear ni cambiar agentes activos, skills, permisos, MCP, `kilo.jsonc`, modelos, HOME, scheduler ni scripts de instalación. **Propiedad:** únicamente agentes y skills del Pack VX (VX-D14). **Entorno objetivo:** Kilo built-in más componentes personalizados VX (VX-D16).
 
 ## 1. Diferenciar tres conceptos
 
@@ -12,7 +12,7 @@ Las skills dan instrucciones bajo demanda; los MCP exponen herramientas externas
 
 ## 1.1. Convención de nombres humanos (propuesta del operador)
 
-**Preferencia confirmada:** presentar los agentes con **nombre humano + especialidad**, como «Yoan — Líder de Equipo», «Daniela — Diseño Web» y «Rafael — Testeo». Los nombres restantes se proponen para completar el catálogo inicial y están pendientes de conformidad.
+**Confirmado:** presentar los siete agentes IA con **nombre humano + especialidad**. El operador confirmó **Yoan, Daniela, Rafael, Sofía, Valentina, Lucas y Mateo**; los IDs técnicos originales permanecen invariables. Ningún alias es identidad humana, firma o autorización de herramientas.
 
 **Distinción obligatoria:** un nombre humano es un **alias visible de un agente de IA**, NO una cuenta real, una persona contratada, la identidad autenticada del operador ni una autorización. Por ejemplo, el agente «Yoan» **no es el usuario humano**, no puede aprobar cambios por él, autoconcederse permisos o firmar solicitudes. Los IDs técnicos `vx-*` permanecen invariables en el registro, la delegación `task`, las pruebas y la trazabilidad. Antes de activar los alias, verificar cómo Kilo expone nombre y descripción en la versión instalada; no presuponer una propiedad de frontmatter `displayName` sin documentación y prueba.
 
@@ -30,7 +30,7 @@ Las skills dan instrucciones bajo demanda; los MCP exponen herramientas externas
 | **Daniela — Diseño Web y UX/UI** | `vx-frontend-adviser` | `subagent` | Revisa diseño, accesibilidad, frontend y experiencia de usuario | No; aún no implementa interfaz |
 | **Mateo — Cloudflare y Serverless** | `vx-workers-adviser` | `subagent` | Revisa Workers, KV, R2, D1, colas y bindings | No |
 
-**Los nombres humanos son una propuesta de presentación, no cambios aplicados en Kilo.** Yoan, Daniela y Rafael reproducen los ejemplos solicitados; Sofía, Valentina, Lucas y Mateo se proponen para validación. **No crear nuevos agentes equivalentes sin comprobar brecha funcional.** Los siete nombres actuales se mantienen como candidatos de la primera versión del Pack. Ningún rango `junior/senior/líder` se atribuye por la descripción; V4.6 solo tiene evidencia declarativa y pruebas sintéticas.
+**Los siete nombres humanos fueron confirmados como identidad de presentación, pero no se han aplicado a Kilo ni implican cambios de permisos.** **No crear nuevos agentes equivalentes sin comprobar brecha funcional.** Los siete nombres actuales se mantienen como candidatos de la primera versión del Pack. Ningún rango `junior/senior/líder` se atribuye por la descripción; V4.6 solo tiene evidencia declarativa y pruebas sintéticas.
 
 ### Primera escuadra operativa de desarrollo VX
 
