@@ -1,6 +1,6 @@
 # VX Evolution — Alcance C y diseño preliminar del Pack inicial (2026-11-15)
 
-**Estado:** `VX-D14` alcance C, `VX-D16` instalación limpia y `VX-D17` preservación de MCP CONFIRMADAS. Otras decisiones del pack siguen pendientes. **Solo documentación; ningún cambio en Kilo, permisos, HOME, instalador, MCP, SQLite, scheduler o runtime.**
+**Estado:** `VX-D14` alcance C, `VX-D16` instalación limpia, `VX-D17` política MCP y `VX-D18` respaldo previo CONFIRMADAS. El equipo inicial y otras decisiones del pack siguen en propuesta. **Solo documentación; ningún cambio en Kilo, permisos, HOME, instalador, MCP, SQLite, scheduler o runtime.**
 
 ## 1. Decisión confirmada VX-D14 — Alcance C
 
@@ -35,6 +35,18 @@ El operador eligió **conservar los MCP existentes y añadir únicamente los fal
 - Una integración MCP externa no pasa a ser un componente administrado por VX: solo el catálogo/recomendación VX pertenece al pack. La configuración y actualizaciones del servidor externo se rigen por permisos específicos del usuario.
 - **No hay autorización de ejecución ni de instalación MCP en esta decisión.** La composición concreta del catálogo y la selección de MCP obligatorios/opcionales siguen pendientes.
 
+## 1.3. Decisión confirmada VX-D18 — Respaldo previo, protegido y verificable
+
+El operador aprobó **crear y verificar un respaldo local completo del entorno Kilo afectado antes de cualquier limpieza o instalación**.
+
+- **Alcance del respaldo:** inventario y copia verificable de agentes/skills personalizados globales en todas las rutas de descubrimiento pertinentes, reglas, comandos, definiciones y configuración Kilo (incluidos campos MCP, sin imprimir secretos), archivos de estado VX/SQLite y datos operativos que realmente se vayan a modificar; registrar rutas, hashes, versión, fecha y método. Un backup "completo" se define contra el inventario de configuración y datos Kilo que permiten reconstruir el estado anterior, **no** como copia ilimitada de todo Windows/HOME. Detectar contenido de cuenta/secretos protegido por Windows que no sea exportable y declararlo como límite: no prometer restauración de sesiones autenticadas si depende de almacenamiento propio del proveedor.
+- **Protección:** guardar fuera del repositorio y de las rutas activas de Kilo, restringir permisos de Windows y cifrar material sensible con mecanismo compatible y probado (método y gestión de clave aún por elegir). No incluir valores de credenciales, contraseñas ni claves en manifiestos, logs, GitHub o reportes.
+- **Validación:** calcular y verificar hashes y probar la restauración en un HOME/fixture aislado; comprobar integridad SQLite y consistencia de snapshot, incluido el estado de WAL/SHM cuando corresponda. Si se detecta inconsistencia o falta algo obligatorio, **detener sin modificar la instalación activa**. No tratar archivos copiados como restaurables hasta probarlo.
+- **Conservación:** mantener **como mínimo una copia anterior funcional** hasta que la nueva instalación VX esté validada completamente. La eliminación posterior, duración de retención y cantidad de versiones requieren una política adicional, pendiente VX-D07; **no habilitar borrado automático**.
+- **Recuperación:** producir informe claro de qué se recupera/no se recupera, simular rollback, no sobrescribir cambios del usuario posteriores sin comparación/confirmación. Una operación real necesita plan exacto y aprobación separada.
+
+**Esta política no concede autorización para ejecutar backups reales en el perfil del operador, limpiar agentes/skills, reinstalar Kilo o tocar los MCP.** Es requisito de diseño para la futura migración. El instalador V4 existente **no equivale** a este respaldo integral.
+
 ## 2. Propuesta todavía NO CONFIRMADA — Pack integral de Kilo
 
 **Objetivo aspiracional:** instalar VX desde cero o incorporarlo a un perfil Kilo existente, con una experiencia todo-en-uno, respaldos verificables, manifiestos de componentes, catálogo de MCP y actualizaciones gobernadas.
@@ -65,7 +77,7 @@ El operador eligió **conservar los MCP existentes y añadir únicamente los fal
 1. **CERRADA — Destino de perfil limpio (VX-D16):** built-in Kilo + Pack VX; agentes/skills personalizados ajenos no activos al terminar. La ejecución sobre el perfil real sigue pendiente de backup validado, simulación y autorización concreta. No confundir decisión de destino con permiso para retirar archivos ahora.
 2. **CERRADA — Nativos y personalizados:** conservar los built-in distribuidos por Kilo, añadir agentes VX propios escritos en formatos soportados por Kilo. Los personalizados existentes ajenos a VX se archivan/desactivan al migrar mediante autorización posterior; no se eliminan los nativos.
 3. **POLÍTICA CONFIRMADA VX-D17:** conservar todos los MCP existentes y presentar los faltantes del catálogo VX para aprobación individual. **PENDIENTE SOLO EL DISEÑO DEL CATÁLOGO:** composición mínima y perfiles, método de instalación de cada MCP y cómo gestionar `REQUIERE_LOGIN` sin credenciales almacenadas. No instalar ni conectar automáticamente.
-4. **Protección de respaldo:** alcance de credenciales/configuración, cifrado/ACL, ruta local, retención y procedimiento ante backup parcial/insuficiente.
+4. **POLÍTICA CONFIRMADA VX-D18:** backup local integral de lo afectado, integridad y ensayo de restauración antes de escritura; permisos restringidos y cifrado del material sensible; detener si falla; conservar al menos una copia anterior hasta validación final. **POR CONCRETAR:** mecanismo de cifrado/clave, ruta y procedimiento técnico (incluido SQLite WAL) y retención posterior a la validación.
 5. **Actualizaciones:** ¿solicitar siempre confirmación del plan concreto (recomendado) o permitir solo comprobaciones automáticas de disponibilidad sin aplicar? Scheduler actual permanece OFF.
 6. **Distribución y compatibilidad:** un pack zip/snapshot descargable + instalador PowerShell 7, o también paquete Marketplace/CLI; versiones de Windows/Kilo soportadas y migración desde instalaciones anteriores. Las pruebas se realizarán primero en HOME aislado.
 
