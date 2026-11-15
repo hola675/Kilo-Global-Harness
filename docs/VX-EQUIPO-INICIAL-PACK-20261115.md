@@ -10,19 +10,27 @@
 
 Las skills dan instrucciones bajo demanda; los MCP exponen herramientas externas: no son agentes, no se cuentan como integrantes. El selector PowerShell actual devuelve un plan, **no lanza agentes**.
 
+## 1.1. Convención de nombres humanos (propuesta del operador)
+
+**Preferencia confirmada:** presentar los agentes con **nombre humano + especialidad**, como «Yoan — Líder de Equipo», «Daniela — Diseño Web» y «Rafael — Testeo». Los nombres restantes se proponen para completar el catálogo inicial y están pendientes de conformidad.
+
+**Distinción obligatoria:** un nombre humano es un **alias visible de un agente de IA**, NO una cuenta real, una persona contratada, la identidad autenticada del operador ni una autorización. Por ejemplo, el agente «Yoan» **no es el usuario humano**, no puede aprobar cambios por él, autoconcederse permisos o firmar solicitudes. Los IDs técnicos `vx-*` permanecen invariables en el registro, la delegación `task`, las pruebas y la trazabilidad. Antes de activar los alias, verificar cómo Kilo expone nombre y descripción en la versión instalada; no presuponer una propiedad de frontmatter `displayName` sin documentación y prueba.
+
+**Principio de comunicación:** «Soy Daniela, agente VX para revisión de diseño web» sería válido; «soy la diseñadora humana Daniela» no lo sería. Los agentes deben comunicar su condición de IA y límites de permisos cuando proceda.
+
 ## 2. Catálogo inicial real del repositorio (V4 vigente)
 
-| ID estable | Modo actual | Especialidad | Escribe | Uso en equipo |
+| Nombre visible (propuesto) | ID técnico estable | Modo actual | Especialidad | Escribe |
 | --- | --- | --- | --- | --- |
-| `vx-integrador` | `primary` | Coordinación técnica, planificación, integración, verificación y cierre Git | Sí, escritor único si hay tarea autorizada | **Coordinador principal**; recibe la solicitud del operador |
-| `vx-researcher` | `subagent` | Investigación del código, dependencias, APIs y hechos con referencias | No | Descubrimiento antes de diseñar |
-| `vx-test-analyst` | `subagent` | Estrategia QA, casos límite, pruebas, regresiones y cobertura | No | Definir pruebas antes/después |
-| `vx-security-reviewer` | `subagent` | Autenticación, permisos, secretos, abuso y seguridad | No | Análisis de amenazas y revisión independiente |
-| `vx-inspector` | `subagent` | Revisión independiente de diffs, defectos y coherencia de evidencia | No | Control de calidad de cambios antes de PR/merge |
-| `vx-frontend-adviser` | `subagent` | UX/UI, HTML/CSS/React, accesibilidad y rendimiento | No | **Solo por demanda** en tareas visuales |
-| `vx-workers-adviser` | `subagent` | Cloudflare Workers, KV/R2/D1/queues, bindings y riesgos | No | **Solo por demanda** en infraestructura Workers |
+| **Yoan — Líder de Equipo** | `vx-integrador` | `primary` | Coordina, planifica, integra, valida y cierra Git | **Sí**, solo cuando esté autorizado y como único escritor |
+| **Sofía — Investigación y Arquitectura** | `vx-researcher` | `subagent` | Investiga código, dependencias, contratos y documentación | No |
+| **Rafael — Testeo y Calidad** | `vx-test-analyst` | `subagent` | Diseña estrategias de prueba, escenarios y cobertura de regresión | No; no ejecuta tests |
+| **Valentina — Ciberseguridad** | `vx-security-reviewer` | `subagent` | Revisión de permisos, autenticación, inyección y secretos | No |
+| **Lucas — Auditoría y Revisión** | `vx-inspector` | `subagent` | Revisión independiente del diff y coherencia de evidencias | No |
+| **Daniela — Diseño Web y UX/UI** | `vx-frontend-adviser` | `subagent` | Revisa diseño, accesibilidad, frontend y experiencia de usuario | No; aún no implementa interfaz |
+| **Mateo — Cloudflare y Serverless** | `vx-workers-adviser` | `subagent` | Revisa Workers, KV, R2, D1, colas y bindings | No |
 
-**No crear nuevos agentes equivalentes sin comprobar brecha funcional.** Los siete nombres actuales se mantienen como candidatos de la primera versión del Pack. Ningún rango `junior/senior/líder` se atribuye por la descripción; V4.6 solo tiene evidencia declarativa y pruebas sintéticas.
+**Los nombres humanos son una propuesta de presentación, no cambios aplicados en Kilo.** Yoan, Daniela y Rafael reproducen los ejemplos solicitados; Sofía, Valentina, Lucas y Mateo se proponen para validación. **No crear nuevos agentes equivalentes sin comprobar brecha funcional.** Los siete nombres actuales se mantienen como candidatos de la primera versión del Pack. Ningún rango `junior/senior/líder` se atribuye por la descripción; V4.6 solo tiene evidencia declarativa y pruebas sintéticas.
 
 ### Primera escuadra operativa de desarrollo VX
 
@@ -68,8 +76,8 @@ Los huecos probables a estudiar con pruebas reales son especialista de instalado
 - Registrar coste/tiempo solo cuando exista medición auténtica; ninguna puntuación de seniority hasta V4.8.
 - Si hay problemas, mantener los siete roles existentes, con orquestación secuencial y bloqueo de publicación hasta solucionarlos.
 
-## 6. Pregunta pendiente de dirección
+## 6. Decisión pendiente de dirección
 
-**¿Confirma el operador los siete nombres actuales como lista inicial oficial del Pack VX y la regla de un único escritor sin crear más agentes ahora?** Esta propuesta **no es autorización de instalación ni cambio de permisos**.
+**Confirmar el catálogo final de alias** (Yoan, Daniela, Rafael, Sofía, Valentina, Lucas y Mateo) y si la composición actual de siete agentes, un único escritor y hasta tres lectores sigue siendo el Pack VX inicial. **Los ejemplos de nombres del operador no equivalen todavía a aprobar todas las nuevas denominaciones.** En caso de necesitar un desarrollador backend que escriba de forma independiente, evaluar primero si `vx-integrador` o Kilo nativo `code` resuelven ese papel; no crear un octavo agente por inercia. Esta propuesta **no es autorización de instalación ni cambio de permisos**.
 
 Fuentes internas: `agents/vx-*.md`, `registry/vx-agent-registry-v4.json`, `docs/OPERACION-EQUIPOS-V4.md`, `docs/VX-EVOLUTION-ROADMAP.md`. Documentación Kilo: https://kilo.ai/docs/customize/custom-subagents y https://kilo.ai/docs/customize/custom-modes.
