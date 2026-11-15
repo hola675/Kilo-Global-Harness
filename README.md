@@ -1,6 +1,12 @@
-# VECIDYA · Kilo Code Global Harness V4.6.3
+# VECIDYA · Kilo Global Harness / VX Evolution
 
-**Versión del código:** 4.6.3 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 tiene CI Windows PASS y CLI local validado (5 casos y destinos); después se recibieron 5/5 respuestas coincidentes en chat con fixtures sintéticos públicos. Atribución efectiva a especialistas/skills y competencia real NO_VERIFICADAS. PowerShell dentro de Kilo permanece bloqueado por política. V4.6.3 tiene CI Windows PASS y CLI local validado: 11 solapamientos de agentes, 0 diferencias explícitas comparadas, 19 límites steps elevados y 30 hallazgos de revisión; ninguna colisión de runtime ni competencia verificada. Ninguna reunión automática está habilitada.
+**Resumen consolidado (2026-11-15):** el instalador Windows existente corresponde a la familia V4.6.x (su manifiesto de backup es `4.0.0`), con validaciones locales documentadas hasta V4.6.3; **V4.7.0 Preview** y **V4.7.1 contratos de aprobación** ya están integrados en `main` con CI Windows PASS. **No están instalados en HOME por el instalador V4 actual**, que no distribuye `vx_publish_preview.py` ni `vx_approval_contract.py`. **PR #29 (V4.7.2)** está abierta con CI Windows PASS; **PR #28** consolida el diseño de Pack VX y decisiones confirmadas, sin cambios activos.
+
+**Producto decidido:** solo Kilo Code global en una PC Windows. La futura instalación limpia dejará **agentes built-in de Kilo + siete agentes VX personalizados con alias confirmados (Yoan, Daniela, Rafael, Sofía, Valentina, Lucas y Mateo)**; agentes/skills anteriores se respaldarán y archivarán después de autorización específica. Los **MCP existentes se conservan**, y cualquier MCP faltante del catálogo VX requerirá aprobación individual. Antes de limpiar se exigirá **backup completo y restaurable de las áreas afectadas, protegido y verificable**. Los alias no son usuarios reales ni aumentan permisos.
+
+**Colaboración objetivo:** modo STRICT existente (un escritor/rama temporal) y `PARALLEL_WORKTREES` futuro con múltiples implementadores en sesiones y worktrees Git aislados, **todavía sin activar**. Los seis subagentes VX actuales son de solo lectura; los niveles de experiencia son `SIN_EVALUAR`. Perfiles, permisos, departamentos y ascensos se versionarán y validarán antes de aplicar. Scheduler OFF, publicación real OFF, aprobación no autenticada. [Estado completo y decisiones pendientes](docs/VX-EVOLUTION-ROADMAP.md) · [Decisiones confirmadas](docs/VX-EVOLUTION-DECISIONES.md) · [Personas IA](docs/VX-PERSONAS-RELACIONES-V1-20261115.md) · [Permisos](docs/VX-PERMISOS-Y-AUTONOMIA-V1-20261115.md).
+
+**Histórico de implementación V4.6:** SQLite v4 y calendario manual verificados en el PC; inventario global 28 agentes únicos y 40 skills (no confundir con los **7 agentes propios VX**). La batería V4.6.2 produjo 5/5 coincidencias sintéticas, sin certificar competencias ni ejecución interna de skills. La auditoría V4.6.3 identificó 11 solapamientos y 19 límites elevados; su precedencia efectiva no está verificada. No hay reunión programada automáticamente.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
 
@@ -8,7 +14,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 
 - **Global-only**: `~/.config/kilo/{AGENTS.md,agents/,commands/,rules/}` y `~/.kilo/skills/`.
 - **AutoApprove conservado**: no cambia settings de VS Code ni permisos de agentes.
-- **main permanente**: una rama temporal `work/*` por tarea no trivial, validación, PR/merge según protección GitHub y eliminación exclusiva de la rama propia después de verificar integración.
+- **main permanente**: en modo STRICT, una sola rama temporal `work/*` por tarea. La colaboración paralela futura permitiría varias ramas temporales por worktree aislado **solo** tras aprobación y pruebas, con `main` como única rama permanente. PR/merge y borrado de ramas siempre con validación y control.
 - **Sin reescritura de `kilo.jsonc`**: modelos, MCP, tokens, versiones y límites steps quedan intactos.
 - **PC ÚNICA:** VX Evolution usa exclusivamente este Windows. Sin sincronización multi-PC, infraestructura cloud ni configuración Kilo por repositorio.
 - **Kilo Desktop V4.6.3:** siete agentes VX y dos skills VX visibles globalmente; `task` completó una sesión hija, pero identidad interna y llamada `skill` siguen sin certificar. [Evidencia y puerta de V4.7](docs/VX-DESKTOP-VALIDACION-Y-PUERTA-V4.7-20261114.md).
@@ -25,6 +31,8 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 - **Equipos V4 con paralelismo estricto**: hasta tres subagentes de lectura, un escritor, revisión independiente. El selector no inicia agentes.
 - **Instalación segura**: diagnóstico, simulación, backup, aplicación idempotente, verificación y restauración con comprobación de hashes.
 - **Sin actualización silenciosa** de skills, MCP, extensiones ni modelos; el instalador no gestiona actualizaciones de Windows o VS Code.
+- **Alcance VX-D14**: VX administra/actualiza solo componentes VX propios; otras configuraciones solo se inventarían y respaldan como parte de la migración excepcional autorizada. Un equipo VX puede desarrollar proyectos que el operador le encargue, sin gobernar agentes ajenos.
+- **Fuente canónica para el siguiente tema**: el [roadmap consolidado](docs/VX-EVOLUTION-ROADMAP.md) enumera estados comprobables, contradicciones y decisiones pendientes. Nunca interpretar documentación del Pack como autorización de instalación.
 
 ## Instalación desde `D:\Proyectos\Kilo-Global-Harness`
 
