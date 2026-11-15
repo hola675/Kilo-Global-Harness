@@ -47,6 +47,49 @@ La misma documentación describe la **fusión de propiedades** de configuracione
 4. Confirmar que los seis agentes que el instalador señaló con `edit` o `bash` en `allow` son **declaraciones** y no permisos operativos ni acciones ejecutadas. Revisarlos separadamente y sin copiar credenciales.
 5. Mantener `competence=NO_MEDIDO`, procedencia de delegaciones `NO_VERIFICADO`, y las reuniones automáticas y scheduler **OFF**.
 
+## Verificación visual y declarativa de dos agentes (evidencia adicional)
+
+El operador inspeccionó directamente **Comportamiento del agente → Agentes** en la interfaz de Kilo Code y confirmó manualmente los valores de **Pasos máximos** para dos agentes personalizados:
+
+| Agente | `steps` en inventario JSONC | Pasos máximos mostrados en Kilo | Comparación |
+| --- | ---: | ---: | --- |
+| `architect` | 10 000 000 | 10 000 000 | Coinciden |
+| `code-reviewer` | 10 000 000 | 10 000 000 | Coinciden |
+
+**Nivel de evidencia:** `INTERFAZ_CONFIRMADA_POR_OPERADOR` para ambos campos mostrados, no `CONFIGURACION_DE_RUNTIME_DEMOSTRADA`. El valor de la interfaz coincide con el inventario JSONC, pero no se ha observado una sesión ejecutándose, el límite imponiéndose, ni la jerarquía real de carga/fusión con Markdown. La mera presencia de `Task` en la pantalla de permisos tampoco acredita una delegación. El operador no autorizó editar ningún campo.
+
+El texto de la interfaz indica que `architect` muestra excepciones de edición en tres patrones de archivos de planes y que `code-reviewer` no mostraba esas mismas excepciones. Sin los estados `allow/ask/deny` no se infiere permiso efectivo. Esto es un hallazgo accesorio, no una modificación de políticas.
+
+### Próxima consulta segura: metadatos de ambas fuentes
+
+La auditoría existente V4.6.0 puede mostrar solo fuentes, campos declarados, modo y pasos de estos dos agentes; **no ejecuta Kilo ni publica prompts**:
+
+```powershell
+$audit = Join-Path $HOME '.config/kilo/harness/scripts/vx_capability_audit.py'
+$raw = python -I $audit --json
+if ($LASTEXITCODE -ne 0) { throw 'Auditoria global no disponible' }
+$baseline = $raw | ConvertFrom-Json
+
+$rows = @(
+    foreach ($agent in @($baseline.agents | Where-Object {
+        $_.name -in @('architect','code-reviewer')
+    })) {
+        foreach ($src in @($agent.sources)) {
+            [PSCustomObject]@{
+                Agente         = $agent.name
+                Fuente         = $src.source
+                CampoSteps     = ('steps' -in @($src.fields))
+                StepsDeclarado = $src.steps
+                ModoDeclarado  = $src.mode
+            }
+        }
+    }
+)
+$rows | Format-Table -AutoSize
+```
+
+**Importante:** no usar `ForEach-Object` ni lógica que exporte JSONC completo, prompts o metadatos ajenos. Si el entorno no acepta canalizar `foreach` directamente, guardar las filas en una variable de memoria para después pasarlas a `Format-Table`. Se pretende confirmar qué fuente **declara** cada campo, no la prioridad efectiva en el runtime.
+
 ## Próxima fase: diseño de límites medibles (sin aplicación)
 
 Con el inventario **completo**, el siguiente paso no es repetir el CLI ni reducir todos los límites al mismo valor:
