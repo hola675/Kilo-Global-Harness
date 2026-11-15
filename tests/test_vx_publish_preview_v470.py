@@ -115,6 +115,27 @@ class PublishPreviewTests(unittest.TestCase):
         with self.assertRaises(publish.PreviewError):
             publish.build_preview(self.repo, self.home, candidate)
 
+    def test_semver_rejects_unicode_digits_for_component_and_dependency(self):
+        for invalid in ("1٢.2.3", "1.2٣.4"):
+            for location in ("component", "dependency"):
+                candidate = json.loads(json.dumps(self.manifest))
+                if location == "component":
+                    candidate["components"][0]["version"] = invalid
+                else:
+                    candidate["components"][0]["dependencies"][0]["version"] = invalid
+                with self.subTest(version=invalid, location=location):
+                    with self.assertRaises(publish.PreviewError):
+                        publish.validate_manifest(candidate)
+
+    def test_semver_accepts_ascii_numeric_segments(self):
+        for valid in ("0.0.0", "1.2.3", "10.20.30", "1.2.3-alpha.1+build.5"):
+            candidate = json.loads(json.dumps(self.manifest))
+            candidate["components"][0]["version"] = valid
+            candidate["components"][0]["dependencies"][0]["version"] = valid
+            with self.subTest(version=valid):
+                normalized = publish.validate_manifest(candidate)
+                self.assertEqual(normalized["components"][0]["version"], valid)
+
     def test_rejects_unhashable_state_as_contract_error(self):
         for value in ([], {}):
             candidate = json.loads(json.dumps(self.manifest))

@@ -21,7 +21,7 @@ COMPONENT_STATES = {
     "PREPARADO", "CI_PASS", "VERIFICADO_EN_PC", "APROBADO", "APLICADO",
     "ROLLBACK", "NO_VERIFICADO",
 }
-SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
+SEMVER = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
                     r"(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?"
                     r"(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
