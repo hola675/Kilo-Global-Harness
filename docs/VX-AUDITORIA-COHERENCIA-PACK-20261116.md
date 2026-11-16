@@ -22,6 +22,7 @@
 | VX-A14 | Media | `task: allow` permitía invocar subagentes externos/no verificados | Coordinador restringido a seis lectores VX, fallback deny | Unit test ACL; test de delegación Kilo pendiente |
 | VX-A15 | Alta | Restaurador incremental V4 confiaba en rutas del manifiesto y podía restaurar parcialmente | Validación de destinos, copias, reparse points y hashes ANTES de escribir | CI Windows protege fichero privado y edición posterior |
 | VX-A16 | Alta | `--force-restore` omitía protección de archivos nuevos, por lo que podía destruir nuevas skills del usuario | La opción force permite resolver divergencias VX preexistentes, pero jamás elimina archivos añadidos tras el backup | Prueba Windows `test_force_restore_never_deletes_new_user_files` |
+| VX-A17 | Alta | Entre completar snapshot DPAPI y borrar agentes/skills otro proceso podía alterar el árbol | Comparación de inventario y SHA256 contra contenido cifrado inmediatamente antes de sustituir; si difiere, cancelar sin tocar los archivos | Test adversarial que inserta un agente durante el backup |
 
 ## Arquitectura y límites aún abiertos
 

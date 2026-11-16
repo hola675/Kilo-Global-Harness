@@ -86,3 +86,7 @@ Fuentes: https://kilo.ai/docs/customize/agent-permissions y https://kilo.ai/docs
 ## Restricción de restauración forzada
 
 Incluso con `--force-restore`, el bootstrap DPAPI **rechaza** restaurar si detecta agentes o skills nuevos posteriores al respaldo; primero deben preservarse en una copia independiente y revisarse. Force no es un permiso genérico para eliminar archivos ajenos. La restauración nunca debe ejecutarse durante sesiones activas de Kilo; la integración de PR #30 en PR #31 sigue siendo un candidato, no una migración aprobada.
+
+## Integridad entre backup y sustitución
+
+Antes del primer borrado, `vx_pack_bootstrap.py` vuelve a listar agentes y skills, y coteja sus nombres y SHA256 con el contenido del snapshot DPAPI recién creado. Si otro proceso añadió o modificó cualquier archivo tras el respaldo, aborta la sustitución y mantiene los archivos intactos. Esto reduce la ventana de pérdida accidental; por seguridad también se debe cerrar Kilo antes de aplicar cambios reales. El comando `simulate` sigue sin escribir archivos.
