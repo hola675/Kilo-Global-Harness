@@ -4,7 +4,7 @@
 
 ## Contenido real
 
-- 7 agentes VX originales y 5 builders adicionales (frontend, backend, QA, datos, docs); 10 skills VX nativas bajo demanda.
+- 7 agentes VX originales y 5 builders adicionales (frontend, backend, QA, datos, docs); 30 skills VX nativas bajo demanda.
 - Instalador V4 reparado: sigue siendo reversible, realiza copia previa de los destinos VX que modifica, copia los componentes VX y preserva `kilo.jsonc`, MCP, modelos, credenciales y permisos ajenos.
 - `vx_pack_doctor.py`: diagnóstico **solo lectura**, inventaría componentes esperados, solapamientos de nombre y presencia de MCP (no conectividad).
 - Catálogo de cinco MCP candidatos con fuentes oficiales. **No instala ni conecta ninguno**; requiere decisión individual y validación de permisos.
@@ -47,3 +47,15 @@ Agentes/skills personalizados antiguos: el doctor cuenta coexistencias, pero **n
 - P4: aprobación fuerte V4.7.2 en PR #29 y migración de archivos legacy solamente tras pruebas y autorización; scheduler sigue OFF.
 
 **Límites:** `-Modo Aplicar` de V4 no archiva componentes ajenos ni resuelve duplicados inline en JSONC. `approval_granted=false` y `apply_supported=false` de la propuesta V4.7.2 continúan sin ser autorizaciones efectivas.
+
+## Especialización V0.2 (20 skills VX añadidas)
+
+La matriz `registry/vx-skill-dependencies-v1.json` contiene 30 skills, dependencias acíclicas, perfiles, fases y responsables/revisores distintos. `vx_skill_router.py` propone una selección **sin ejecución** y devuelve prerequisitos; no sustituye al tool `skill` de Kilo ni garantiza carga automática. Ejemplos:
+
+```powershell
+python .\scripts\vx_skill_router.py --validate-only
+python .\scripts\vx_skill_router.py --profile cloudflare --phase build --task "D1 Queues"
+python .\scripts\vx_skill_router.py --profile frontend --phase verify --task "Playwright E2E"
+```
+
+Cobertura nueva: requisitos, DAG de tareas, ADR, codebase, APIs, TypeScript, Python, Workers, D1/KV/R2/Queues, SQL, colaboración, Git CI, supply chain, E2E, WCAG, rendimiento, privacidad/observabilidad, MCP, release y respuesta a incidentes. No se afirma ausencia absoluta de huecos: capacidades se certifican con pruebas de runtime y resultados reales; ampliar solo por brecha medida. Guía técnica original VX, referencias oficiales en cada SKILL.md.

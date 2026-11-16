@@ -179,6 +179,15 @@ function Global-Assets {
     Source=(Join-Path $root 'registry/vx-agent-registry-v4.json');
     Target=(Join-Path $kiloDir 'harness/vx-agent-registry-v4.json')
   }
+  # Matriz DAG y router de skills: únicamente metadatos, sin cambios MCP ni permisos.
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'registry/vx-skill-dependencies-v1.json');
+    Target=(Join-Path $kiloDir 'harness/vx-skill-dependencies-v1.json')
+  }
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'scripts/vx_skill_router.py');
+    Target=(Join-Path $kiloDir 'harness/scripts/vx_skill_router.py')
+  }
   # Catalogo MCP pasivo y diagnostico sin secretos.
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'registry/vx-mcp-catalog-v1.json');

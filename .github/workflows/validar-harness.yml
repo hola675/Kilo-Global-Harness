@@ -163,7 +163,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Doctor VX fallo en Windows.' }
           if (!$report.ready_for_manual_kilo_smoke -or
               $report.agents.expected -ne 12 -or $report.agents.found -ne 12 -or
-              $report.skills.expected -ne 10 -or $report.skills.found -ne 10 -or
+              $report.skills.expected -ne 30 -or $report.skills.found -ne 30 -or
               $report.runtime_verified -ne $false -or $report.mcp.connections_verified -ne $false) {
             throw 'Doctor VX no acredita pack instalado o promete runtime inexistente.'
           }
@@ -171,6 +171,20 @@ jobs:
             Sort-Object Name -Descending | Select-Object -First 1
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           Write-Host 'VX PACK V0.1: 12 AGENTES, 10 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
+
+      - name: VX Skills V0.2 - 30 skills, DAG aciclico y selector sin efectos
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_skill_router_v02.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Falló matrix de skills VX V0.2.' }
+          python -m compileall -q scripts/vx_skill_router.py tests/test_vx_skill_router_v02.py
+          if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis skill router VX.' }
+          $check = python scripts/vx_skill_router.py --validate-only | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $check.status -ne 'PASS' -or $check.skills -ne 30) {
+            throw 'Skill pack incompleto o dependencias no válidas.'
+          }
+          Write-Host 'VX SKILLS V0.2: 30 SKILLS, DAG Y PERMISOS INTACTOS PASS'
 
       - name: V4.1 - auditoria de evidencias y comando global
         shell: pwsh
