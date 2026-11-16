@@ -57,6 +57,25 @@ class SkillMatrixTests(unittest.TestCase):
         self.assertNotIn(secret, json.dumps(plan))
         self.assertFalse(plan["runtime_verified"])
 
+    def test_no_fallback_from_incompatible_profile(self):
+        plan = vx.choose_skills(self.matrix, "security", "release", "lanzamiento general")
+        self.assertEqual(plan["selected"], [])
+        self.assertEqual(plan["load_order_suggested"], [])
+        self.assertEqual(plan["status"], "NO_PROFILE_MATCH")
+        self.assertEqual(plan["actions_executed"], 0)
+
+    def test_fallback_is_eligible_for_profile(self):
+        plan = vx.choose_skills(self.matrix, "frontend", "build", "sin palabras clave")
+        self.assertEqual(plan["selected"], ["vx-implementation-handoff"])
+        selected = next(r for r in self.matrix["skills"] if r["id"] == plan["selected"][0])
+        self.assertIn("frontend", selected["profiles"])
+        self.assertEqual(selected["phase"], "build")
+
+    def test_invalid_profile_and_phase_fail_closed(self):
+        for profile, phase in (("fake", "plan"), ("general", "unknown")):
+            with self.assertRaises(ValueError):
+                vx.choose_skills(self.matrix, profile, phase, "test")
+
     def test_unknown_input_limit_fails_closed(self):
         with self.assertRaises(ValueError):
             vx.choose_skills(self.matrix, "general", "plan", "task", limit=100)

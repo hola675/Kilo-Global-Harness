@@ -91,7 +91,12 @@ def choose_skills(matrix: dict[str, Any], profile: str, phase: str, task: str,
                   limit: int = 3) -> dict[str, Any]:
     if limit < 1 or limit > 5:
         raise ValueError("Limite fuera de 1..5")
+    if phase not in PHASES:
+        raise ValueError("Fase desconocida")
     by_id = {row["id"]: row for row in matrix["skills"]}
+    valid_profiles = {profile_id for row in matrix["skills"] for profile_id in row["profiles"]}
+    if profile not in valid_profiles:
+        raise ValueError("Perfil sin cobertura en catálogo")
     candidates = []
     for row in matrix["skills"]:
         if profile not in row["profiles"] or row["phase"] != phase:
@@ -114,8 +119,9 @@ def choose_skills(matrix: dict[str, Any], profile: str, phase: str, task: str,
             "release": "vx-release-readiness"
         }
         base = fallback[phase]
-        if base in by_id:
+        if base in by_id and by_id[base]["phase"] == phase and profile in by_id[base]["profiles"]:
             chosen = [base]
+        # No recomendar skills ajenas al perfil, ni siquiera como fallback.
     ordered = []
     seen = set()
 
@@ -134,6 +140,7 @@ def choose_skills(matrix: dict[str, Any], profile: str, phase: str, task: str,
         "profile": profile,
         "phase": phase,
         "selected": chosen,
+        "status": "RECOMMENDED" if chosen else "NO_PROFILE_MATCH",
         "load_order_suggested": ordered,
         "dependency_count": len(ordered) - len(chosen),
         "owner_reviewers": [{"id": n, "owner": by_id[n]["owner"], "reviewer": by_id[n]["reviewer"]} for n in chosen],
