@@ -19,7 +19,11 @@
 
 ### Puerta de instalación del Pack VX 0.2.2 (2026-11-16)
 
-El operador autorizó instalar el Pack en su único Windows, con diagnóstico, simulación libre de bloqueos, Kilo cerrado, respaldo DPAPI CurrentUser y verificación de archivos antes del test real de permisos. **Aún no se ha ejecutado la instalación local.** La aprobación no alcanza a nuevos MCP, WebAuthn, scheduler, cambios JSONC, permisos globales ni concurrencia de escritores. [Guía de instalación](VX-INSTALACION-PACK-0.2.2-WINDOWS.md).
+El operador autorizó instalar el Pack en su único Windows, con diagnóstico, simulación libre de bloqueos, Kilo cerrado, respaldo DPAPI CurrentUser y verificación de archivos antes del test real de permisos. **Aún no se ha ejecutado la instalación local.** La aprobación no alcanza a nuevos MCP, WebAuthn, scheduler, cambios JSONC, permisos globales ni concurrencia de escritores. [Guía de convivencia V0.2.3](VX-INSTALACION-CONVIVENCIA-0.2.3-WINDOWS.md).
+
+### Migración V0.2.3 por convivencia (2026-11-16)
+
+El PC Windows del operador confirmó 19 agentes inline y skills en .agents/skills y .kilocode/skills; la migración limpia 0.2.2 se bloqueó correctamente, sin cambios. El instalador por convivencia V0.2.3 permite conservar esas fuentes y aplicar únicamente los archivos VX, siempre que no existan colisiones de nombres; incluye preflight read-only, respaldo DPAPI incremental, instalación sin borrar árboles externos y rollback acotado. La presencia de inline o skills externas no constituye por sí misma un conflicto. La instalación está condicionada a preflight limpio y Kilo cerrado. El runtime sigue NO VERIFICADO. [Guía V0.2.3](VX-INSTALACION-CONVIVENCIA-0.2.3-WINDOWS.md).
 
 ## Resumen ejecutivo del estado y puertas del siguiente tema
 

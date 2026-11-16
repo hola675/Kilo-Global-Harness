@@ -837,6 +837,37 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.1 approval contract' }
           Write-Host 'VX V4.7.1: STRICT REQUEST/ASSERTION + HOME AISLADO + SIN AUTH/APPLY: PASS'
 
+      - name: VX Pack 0.2.3 - convivencia con inline y skills externas sin borrado
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_coexist_v023.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo fixtures convivencia VX 0.2.3' }
+          python -m compileall -q scripts/vx_pack_coexist_v023.py tests/test_vx_pack_coexist_v023.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis VX 0.2.3' }
+          $tempHome = Join-Path $env:RUNNER_TEMP ('vx-coexist-cli-' + [guid]::NewGuid().ToString('N'))
+          $kilo = Join-Path $tempHome '.config/kilo'
+          New-Item -ItemType Directory -Force -Path $kilo | Out-Null
+          $inline = @{}
+          1..19 | ForEach-Object { $inline["legacy-agent-$_"] = @{mode='primary';steps=90} }
+          @{agent=$inline; mcp=@{INERTE=@{token='CI_ONLY_NEVER_REAL_SECRET'}}} |
+            ConvertTo-Json -Depth 9 | Set-Content -LiteralPath (Join-Path $kilo 'kilo.jsonc') -Encoding UTF8
+          foreach ($compat in @('.agents','.kilocode')) {
+            $base = Join-Path $tempHome ($compat + '/skills/legacy-skill')
+            New-Item -ItemType Directory -Force -Path $base | Out-Null
+            '---', 'name: legacy-skill', 'description: CI only', '---', 'fixture' |
+              Set-Content -LiteralPath (Join-Path $base 'SKILL.md') -Encoding UTF8
+          }
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Diagnostico -RaizUsuario $tempHome
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Simular -RaizUsuario $tempHome
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Aplicar -RaizUsuario $tempHome -ConfirmarConvivencia -ConfirmarKiloCerrado
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Verificar -RaizUsuario $tempHome
+          if (!(Test-Path (Join-Path $tempHome '.config/kilo/agents/vx-integrador.md'))) { throw 'VX agent ausente.' }
+          if (!(Test-Path (Join-Path $tempHome '.kilo/skills/vx-ida-mcp-reverse-engineering/SKILL.md'))) { throw 'IDA skill ausente.' }
+          if (!(Test-Path (Join-Path $tempHome '.agents/skills/legacy-skill/SKILL.md'))) { throw 'Compat skill fue eliminada.' }
+          if (!(Test-Path (Join-Path $tempHome '.kilocode/skills/legacy-skill/SKILL.md'))) { throw 'Legacy skill fue eliminada.' }
+          Write-Host 'PASS VX 0.2.3 convivencia Windows DPAPI, 19 agentes inline y skills externas'
+
       - name: VX Pack 0.2.2 - rutas seguras, marcadores y DPAPI aislado
         shell: pwsh
         run: |
