@@ -59,8 +59,8 @@ class TaskDAGTests(unittest.TestCase):
     def test_two_running_writers_blocked_even_different_worktrees(self):
         p = copy.deepcopy(TASKS)
         p["tasks"][0]["state"] = "RUNNING"
-        p["tasks"][1].update(state="RUNNING", writer=True, worktree="other",
-                              allowed_paths=["tests/a.py"], depends_on=[])
+        p["tasks"][1].update(state="RUNNING", owner="vx-integrador", writer=True,
+                              worktree="other", allowed_paths=["tests/a.py"], depends_on=[])
         with self.assertRaisesRegex(ValueError, "más de un escritor"):
             vx.analyze(p, AGENTS, WRITERS)
 
