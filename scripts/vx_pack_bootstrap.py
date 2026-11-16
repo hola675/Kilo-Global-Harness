@@ -314,6 +314,7 @@ def restore(home: Path, folder: Path, *, force: bool = False):
     if folder.resolve().parent != root: raise Blocked("BackupFolder fuera de raíz de copias.")
     records, receipt = read_backup(folder)
     after_file = folder / "installed-files.json"
+    plan_file = folder / "planned-files.json"
     if after_file.is_file() and not force:
         after = json.loads(after_file.read_text(encoding="utf-8"))
         for row in after:
@@ -325,10 +326,17 @@ def restore(home: Path, folder: Path, *, force: bool = False):
         if path.exists():
             safe_entry(path)
             shutil.rmtree(path)
-    if after_file.is_file():
-        for row in json.loads(after_file.read_text(encoding="utf-8")):
-            target = home / row["relative"]
-            if target.exists() and target.is_file(): target.unlink()
+    # Plan is written BEFORE any removal, so rollback after partial writes is complete.
+    cleanup = after_file if after_file.is_file() else plan_file
+    if cleanup.is_file():
+        for row in json.loads(cleanup.read_text(encoding="utf-8")):
+            relative = row["relative"]
+            if Path(relative).is_absolute() or ".." in Path(relative).parts:
+                raise Blocked("Destino de limpieza fuera de HOME.")
+            target = home / relative
+            if target.exists() and target.is_file():
+                safe_entry(target)
+                target.unlink()
     for name, content in records.items():
         if name.startswith("kilo-config/"):
             rel = name[len("kilo-config/"):]
@@ -359,6 +367,10 @@ def apply(repo: Path, home: Path, assets: list[Asset], agent_ids: list[str], ski
     config = home / ".config/kilo/kilo.jsonc"
     config_hash = digest(config.read_bytes()) if config.exists() else None
     folder = backup(home)
+    # Destinos que el paquete podría escribir; se registran antes de tocar archivos.
+    planned = [{"relative": item.target.relative_to(home).as_posix()} for item in assets]
+    planned.append({"relative": global_file.relative_to(home).as_posix()})
+    (folder / "planned-files.json").write_text(json.dumps(planned, indent=2), encoding="utf-8")
     try:
         for path in [home / ".config/kilo/agents", home / ".kilo/skills"]:
             if path.exists(): shutil.rmtree(path)
@@ -393,8 +405,9 @@ def main():
     args = parser.parse_args()
     if args.mode in {"apply", "restore"} and args.home is None:
         raise Blocked("Se requiere --home absoluto para operaciones con escritura.")
+    if args.home is not None and not args.home.is_absolute():
+        raise Blocked("--home debe ser una ruta absoluta.")
     home = (args.home or Path.home()).absolute()
-    if not home.is_absolute(): raise Blocked("HOME no absoluto.")
     repo = Path(__file__).resolve().parent.parent
     if home == repo or repo in home.parents:
         raise Blocked("HOME no puede situarse dentro del repositorio.")
