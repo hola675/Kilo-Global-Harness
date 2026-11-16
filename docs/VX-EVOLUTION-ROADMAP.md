@@ -25,6 +25,12 @@ El operador autorizó instalar el Pack en su único Windows, con diagnóstico, s
 
 El PC Windows del operador confirmó 19 agentes inline y skills en .agents/skills y .kilocode/skills; la migración limpia 0.2.2 se bloqueó correctamente, sin cambios. El instalador por convivencia V0.2.3 permite conservar esas fuentes y aplicar únicamente los archivos VX, siempre que no existan colisiones de nombres; incluye preflight read-only, respaldo DPAPI incremental, instalación sin borrar árboles externos y rollback acotado. La presencia de inline o skills externas no constituye por sí misma un conflicto. La instalación está condicionada a preflight limpio y Kilo cerrado. El runtime sigue NO VERIFICADO. [Guía V0.2.3](VX-INSTALACION-CONVIVENCIA-0.2.3-WINDOWS.md).
 
+### Piloto de certificación de runtime VX 0.2.4 (2026-11-16)
+
+Evidencia aportada por el operador: Pack V0.2.3 instalado por convivencia en su Windows con 19 agentes inline y 17 skills en directorios compatibles; hashes de 12/12 agentes y 31/31 skills VX completos, MCP sin cambios, backup DPAPI presente. En sesión real de Kilo la herramienta nativa skill cargó vx-engineering-harness y vx-ida-mcp-reverse-engineering. Una búsqueda glob hacia HOME fue bloqueada con external_directory: deny, comportamiento esperado.
+
+Siguen sin demostrar por llamada nativa: selección de vx-integrador, disponibilidad de builders, delegación task real a vx-inspector, permisos efectivos edit/bash de builders y conexión al MCP IDA. El agente activo informó Kilo con alias Yoan, no prueba la activación de vx-integrador. NO aumentar external_directory ni usar glob fuera del proyecto para certificar. Nuevo comando /vx-certificar y validador sintético vx_runtime_smoke_v1.py para separar las ocho puertas y rechazar certificaciones basadas únicamente en autoinformes. La evidencia declarada nunca concede permisos. [Acta y próximo piloto](VX-CERTIFICACION-RUNTIME-20261116.md).
+
 ## Resumen ejecutivo del estado y puertas del siguiente tema
 
 | Línea de producto | Qué construye | Estado comprobable | Puerta para avanzar |

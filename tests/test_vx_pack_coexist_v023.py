@@ -45,7 +45,7 @@ class CoexistTests(unittest.TestCase):
         self.assertEqual(report["jsonc_changes"], 0)
         self.assertEqual(report["global_agents_retained"], 1)
         self.assertNotIn("TEST_PRIVATE_VALUE", json.dumps(report))
-        self.assertEqual(len(assets), 89)
+        self.assertEqual(len(assets), 90)
 
     def test_inline_agent_name_collision_blocks_without_mutation(self):
         data = json.loads(self.cfg.read_text(encoding="utf-8"))
