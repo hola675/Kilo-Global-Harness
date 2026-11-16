@@ -13,6 +13,16 @@ description: "Gobernanza global y versionada del ecosistema de agentes y skills 
 - Un autor no puede certificar por sí solo la calidad de su mejora. Las promociones y cambios de permisos requieren evaluación externa y aprobación humana explícita.
 - No registrar datos sensibles, prompts completos, código ni rutas de clientes. Los resúmenes son genéricos y el identificador de proyecto es HMAC local.
 
+## Alcance actualizado del Pack VX 0.1
+
+- **Gobierna solamente agentes, skills, reglas y componentes propios de VX**, no agentes nativos de Kilo ni personalizaciones externas; el inventario/bakcup puntual ajeno a VX es una excepción de migración explícitamente autorizada.
+- El catálogo `registry/vx-agent-registry-v4.json` incluye doce agentes propios y diez skills VX: cinco implementadores adicionales, con permisos `edit: ask` y `bash: ask/deny`, pero ningún cambio se aplica al perfil real por el solo hecho de estar en el repositorio.
+- El futuro perfil limpio conserva Kilo nativo y MCP existentes; `registry/vx-pack-mcp-catalog-v1.json` solo propone integraciones faltantes, nunca instala, autentica ni reconfigura servidores.
+- `vx-self-improvement` **genera candidatos**, no los aprueba ni los aplica. Las pruebas sintéticas V4.6 no certifican experiencia ni docencia. VX Academy V4.8 y la verificación de capacidades siguen pendientes.
+- **Publicación segura no habilitada**: V4.7.1/V4.7.2 son contratos estructurales con `approval_granted=false` y `apply_supported=false`. No importar un JSON de approval como autorización de usuario.
+- El bootstrap Windows `scripts/vx_pack_bootstrap.py` se ejecuta desde el repositorio, usa snapshot DPAPI cifrado, falla sin modificar si hay agentes inline o skills de compatibilidad no aisladas y **no debe ejecutarse en HOME real hasta revisión/permiso específico**.
+- Scheduler OFF; evolución, permisos, paquetes y departamentos requieren evidencias y autorización humana, sin autoascensos ni autoescrituras en Kilo.
+
 ## Uso bajo demanda
 Motor: `python -I "$HOME/.config/kilo/harness/scripts/vx_evolution_core.py"`.
 Consultar `status`; crear BD con `init` solo cuando esté autorizado; usar `inventory-sync` para global Kilo; `observe` para observación importante; `propose` para candidato de mejora. `meeting-preview` muestra semanal o mensual sin programar nada.
