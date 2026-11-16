@@ -23,7 +23,12 @@ $catalogPath = Join-Path $repo 'registry/vx-mcp-catalog-v1.json'
 foreach ($file in @($bootstrap,$registryPath,$catalogPath)) {
   if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta archivo: $file" }
 }
-$python = (Get-Command python -CommandType Application -ErrorAction Stop).Source
+# Get-Command devuelve TODOS los python.exe de PATH; seleccionar solo el primero.
+$python = [string](Get-Command python -CommandType Application -ErrorAction Stop |
+  Select-Object -First 1 -ExpandProperty Source)
+if ([string]::IsNullOrWhiteSpace($python) -or !(Test-Path -LiteralPath $python -PathType Leaf)) {
+  throw 'Python ejecutable no encontrado; revisar PATH.'
+}
 $registry = Get-Content -LiteralPath $registryPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json
 if (@($registry.pack.owned_agents).Count -ne 12 -or @($registry.pack.owned_skills).Count -ne 31 -or
