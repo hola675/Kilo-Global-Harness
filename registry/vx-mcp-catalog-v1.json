@@ -1,6 +1,6 @@
 {
   "schema": "vx-mcp-catalog/1",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "scope": "global-kilo-only",
   "runtime": "kilo-native",
   "policy": {
@@ -80,6 +80,21 @@
       "enabled_by_default": false,
       "requires_auth": true,
       "risk": "cloud-infrastructure-and-production-write-apis"
+    },
+    {
+      "id": "ida",
+      "aliases": [
+        "ida-mcp",
+        "hexrays-ida-mcp",
+        "ida-nexus"
+      ],
+      "tier": "optional",
+      "purpose": "Ingenieria inversa local con IDA Pro 9.4+ y servidor MCP oficial de Hex-Rays; lectura de funciones, xrefs, pseudocodigo con aprobacion por herramienta",
+      "source": "https://github.com/HexRaysSA/ida-mcp",
+      "transport": "local",
+      "enabled_by_default": false,
+      "requires_auth": "local-installation-and-license-dependent",
+      "risk": "binary-and-IDB-access; tools-may-execute-python-or-modify-database; explicit-tool-approval"
     }
   ],
   "notes": [

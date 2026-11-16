@@ -1,10 +1,10 @@
-# VX Pack 0.1 — Base operativa multiagente para Kilo Code (16-11-2026)
+# VX Pack 0.2.1 — Base operativa multiagente para Kilo Code (16-11-2026)
 
-**Estado:** implementación candidata en la PR #31, NO instalada en HOME Windows real. No fusionar, sustituir o instalar hasta completar CI, revisión de seguridad y prueba de restauración autorizada. Alcance: un PC Windows; global Kilo, sin directorios de configuración dentro de proyectos.
+**Estado:** Pack V0.2 fusionado en main; V0.2.1 añade skill IDA MCP (31 skills). NO instalado en HOME Windows real. No instalar ni migrar hasta diagnóstico/backup y autorización de operación específica. Alcance: un PC Windows; global Kilo, sin directorios de configuración dentro de proyectos.
 
 ## Contenido real
 
-- 7 agentes VX originales y 5 builders adicionales (frontend, backend, QA, datos, docs); 30 skills VX nativas bajo demanda.
+- 7 agentes VX originales y 5 builders adicionales (frontend, backend, QA, datos, docs); 31 skills VX nativas bajo demanda.
 - Instalador V4 reparado: sigue siendo reversible, realiza copia previa de los destinos VX que modifica, copia los componentes VX y preserva `kilo.jsonc`, MCP, modelos, credenciales y permisos ajenos.
 - `vx_pack_doctor.py`: diagnóstico **solo lectura**, inventaría componentes esperados, solapamientos de nombre y presencia de MCP (no conectividad).
 - Catálogo de cinco MCP candidatos con fuentes oficiales. **No instala ni conecta ninguno**; requiere decisión individual y validación de permisos.
@@ -14,7 +14,7 @@
 
 ```powershell
 git status --short
-git switch work/vx-team-pack-operational-20261116
+git switch main
 pwsh -NoProfile -File .\scripts\Validar-Registro-V4.ps1
 python -I -m unittest discover -s tests -v
 pwsh -NoProfile -File .\scripts\Instalar-Kilo-Global-Harness.ps1 -Modo Diagnostico
@@ -50,7 +50,7 @@ Mantener **todos** los MCP existentes. Usar Kilo Settings > Agent Behaviour > MC
 
 ## Especialización V0.2 (20 skills VX añadidas)
 
-La matriz `registry/vx-skill-dependencies-v1.json` contiene 30 skills, dependencias acíclicas, perfiles, fases y responsables/revisores distintos. `vx_skill_router.py` propone una selección **sin ejecución** y devuelve prerequisitos; no sustituye al tool `skill` de Kilo ni garantiza carga automática. Ejemplos:
+La matriz `registry/vx-skill-dependencies-v1.json` contiene 31 skills, dependencias acíclicas, perfiles, fases y responsables/revisores distintos. `vx_skill_router.py` propone una selección **sin ejecución** y devuelve prerequisitos; no sustituye al tool `skill` de Kilo ni garantiza carga automática. Ejemplos:
 
 ```powershell
 python .\scripts\vx_skill_router.py --validate-only
@@ -90,3 +90,15 @@ Incluso con `--force-restore`, el bootstrap DPAPI **rechaza** restaurar si detec
 ## Integridad entre backup y sustitución
 
 Antes del primer borrado, `vx_pack_bootstrap.py` vuelve a listar agentes y skills, y coteja sus nombres y SHA256 con el contenido del snapshot DPAPI recién creado. Si otro proceso añadió o modificó cualquier archivo tras el respaldo, aborta la sustitución y mantiene los archivos intactos. Esto reduce la ventana de pérdida accidental; por seguridad también se debe cerrar Kilo antes de aplicar cambios reales. El comando `simulate` sigue sin escribir archivos.
+
+## Extensión IDA MCP (Pack 0.2.1)
+
+La skill `vx-ida-mcp-reverse-engineering` y comando `/vx-ida` pertenecen al perfil `reverse-engineering`. El catálogo incorpora el MCP oficial Hex-Rays como sexto **candidato opt-in**, `enabled_by_default:false`, sin modificar `kilo.jsonc` ni instalar servidores. El flujo de investigación es read-only por defecto y exige datos observables, separación de revisor, autorización individual para herramientas que editan IDB o ejecutan código. `ida-hcli` no debe instalarse hasta verificar cuál Python ejecuta IDA 9.4.
+
+```powershell
+python .\\scripts\\vx_skill_router.py --validate-only
+python .\\scripts\\vx_skill_router.py --profile reverse-engineering --phase discover --task "IDA Pro MCP pseudocodigo y xrefs"
+python .\\scripts\\vx_pack_bootstrap.py --mode simulate
+```
+
+La CI prueba contratos e inventario, no la conexión a IDA ni disponibilidad de decompilación en el Windows del operador.

@@ -1,6 +1,6 @@
 {
   "schema": "vx-agent-registry/1",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "global_only": true,
   "runtime": "kilo-native",
   "source_policy": "origin-authored-vx-no-external-agent-code",
@@ -468,11 +468,44 @@
       "writer": "code",
       "builder_candidate": "vx-qa-builder",
       "external_skills_policy": "not_preinstalled; manual verification"
+    },
+    {
+      "id": "reverse-engineering",
+      "patterns": [
+        "ida",
+        "ida pro",
+        "idapro",
+        "ida-mcp",
+        "idalib",
+        "idapython",
+        "desensamblar",
+        "pseudocodigo",
+        "ingenieria inversa",
+        "reverse engineering",
+        "xrefs"
+      ],
+      "discover": [
+        "vx-researcher",
+        "vx-security-reviewer"
+      ],
+      "review": [
+        "vx-inspector",
+        "vx-test-analyst"
+      ],
+      "skills": [
+        "vx-ida-mcp-reverse-engineering",
+        "vx-codebase-investigation",
+        "vx-mcp-safe-integration",
+        "vx-security-review"
+      ],
+      "writer": "code",
+      "builder_candidate": null,
+      "external_skills_policy": "not-preinstalled; manual verification"
     }
   ],
   "pack": {
     "id": "vx-development-team",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "owned_agents": [
       "vx-integrador",
       "vx-inspector",
@@ -517,7 +550,8 @@
       "vx-observability-privacy",
       "vx-mcp-safe-integration",
       "vx-release-readiness",
-      "vx-incident-diagnosis"
+      "vx-incident-diagnosis",
+      "vx-ida-mcp-reverse-engineering"
     ],
     "inline_agents_not_mutated": true,
     "configured_mcp_never_modified": true,

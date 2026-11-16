@@ -1,6 +1,6 @@
 {
   "schema": "vx-skill-dependencies/1",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "global_only": true,
   "policy": {
     "execution": "advisory-only",
@@ -103,7 +103,8 @@
         "refactor",
         "qa",
         "docs",
-        "design"
+        "design",
+        "reverse-engineering"
       ],
       "keywords": [
         "explorar",
@@ -341,7 +342,8 @@
         "cloudflare",
         "database",
         "security",
-        "qa"
+        "qa",
+        "reverse-engineering"
       ],
       "keywords": [
         "dependencias",
@@ -473,7 +475,8 @@
         "frontend",
         "cloudflare",
         "security",
-        "qa"
+        "qa",
+        "reverse-engineering"
       ],
       "keywords": [
         "mcp",
@@ -707,6 +710,34 @@
       "reviewer": "vx-inspector",
       "depends_on": [],
       "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-ida-mcp-reverse-engineering",
+      "phase": "discover",
+      "profiles": [
+        "reverse-engineering"
+      ],
+      "keywords": [
+        "ida",
+        "ida pro",
+        "idapro",
+        "ida-mcp",
+        "idalib",
+        "idapython",
+        "desensamblar",
+        "pseudocodigo",
+        "ingenieria inversa",
+        "reverse engineering",
+        "xrefs"
+      ],
+      "owner": "vx-researcher",
+      "reviewer": "vx-security-reviewer",
+      "depends_on": [
+        "vx-codebase-investigation",
+        "vx-mcp-safe-integration"
+      ],
+      "source": "https://github.com/HexRaysSA/ida-mcp",
       "runtime": "on-demand"
     }
   ]

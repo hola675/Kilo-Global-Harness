@@ -1,6 +1,6 @@
 # VX Evolution — Roadmap maestro y próxima fase
 
-**Edición consolidada:** 2026-11-16 · **Fuente:** integración autorizada de PR #28 (decisiones/Academy), #29 (V4.7.2 contratos), #30 (bootstrap inicial histórico) y #31 (Pack VX V0.2 seguro). **En repositorio:** 12 agentes VX, 30 skills originales, un catálogo de 5 MCP candidatos, router y DAG de solo lectura; V4.7.2 sin autenticación, `approval_granted=false` y `apply_supported=false`. **En Windows del operador:** instalación real aún NO actualizada ni validada con este pack; la última instalación/CLI documentada sigue siendo V4.6.3. Scheduler OFF, paralelismo de escritores OFF, MCP nuevos OFF, autorreformas y ascensos OFF. La CI Windows certifica fixtures, no actividad en Kilo real.
+**Edición consolidada:** 2026-11-16 · **Fuente:** integración autorizada de PR #28 (decisiones/Academy), #29 (V4.7.2 contratos), #30 (bootstrap inicial histórico) y #31 (Pack VX V0.2 seguro). **En repositorio:** 12 agentes VX, 31 skills originales, un catálogo de 6 MCP candidatos, router y DAG de solo lectura; V4.7.2 sin autenticación, `approval_granted=false` y `apply_supported=false`. **En Windows del operador:** instalación real aún NO actualizada ni validada con este pack; la última instalación/CLI documentada sigue siendo V4.6.3. Scheduler OFF, paralelismo de escritores OFF, MCP nuevos OFF, autorreformas y ascensos OFF. La CI Windows certifica fixtures, no actividad en Kilo real.
 
 **Ámbito vinculante:** solo Kilo Code global en una PC Windows; no Codex/Claude, no configuración de agentes en repositorios ni sincronización multi-PC. 
 
@@ -10,10 +10,10 @@
 | Componente | En repositorio después de integrar | En Kilo Windows real | Seguridad operativa |
 | --- | --- | --- | --- |
 | V4.7.2 | Contratos de identidad, assertion WebAuthn, replay simulado, revocación y auditoría en memoria; tests CI Windows | **NO DESPLEGADO** | `approval_granted=false`, `apply_supported=false`, sin verificación criptográfica/persistencia |
-| Pack VX V0.2 | 12 agentes (7 originales + 5 builders), 30 skills y DAG/router read-only | **NO INSTALADO/NO VERIFICADO** | Un escritor STRICT; tools/permiso MCP fail-closed declarados, requieren comprobación runtime |
+| Pack VX V0.2 | 12 agentes (7 originales + 5 builders), 31 skills y DAG/router read-only | **NO INSTALADO/NO VERIFICADO** | Un escritor STRICT; tools/permiso MCP fail-closed declarados, requieren comprobación runtime |
 | Bootstrap y backups | Instalador V4 incremental y bootstrap DPAPI cifrado/rollback conservador | **NO EJECUTADO SOBRE HOME REAL** | Frena ante archivos nuevos, configs inline o skills externas; snapshot CurrentUser, no portable |
 | VX Academy V4.8 | Catálogos, organización y mentores **solo propuestas** de PR #28 | **NO ACTIVA** | No hay agentes certificados ni autopromociones |
-| MCP | Cinco candidatos de catálogo (GitHub/Context7/Serena/Playwright/Cloudflare) | **NO INSTALADOS POR ESTE PACK** | Configurar uno a uno solo por autorización específica |
+| MCP | Seis candidatos de catálogo (GitHub/Context7/Serena/Playwright/Cloudflare) | **NO INSTALADOS POR ESTE PACK** | Configurar uno a uno solo por autorización específica |
 
 **Siguiente fase:** validar Kilo real en modo lectura y una copia del HOME, revisar políticas de skills MCP y ACL; definir decisión posterior de migración, no suponer que la fusión Git la autoriza. [Detalle de integración](VX-CONSOLIDACION-MAIN-20261116.md) · [Auditoría de 17 discrepancias](VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 

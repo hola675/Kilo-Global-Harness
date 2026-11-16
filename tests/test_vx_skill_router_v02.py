@@ -19,9 +19,9 @@ class SkillMatrixTests(unittest.TestCase):
     def setUpClass(cls):
         cls.registry, cls.matrix = vx.load_catalog(ROOT, ROOT / "synthetic_home")
 
-    def test_registry_is_closed_thirty(self):
-        self.assertEqual(len(self.registry["pack"]["owned_skills"]), 30)
-        self.assertEqual(len(self.matrix["skills"]), 30)
+    def test_registry_is_closed_thirty_one(self):
+        self.assertEqual(len(self.registry["pack"]["owned_skills"]), 31)
+        self.assertEqual(len(self.matrix["skills"]), 31)
         self.assertEqual(len(self.registry["agents"]), 12)
 
     def test_dependency_graph_validated_no_cycles(self):
