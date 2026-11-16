@@ -10,7 +10,7 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 
 **VX Academy (V4.8 en diseño, no activa):** el trabajo de PR #28 añade [currículo](docs/VX-ACADEMY-CAPACITACION-V1-20261115.md), [mentoría](docs/VX-ACADEMY-MENTORIA-EVOLUCION-V1-20261115.md), [evaluación independiente](docs/VX-ACADEMY-EVALUADOR-INDEPENDIENTE-V1-20261115.md) y [grafo de organización propuesto](registry/vx-organization-graph-v1.proposal.json). Su inventario original de 7 agentes y 2 skills corresponde a una fotografía del **15 de noviembre**, anterior al Pack V0.2 de 12 agentes/30 skills. Los catálogos académicos son propuestas, no roles adicionales, certificados ni mecanismos de activación.
 
-**Despliegue aprobado, aún no ejecutado:** el operador autorizó instalar el Pack VX global de 12 agentes/31 skills en su Windows; la instalación real está sujeta a un preflight sin bloqueos, backup DPAPI y Kilo cerrado. [Guía de instalación y rollback](docs/VX-INSTALACION-PACK-0.2.2-WINDOWS.md).
+**Despliegue aprobado, aún no ejecutado:** el operador autorizó instalar el Pack VX global de 12 agentes/31 skills en su Windows; la instalación real está sujeta a un preflight sin bloqueos, backup DPAPI y Kilo cerrado. [Guía recomendada para convivencia con los 19 agentes inline](docs/VX-INSTALACION-CONVIVENCIA-0.2.3-WINDOWS.md). El instalador 0.2.2 limpio sigue disponible para HOME sin personalizaciones.
 
 ## Principios
 

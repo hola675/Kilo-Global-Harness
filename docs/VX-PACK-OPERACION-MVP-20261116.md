@@ -106,3 +106,7 @@ La CI prueba contratos e inventario, no la conexión a IDA ni disponibilidad de 
 ## Preflight de la entrega 0.2.2
 
 Los destinos globales rechazan symlinks, junctions y otros reparse points también en carpetas intermedias, incluidos `commands`, `rules` y `harness/scripts`. El preflight publica bloqueos antes de escribir; la comprobación se repite antes de sustituir. Los marcadores duplicados en `AGENTS.md` provocan bloqueo conservador. El nuevo `scripts/Instalar-Pack-VX-V022.ps1` orquesta diagnóstico, simulación, aplicación autorizada con DPAPI y verificación. No sustituye silenciosamente la migración limpia por el instalador V4 incremental. [Guía](VX-INSTALACION-PACK-0.2.2-WINDOWS.md).
+
+## Compatibilidad y coexistencia V0.2.3
+
+El HOME reportado contiene 19 agentes inline y skills de compatibilidad externas. El instalador limpio DPAPI 0.2.2 continúa bloqueando esa situación; no se deben borrar los agentes ni las skills para instalar VX. La ruta recomendada es scripts/Instalar-Pack-VX-Convivencia-V023.ps1, que realiza un preflight de colisiones por nombre, conserva JSONC/MCP/perfiles externos y crea un backup DPAPI específico para destinos VX. Si hay colisión, NO aplicar ni renombrar automáticamente. [Procedimiento](VX-INSTALACION-CONVIVENCIA-0.2.3-WINDOWS.md).

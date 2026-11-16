@@ -1,5 +1,7 @@
 # VX Pack 0.2.2 — instalación global supervisada en Windows
 
+**ATENCIÓN (actualizado 2026-11-16):** si tu Kilo tiene agentes inline o skills de compatibilidad, usa la [instalación por convivencia V0.2.3](VX-INSTALACION-CONVIVENCIA-0.2.3-WINDOWS.md); esta guía de instalación limpia bloqueará ese perfil deliberadamente. No borrar perfiles externos.
+
 **Fecha:** 2026-11-16 · **Fuente:** `main` de `hola675/Kilo-Global-Harness` · **Equipo:** una PC Windows, Kilo Code global.
 
 El operador autorizó instalar **solo componentes VX propios**; no autoriza activar nuevos MCP, modificar `kilo.jsonc`, credenciales, permisos AutoApprove, scheduler, multiwriter ni WebAuthn. V4.7.2 sigue con `approval_granted=false`, `apply_supported=false`.
