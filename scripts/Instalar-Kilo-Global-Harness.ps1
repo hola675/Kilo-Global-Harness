@@ -126,245 +126,18 @@ function Global-Assets {
       $assets += [pscustomobject]@{Source=$f.FullName;Target=(Join-Path (Join-Path $kiloDir $dir) $f.Name)}
     }
   }
-  # Pack VX 0.1: lista cerrada de skills PROPIAS en registro, solo lectura de origen.
-  # El bootstrap limpio independiente exige respaldo DPAPI antes de cualquier sustitución.
+  # Pack VX: assets de skills propias catalogadas en registro; NO instala skills externas.
   $catalog = Read-JsonFile (Join-Path $root 'registry/vx-agent-registry-v4.json')
   if (!$catalog.ContainsKey('pack') -or @($catalog.pack.owned_skills).Count -lt 2) {
-    throw 'Pack VX sin lista de skills validable.'
+    throw 'Pack VX sin catalogo cerrado de skills propias.'
   }
-  $skillsSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+  $seenSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
   foreach ($skill in @($catalog.pack.owned_skills)) {
     $name = [string]$skill
-    if ($name -notmatch '^vx-[a-z0-9-]+
-  # V4.4: plugin opt-in SOLO cuando el operador lo solicita.
-  # Al instalarlo, sigue INERTE hasta activar observer-mode light en la BD.
-  if ($InstalarVXObserverV44) {
-    $assets += [pscustomobject]@{
-      Source=(Join-Path $root 'plugins/vx-observer-light.js');
-      Target=(Join-Path $kiloDir 'plugin/vx-observer-light.js')
-    }
-  }
-  # V4.3: nucleo operativo Kilo-only (NO inicializa ni toca la BD privada).
-  $assets += [pscustomobject]@{
-    Source=(Join-Path $root 'scripts/vx_evolution_core.py');
-    Target=(Join-Path $kiloDir 'harness/scripts/vx_evolution_core.py')
-  }
-  # V4.6.0: auditoría de capacidades global y sin acceso a SQLite.
-  $assets += [pscustomobject]@{
-    Source=(Join-Path $root 'scripts/vx_capability_audit.py');
-    Target=(Join-Path $kiloDir 'harness/scripts/vx_capability_audit.py')
-  }
-  # V4.6.1: matriz de competencias y evidencias DECLARADAS, de solo lectura.
-  $assets += [pscustomobject]@{
-    Source=(Join-Path $root 'scripts/vx_competency_matrix.py');
-    Target=(Join-Path $kiloDir 'harness/scripts/vx_competency_matrix.py')
-  }
-  # V4.6.2: ensayos sintéticos y comparación declarativa, solo lectura.
-  $assets += [pscustomobject]@{
-    Source=(Join-Path $root 'scripts/vx_competency_trials.py');
-    Target=(Join-Path $kiloDir 'harness/scripts/vx_competency_trials.py')
-  }
-  # V4.6.3: diagnóstico organizativo de metadatos sin cambiar el runtime.
-  $assets += [pscustomobject]@{
-    Source=(Join-Path $root 'scripts/vx_organizational_audit.py');
-    Target=(Join-Path $kiloDir 'harness/scripts/vx_organizational_audit.py')
-  }
-
-  # Recursos adicionales V4 - SIEMPRE en perfil global, nunca en repositorios.
-  $assets += [pscustomobject]@{
-    Source=(Join-Path $root 'registry/vx-agent-registry-v4.json');
-    Target=(Join-Path $kiloDir 'harness/vx-agent-registry-v4.json')
-  }
-  foreach ($name in @('Seleccionar-Equipo-V4.ps1','Validar-Registro-V4.ps1','Reconciliar-Agentes-V4.2.ps1')) {
-    $assets += [pscustomobject]@{
-      Source=(Join-Path (Join-Path $root 'scripts') $name);
-      Target=(Join-Path (Join-Path $kiloDir 'harness/scripts') $name)
-    }
-  }
-  return @($assets)
-}
-function Managed-AgentsBlock {
-  $source = Read-Utf8 (Join-Path $root 'rules/AGENTS-global-managed.md')
-  return ($startMarker + "`n" + $source.Trim() + "`n" + $endMarker)
-}
-function Replace-ManagedBlock([string]$Original,[string]$Block) {
-  $beg = $Original.IndexOf($startMarker,[StringComparison]::Ordinal)
-  $end = $Original.IndexOf($endMarker,[StringComparison]::Ordinal)
-  if (($beg -ge 0) -xor ($end -ge 0)) { throw 'AGENTS.md contiene marcadores incompletos; no se sobrescribe.' }
-  if ($beg -ge 0) {
-    if ($end -lt $beg) { throw 'Marcadores de AGENTS.md desordenados.' }
-    $finish = $end + $endMarker.Length
-    return ($Original.Substring(0,$beg) + $Block + $Original.Substring($finish))
-  }
-  if ([string]::IsNullOrWhiteSpace($Original)) { return ($Block + "`n") }
-  return ($Original.TrimEnd() + "`n`n" + $Block + "`n")
-}
-function Report-State {
-  Write-Host "=== VECIDYA | KILO GLOBAL HARNESS V4 | $Modo ===" -ForegroundColor Cyan
-  Write-Host "Configuracion principal: $configFile (existe: $(Test-Path $configFile))"
-  try {
-    $meta = Read-KiloMetadata
-    if ($null -ne $meta) {
-      Write-Host "Agentes JSON: $(@($meta.Agents).Count); steps > 400: $($meta.HighSteps); edit/bash allow global: $($meta.UnrestrictedAgentCount)"
-      Write-Host "MCP configurados ($(@($meta.MCP).Count)): $(@($meta.MCP) -join ', ')"
-      $mdAgents = @(Get-ChildItem (Join-Path $kiloDir 'agents') -Filter '*.md' -File -ErrorAction SilentlyContinue | ForEach-Object BaseName)
-      $duplicates = @($meta.Agents | Where-Object { $_ -in $mdAgents })
-      Write-Host "Agentes duplicados JSON/Markdown: $($duplicates.Count)"
-    }
-  } catch { Write-Warning "No se pudo interpretar metadata JSONC: $($_.Exception.Message)" }
-  $global = @(Skill-Names $skillRoot)
-  $compatible = @(Skill-Names $agentsSkillRoot)
-  $legacy = @(Skill-Names $legacySkillRoot)
-  Write-Host "Skills: .kilo=$($global.Count), .agents=$($compatible.Count), .kilocode=$($legacy.Count)"
-  $dups = @(($global + $compatible + $legacy) | Group-Object | Where-Object { $_.Count -gt 1 })
-  Write-Host "Skills repetidas por nombre: $($dups.Count)"
-  Write-Host "task-observer activa: $(Test-Path $observerPath)"
-  Write-Host "VX Observer instalado: $(Test-Path (Join-Path $kiloDir 'plugin/vx-observer-light.js')) (modo de captura independiente)"
-  if (!$RaizUsuario -and $env:APPDATA) {
-    $settingsFile = Join-Path $env:APPDATA 'Code/User/settings.json'
-    if (Test-Path $settingsFile) {
-      $auto = Select-String -LiteralPath $settingsFile -Pattern 'kilo-code\.new\.autoApprove\.enabled' -ErrorAction SilentlyContinue
-      Write-Host "AutoApprove: clave presente en Settings (no modificada): $([bool]$auto)"
-    }
-  }
-  Write-Host 'Los datos MCP solo acreditan configuracion, no conexiones activas.'
-}
-function Save-Manifest($Manifest) {
-  Save-JsonFile (Join-Path $Manifest.BackupFolder 'manifest.json') $Manifest
-}
-function Restore-Manifest([string]$Dir,[bool]$Force) {
-  $path = Join-Path $Dir 'manifest.json'
-  if (!(Test-Path -LiteralPath $path)) { throw "No existe manifiesto: $path" }
-  $m = Read-JsonFile $path
-  if ($m.version -notin @('3.0.0','4.0.0')) { throw 'Version de manifiesto incompatible.' }
-  $restored = 0
-  $skipped = 0
-  foreach ($entry in $m.files) {
-    $target = [string]$entry.target
-    $current = Hash-File $target
-    if (!$Force -and $current -and $entry.installedSha256 -and $current -ne $entry.installedSha256) {
-      Write-Warning "Saltado: archivo cambiado despues de instalacion: $target"
-      $skipped++
-      continue
-    }
-    if ($entry.existed) {
-      if (!(Test-Path -LiteralPath $entry.backup)) { Write-Warning "Falta respaldo de $target"; $skipped++; continue }
-      New-Item -Path (Split-Path $target -Parent) -ItemType Directory -Force | Out-Null
-      Copy-Item -LiteralPath $entry.backup -Destination $target -Force
-    } elseif (Test-Path -LiteralPath $target -PathType Leaf) {
-      Remove-Item -LiteralPath $target -Force
-    }
-    $restored++
-  }
-  if ($m.observerMoved) {
-    if ((Test-Path -LiteralPath $m.observerBackup) -and !(Test-Path -LiteralPath $observerPath)) {
-      New-Item -Path (Split-Path $observerPath -Parent) -ItemType Directory -Force | Out-Null
-      Move-Item -LiteralPath $m.observerBackup -Destination $observerPath
-      Write-Host 'task-observer restaurada.'
-    } else { Write-Warning 'task-observer no se pudo restaurar automaticamente (revisar rutas).' }
-  }
-  Write-Host "Restaurados: $restored; pendientes: $skipped" -ForegroundColor Green
-  if ($skipped -gt 0) { Write-Warning 'Hay cambios posteriores; usa -ForzarRestauracion solo despues de revisarlos.' }
-}
-
-if ($Modo -eq 'Restaurar') {
-  if ([string]::IsNullOrWhiteSpace($BackupFolder)) { throw 'Debes especificar -BackupFolder.' }
-  Restore-Manifest $BackupFolder ([bool]$ForzarRestauracion)
-  return
-}
-# Validacion de roles y rutas antes de escribir. Si falla, no tocar la instalacion.
-$validator = Join-Path $root 'scripts/Validar-Registro-V4.ps1'
-if (!(Test-Path -LiteralPath $validator -PathType Leaf)) { throw 'Falta el validador V4.' }
-& $validator -RaizFuentes $root
-$assets = @(Global-Assets)
-$expectedPaths = @($assets | ForEach-Object Target)
-if ($expectedPaths.Count -ne @($expectedPaths | Select-Object -Unique).Count) { throw 'Colision de rutas internas en el paquete.' }
-foreach ($a in $assets) { if (!(Test-Path -LiteralPath $a.Source -PathType Leaf)) { throw "Paquete incompleto: $($a.Source)" } }
-$block = Managed-AgentsBlock
-$currentAgents = if (Test-Path -LiteralPath $globalAgentsFile) { Read-Utf8 $globalAgentsFile } else { '' }
-$plannedAgents = Replace-ManagedBlock $currentAgents $block
-$allItems = @($assets) + @([pscustomobject]@{Source=$null;Target=$globalAgentsFile})
-if ($Modo -eq 'Diagnostico') { Report-State; Write-Host 'DIAGNOSTICO sin cambios.' -ForegroundColor Green; return }
-if ($Modo -eq 'Simular') {
-  Report-State
-  foreach ($item in $allItems) {
-    $exists = Test-Path -LiteralPath $item.Target -PathType Leaf
-    $state = if ($exists) {'ACTUALIZAR SI CAMBIA'}else{'CREAR'}
-    Write-Host "[$state] $($item.Target)"
-  }
-  if ($PausarTaskObserver) { Write-Host "[PAUSAR] $observerPath (respaldo privado)" }
-  Write-Host 'SIMULACION sin cambios.' -ForegroundColor Green
-  return
-}
-if ($Modo -eq 'Verificar') {
-  $fail = 0
-  foreach ($item in $assets) {
-    $ok = (Hash-File $item.Source) -eq (Hash-File $item.Target)
-    if (!$ok) { $fail++ }
-    Write-Host "[$(if($ok){'OK'}else{'DIFERENTE'})] $($item.Target)"
-  }
-  $currentAgents = if (Test-Path $globalAgentsFile) { Read-Utf8 $globalAgentsFile } else { '' }
-  $ok = $currentAgents.Contains($block)
-  if (!$ok) { $fail++ }
-  Write-Host "[$(if($ok){'OK'}else{'DIFERENTE'})] Seccion administrada de AGENTS.md"
-  if ($fail -gt 0) { throw "Verificacion incompleta: $fail elementos." }
-  Write-Host 'VERIFICACION DE ARCHIVOS: OK. Falta prueba funcional de Kilo en Windows.' -ForegroundColor Green
-  return
-}
-
-# Modo Aplicar; por diseno solo toca rutas globales y archivos VX del paquete.
-$stamp = (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + ([guid]::NewGuid().ToString('N').Substring(0,8))
-$backupDir = Join-Path $backupRoot $stamp
-New-Item -Path $backupDir -ItemType Directory -Force | Out-Null
-$manifest = [ordered]@{
-  version='4.0.0'; created=$stamp; BackupFolder=$backupDir;
-  files=@(); observerMoved=$false; observerBackup=''
-}
-$index=0
-foreach ($item in $allItems) {
-  $target = $item.Target
-  $existed = Test-Path -LiteralPath $target -PathType Leaf
-  $backupFile = ''
-  if ($existed) {
-    $backupFile = Join-Path $backupDir ("file-$index.bak")
-    Copy-Item -LiteralPath $target -Destination $backupFile -Force
-  }
-  $manifest.files += [ordered]@{target=$target;existed=[bool]$existed;backup=$backupFile;installedSha256=$null}
-  $index++
-}
-Save-Manifest $manifest
-try {
-  $index=0
-  foreach ($item in $assets) {
-    $text = Read-Utf8 $item.Source
-    Write-Utf8Atomic $item.Target $text
-    $manifest.files[$index].installedSha256 = Hash-File $item.Target
-    Save-Manifest $manifest
-    $index++
-  }
-  Write-Utf8Atomic $globalAgentsFile $plannedAgents
-  $manifest.files[$index].installedSha256 = Hash-File $globalAgentsFile
-  Save-Manifest $manifest
-  if ($PausarTaskObserver -and (Test-Path -LiteralPath $observerPath)) {
-    $dest = Join-Path $backupDir 'task-observer-pausado'
-    Move-Item -LiteralPath $observerPath -Destination $dest
-    $manifest.observerMoved = $true
-    $manifest.observerBackup = $dest
-    Save-Manifest $manifest
-  }
-} catch {
-  $msg=$_.Exception.Message
-  Write-Warning "Instalacion interrumpida: $msg. Intentando restaurar..."
-  Restore-Manifest $backupDir $true
-  throw "No se completo Aplicar: $msg"
-}
-Write-Host 'APLICACION V4.4 COMPLETADA: solo rutas globales; AutoApprove, modelos, MCP y JSONC intactos.' -ForegroundColor Green
-Write-Host "BACKUP PRIVADO (NO SUBIR): $backupDir" -ForegroundColor Yellow
-Write-Host 'Ejecuta -Modo Verificar, luego /reload en Kilo.'
- -or !$skillsSeen.Add($name)) { throw "Skill VX invalida o repetida: $name" }
-    $src = Join-Path $root ("skills/" + $name + "/SKILL.md")
-    if (!(Test-Path -LiteralPath $src -PathType Leaf)) { throw "Skill VX no encontrada: $name" }
-    $assets += [pscustomobject]@{Source=$src;Target=(Join-Path $skillRoot ($name + '/SKILL.md'))}
+    if ($name -notmatch '^vx-[a-z0-9-]+$' -or !$seenSkills.Add($name)) { throw "Skill VX invalida/repetida: $name" }
+    $source = Join-Path $root ("skills/" + $name + "/SKILL.md")
+    if (!(Test-Path -LiteralPath $source -PathType Leaf)) { throw "Skill VX ausente: $name" }
+    $assets += [pscustomobject]@{Source=$source;Target=(Join-Path $skillRoot ($name + '/SKILL.md'))}
   }
   # V4.4: plugin opt-in SOLO cuando el operador lo solicita.
   # Al instalarlo, sigue INERTE hasta activar observer-mode light en la BD.
@@ -399,10 +172,7 @@ Write-Host 'Ejecuta -Modo Verificar, luego /reload en Kilo.'
     Source=(Join-Path $root 'scripts/vx_organizational_audit.py');
     Target=(Join-Path $kiloDir 'harness/scripts/vx_organizational_audit.py')
   }
-  $assets += [pscustomobject]@{
-    Source=(Join-Path $root 'skills/vx-evolution-core/SKILL.md');
-    Target=(Join-Path $skillRoot 'vx-evolution-core/SKILL.md')
-  }
+
   # Recursos adicionales V4 - SIEMPRE en perfil global, nunca en repositorios.
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'registry/vx-agent-registry-v4.json');
