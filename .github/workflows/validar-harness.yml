@@ -172,6 +172,16 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           Write-Host 'VX PACK V0.2: 12 AGENTES, 30 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
 
+      - name: VX Pack DPAPI V0.2 - bootstrap seguro en Windows aislado
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_bootstrap_v1.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas bootstrap DPAPI.' }
+          python -m compileall -q scripts/vx_pack_bootstrap.py tests/test_vx_pack_bootstrap_v1.py
+          if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis bootstrap DPAPI.' }
+          Write-Host 'VX PACK DPAPI: HOME SINTETICO Y ROLLBACK WINDOWS PASS'
+
       - name: VX Task DAG V0.1 - contratos de equipo sin tareas efectivas
         shell: pwsh
         run: |
