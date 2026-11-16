@@ -131,6 +131,10 @@ Para medir si realmente evitamos sobrecarga: capturar **solo si están disponibl
 - Evaluar skill candidata vs baseline con pruebas positivas/negativas y versión fija de prompt/modelo.
 - Ensayos en HOME y worktrees sintéticos sin afectar credenciales, agentes globales o datos privados; pruebas de CLI y Kilo reales separadas.
 
+## 10.1. Continuación — mentoría y transferencia (VX-D23)
+
+La segunda capa [Mentoría, aprendizaje verificable y evolución de equipos](VX-ACADEMY-MENTORIA-EVOLUCION-V1-20261115.md) define contratos de **especialista, docente, evaluador y supervisor** y las puertas G0–G7, incluyendo prueba de transferencia con casos nuevos y revisión externa. Su [manifiesto de diseño](../registry/vx-academy-mentorship-v1.proposal.json) está marcado `DESIGN_ONLY_DO_NOT_LOAD_OR_INSTALL`, no contiene mentorías reales y representa el primer ensayo de Rafael solamente como **ejemplo hipotético NO EJECUTADO**. Ninguno de los siete agentes está certificado como mentor. La capacitación no concede permisos ni altera la organización activa, y ninguna transición publica cambios mientras V4.7 mantenga `apply_supported=false`.
+
 ## 11. Decisiones pendientes y relación con el roadmap
 
 **Confirmación pendiente:** nombre «VX Academy», regla de recomendación de 1–3 skills por tarea, perfil de exposición/aislamiento de skills de Kilo, mínimos de evidencia para docencia/promoción, retención local de historial formativo, catálogo de herramientas por equipo y cómo elegir currículos opcionales. La política de permisos de Kilo, el alcance C y el estado no ejecutable no se reabren.
