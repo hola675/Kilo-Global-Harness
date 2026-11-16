@@ -85,7 +85,7 @@ Fuentes: https://kilo.ai/docs/customize/agent-permissions y https://kilo.ai/docs
 
 ## Restricción de restauración forzada
 
-Incluso con `--force-restore`, el bootstrap DPAPI **rechaza** restaurar si detecta agentes o skills nuevos posteriores al respaldo; primero deben preservarse en una copia independiente y revisarse. Force no es un permiso genérico para eliminar archivos ajenos. La restauración nunca debe ejecutarse durante sesiones activas de Kilo; la integración de PR #30 en PR #31 sigue siendo un candidato, no una migración aprobada.
+Incluso con `--force-restore`, el bootstrap DPAPI **rechaza** restaurar si detecta agentes o skills nuevos posteriores al respaldo; primero deben preservarse en una copia independiente y revisarse. Force no es un permiso genérico para eliminar archivos ajenos. La restauración nunca debe ejecutarse durante sesiones activas de Kilo; la integración de PR #30 en PR #31 ya está fusionada en main, pero no constituye una migración aprobada.
 
 ## Integridad entre backup y sustitución
 
@@ -96,9 +96,9 @@ Antes del primer borrado, `vx_pack_bootstrap.py` vuelve a listar agentes y skill
 La skill `vx-ida-mcp-reverse-engineering` y comando `/vx-ida` pertenecen al perfil `reverse-engineering`. El catálogo incorpora el MCP oficial Hex-Rays como sexto **candidato opt-in**, `enabled_by_default:false`, sin modificar `kilo.jsonc` ni instalar servidores. El flujo de investigación es read-only por defecto y exige datos observables, separación de revisor, autorización individual para herramientas que editan IDB o ejecutan código. `ida-hcli` no debe instalarse hasta verificar cuál Python ejecuta IDA 9.4.
 
 ```powershell
-python .\\scripts\\vx_skill_router.py --validate-only
-python .\\scripts\\vx_skill_router.py --profile reverse-engineering --phase discover --task "IDA Pro MCP pseudocodigo y xrefs"
-python .\\scripts\\vx_pack_bootstrap.py --mode simulate
+python .\scripts\vx_skill_router.py --validate-only
+python .\scripts\vx_skill_router.py --profile reverse-engineering --phase discover --task "IDA Pro MCP pseudocodigo y xrefs"
+python .\scripts\vx_pack_bootstrap.py --mode simulate
 ```
 
 La CI prueba contratos e inventario, no la conexión a IDA ni disponibilidad de decompilación en el Windows del operador.
