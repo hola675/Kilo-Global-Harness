@@ -123,6 +123,32 @@ def strip_comments(value: str) -> str:
     cleaned = "".join(out)
     return re.sub(r",(\s*[}\]])", r"\1", cleaned)
 
+def configured_mcp(home: Path) -> list[str]:
+    config = home / ".config/kilo/kilo.jsonc"
+    if not config.is_file(): return []
+    safe_entry(config)
+    try:
+        root = json.loads(strip_comments(config.read_text(encoding="utf-8-sig")))
+    except (ValueError, UnicodeError) as exc:
+        raise Blocked("No se puede interpretar configuración MCP sin exponer secretos.") from exc
+    if not isinstance(root, dict): raise Blocked("Raíz JSONC inesperada.")
+    servers = root.get("mcp", {})
+    if not isinstance(servers, dict): raise Blocked("Campo mcp inválido.")
+    return sorted(str(name) for name in servers)
+
+def mcp_suggestions(repo: Path, home: Path):
+    path = repo / "registry/vx-pack-mcp-catalog-v1.json"
+    catalog = json.loads(path.read_text(encoding="utf-8"))
+    configured = configured_mcp(home)
+    known = {name.casefold() for name in configured}
+    candidates = []
+    for item in catalog["catalog"]:
+        aliases = {str(x).casefold() for x in [item["id"]] + item.get("aliases", [])}
+        candidates.append({"id": item["id"],
+                           "status": "CONFIGURADO_NO_VERIFICADO" if aliases & known else "FALTANTE_REQUIERE_APROBACION",
+                           "auto_install": False})
+    return {"configured": configured, "catalog": candidates, "connection_checks": 0}
+
 def inline_agents(home: Path) -> list[str]:
     config = home / ".config/kilo/kilo.jsonc"
     if not config.is_file():
@@ -417,6 +443,7 @@ def main():
         print(json.dumps({"mode": args.mode, "agents": len(agents), "skills": len(skills),
                           "files": len(assets), "blockers": blockers(home),
                           "requires_explicit_apply": True, "mcp_changes": 0,
+                          "mcp_inventory": mcp_suggestions(repo, home),
                           "candidate_paths": [str(a.target) for a in assets] if args.mode == "simulate" else []},
                          indent=2, ensure_ascii=False))
         return
