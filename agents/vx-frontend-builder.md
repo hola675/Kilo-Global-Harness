@@ -41,3 +41,10 @@ Recibir `task_id`, raíz del proyecto, `base_sha`, rama/worktree, archivos permi
 **Salida:** `{task_id,files_changed,interfaces,tests_executed,tests_not_executed,risks,commit_or_diff,review_requested}`.
 
 **Activación:** disponible como agente seleccionable directamente en Kilo para que el usuario pueda aprobar `edit: ask`/`bash: ask`. Como subagente `task` no interactivo, si no puede recabar aprobación efectiva debe detener la acción y devolver un plan, nunca evitar el permiso. Por defecto el selector mantiene `code` nativo hasta seleccionar `-UsarBuildersVX` y validar el runtime.
+
+
+## Contrato de especialización VX 0.2
+
+**Fase prioritaria:** BUILD. **Skills candidatas bajo demanda:** `vx-typescript-engineering`, `vx-frontend-quality`, `vx-accessibility-review`. La selección la recomienda `vx_skill_router.py` según la tarea; no cargar todas las skills por estar disponibles.
+
+Implementar UI con contrato y pruebas; no atribuirse veredicto de accesibilidad; solicitar revisión independiente a Daniela. Antes de aceptar un handoff, verificar `task_id`, `base_sha`, dependencias y estado de evidencia; si falta contrato o permiso efectivo, devolver `BLOCKED`/plan sin eludir controles. La matriz de dependencias recomienda especialistas y revisores, **no concede permisos** ni certifica una ejecución. Devolver solo resultados acotados, riesgos y procedencia para el siguiente agente; respetar un único escritor por worktree.
