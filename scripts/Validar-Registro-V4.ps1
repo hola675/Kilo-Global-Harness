@@ -53,6 +53,25 @@ foreach ($agent in $agents) {
     throw "Steps del agente $id no coinciden con el registro."
   }
   if ([int]$agent.steps -lt 1 -or [int]$agent.steps -gt 400) { throw "Steps fuera de limites en $id." }
+  # Kilo usa nombrespaced tool ids para MCP (servidor_tool). mcp:deny no basta.
+  $guardIndex = $front.IndexOf('  "*": deny',[StringComparison]::Ordinal)
+  $readIndex = $front.IndexOf('  read:',[StringComparison]::Ordinal)
+  if ($guardIndex -lt 0 -or $readIndex -lt 0 -or $guardIndex -gt $readIndex) {
+    throw "Agente sin fallback deny inicial para herramientas no listadas: $id."
+  }
+  if ($front -match '(?m)^  mcp:\s*deny\s*$') {
+    throw "Declaracion mcp:deny no protege herramientas namespaced: $id."
+  }
+  if ($front -notmatch '(?m)^  skill:\s*allow\s*$') {
+    throw "Agente sin carga controlada de skills: $id."
+  }
+  if ($agent.role -eq 'coordinator') {
+    if ($front -notmatch '(?m)^  task:\s*allow\s*$' -or
+        $front -notmatch '(?m)^  edit:\s*ask\s*$' -or
+        $front -notmatch '(?m)^  bash:\s*ask\s*$') {
+      throw 'Coordinador VX requiere delegacion y escritura condicionada por el host.'
+    }
+  }
   if ($agent.writes -eq $false) {
     if ($front -notmatch '(?m)^\s{2}edit:\s*deny\s*$') { throw "Agente read-only sin edit deny: $id." }
     if ($front -match '(?m)^\s{2}bash:\s*allow\s*$') { throw "Agente read-only con bash allow: $id." }
@@ -61,7 +80,7 @@ foreach ($agent in $agents) {
   if ($agent.role -eq 'builder') {
     if ($agent.writes -ne $true -or $agent.mode -ne 'all') { throw "Builder no coherente: $id" }
     foreach ($pair in @(
-      @{Key='edit';Value='ask'}, @{Key='mcp';Value='deny'},
+      @{Key='edit';Value='ask'},
       @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}
     )) {
       $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'

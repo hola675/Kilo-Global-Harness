@@ -182,6 +182,15 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis bootstrap DPAPI.' }
           Write-Host 'VX PACK DPAPI: HOME SINTETICO Y ROLLBACK WINDOWS PASS'
 
+      - name: VX Permisos - MCP namespaced con fallback deny y verificación de 12 roles
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_agent_permissions_v02.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Permisos VX no aíslan herramientas namespaced.' }
+          & ./scripts/Validar-Registro-V4.ps1
+          Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 12 AGENTES PASS'
+
       - name: VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores
         shell: pwsh
         run: |
