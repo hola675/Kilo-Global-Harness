@@ -1,6 +1,6 @@
 {
   "schema": "vx-agent-registry/1",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "global_only": true,
   "runtime": "kilo-native",
   "source_policy": "origin-authored-vx-no-external-agent-code",
@@ -14,7 +14,11 @@
     "task_runner": "kilo-task",
     "worktree_runner": "kilo-agent-manager",
     "message_bus": "kilo-swarm",
-    "no_remote_actions_on_selection": true
+    "no_remote_actions_on_selection": true,
+    "builder_selection": "opt-in-via-selector-UsarBuildersVX",
+    "builders_in_agent_picker": true,
+    "all_builder_writes_require_Kilo_ask": true,
+    "approval_unavailable_in_noninteractive_task": "BLOCK_AND_RETURN_PLAN"
   },
   "agents": [
     {
@@ -101,6 +105,76 @@
         "cloudflare-review",
         "worker-bindings"
       ]
+    },
+    {
+      "id": "vx-frontend-builder",
+      "file": "agents/vx-frontend-builder.md",
+      "mode": "all",
+      "role": "builder",
+      "writes": true,
+      "steps": 90,
+      "capabilities": [
+        "frontend-implementation",
+        "accessibility-implementation"
+      ],
+      "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
+      "experience": "SIN_EVALUAR"
+    },
+    {
+      "id": "vx-backend-builder",
+      "file": "agents/vx-backend-builder.md",
+      "mode": "all",
+      "role": "builder",
+      "writes": true,
+      "steps": 100,
+      "capabilities": [
+        "backend-implementation",
+        "api-contracts"
+      ],
+      "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
+      "experience": "SIN_EVALUAR"
+    },
+    {
+      "id": "vx-qa-builder",
+      "file": "agents/vx-qa-builder.md",
+      "mode": "all",
+      "role": "builder",
+      "writes": true,
+      "steps": 90,
+      "capabilities": [
+        "automated-test-implementation",
+        "synthetic-fixtures"
+      ],
+      "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
+      "experience": "SIN_EVALUAR"
+    },
+    {
+      "id": "vx-data-builder",
+      "file": "agents/vx-data-builder.md",
+      "mode": "all",
+      "role": "builder",
+      "writes": true,
+      "steps": 100,
+      "capabilities": [
+        "database-implementation",
+        "migration-design"
+      ],
+      "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
+      "experience": "SIN_EVALUAR"
+    },
+    {
+      "id": "vx-docs-builder",
+      "file": "agents/vx-docs-builder.md",
+      "mode": "all",
+      "role": "builder",
+      "writes": true,
+      "steps": 80,
+      "capabilities": [
+        "documentation-implementation",
+        "changelog"
+      ],
+      "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
+      "experience": "SIN_EVALUAR"
     }
   ],
   "profiles": [
@@ -115,9 +189,15 @@
         "vx-inspector"
       ],
       "skills": [
-        "verification-before-completion"
+        "vx-engineering-harness",
+        "vx-implementation-handoff",
+        "vx-requirements-acceptance",
+        "vx-task-dependency-graph",
+        "vx-agent-collaboration"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": null,
+      "external_skills_policy": "not_preinstalled; manual verification"
     },
     {
       "id": "backend",
@@ -139,10 +219,17 @@
         "vx-inspector"
       ],
       "skills": [
-        "systematic-debugging",
-        "test-driven-development"
+        "vx-engineering-harness",
+        "vx-implementation-handoff",
+        "vx-debugging-root-cause",
+        "vx-api-contract-design",
+        "vx-typescript-engineering",
+        "vx-python-engineering",
+        "vx-observability-privacy"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": "vx-backend-builder",
+      "external_skills_policy": "not_preinstalled; manual verification"
     },
     {
       "id": "frontend",
@@ -167,10 +254,16 @@
         "vx-inspector"
       ],
       "skills": [
-        "frontend-design",
-        "webapp-testing"
+        "vx-frontend-quality",
+        "vx-implementation-handoff",
+        "vx-typescript-engineering",
+        "vx-e2e-browser-testing",
+        "vx-accessibility-review",
+        "vx-performance-measurement"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": "vx-frontend-builder",
+      "external_skills_policy": "not_preinstalled; manual verification"
     },
     {
       "id": "cloudflare",
@@ -194,10 +287,16 @@
         "vx-inspector"
       ],
       "skills": [
-        "workers-best-practices",
-        "wrangler"
+        "vx-implementation-handoff",
+        "vx-security-review",
+        "vx-data-contracts",
+        "vx-cloudflare-worker-runtime",
+        "vx-cloudflare-storage-messaging",
+        "vx-observability-privacy"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": "vx-backend-builder",
+      "external_skills_policy": "not_preinstalled; manual verification"
     },
     {
       "id": "database",
@@ -220,9 +319,14 @@
         "vx-inspector"
       ],
       "skills": [
-        "supabase-postgres-best-practices"
+        "vx-data-contracts",
+        "vx-test-regression",
+        "vx-sql-query-performance",
+        "vx-cloudflare-storage-messaging"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": "vx-data-builder",
+      "external_skills_policy": "not_preinstalled; manual verification"
     },
     {
       "id": "security",
@@ -244,9 +348,14 @@
         "vx-inspector"
       ],
       "skills": [
-        "systematic-debugging"
+        "vx-security-review",
+        "vx-debugging-root-cause",
+        "vx-supply-chain-review",
+        "vx-mcp-safe-integration"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": null,
+      "external_skills_policy": "not_preinstalled; manual verification"
     },
     {
       "id": "refactor",
@@ -267,10 +376,15 @@
         "vx-security-reviewer"
       ],
       "skills": [
-        "test-driven-development",
-        "verification-before-completion"
+        "vx-debugging-root-cause",
+        "vx-test-regression",
+        "vx-codebase-investigation",
+        "vx-typescript-engineering",
+        "vx-python-engineering"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": null,
+      "external_skills_policy": "not_preinstalled; manual verification"
     },
     {
       "id": "design",
@@ -291,9 +405,13 @@
         "vx-inspector"
       ],
       "skills": [
-        "frontend-design"
+        "vx-frontend-quality",
+        "vx-accessibility-review",
+        "vx-performance-measurement"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": "vx-frontend-builder",
+      "external_skills_policy": "not_preinstalled; manual verification"
     },
     {
       "id": "docs",
@@ -312,9 +430,98 @@
         "vx-inspector"
       ],
       "skills": [
-        "changelog-generator"
+        "vx-docs-traceability",
+        "vx-requirements-acceptance",
+        "vx-architecture-decisions"
       ],
-      "writer": "code"
+      "writer": "code",
+      "builder_candidate": "vx-docs-builder",
+      "external_skills_policy": "not_preinstalled; manual verification"
+    },
+    {
+      "id": "qa",
+      "patterns": [
+        "tests",
+        "testeo",
+        "pruebas",
+        "regression",
+        "pytest",
+        "unittest",
+        "jest",
+        "vitest"
+      ],
+      "discover": [
+        "vx-test-analyst",
+        "vx-researcher"
+      ],
+      "review": [
+        "vx-inspector",
+        "vx-security-reviewer"
+      ],
+      "skills": [
+        "vx-test-regression",
+        "vx-debugging-root-cause",
+        "vx-e2e-browser-testing",
+        "vx-git-ci-quality",
+        "vx-performance-measurement"
+      ],
+      "writer": "code",
+      "builder_candidate": "vx-qa-builder",
+      "external_skills_policy": "not_preinstalled; manual verification"
     }
-  ]
+  ],
+  "pack": {
+    "id": "vx-development-team",
+    "version": "0.2.0",
+    "owned_agents": [
+      "vx-integrador",
+      "vx-inspector",
+      "vx-researcher",
+      "vx-security-reviewer",
+      "vx-test-analyst",
+      "vx-frontend-adviser",
+      "vx-workers-adviser",
+      "vx-frontend-builder",
+      "vx-backend-builder",
+      "vx-qa-builder",
+      "vx-data-builder",
+      "vx-docs-builder"
+    ],
+    "owned_skills": [
+      "vx-engineering-harness",
+      "vx-evolution-core",
+      "vx-implementation-handoff",
+      "vx-test-regression",
+      "vx-debugging-root-cause",
+      "vx-frontend-quality",
+      "vx-security-review",
+      "vx-data-contracts",
+      "vx-docs-traceability",
+      "vx-self-improvement",
+      "vx-requirements-acceptance",
+      "vx-task-dependency-graph",
+      "vx-architecture-decisions",
+      "vx-codebase-investigation",
+      "vx-api-contract-design",
+      "vx-typescript-engineering",
+      "vx-python-engineering",
+      "vx-cloudflare-worker-runtime",
+      "vx-cloudflare-storage-messaging",
+      "vx-sql-query-performance",
+      "vx-agent-collaboration",
+      "vx-git-ci-quality",
+      "vx-supply-chain-review",
+      "vx-e2e-browser-testing",
+      "vx-accessibility-review",
+      "vx-performance-measurement",
+      "vx-observability-privacy",
+      "vx-mcp-safe-integration",
+      "vx-release-readiness",
+      "vx-incident-diagnosis"
+    ],
+    "inline_agents_not_mutated": true,
+    "configured_mcp_never_modified": true,
+    "clean_mode_requires_backup": true,
+    "experience_status": "SIN_EVALUAR"
+  }
 }

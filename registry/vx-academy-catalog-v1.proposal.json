@@ -1,0 +1,830 @@
+{
+  "schema": "vx-academy-catalog/1",
+  "version": "0.1.0-draft",
+  "status": "DESIGN_ONLY_DO_NOT_LOAD_OR_INSTALL",
+  "scope": "VX_OWNED_COMPONENTS_ONLY",
+  "date": "2026-11-15",
+  "prerequisite_decisions": [
+    "VX-D14",
+    "VX-D19",
+    "VX-D20",
+    "VX-D21"
+  ],
+  "new_decision": "VX-D22_PROPOSED",
+  "constraints": {
+    "session_skill_pool_shared_in_kilo": true,
+    "skill_full_content_loaded_on_demand": true,
+    "skill_metadata_always_free": false,
+    "skills_not_permission_boundary": true,
+    "agent_permissions_current_unchanged": true,
+    "department_curriculum_does_not_inherit_tools": true,
+    "mentor_cannot_edit_learner": true,
+    "auto_promotions": false,
+    "auto_install_mcp": false,
+    "scheduler_enabled": false,
+    "real_home_modified": false,
+    "publication_apply_supported": false,
+    "experience_event_count": 0,
+    "proposed_max_skills_per_task": 3,
+    "curriculum_selector_implemented": false
+  },
+  "capabilities": [
+    {
+      "id": "architecture.contracts",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "cloudflare.bindings",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "cloudflare.dev-stage-review",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "cloudflare.retry-idempotency",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "coordination.contracts",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "coordination.task-split",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "evidence.verification",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "git.integration",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "qa.negative-cases",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "qa.regression-analysis",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "qa.test-design",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "research.dependency-map",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "research.source-verification",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "review.diff-audit",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "review.evidence-integrity",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "review.false-positive-control",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "security.auth-review",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "security.least-privilege",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "security.threat-model",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "ui.accessibility-audit",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "ui.component-review",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    },
+    {
+      "id": "ui.semantic-audit",
+      "assessment": "SIN_EVALUAR",
+      "source": "DECLARED_CURRICULUM_NOT_CERTIFIED",
+      "requires_independent_run": true
+    }
+  ],
+  "skill_artifacts": [
+    {
+      "id": "vx-engineering-harness",
+      "kind": "VX_OWNED_EXISTING",
+      "path": "skills/vx-engineering-harness/SKILL.md",
+      "version": "NO_SEMVER_VERIFICADO",
+      "identity_verified_by_repo": true,
+      "install_state": "NO_VERIFICADO_EN_HOME",
+      "load_state": "NO_VERIFICADO"
+    },
+    {
+      "id": "vx-evolution-core",
+      "kind": "VX_OWNED_EXISTING",
+      "path": "skills/vx-evolution-core/SKILL.md",
+      "version": "NO_SEMVER_VERIFICADO",
+      "identity_verified_by_repo": true,
+      "install_state": "NO_VERIFICADO_EN_HOME",
+      "load_state": "NO_VERIFICADO"
+    }
+  ],
+  "skill_candidates": [
+    {
+      "id": "vx-independent-review",
+      "kind": "VX_CANDIDATE_NOT_AUTHORED",
+      "exists": false,
+      "install_allowed": false
+    },
+    {
+      "id": "vx-parallel-integration",
+      "kind": "VX_CANDIDATE_NOT_AUTHORED",
+      "exists": false,
+      "install_allowed": false
+    },
+    {
+      "id": "vx-qa-test-design",
+      "kind": "VX_CANDIDATE_NOT_AUTHORED",
+      "exists": false,
+      "install_allowed": false
+    },
+    {
+      "id": "vx-research-traceability",
+      "kind": "VX_CANDIDATE_NOT_AUTHORED",
+      "exists": false,
+      "install_allowed": false
+    },
+    {
+      "id": "vx-threat-model-review",
+      "kind": "VX_CANDIDATE_NOT_AUTHORED",
+      "exists": false,
+      "install_allowed": false
+    },
+    {
+      "id": "vx-ui-audit",
+      "kind": "VX_CANDIDATE_NOT_AUTHORED",
+      "exists": false,
+      "install_allowed": false
+    },
+    {
+      "id": "vx-workers-audit",
+      "kind": "VX_CANDIDATE_NOT_AUTHORED",
+      "exists": false,
+      "install_allowed": false
+    }
+  ],
+  "external_profile_skill_references": [
+    {
+      "id": "changelog-generator",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    },
+    {
+      "id": "frontend-design",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    },
+    {
+      "id": "supabase-postgres-best-practices",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    },
+    {
+      "id": "systematic-debugging",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    },
+    {
+      "id": "test-driven-development",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    },
+    {
+      "id": "verification-before-completion",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    },
+    {
+      "id": "webapp-testing",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    },
+    {
+      "id": "workers-best-practices",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    },
+    {
+      "id": "wrangler",
+      "status": "EXTERNAL_OR_UNVERIFIED",
+      "included_in_vx_pack": false,
+      "installed_status_actual": "NO_VERIFICADO",
+      "update_scope": "OUTSIDE_VX"
+    }
+  ],
+  "curriculum_templates": [
+    {
+      "id": "coordination",
+      "name": "Coordinación y Delivery",
+      "active_department": false,
+      "capabilities_available_as_curriculum": [
+        "coordination.task-split",
+        "coordination.contracts",
+        "git.integration",
+        "evidence.verification"
+      ],
+      "implied_tool_permissions": false,
+      "implied_skill_activation": false
+    },
+    {
+      "id": "product",
+      "name": "Ingeniería de Producto/UX",
+      "active_department": false,
+      "capabilities_available_as_curriculum": [
+        "ui.semantic-audit",
+        "ui.accessibility-audit",
+        "ui.component-review"
+      ],
+      "implied_tool_permissions": false,
+      "implied_skill_activation": false
+    },
+    {
+      "id": "quality",
+      "name": "Calidad",
+      "active_department": false,
+      "capabilities_available_as_curriculum": [
+        "qa.test-design",
+        "qa.negative-cases",
+        "qa.regression-analysis",
+        "review.diff-audit",
+        "review.false-positive-control"
+      ],
+      "implied_tool_permissions": false,
+      "implied_skill_activation": false
+    },
+    {
+      "id": "security",
+      "name": "Seguridad",
+      "active_department": false,
+      "capabilities_available_as_curriculum": [
+        "security.threat-model",
+        "security.auth-review",
+        "security.least-privilege"
+      ],
+      "implied_tool_permissions": false,
+      "implied_skill_activation": false
+    },
+    {
+      "id": "research",
+      "name": "Investigación y Arquitectura",
+      "active_department": false,
+      "capabilities_available_as_curriculum": [
+        "research.source-verification",
+        "research.dependency-map",
+        "architecture.contracts"
+      ],
+      "implied_tool_permissions": false,
+      "implied_skill_activation": false
+    },
+    {
+      "id": "platform",
+      "name": "Infraestructura",
+      "active_department": false,
+      "capabilities_available_as_curriculum": [
+        "cloudflare.bindings",
+        "cloudflare.retry-idempotency",
+        "cloudflare.dev-stage-review"
+      ],
+      "implied_tool_permissions": false,
+      "implied_skill_activation": false
+    }
+  ],
+  "agent_assignments": [
+    {
+      "id": "vx-integrador",
+      "alias": "Yoan",
+      "department_template": "coordination",
+      "capabilities": [
+        "coordination.task-split",
+        "coordination.contracts",
+        "git.integration",
+        "evidence.verification"
+      ],
+      "team_curricula_eligibility": [
+        "coordination",
+        "quality"
+      ],
+      "existing_vx_skills": [
+        "vx-engineering-harness",
+        "vx-evolution-core"
+      ],
+      "candidate_vx_skills": [
+        "vx-parallel-integration"
+      ],
+      "tool_operations_declared": [
+        "read",
+        "glob",
+        "grep",
+        "skill"
+      ],
+      "permissions_source": "agents/vx-integrador.md",
+      "permissions_effective": "NO_VERIFICADO_EN_RUNTIME",
+      "experience_level": "SIN_EVALUAR",
+      "training_progress": "SIN_EVIDENCIA",
+      "teaching_qualified_capabilities": [],
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "git",
+          "operation": "git_worktree_and_pr",
+          "gate": "ASK_ONLY_AFTER_APPROVAL",
+          "scope": "PARALLEL_TARGET",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        },
+        {
+          "tool_id": "kilo-agent-manager",
+          "operation": "separate_worktree_sessions",
+          "gate": "ASK_ONLY_AFTER_APPROVAL",
+          "scope": "PARALLEL_TARGET",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
+    },
+    {
+      "id": "vx-frontend-adviser",
+      "alias": "Daniela",
+      "department_template": "product",
+      "capabilities": [
+        "ui.semantic-audit",
+        "ui.accessibility-audit",
+        "ui.component-review"
+      ],
+      "team_curricula_eligibility": [
+        "product"
+      ],
+      "existing_vx_skills": [],
+      "candidate_vx_skills": [
+        "vx-ui-audit"
+      ],
+      "tool_operations_declared": [
+        "read",
+        "glob",
+        "grep",
+        "lsp"
+      ],
+      "permissions_source": "agents/vx-frontend-adviser.md",
+      "permissions_effective": "NO_VERIFICADO_EN_RUNTIME",
+      "experience_level": "SIN_EVALUAR",
+      "training_progress": "SIN_EVIDENCIA",
+      "teaching_qualified_capabilities": [],
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "browser-visual-tests",
+          "operation": "rendered-ui-evaluation",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        },
+        {
+          "tool_id": "playwright",
+          "operation": "read-only-e2e-viz",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
+    },
+    {
+      "id": "vx-test-analyst",
+      "alias": "Rafael",
+      "department_template": "quality",
+      "capabilities": [
+        "qa.test-design",
+        "qa.negative-cases",
+        "qa.regression-analysis"
+      ],
+      "team_curricula_eligibility": [
+        "quality"
+      ],
+      "existing_vx_skills": [],
+      "candidate_vx_skills": [
+        "vx-qa-test-design"
+      ],
+      "tool_operations_declared": [
+        "read",
+        "glob",
+        "grep",
+        "lsp"
+      ],
+      "permissions_source": "agents/vx-test-analyst.md",
+      "permissions_effective": "NO_VERIFICADO_EN_RUNTIME",
+      "experience_level": "SIN_EVALUAR",
+      "training_progress": "SIN_EVIDENCIA",
+      "teaching_qualified_capabilities": [],
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "test-runner",
+          "operation": "execute-isolated-test-suite",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
+    },
+    {
+      "id": "vx-researcher",
+      "alias": "Sofía",
+      "department_template": "research",
+      "capabilities": [
+        "research.source-verification",
+        "research.dependency-map",
+        "architecture.contracts"
+      ],
+      "team_curricula_eligibility": [
+        "research"
+      ],
+      "existing_vx_skills": [],
+      "candidate_vx_skills": [
+        "vx-research-traceability"
+      ],
+      "tool_operations_declared": [
+        "read",
+        "glob",
+        "grep",
+        "lsp"
+      ],
+      "permissions_source": "agents/vx-researcher.md",
+      "permissions_effective": "NO_VERIFICADO_EN_RUNTIME",
+      "experience_level": "SIN_EVALUAR",
+      "training_progress": "SIN_EVIDENCIA",
+      "teaching_qualified_capabilities": [],
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "web-research",
+          "operation": "verify-external-docs",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
+    },
+    {
+      "id": "vx-security-reviewer",
+      "alias": "Valentina",
+      "department_template": "security",
+      "capabilities": [
+        "security.threat-model",
+        "security.auth-review",
+        "security.least-privilege"
+      ],
+      "team_curricula_eligibility": [
+        "security"
+      ],
+      "existing_vx_skills": [],
+      "candidate_vx_skills": [
+        "vx-threat-model-review"
+      ],
+      "tool_operations_declared": [
+        "read",
+        "glob",
+        "grep",
+        "lsp"
+      ],
+      "permissions_source": "agents/vx-security-reviewer.md",
+      "permissions_effective": "NO_VERIFICADO_EN_RUNTIME",
+      "experience_level": "SIN_EVALUAR",
+      "training_progress": "SIN_EVIDENCIA",
+      "teaching_qualified_capabilities": [],
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "static-security-scanner",
+          "operation": "inspect-synthetic-code",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
+    },
+    {
+      "id": "vx-inspector",
+      "alias": "Lucas",
+      "department_template": "quality",
+      "capabilities": [
+        "review.diff-audit",
+        "review.false-positive-control",
+        "review.evidence-integrity"
+      ],
+      "team_curricula_eligibility": [
+        "quality"
+      ],
+      "existing_vx_skills": [],
+      "candidate_vx_skills": [
+        "vx-independent-review"
+      ],
+      "tool_operations_declared": [
+        "read",
+        "glob",
+        "grep",
+        "git-status",
+        "git-diff",
+        "git-log"
+      ],
+      "permissions_source": "agents/vx-inspector.md",
+      "permissions_effective": "NO_VERIFICADO_EN_RUNTIME",
+      "experience_level": "SIN_EVALUAR",
+      "training_progress": "SIN_EVIDENCIA",
+      "teaching_qualified_capabilities": [],
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "ci-logs-reader",
+          "operation": "review-ci-reports",
+          "gate": "ASK_ONLY_AFTER_APPROVAL",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
+    },
+    {
+      "id": "vx-workers-adviser",
+      "alias": "Mateo",
+      "department_template": "platform",
+      "capabilities": [
+        "cloudflare.bindings",
+        "cloudflare.retry-idempotency",
+        "cloudflare.dev-stage-review"
+      ],
+      "team_curricula_eligibility": [
+        "platform"
+      ],
+      "existing_vx_skills": [],
+      "candidate_vx_skills": [
+        "vx-workers-audit"
+      ],
+      "tool_operations_declared": [
+        "read",
+        "glob",
+        "grep",
+        "lsp"
+      ],
+      "permissions_source": "agents/vx-workers-adviser.md",
+      "permissions_effective": "NO_VERIFICADO_EN_RUNTIME",
+      "experience_level": "SIN_EVALUAR",
+      "training_progress": "SIN_EVIDENCIA",
+      "teaching_qualified_capabilities": [],
+      "may_grant_permissions": false,
+      "future_tool_candidates": [
+        {
+          "tool_id": "wrangler",
+          "operation": "non-production-inspection",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        },
+        {
+          "tool_id": "cloudflare-mcp",
+          "operation": "read-only-infrastructure-catalog",
+          "gate": "DENY_UNTIL_NEW_PERMISSION",
+          "scope": "OPTIONAL",
+          "installed": "NO_VERIFICADO",
+          "permission_granted": false
+        }
+      ]
+    }
+  ],
+  "experience_records": [],
+  "training_assignments": [],
+  "teaching_qualifications": [],
+  "tool_requirements": [
+    {
+      "agent_id": "vx-integrador",
+      "tool_id": "git",
+      "operation": "git_worktree_and_pr",
+      "gate": "ASK_ONLY_AFTER_APPROVAL",
+      "scope": "PARALLEL_TARGET",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-integrador",
+      "tool_id": "kilo-agent-manager",
+      "operation": "separate_worktree_sessions",
+      "gate": "ASK_ONLY_AFTER_APPROVAL",
+      "scope": "PARALLEL_TARGET",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-frontend-adviser",
+      "tool_id": "browser-visual-tests",
+      "operation": "rendered-ui-evaluation",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-frontend-adviser",
+      "tool_id": "playwright",
+      "operation": "read-only-e2e-viz",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-test-analyst",
+      "tool_id": "test-runner",
+      "operation": "execute-isolated-test-suite",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-researcher",
+      "tool_id": "web-research",
+      "operation": "verify-external-docs",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-security-reviewer",
+      "tool_id": "static-security-scanner",
+      "operation": "inspect-synthetic-code",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-inspector",
+      "tool_id": "ci-logs-reader",
+      "operation": "review-ci-reports",
+      "gate": "ASK_ONLY_AFTER_APPROVAL",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-workers-adviser",
+      "tool_id": "wrangler",
+      "operation": "non-production-inspection",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "RUNTIME_OR_THIRD_PARTY_CANDIDATE",
+      "auto_install": false
+    },
+    {
+      "agent_id": "vx-workers-adviser",
+      "tool_id": "cloudflare-mcp",
+      "operation": "read-only-infrastructure-catalog",
+      "gate": "DENY_UNTIL_NEW_PERMISSION",
+      "scope": "OPTIONAL",
+      "installed": "NO_VERIFICADO",
+      "category": "MCP_EXTERNAL_REFERENCE",
+      "auto_install": false
+    }
+  ],
+  "state_model": {
+    "competence": [
+      "SIN_EVALUAR",
+      "DECLARADA",
+      "EVIDENCIA_INSUFICIENTE",
+      "VERIFICADA",
+      "NECESITA_REEVALUACION"
+    ],
+    "skill_status": [
+      "CANDIDATA",
+      "DISPONIBLE_EN_REPO",
+      "INSTALADA_EN_HOME_NO_VERIFICADA",
+      "CARGADA_EN_RUNTIME_VERIFICADA"
+    ],
+    "tool_status": [
+      "CONFIGURADA",
+      "NO_VERIFICADA",
+      "PERMITIDA_EN_RUNTIME",
+      "BLOQUEADA",
+      "REQUIERE_APROBACION"
+    ],
+    "teaching_status": [
+      "NO_CALIFICADO",
+      "CANDIDATO",
+      "EVALUACION_PENDIENTE",
+      "HABILITADO_PARA_COMPETENCIA"
+    ],
+    "learning_status": [
+      "NO_ASIGNADA",
+      "PROPUESTA",
+      "AUTORIZADA",
+      "ENSAYADA",
+      "VERIFICADA",
+      "RECHAZADA"
+    ]
+  },
+  "promotion_gate": {
+    "requires_independent_evidence": true,
+    "requires_versioned_skill_and_model": true,
+    "requires_operator_review": true,
+    "grants_permissions": false
+  },
+  "references": [
+    "docs/VX-ACADEMY-CAPACITACION-V1-20261115.md",
+    "docs/VX-MATRIZ-COMPETENCIAS-V4.6.1.md",
+    "docs/VX-ENSAYOS-COMPETENCIAS-V4.6.2.md",
+    "docs/VX-PERMISOS-Y-AUTONOMIA-V1-20261115.md"
+  ]
+}

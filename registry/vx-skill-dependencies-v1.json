@@ -1,0 +1,713 @@
+{
+  "schema": "vx-skill-dependencies/1",
+  "version": "0.2.0",
+  "global_only": true,
+  "policy": {
+    "execution": "advisory-only",
+    "permission": "never-inferred-from-skill",
+    "scheduling": "disabled",
+    "install_external": "individual-approval",
+    "context": "minimize"
+  },
+  "skills": [
+    {
+      "id": "vx-requirements-acceptance",
+      "phase": "plan",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare",
+        "qa",
+        "docs",
+        "design"
+      ],
+      "keywords": [
+        "brief",
+        "requisito",
+        "aceptacion",
+        "alcance",
+        "feature",
+        "especificacion"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "https://agentskills.io/specification",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-task-dependency-graph",
+      "phase": "plan",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare",
+        "database",
+        "qa"
+      ],
+      "keywords": [
+        "dependencia",
+        "dag",
+        "paralelo",
+        "worktree",
+        "tarea",
+        "orquestacion"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-inspector",
+      "depends_on": [
+        "vx-requirements-acceptance"
+      ],
+      "source": "https://kilo.ai/docs/automate/agent-manager-workflows",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-architecture-decisions",
+      "phase": "plan",
+      "profiles": [
+        "general",
+        "backend",
+        "cloudflare",
+        "database",
+        "docs",
+        "design"
+      ],
+      "keywords": [
+        "arquitectura",
+        "adr",
+        "modular",
+        "diseno",
+        "patron",
+        "tradeoff"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-inspector",
+      "depends_on": [
+        "vx-requirements-acceptance"
+      ],
+      "source": "https://github.com/addyosmani/agent-skills",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-codebase-investigation",
+      "phase": "discover",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare",
+        "database",
+        "security",
+        "refactor",
+        "qa",
+        "docs",
+        "design"
+      ],
+      "keywords": [
+        "explorar",
+        "investigar",
+        "simbolo",
+        "rastrear",
+        "codebase",
+        "refactor"
+      ],
+      "owner": "vx-researcher",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "https://kilo.ai/docs/customize/custom-subagents",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-api-contract-design",
+      "phase": "build",
+      "profiles": [
+        "backend",
+        "cloudflare",
+        "frontend",
+        "security"
+      ],
+      "keywords": [
+        "api",
+        "endpoint",
+        "webhook",
+        "openapi",
+        "request",
+        "response",
+        "rest"
+      ],
+      "owner": "vx-backend-builder",
+      "reviewer": "vx-security-reviewer",
+      "depends_on": [
+        "vx-requirements-acceptance"
+      ],
+      "source": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-typescript-engineering",
+      "phase": "build",
+      "profiles": [
+        "backend",
+        "frontend",
+        "cloudflare",
+        "refactor"
+      ],
+      "keywords": [
+        "typescript",
+        "tsconfig",
+        "tsc",
+        "node",
+        "pnpm",
+        "react",
+        "tipado"
+      ],
+      "owner": "vx-backend-builder",
+      "reviewer": "vx-test-analyst",
+      "depends_on": [
+        "vx-implementation-handoff"
+      ],
+      "source": "https://www.typescriptlang.org/docs/",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-python-engineering",
+      "phase": "build",
+      "profiles": [
+        "backend",
+        "qa",
+        "database",
+        "refactor"
+      ],
+      "keywords": [
+        "python",
+        "pytest",
+        "unittest",
+        "typing",
+        "venv",
+        "pyproject"
+      ],
+      "owner": "vx-backend-builder",
+      "reviewer": "vx-test-analyst",
+      "depends_on": [
+        "vx-implementation-handoff"
+      ],
+      "source": "https://docs.python.org/3/",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-cloudflare-worker-runtime",
+      "phase": "build",
+      "profiles": [
+        "cloudflare",
+        "backend"
+      ],
+      "keywords": [
+        "cloudflare",
+        "workers",
+        "worker",
+        "wrangler",
+        "durable",
+        "binding"
+      ],
+      "owner": "vx-backend-builder",
+      "reviewer": "vx-workers-adviser",
+      "depends_on": [
+        "vx-implementation-handoff"
+      ],
+      "source": "https://github.com/cloudflare/skills",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-cloudflare-storage-messaging",
+      "phase": "build",
+      "profiles": [
+        "cloudflare",
+        "database",
+        "backend"
+      ],
+      "keywords": [
+        "d1",
+        "kv",
+        "r2",
+        "queue",
+        "queues",
+        "workflow",
+        "storage",
+        "consistencia"
+      ],
+      "owner": "vx-data-builder",
+      "reviewer": "vx-workers-adviser",
+      "depends_on": [
+        "vx-data-contracts",
+        "vx-cloudflare-worker-runtime"
+      ],
+      "source": "https://github.com/cloudflare/skills",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-sql-query-performance",
+      "phase": "review",
+      "profiles": [
+        "database",
+        "backend",
+        "cloudflare"
+      ],
+      "keywords": [
+        "sql",
+        "indice",
+        "index",
+        "query",
+        "consulta",
+        "explain",
+        "sqlite",
+        "postgres"
+      ],
+      "owner": "vx-data-builder",
+      "reviewer": "vx-test-analyst",
+      "depends_on": [
+        "vx-data-contracts"
+      ],
+      "source": "https://www.postgresql.org/docs/current/using-explain.html",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-agent-collaboration",
+      "phase": "plan",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare",
+        "database",
+        "qa"
+      ],
+      "keywords": [
+        "agentes",
+        "delegacion",
+        "swarm",
+        "agent manager",
+        "worktree",
+        "colaboracion",
+        "handoff"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-inspector",
+      "depends_on": [
+        "vx-task-dependency-graph",
+        "vx-implementation-handoff"
+      ],
+      "source": "https://kilo.ai/docs/automate/agent-manager",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-git-ci-quality",
+      "phase": "verify",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare",
+        "qa",
+        "refactor",
+        "docs"
+      ],
+      "keywords": [
+        "git",
+        "github",
+        "ci",
+        "actions",
+        "pipeline",
+        "workflow",
+        "merge",
+        "pr"
+      ],
+      "owner": "vx-qa-builder",
+      "reviewer": "vx-inspector",
+      "depends_on": [
+        "vx-test-regression"
+      ],
+      "source": "https://docs.github.com/en/actions/security-for-github-actions",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-supply-chain-review",
+      "phase": "review",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare",
+        "database",
+        "security",
+        "qa"
+      ],
+      "keywords": [
+        "dependencias",
+        "sbom",
+        "licencia",
+        "cve",
+        "npm",
+        "pypi",
+        "lockfile",
+        "supply"
+      ],
+      "owner": "vx-security-reviewer",
+      "reviewer": "vx-inspector",
+      "depends_on": [
+        "vx-security-review"
+      ],
+      "source": "https://slsa.dev/",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-e2e-browser-testing",
+      "phase": "verify",
+      "profiles": [
+        "frontend",
+        "qa",
+        "design"
+      ],
+      "keywords": [
+        "e2e",
+        "playwright",
+        "navegador",
+        "browser",
+        "interfaz",
+        "flujo"
+      ],
+      "owner": "vx-qa-builder",
+      "reviewer": "vx-frontend-adviser",
+      "depends_on": [
+        "vx-test-regression",
+        "vx-frontend-quality"
+      ],
+      "source": "https://playwright.dev/docs/best-practices",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-accessibility-review",
+      "phase": "review",
+      "profiles": [
+        "frontend",
+        "design",
+        "qa"
+      ],
+      "keywords": [
+        "accesibilidad",
+        "wcag",
+        "aria",
+        "teclado",
+        "focus",
+        "contrast",
+        "a11y"
+      ],
+      "owner": "vx-frontend-adviser",
+      "reviewer": "vx-inspector",
+      "depends_on": [
+        "vx-frontend-quality"
+      ],
+      "source": "https://www.w3.org/WAI/WCAG22/quickref/",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-performance-measurement",
+      "phase": "verify",
+      "profiles": [
+        "frontend",
+        "backend",
+        "cloudflare",
+        "database",
+        "design",
+        "qa"
+      ],
+      "keywords": [
+        "rendimiento",
+        "latencia",
+        "performance",
+        "lighthouse",
+        "profiling",
+        "p95"
+      ],
+      "owner": "vx-test-analyst",
+      "reviewer": "vx-inspector",
+      "depends_on": [
+        "vx-test-regression"
+      ],
+      "source": "https://web.dev/vitals/",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-observability-privacy",
+      "phase": "build",
+      "profiles": [
+        "backend",
+        "cloudflare",
+        "database",
+        "security"
+      ],
+      "keywords": [
+        "logs",
+        "metricas",
+        "trazas",
+        "observabilidad",
+        "otel",
+        "telemetria",
+        "alertas"
+      ],
+      "owner": "vx-backend-builder",
+      "reviewer": "vx-security-reviewer",
+      "depends_on": [
+        "vx-requirements-acceptance"
+      ],
+      "source": "https://opentelemetry.io/docs/concepts/observability-primer/",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-mcp-safe-integration",
+      "phase": "discover",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare",
+        "security",
+        "qa"
+      ],
+      "keywords": [
+        "mcp",
+        "serena",
+        "context7",
+        "github connector",
+        "integracion",
+        "herramientas"
+      ],
+      "owner": "vx-researcher",
+      "reviewer": "vx-security-reviewer",
+      "depends_on": [
+        "vx-supply-chain-review"
+      ],
+      "source": "https://kilo.ai/docs/customize/skills",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-release-readiness",
+      "phase": "release",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare",
+        "database",
+        "qa"
+      ],
+      "keywords": [
+        "release",
+        "deploy",
+        "staging",
+        "rollback",
+        "version",
+        "publicacion",
+        "produccion"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-security-reviewer",
+      "depends_on": [
+        "vx-git-ci-quality",
+        "vx-requirements-acceptance"
+      ],
+      "source": "https://docs.github.com/en/actions",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-incident-diagnosis",
+      "phase": "discover",
+      "profiles": [
+        "backend",
+        "cloudflare",
+        "database",
+        "security",
+        "qa"
+      ],
+      "keywords": [
+        "incidente",
+        "error",
+        "caida",
+        "regresion",
+        "timeout",
+        "outage",
+        "alerta"
+      ],
+      "owner": "vx-researcher",
+      "reviewer": "vx-security-reviewer",
+      "depends_on": [
+        "vx-debugging-root-cause"
+      ],
+      "source": "https://sre.google/workbook/incident-response/",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-engineering-harness",
+      "phase": "plan",
+      "profiles": [
+        "general",
+        "backend"
+      ],
+      "keywords": [
+        "engineering harness"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-evolution-core",
+      "phase": "review",
+      "profiles": [
+        "general"
+      ],
+      "keywords": [
+        "evolution core"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-implementation-handoff",
+      "phase": "build",
+      "profiles": [
+        "general",
+        "backend",
+        "frontend",
+        "cloudflare"
+      ],
+      "keywords": [
+        "implementation handoff"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-test-regression",
+      "phase": "verify",
+      "profiles": [
+        "database",
+        "refactor",
+        "qa"
+      ],
+      "keywords": [
+        "test regression"
+      ],
+      "owner": "vx-test-analyst",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-debugging-root-cause",
+      "phase": "discover",
+      "profiles": [
+        "backend",
+        "security",
+        "refactor",
+        "qa"
+      ],
+      "keywords": [
+        "debugging root cause"
+      ],
+      "owner": "vx-researcher",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-frontend-quality",
+      "phase": "build",
+      "profiles": [
+        "frontend",
+        "design"
+      ],
+      "keywords": [
+        "frontend quality"
+      ],
+      "owner": "vx-frontend-builder",
+      "reviewer": "vx-frontend-adviser",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-security-review",
+      "phase": "review",
+      "profiles": [
+        "cloudflare",
+        "security"
+      ],
+      "keywords": [
+        "security review"
+      ],
+      "owner": "vx-security-reviewer",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-data-contracts",
+      "phase": "build",
+      "profiles": [
+        "cloudflare",
+        "database"
+      ],
+      "keywords": [
+        "data contracts"
+      ],
+      "owner": "vx-data-builder",
+      "reviewer": "vx-test-analyst",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-docs-traceability",
+      "phase": "review",
+      "profiles": [
+        "docs"
+      ],
+      "keywords": [
+        "docs traceability"
+      ],
+      "owner": "vx-docs-builder",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-self-improvement",
+      "phase": "review",
+      "profiles": [
+        "general"
+      ],
+      "keywords": [
+        "self improvement"
+      ],
+      "owner": "vx-integrador",
+      "reviewer": "vx-inspector",
+      "depends_on": [],
+      "source": "existing-vx",
+      "runtime": "on-demand"
+    }
+  ]
+}

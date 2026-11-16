@@ -53,10 +53,42 @@ foreach ($agent in $agents) {
     throw "Steps del agente $id no coinciden con el registro."
   }
   if ([int]$agent.steps -lt 1 -or [int]$agent.steps -gt 400) { throw "Steps fuera de limites en $id." }
+  # Kilo usa nombrespaced tool ids para MCP (servidor_tool). mcp:deny no basta.
+  $guardIndex = $front.IndexOf('  "*": deny',[StringComparison]::Ordinal)
+  $readIndex = $front.IndexOf('  read:',[StringComparison]::Ordinal)
+  if ($guardIndex -lt 0 -or $readIndex -lt 0 -or $guardIndex -gt $readIndex) {
+    throw "Agente sin fallback deny inicial para herramientas no listadas: $id."
+  }
+  if ($front -match '(?m)^  mcp:\s*deny\s*$') {
+    throw "Declaracion mcp:deny no protege herramientas namespaced: $id."
+  }
+  if ($front -notmatch '(?m)^  skill:\s*allow\s*$') {
+    throw "Agente sin carga controlada de skills: $id."
+  }
+  if ($agent.role -eq 'coordinator') {
+    if ($front -notmatch '(?m)^  task:\s*$' -or
+        $front -notmatch '(?m)^    "\*":\s*deny\s*$' -or
+        $front -notmatch '(?m)^    "vx-inspector":\s*allow\s*$' -or
+        $front -notmatch '(?m)^  edit:\s*ask\s*$' -or
+        $front -notmatch '(?m)^  bash:\s*ask\s*$') {
+      throw 'Coordinador VX requiere delegacion y escritura condicionada por el host.'
+    }
+  }
   if ($agent.writes -eq $false) {
     if ($front -notmatch '(?m)^\s{2}edit:\s*deny\s*$') { throw "Agente read-only sin edit deny: $id." }
     if ($front -match '(?m)^\s{2}bash:\s*allow\s*$') { throw "Agente read-only con bash allow: $id." }
     if ($front -match '(?m)^\s{2}task:\s*allow\s*$') { throw "Agente read-only puede delegar: $id." }
+  }
+  if ($agent.role -eq 'builder') {
+    if ($agent.writes -ne $true -or $agent.mode -ne 'all') { throw "Builder no coherente: $id" }
+    foreach ($pair in @(
+      @{Key='edit';Value='ask'},
+      @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}
+    )) {
+      $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
+      if ($front -notmatch $pat) { throw "Builder $id sin permiso $($pair.Key) = $($pair.Value)" }
+    }
+    if ($front -notmatch '(?m)^\s{2}bash:\s*(ask|deny)\s*$') { throw "Builder bash inseguro: $id" }
   }
 }
 $profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
@@ -74,6 +106,43 @@ foreach ($p in $profiles) {
     }
   }
   if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+  if ($p.ContainsKey('builder_candidate') -and $p.builder_candidate) {
+    $matched = @($agents | Where-Object { $_.id -eq $p.builder_candidate -and $_.role -eq 'builder' })
+    if ($matched.Count -ne 1) { throw "Builder no registrado en perfil $name" }
+  }
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
-Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
