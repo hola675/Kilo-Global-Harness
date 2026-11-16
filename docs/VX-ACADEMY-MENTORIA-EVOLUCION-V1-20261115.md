@@ -135,6 +135,10 @@ No se fija un porcentaje arbitrario de aprobación. Los resultados de V4.6 son i
 - No usar modelos/API externas ni servicios de pago para «entrenar» sin solicitud; no generar ciclos de mejora autojustificados por evaluación de sí mismos.
 - Una clase completada puede indicar `LECCION_COMPLETADA`, no `CAPACIDAD_VERIFICADA`. Ningún título profesional es permiso operativo.
 
+## 9.1. Evidencia que deberá aportar el evaluador VX-D24
+
+El [evaluador independiente V4.8.0 propuesto](VX-ACADEMY-EVALUADOR-INDEPENDIENTE-V1-20261115.md) formaliza baseline, suite holdout, tests negativos y regresiones para decidir si una mentoría transfiere una competencia. No se usa `mentor_id` o `review_source=other` declarado como evidencia sin runner y revisión externa. El [contrato de diseño](../registry/vx-academy-independent-evaluator-v1.proposal.json) mantiene cero runs y cero certificados. La tutoría no puede modificar permisos ni publicarse automáticamente.
+
 ## 10. Decisiones todavía abiertas
 
 Confirmar por separado: **nomenclatura del programa (VX Academy)**, ubicación y vida del historial formativo, forma de cualificar al primer mentor sin aprendiz certificado, procedimiento de revisión externa (human/runner), umbrales tras piloto, qué herramientas se permiten por curso y si la enseñanza tendrá que autorizarse en cada caso. Ninguna de ellas se infiere de «continúa».
