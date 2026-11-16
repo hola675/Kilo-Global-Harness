@@ -11,12 +11,14 @@ En tareas complejas, seguir `DISCOVER → PLAN → BUILD → VERIFY → REVIEW �
 
 ## Enrutamiento
 
-- Error reproducible: `systematic-debugging`. Si hay pruebas automatizables, `test-driven-development`.
-- Arquitectura de dominio: `domain-modeling` O `codebase-design`, según objetivo.
-- Revisión: usar `vx-inspector` o `code-reviewer` en tareas realmente importantes, no ambos en el mismo diff sin necesidad.
-- Backend Cloudflare: `workers-best-practices` y documentación vigente; validar DEV/STAGING por URL real cuando exista.
-- UI: `frontend-design`, `webapp-testing` y evaluación de accesibilidad según el problema.
-- Cierre: `verification-before-completion` y `vx-git-ciclo` si hay cambios que integrar.
+- Error reproducible: usar skill VX propia `vx-debugging-root-cause`; pruebas nuevas con `vx-test-regression`.
+- Arquitectura/contratos: apoyarse en Sofía y usar `vx-implementation-handoff` para comunicar API, archivos y pruebas.
+- Revisión: `vx-inspector` y, si hay riesgo autenticación/datos, `vx-security-review` con Valentina; evitar revisar dos veces el mismo diff sin objetivo.
+- Backend Cloudflare: Mateo para bindings/DEV; backend builder implementa. No inferir deploy real de documentos.
+- UI: Daniela define UX; frontend builder implementa, skill `vx-frontend-quality`.
+- Datos: data builder y `vx-data-contracts`, solo fixtures antes de cualquier migración.
+- Documentación: docs builder y `vx-docs-traceability`.
+- Cierre: pruebas ejecutadas por runner autorizado, CI, revisión, Git y handoff. Skills externas solo si están presentes y permitidas, nunca se autoinstalan.
 
 ## Memoria/codebase
 
@@ -58,3 +60,12 @@ Al terminar subagentes revisa sus hallazgos contra el árbol y la revisión Git 
 ## Observación selectiva V4.3
 
 VX Evolution pertenece exclusivamente a Kilo. No cargar el skill de gobernanza para tareas triviales. Después de una corrección importante o un fallo repetido, ofrecer una observación breve, neutra y verificada mediante /vx-observer, sin copiar detalles de clientes. El historial global se escribe solo tras invocación explícita; ninguna propuesta se aprueba o instala automáticamente. Las reuniones semanales/mensuales no están programadas hasta V4.5.
+
+## Pack VX 0.1 — equipo de desarrollo operativo (candidato, no instalado aún)
+
+- Siete perfiles de asesoría/coordinación existentes con alias confirmados y **cinco implementadores nuevos** (`vx-frontend-builder`, `vx-backend-builder`, `vx-qa-builder`, `vx-data-builder`, `vx-docs-builder`). Nombres de los cinco nuevos pendientes.
+- El selector `Seleccionar-Equipo-V4.ps1` propone por defecto `code` nativo; `-UsarBuildersVX` elige especialista únicamente en el plan, sin lanzarlo.
+- Para una tarea autorizada se puede elegir un builder `mode: all` directamente en Kilo, con `edit: ask` y `bash: ask/deny`. Una delegación `task` no interactiva que no obtenga aprobación debe devolver un plan, **nunca** autocederse permiso.
+- Solo un escritor por worktree, incluso si los lectores usan `background:true`. Agent Manager con dos o más worktrees de escritura requiere autorización explícita y prueba real antes de uso.
+- Los nuevos skills VX se cargan **a demanda**, no todos para cada tarea; skills de terceros que aparezcan en rutas compatibles no están administradas por VX.
+- Toda mejora del propio agente o skill se formula como propuesta versionada con `vx-self-improvement`; V4.7 sigue sin aprobación criptográfica ni aplicación automática. No mutar HOME, MCP, credenciales, permisos, modelos ni scheduler.
