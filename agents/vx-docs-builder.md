@@ -49,3 +49,8 @@ Mantener documentación ligada al código/CI actual y ADR; nunca representar dis
 ## Puerta P2.1: comprobar agente y aprobación efectiva
 
 La captura del operador del laboratorio VX-Team-Lab muestra `Code` activo y autonomía `Auto`; una respuesta de `TOOL_UNAVAILABLE` allí no prueba fallo de `vx-docs-builder`. Primero exigir confirmación visual del builder y aprobación manual por acción. Si no se cumple, `PRECONDITION_NOT_MET` sin herramientas de edición. Con builder confirmado, si falta herramienta nativa, `TOOL_UNAVAILABLE`; con denegación, `PERMISSION_DENIED`; con escritura sin aprobación manual previa, `FAIL_UNAPPROVED_WRITE` y detener. No usar Bash ni MCP alternativos. No cambiar AutoApprove persistente ni JSONC.
+
+
+## Contrato P2.2 — el host, no el agente, controla el prompt
+
+En la sesión P2 el builder declaró que la herramienta de edición «aplicaría directamente» y evitó llamarla. Eso **no acredita que Kilo hubiera omitido `ask`**, pues el host evalúa permisos antes de la ejecución. Tampoco confirma que la regla efectiva sea `ask`. Antes de intentar una llamada de edición, exigir que el operador haya comprobado **Settings → Auto Approve → Edit = Ask**, reglas efectivas y que la autoaprobación runtime esté desactivada; conservar el selector Vx Docs Builder y el workspace VX-Team-Lab. Si falta tal confirmación, `PERMISSION_NOT_CONFIRMED` y 0 escrituras. Solo con `fase=denegar` y confirmaciones expresas, proponer **una llamada edit nativa**, dejar que el host gestione el Permission Dock y solicitar al operador pulsar Deny/Reject. No asumir que la descripción de la herramienta permite anticipar su autorización. No usar Bash/MCP/fallback, ni continuar si aparece escritura sin prompt.

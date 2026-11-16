@@ -34,6 +34,12 @@ class P2ModeGateTests(unittest.TestCase):
                      "P2_VALIDADO", "jamás editar"):
             self.assertIn(word, self.command)
 
+    def test_host_permission_gate_prevents_circular_tool_refusal(self):
+        for token in ("PERMISSION_NOT_CONFIRMED", "Settings", "Auto Approve", "Edit", "Ask", "host de Kilo", "edit", "write", "apply_patch", "Deny/Reject"):
+            self.assertIn(token, self.command)
+        self.assertIn("no debe rechazar la prueba suponiendo", self.command)
+        self.assertIn("PERMISSION_NOT_CONFIRMED", self.builder)
+
     def test_pack_includes_global_command_and_version(self):
         registry = json.loads((ROOT / "registry/vx-agent-registry-v4.json").read_text(encoding="utf-8"))
         self.assertEqual(registry["pack"]["version"], "0.2.5")
