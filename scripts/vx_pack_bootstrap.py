@@ -403,46 +403,108 @@ def verify(home: Path, repo: Path, assets: list[Asset], agent_ids: list[str], sk
     return True
 
 def restore(home: Path, folder: Path, *, force: bool = False):
+    """Restaurar únicamente assets alterados; proteger archivos añadidos después."""
     root = (home / ".config/kilo-harness-backups").resolve()
-    if folder.resolve().parent != root: raise Blocked("BackupFolder fuera de raíz de copias.")
+    if folder.resolve().parent != root:
+        raise Blocked("BackupFolder fuera de raíz de copias.")
     records, receipt = read_backup(folder)
-    after_file = folder / "installed-files.json"
-    plan_file = folder / "planned-files.json"
-    if after_file.is_file() and not force:
-        after = json.loads(after_file.read_text(encoding="utf-8"))
-        for row in after:
-            target = home / row["relative"]
-            if not target.is_file() or digest(target.read_bytes()) != row["sha256"]:
-                raise Blocked("Un componente VX cambió después de la instalación. No restaurar automáticamente.")
-    # Remove only objects the Pack modifies. Do not touch kilo.jsonc or shared compatibility skills.
-    for path in (home / ".config/kilo/agents", home / ".kilo/skills"):
-        if path.exists():
-            safe_entry(path)
-            shutil.rmtree(path)
-    # Plan is written BEFORE any removal, so rollback after partial writes is complete.
-    cleanup = after_file if after_file.is_file() else plan_file
-    if cleanup.is_file():
-        for row in json.loads(cleanup.read_text(encoding="utf-8")):
-            relative = row["relative"]
-            if Path(relative).is_absolute() or ".." in Path(relative).parts:
-                raise Blocked("Destino de limpieza fuera de HOME.")
-            target = home / relative
-            if target.exists() and target.is_file():
-                safe_entry(target)
-                target.unlink()
+    if receipt.get("state") == "RESTORED":
+        raise Blocked("Este respaldo ya se restauró. No repetir operación.")
+    installed = folder / "installed-files.json"
+    planned = folder / "planned-files.json"
+    manifest = installed if installed.is_file() else planned
+    if not manifest.is_file():
+        raise Blocked("Respaldo sin manifiesto de instalación. No restaurar.")
+    if not installed.is_file() and not force:
+        raise Blocked("Instalación parcial: requiere evaluación y --force-restore.")
+
+    rows = json.loads(manifest.read_text(encoding="utf-8"))
+    if not isinstance(rows, list) or not rows:
+        raise Blocked("Manifiesto de instalación no válido.")
+    cleanup: list[Path] = []
+    for row in rows:
+        rel = row.get("relative") if isinstance(row, dict) else None
+        if not isinstance(rel, str) or not rel or "\\" in rel or ":" in rel:
+            raise Blocked("Manifiesto con ruta inesperada.")
+        parts = Path(rel).parts
+        if Path(rel).is_absolute() or ".." in parts:
+            raise Blocked("Manifiesto fuera de HOME.")
+        allowed = (
+            parts == (".config", "kilo", "AGENTS.md")
+            or (len(parts) >= 4 and parts[:2] == (".config", "kilo")
+                and parts[2] in {"agents", "commands", "rules", "harness"})
+            or (len(parts) >= 4 and parts[:2] == (".kilo", "skills"))
+        )
+        if not allowed:
+            raise Blocked("Manifiesto intenta limpiar configuración ajena a VX.")
+        cleanup.append(home / rel)
+    if len({str(path).casefold() for path in cleanup}) != len(cleanup):
+        raise Blocked("Rutas repetidas en manifiesto.")
+
+    managed_roots = (home / ".config/kilo/agents", home / ".kilo/skills")
+
+    def verify_path(path: Path) -> None:
+        if not path.is_relative_to(home):
+            raise Blocked("Ruta sale del HOME de destino.")
+        probe = path
+        while probe != home:
+            if probe.exists() or probe.is_symlink():
+                safe_entry(probe)
+            probe = probe.parent
+        if home.exists():
+            safe_entry(home)
+
+    if installed.is_file() and not force:
+        for row, target in zip(rows, cleanup):
+            verify_path(target)
+            if (not isinstance(row.get("sha256"), str) or not target.is_file()
+                    or digest(target.read_bytes()) != row["sha256"]):
+                raise Blocked("El Pack cambió después de instalar; restauración cancelada.")
+        # Las carpetas globales pueden haber recibido archivos nuevos del operador.
+        expected_live_files = set(cleanup)
+        for base in managed_roots:
+            for live in files_in(base):
+                verify_path(live)
+                if live not in expected_live_files:
+                    raise Blocked("Hay agentes o skills nuevos sin respaldo: no eliminarlos.")
+
+    restore_items: list[tuple[Path, bytes]] = []
+    cleaned = set(cleanup)
     for name, content in records.items():
         if name.startswith("kilo-config/"):
             rel = name[len("kilo-config/"):]
-            if rel == "kilo.jsonc": continue  # never modified by Pack
-            dst = home / ".config/kilo" / rel
+            if rel in {"kilo.jsonc", "kilo.json", "config.json"}:
+                continue  # nunca se reescribieron
+            if rel.startswith(("plugin/", "vx-evolution/")):
+                continue  # datos ajenos no modificados por el Pack
+            dest = home / ".config/kilo" / rel
         elif name.startswith("global-skills/"):
-            dst = home / ".kilo" / name[len("global-skills/"):]
-        elif name.startswith(("agents-compat/", "kilocode-compat/")):
-            continue  # never modified
-        else: raise Blocked("Prefijo de backup desconocido.")
-        write_atomic(dst, content)
+            dest = home / ".kilo" / name[len("global-skills/"):]
+        elif name.startswith(("agents-compat/", "kilocode-compat/", "claude-compat/")):
+            continue
+        else:
+            raise Blocked("Prefijo de snapshot no admitido.")
+        in_replaced_tree = any(dest.is_relative_to(base) for base in managed_roots)
+        if in_replaced_tree or dest in cleaned:
+            restore_items.append((dest, content))
+
+    # Comprobar todas las rutas ANTES de cualquier borrado.
+    for path in [*cleanup, *managed_roots, *(p for p, _ in restore_items)]:
+        verify_path(path)
+    for base in managed_roots:
+        files_in(base)  # rechaza symlinks/reparse internos
+
+    for base in managed_roots:
+        if base.exists():
+            shutil.rmtree(base)
+    for target in cleanup:
+        if target.exists() and target.is_file():
+            target.unlink()
+    for target, content in restore_items:
+        write_atomic(target, content)
     receipt["state"] = "RESTORED"
     (folder / "receipt.json").write_text(json.dumps(receipt, indent=2), encoding="utf-8")
+
 
 def apply(repo: Path, home: Path, assets: list[Asset], agent_ids: list[str], skill_ids: list[str]):
     pending = blockers(home)
