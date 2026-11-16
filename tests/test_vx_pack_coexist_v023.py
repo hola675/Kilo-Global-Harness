@@ -67,7 +67,7 @@ class CoexistTests(unittest.TestCase):
     def test_skill_frontmatter_name_collision_blocks_even_when_folder_differs(self):
         misleading = self.home / ".agents/skills/different-folder/SKILL.md"
         misleading.parent.mkdir()
-        misleading.write_text("---\\nname: vx-ida-mcp-reverse-engineering\\ndescription: legacy\\n---\\n", encoding="utf-8")
+        misleading.write_text("---\nname: vx-ida-mcp-reverse-engineering\ndescription: legacy\n---\n", encoding="utf-8")
         report, _, _ = vx.plan(ROOT, self.home)
         self.assertFalse(report["ready_to_apply"])
         self.assertIn("vx-ida-mcp-reverse-engineering", report["compat_skill_collisions"])
