@@ -100,8 +100,8 @@ if ($data.ContainsKey('pack')) {
   $skillRoot = if (Test-Path (Join-Path $RaizFuentes 'skills')) {
     Join-Path $RaizFuentes 'skills'
   } else {
-    $home = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
-    Join-Path $home '.kilo/skills'
+    $profileHome = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+    Join-Path $profileHome '.kilo/skills'
   }
   $skillIds = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
   foreach ($name in @($data.pack.owned_skills)) {
