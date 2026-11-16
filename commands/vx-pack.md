@@ -9,4 +9,7 @@ Usa `/vx-equipo` para tareas reales, eligiendo el perfil y la menor cantidad de 
 
 No muevas agentes y skills legacy, ni reemplaces inline agents dentro de `kilo.jsonc`. Solicita revisión del inventario, backup privado completo y prueba de restauracion antes de cualquier futura sustitucion. Separa hechos de runtime verificado, metadatos declarados y propuestas.
 
-Entrega estado de 12 agentes/10 skills, skills faltantes, solapamientos y MCP candidatos, limitaciones y siguiente paso seguro. La salida de inventario no certifica ejecucion nativa del agente o de Swarm.
+Entrega estado de 12 agentes/30 skills, skills faltantes, solapamientos y MCP candidatos, limitaciones y siguiente paso seguro. La salida de inventario no certifica ejecucion nativa del agente o de Swarm.
+
+
+**Auditoría de sustitución:** existen dos vías distintas: `Instalar-Kilo-Global-Harness.ps1 -Modo Diagnostico|Simular` (incremental, sin desactivar legacy) y `vx_pack_bootstrap.py --mode diagnose|simulate` (sustitución completa bajo preflight Windows/DPAPI). Nunca confundir los respaldos de ambos instaladores. Para `apply` o `restore` del bootstrap se exige acción humana explícita, inventario y cierre de sesiones de Kilo, no solo un informe del doctor. Solo es válido afirmar 30 skills instaladas tras verificación en HOME; su carga efectiva necesita `/reload` y traza del tool `skill`.

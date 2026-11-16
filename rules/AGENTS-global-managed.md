@@ -20,3 +20,10 @@ Esta seccion global sustituye indicaciones anteriores de este mismo AGENTS.md si
 - CIERRE: informar cambios, pruebas reales, resultado Git, riesgos y capacidad de rollback. Si no hay conectividad, separar los hechos verificados de los pendientes.
 
 Para tareas complejas invocar `vx-engineering-harness`; no cargar todas las skills ni todos los MCP simultaneamente.
+
+
+## Pack VX 0.2 (candidato en PR #31, no activado en HOME)
+- Especialistas y skills se eligen por tarea y fase, consultando la matriz VX; una recomendación del router **no** carga la skill ni concede acceso.
+- En modo STRICT jamás asignar escritura a un agente `writes:false` ni dos escritores simultáneos; las tareas BLOCKED no se desbloquean por inferencia.
+- Estados VERIFIED en ficheros de planificación son declarados hasta contrastar registros externos de pruebas/revisión; no otorgan identidad ni aprobación.
+- Bootstrap DPAPI es independiente del instalador incremental. Preservar archivos nuevos, configuraciones MCP y datos que el paquete no modifique; sin migración real hasta preflight, revisión, autorización y rollback validado.

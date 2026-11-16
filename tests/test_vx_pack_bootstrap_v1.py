@@ -164,7 +164,7 @@ class PackBootstrap(unittest.TestCase):
         new_file.write_text("KEEP_ME", encoding="utf-8")
         restore = self.cmd("--mode", "restore", "--backup-folder", str(folder), "--confirm-restore")
         self.assertNotEqual(restore.returncode, 0)
-        self.assertIn("archivos nuevos", restore.stderr)
+        self.assertIn("nuevos sin respaldo", restore.stderr)
         self.assertEqual(new_file.read_text(encoding="utf-8"), "KEEP_ME")
         self.assertTrue((self.agents / "vx-backend-builder.md").exists())
 

@@ -149,7 +149,7 @@ jobs:
           if ($restored -ne $before) { throw 'Rollback altero configuracion privada.' }
           Write-Host 'V4 GLOBAL-ONLY, SEGURIDAD, ROUTING Y ROLLBACK: PASS'
 
-      - name: VX Pack 0.1 - doctor, MCP pasivos y 12 agentes 10 skills
+      - name: VX Pack 0.2 - doctor, MCP pasivos y 12 agentes 30 skills
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'

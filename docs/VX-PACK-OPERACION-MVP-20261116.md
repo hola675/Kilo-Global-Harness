@@ -1,6 +1,6 @@
 # VX Pack 0.1 — Base operativa multiagente para Kilo Code (16-11-2026)
 
-**Estado:** propuesta implementada en Git, NO instalada en el HOME Windows. No fusionar ni instalar hasta que CI Windows y revisión del diff sean satisfactorios. Alcance: un PC Windows; global Kilo, sin directorios de configuración dentro de proyectos.
+**Estado:** implementación candidata en la PR #31, NO instalada en HOME Windows real. No fusionar, sustituir o instalar hasta completar CI, revisión de seguridad y prueba de restauración autorizada. Alcance: un PC Windows; global Kilo, sin directorios de configuración dentro de proyectos.
 
 ## Contenido real
 
@@ -8,7 +8,7 @@
 - Instalador V4 reparado: sigue siendo reversible, realiza copia previa de los destinos VX que modifica, copia los componentes VX y preserva `kilo.jsonc`, MCP, modelos, credenciales y permisos ajenos.
 - `vx_pack_doctor.py`: diagnóstico **solo lectura**, inventaría componentes esperados, solapamientos de nombre y presencia de MCP (no conectividad).
 - Catálogo de cinco MCP candidatos con fuentes oficiales. **No instala ni conecta ninguno**; requiere decisión individual y validación de permisos.
-- `/vx-pack` y `/vx-equipo` para revisar preparación y seleccionar tareas. No hay nuevo scheduler.
+- `/vx-pack`, `/vx-equipo` y `/vx-dependencias` para revisar preparación y seleccionar tareas. No hay nuevo scheduler.
 
 ## Preparación (PowerShell 7, desde el repositorio)
 
@@ -36,7 +36,7 @@ python .\scripts\vx_pack_doctor.py --json
 
 Mantener **todos** los MCP existentes. Usar Kilo Settings > Agent Behaviour > MCP Servers para revisar cada candidato; conectar solo el faltante elegido, OAuth de mínimo privilegio y verificación explícita. El doctor no lee encabezados, tokens ni valores de claves; solo nombres configurados. Ningún MCP es requisito global para preguntar, editar o ejecutar tests locales.
 
-Agentes/skills personalizados antiguos: el doctor cuenta coexistencias, pero **no los desactiva, borra ni mueve**. Un perfil limpio futuro exige inventario global y `kilo.jsonc`, respaldo privado completo verificable, simulación de archivos a archivar fuera de rutas descubiertas, restauración ensayada y aprobación específica. No se declara sustituido un componente sin hacerlo y verificarlo.
+**El doctor no desactiva, borra ni mueve componentes antiguos.** El bootstrap Windows `scripts/vx_pack_bootstrap.py` (integrado desde el diseño de PR #30 en la PR #31) sí permite una sustitución explícita de agentes y skills Markdown del perfil global, pero únicamente con preflight, backup cifrado DPAPI CurrentUser, verificación y confirmación. Rechaza agentes inline, rutas adicionales de skills y directorios de compatibilidad poblados. Ningún estado de CI es autorización para ejecutarlo en HOME real. En rollback conserva modificaciones a plugin/SQLite y detiene la restauración si aparecieron archivos nuevos después de instalar.
 
 ## Puertas de seguimiento
 
@@ -46,7 +46,7 @@ Agentes/skills personalizados antiguos: el doctor cuenta coexistencias, pero **n
 - P3: introducir contratos máquina-a-máquina y DAG de dependencias, mensajes entre sesiones Agent Manager y evaluaciones independientes.
 - P4: aprobación fuerte V4.7.2 en PR #29 y migración de archivos legacy solamente tras pruebas y autorización; scheduler sigue OFF.
 
-**Límites:** `-Modo Aplicar` de V4 no archiva componentes ajenos ni resuelve duplicados inline en JSONC. `approval_granted=false` y `apply_supported=false` de la propuesta V4.7.2 continúan sin ser autorizaciones efectivas.
+**Límites:** el instalador V4 es incremental y no archiva componentes ajenos; el bootstrap DPAPI tiene otras reglas de sustitución. Ninguno resuelve automáticamente duplicados inline del JSONC. `approval_granted=false` y `apply_supported=false` de la propuesta V4.7.2 continúan sin ser autorizaciones efectivas.
 
 ## Especialización V0.2 (20 skills VX añadidas)
 
@@ -63,3 +63,16 @@ Cobertura nueva: requisitos, DAG de tareas, ADR, codebase, APIs, TypeScript, Pyt
 ## Grafo de dependencias de tareas VX 0.1
 
 El validador nativo `scripts/vx_task_dag.py` recibe un plan JSON externo con `schema=vx-task-plan/1`, `mode=STRICT` y tareas con `id`, `owner`, `reviewer`, `depends_on`, `state`, `writer`, `worktree` y `allowed_paths` si escribe. Rechaza referencias a agentes inexistentes, revisores iguales al autor, ciclos, escritores concurrentes y tareas RUNNING sin prerequisitos. Una tarea `VERIFIED` exige referencias `review_ref` y `test_report`, pero estas **son declaraciones del plan y no verificación criptográfica**. La herramienta no ejecuta agentes ni habilita modo paralelo.
+
+## Dos vías de instalación (no intercambiar respaldos)
+
+**Incremental V4:** `Instalar-Kilo-Global-Harness.ps1` conserva agentes/skills heredados y aplica solo destinos del pack VX; posee manifiesto propio por archivo. Es útil para probar convivencia antes de sustitución.
+
+**Sustitución limpia DPAPI V0.2:** `vx_pack_bootstrap.py` es independiente y **solo Windows**. Inventaría las configuraciones `kilo.jsonc`, `kilo.json` y `config.json`; preserva nombres MCP y sus valores byte a byte; respalda archivos existentes en un ZIP cifrado DPAPI CurrentUser no portable a otro usuario Windows. Su `restore` exige manifiesto de instalación, comprueba hashes y bloquea si aparecieron archivos nuevos no cubiertos; no sobrescribe datos ajenos que el pack no modificó. Debe cerrarse Kilo antes de manipular su perfil y revisarse una simulación del HOME real antes de `apply`. Un perfil con inline agents o skills externas activas se **bloquea**, no se migra a la fuerza.
+
+```powershell
+python .\scripts\vx_pack_bootstrap.py --mode diagnose
+python .\scripts\vx_pack_bootstrap.py --mode simulate
+```
+
+No ejecutar `--mode apply` ni `--mode restore` en HOME real desde esta PR. El valor `approval_granted=false` de V4.7.2 continúa inactivo.
