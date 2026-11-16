@@ -67,7 +67,7 @@ class PackBootstrap(unittest.TestCase):
             self.assertTrue(all(row["auto_install"] is False for row in report["mcp_inventory"]["catalog"]))
             self.assertNotIn("NEVER_PRINT", run.stdout)
             self.assertEqual(report["agents"], 12)
-            self.assertEqual(report["skills"], 10)
+            self.assertEqual(report["skills"], 30)
         after = sorted(str(x.relative_to(self.home)) for x in self.home.rglob("*"))
         self.assertEqual(before, after)
         self.assertEqual(vx.digest(self.config.read_bytes()), self.config_hash)
@@ -137,6 +137,71 @@ class PackBootstrap(unittest.TestCase):
         self.assertNotEqual(run.returncode, 0)
         self.assertIn("cambió", run.stderr)
         self.assertTrue((self.agents / "vx-frontend-builder.md").is_file())
+
+    def test_jsonc_preserves_comma_inside_string(self):
+        data = vx.parse_jsonc('{"label":"valor,}", // comentario\n "mcp": {"Context7": {},},}')
+        self.assertEqual(data["label"], "valor,}")
+        self.assertIn("Context7", data["mcp"])
+
+    def test_all_global_config_files_are_scanned(self):
+        (self.kilo / "kilo.json").write_text('{"agent":{"legacy-agent":{}}}', encoding="utf-8")
+        self.assertEqual(vx.inline_agents(self.home), ["legacy-agent"])
+        self.assertNotEqual(self.cmd("--mode", "apply", "--confirm-migration").returncode, 0)
+        self.assertEqual(vx.configured_mcp(self.home), ["imagegen"])
+
+    def test_external_skill_paths_block_migration(self):
+        self.config.write_text('{"skills":{"paths":["D:/common/skills"]}}', encoding="utf-8")
+        run = self.cmd("--mode", "apply", "--confirm-migration")
+        self.assertNotEqual(run.returncode, 0)
+        self.assertFalse((self.home / ".config/kilo-harness-backups").exists())
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser requiere Windows")
+    def test_new_agent_after_install_blocks_restore(self):
+        result = self.cmd("--mode", "apply", "--confirm-migration")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        folder = next((self.home / ".config/kilo-harness-backups").glob("vx-pack-*"))
+        new_file = self.agents / "added-after-install.md"
+        new_file.write_text("KEEP_ME", encoding="utf-8")
+        restore = self.cmd("--mode", "restore", "--backup-folder", str(folder), "--confirm-restore")
+        self.assertNotEqual(restore.returncode, 0)
+        self.assertIn("archivos nuevos", restore.stderr)
+        self.assertEqual(new_file.read_text(encoding="utf-8"), "KEEP_ME")
+        self.assertTrue((self.agents / "vx-backend-builder.md").exists())
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser requiere Windows")
+    def test_snapshot_without_apply_cannot_erase_profile(self):
+        folder = vx.backup(self.home)
+        restored = self.cmd("--mode", "restore", "--backup-folder", str(folder), "--confirm-restore")
+        self.assertNotEqual(restored.returncode, 0)
+        self.assertTrue((self.agents / "old-user-agent.md").exists())
+        self.assertTrue((self.skills / "old-user-skill/SKILL.md").exists())
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser requiere Windows")
+    def test_unmodified_plugin_changes_are_never_rolled_back(self):
+        extra = self.kilo / "plugin" / "local-config.txt"
+        extra.parent.mkdir(parents=True)
+        extra.write_text("BEFORE", encoding="utf-8")
+        (self.kilo / "kilo.json").write_text('{"mcp":{"OTHER":{}}}', encoding="utf-8")
+        before_json = (self.kilo / "kilo.json").read_bytes()
+        apply_result = self.cmd("--mode", "apply", "--confirm-migration")
+        self.assertEqual(apply_result.returncode, 0, apply_result.stderr)
+        extra.write_text("AFTER", encoding="utf-8")
+        folder = next((self.home / ".config/kilo-harness-backups").glob("vx-pack-*"))
+        restore = self.cmd("--mode", "restore", "--backup-folder", str(folder), "--confirm-restore")
+        self.assertEqual(restore.returncode, 0, restore.stderr)
+        self.assertEqual(extra.read_text(encoding="utf-8"), "AFTER")
+        self.assertEqual((self.kilo / "kilo.json").read_bytes(), before_json)
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser requiere Windows")
+    def test_repeated_restore_is_rejected(self):
+        apply_result = self.cmd("--mode", "apply", "--confirm-migration")
+        self.assertEqual(apply_result.returncode, 0, apply_result.stderr)
+        folder = next((self.home / ".config/kilo-harness-backups").glob("vx-pack-*"))
+        first = self.cmd("--mode", "restore", "--backup-folder", str(folder), "--confirm-restore")
+        self.assertEqual(first.returncode, 0, first.stderr)
+        second = self.cmd("--mode", "restore", "--backup-folder", str(folder), "--confirm-restore")
+        self.assertNotEqual(second.returncode, 0)
+        self.assertTrue((self.agents / "old-user-agent.md").exists())
 
 if __name__ == "__main__":
     unittest.main()
