@@ -192,6 +192,28 @@ class PackBootstrap(unittest.TestCase):
         self.assertTrue((self.skills / "old-user-skill/SKILL.md").exists())
 
     @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser requiere Windows")
+    def test_apply_aborts_when_live_files_differ_from_encrypted_snapshot(self):
+        from unittest.mock import patch
+        old_backup = vx.backup
+
+        def backup_with_concurrent_file(home):
+            folder = old_backup(home)
+            (self.agents / "created-during-backup.md").write_text(
+                "DO_NOT_DELETE", encoding="utf-8")
+            return folder
+
+        with patch.object(vx, "backup", side_effect=backup_with_concurrent_file):
+            with self.assertRaisesRegex(vx.Blocked, "después del backup"):
+                vx.apply(ROOT, self.home, *self.unpack())
+        self.assertTrue((self.agents / "old-user-agent.md").exists())
+        self.assertEqual((self.agents / "created-during-backup.md").read_text(
+            encoding="utf-8"), "DO_NOT_DELETE")
+
+    def unpack(self):
+        data, assets = vx.load_pack(ROOT, self.home)
+        return assets, data["pack"]["owned_agents"], data["pack"]["owned_skills"]
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser requiere Windows")
     def test_unmodified_plugin_changes_are_never_rolled_back(self):
         extra = self.kilo / "plugin" / "local-config.txt"
         extra.parent.mkdir(parents=True)

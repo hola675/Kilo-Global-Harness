@@ -526,6 +526,21 @@ def apply(repo: Path, home: Path, assets: list[Asset], agent_ids: list[str], ski
     planned = [{"relative": item.target.relative_to(home).as_posix()} for item in assets]
     planned.append({"relative": global_file.relative_to(home).as_posix()})
     (folder / "planned-files.json").write_text(json.dumps(planned, indent=2), encoding="utf-8")
+    # La copia DPAPI debe representar EXACTAMENTE lo que vamos a sustituir.
+    # Si Kilo u otro proceso modificó el árbol tras la copia, detener sin borrar.
+    snapshot, _ = read_backup(folder)
+    current: dict[str, str] = {}
+    for prefix, folder_path, base in (
+        ("kilo-config/agents/", home / ".config/kilo/agents", home / ".config/kilo"),
+        ("global-skills/skills/", home / ".kilo/skills", home / ".kilo"),
+    ):
+        for file in files_in(folder_path):
+            path = prefix + file.relative_to(folder_path).as_posix()
+            current[path] = digest(file.read_bytes())
+    expected = {name: digest(blob) for name, blob in snapshot.items()
+                if name.startswith(("kilo-config/agents/", "global-skills/skills/"))}
+    if current != expected:
+        raise Blocked("Agentes o skills cambiaron después del backup; sustitución cancelada.")
     try:
         for path in [home / ".config/kilo/agents", home / ".kilo/skills"]:
             if path.exists(): shutil.rmtree(path)
