@@ -846,10 +846,10 @@ jobs:
           $cmd = Get-Content 'commands/vx-p2.md' -Raw -Encoding UTF8
           $agent = Get-Content 'agents/vx-docs-builder.md' -Raw -Encoding UTF8
           $registry = Get-Content 'registry/vx-agent-registry-v4.json' -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ($cmd -notmatch '(?m)^agent: vx-docs-builder$' -or
+          if ($cmd -notmatch '(?m)^agent: vx-docs-builder\r?$' -or
               $cmd -notmatch 'PRECONDITION_NOT_MET' -or
               $cmd -notmatch 'FAIL_UNAPPROVED_WRITE' -or
-              $agent -notmatch '(?m)^\s*bash: deny$' -or
+              $agent -notmatch '(?m)^\s*bash: deny\r?$' -or
               $registry.pack.version -ne '0.2.5') {
             throw 'Gates P2.1 incompletos.'
           }
