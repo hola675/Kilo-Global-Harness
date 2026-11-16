@@ -10,6 +10,8 @@
 
 **Mentoría y evolución — VX-D23 (solo diseño):** aprendizaje, mentoría y transferencia con casos nuevos, evaluador independiente y material versionado; no hay docentes ni aprendices acreditados en producción. Supervisor no concede permisos, mentor no autoevalúa y una clase completada no certifica competencia. [Programa propuesto](docs/VX-ACADEMY-MENTORIA-EVOLUCION-V1-20261115.md) · [Contrato de ejemplo inactivo](registry/vx-academy-mentorship-v1.proposal.json).
 
+**Siguiente diseño — VX-D24 / evaluador independiente V4.8.0 (NO ACTIVO):** suites versionadas, runner aislado y verificable, casos holdout, comparación antes/después, regresiones y revisor separado; primer ejemplo Rafael `qa.negative-cases` sin ejecución real. Cero registros, cero certificados, ninguna promoción o elevación de permisos. [Diseño](docs/VX-ACADEMY-EVALUADOR-INDEPENDIENTE-V1-20261115.md) · [Contrato inactivo](registry/vx-academy-independent-evaluator-v1.proposal.json).
+
 **Histórico de implementación V4.6:** SQLite v4 y calendario manual verificados en el PC; inventario global 28 agentes únicos y 40 skills (no confundir con los **7 agentes propios VX**). La batería V4.6.2 produjo 5/5 coincidencias sintéticas, sin certificar competencias ni ejecución interna de skills. La auditoría V4.6.3 identificó 11 solapamientos y 19 límites elevados; su precedencia efectiva no está verificada. No hay reunión programada automáticamente.
 
 Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VSCodium. Se instala **exclusivamente en el perfil GLOBAL de Windows**. Los proyectos no reciben skills, agentes, reglas, comandos ni MCP locales. El código y los documentos propios de cada proyecto sí pueden desarrollarse normalmente.
