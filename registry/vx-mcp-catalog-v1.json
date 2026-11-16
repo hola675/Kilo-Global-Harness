@@ -1,0 +1,90 @@
+{
+  "schema": "vx-mcp-catalog/1",
+  "version": "0.1.0",
+  "scope": "global-kilo-only",
+  "runtime": "kilo-native",
+  "policy": {
+    "installation": "approval-per-server",
+    "existing": "preserve-all",
+    "credentials": "never-log-or-copy",
+    "autostart": false,
+    "modify_kilo_jsonc": false,
+    "default_tool_access": "deny-until-user-enables"
+  },
+  "candidates": [
+    {
+      "id": "github",
+      "aliases": [
+        "github",
+        "github-mcp-server"
+      ],
+      "tier": "conditional-core",
+      "purpose": "Operaciones GitHub y PR bajo permisos del usuario",
+      "source": "https://github.com/github/github-mcp-server",
+      "transport": "local-or-remote",
+      "enabled_by_default": false,
+      "requires_auth": true,
+      "risk": "write-access-to-remote-repositories"
+    },
+    {
+      "id": "context7",
+      "aliases": [
+        "context7"
+      ],
+      "tier": "conditional-core",
+      "purpose": "Documentacion vigente por version de dependencias",
+      "source": "https://github.com/upstash/context7",
+      "transport": "remote-or-local",
+      "enabled_by_default": false,
+      "requires_auth": "provider-dependent",
+      "risk": "external-document-queries"
+    },
+    {
+      "id": "serena",
+      "aliases": [
+        "serena"
+      ],
+      "tier": "optional",
+      "purpose": "Busqueda semantica de simbolos y codigo",
+      "source": "https://github.com/oraios/serena",
+      "transport": "local-or-remote",
+      "enabled_by_default": false,
+      "requires_auth": "deployment-dependent",
+      "risk": "filesystem-and-code-access"
+    },
+    {
+      "id": "playwright",
+      "aliases": [
+        "playwright",
+        "playwright-mcp"
+      ],
+      "tier": "optional",
+      "purpose": "QA y navegacion web controlada",
+      "source": "https://github.com/microsoft/playwright-mcp",
+      "transport": "local",
+      "enabled_by_default": false,
+      "requires_auth": false,
+      "risk": "browser-can-access-live-sessions"
+    },
+    {
+      "id": "cloudflare-api",
+      "aliases": [
+        "cloudflare-api",
+        "cloudflare"
+      ],
+      "tier": "optional",
+      "purpose": "Documentacion y APIs Cloudflare, sin despliegue automatico",
+      "source": "https://developers.cloudflare.com/agents/model-context-protocol/cloudflare/servers-for-cloudflare/",
+      "transport": "remote",
+      "endpoint": "https://mcp.cloudflare.com/mcp",
+      "enabled_by_default": false,
+      "requires_auth": true,
+      "risk": "cloud-infrastructure-and-production-write-apis"
+    }
+  ],
+  "notes": [
+    "Catalogo para inventario y propuestas, no configuracion MCP ejecutable.",
+    "No instalar ni eliminar servidores sin aprobacion individual.",
+    "MCP configurado no equivale a conectado ni autorizado; comprobar runtime."
+  ]
+}
