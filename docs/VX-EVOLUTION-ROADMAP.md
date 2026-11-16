@@ -10,12 +10,16 @@
 | Componente | En repositorio después de integrar | En Kilo Windows real | Seguridad operativa |
 | --- | --- | --- | --- |
 | V4.7.2 | Contratos de identidad, assertion WebAuthn, replay simulado, revocación y auditoría en memoria; tests CI Windows | **NO DESPLEGADO** | `approval_granted=false`, `apply_supported=false`, sin verificación criptográfica/persistencia |
-| Pack VX V0.2 | 12 agentes (7 originales + 5 builders), 31 skills y DAG/router read-only | **NO INSTALADO/NO VERIFICADO** | Un escritor STRICT; tools/permiso MCP fail-closed declarados, requieren comprobación runtime |
+| Pack VX V0.2.2 | 12 agentes (7 originales + 5 builders), 31 skills y DAG/router read-only | **NO INSTALADO/NO VERIFICADO** | Un escritor STRICT; tools/permiso MCP fail-closed declarados, requieren comprobación runtime |
 | Bootstrap y backups | Instalador V4 incremental y bootstrap DPAPI cifrado/rollback conservador | **NO EJECUTADO SOBRE HOME REAL** | Frena ante archivos nuevos, configs inline o skills externas; snapshot CurrentUser, no portable |
 | VX Academy V4.8 | Catálogos, organización y mentores **solo propuestas** de PR #28 | **NO ACTIVA** | No hay agentes certificados ni autopromociones |
-| MCP | Seis candidatos de catálogo (GitHub/Context7/Serena/Playwright/Cloudflare) | **NO INSTALADOS POR ESTE PACK** | Configurar uno a uno solo por autorización específica |
+| MCP | Seis candidatos de catálogo (GitHub/Context7/Serena/Playwright/Cloudflare/IDA) | **NO INSTALADOS POR ESTE PACK** | Configurar uno a uno solo por autorización específica |
 
 **Siguiente fase:** validar Kilo real en modo lectura y una copia del HOME, revisar políticas de skills MCP y ACL; definir decisión posterior de migración, no suponer que la fusión Git la autoriza. [Detalle de integración](VX-CONSOLIDACION-MAIN-20261116.md) · [Auditoría de 17 discrepancias](VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
+
+### Puerta de instalación del Pack VX 0.2.2 (2026-11-16)
+
+El operador autorizó instalar el Pack en su único Windows, con diagnóstico, simulación libre de bloqueos, Kilo cerrado, respaldo DPAPI CurrentUser y verificación de archivos antes del test real de permisos. **Aún no se ha ejecutado la instalación local.** La aprobación no alcanza a nuevos MCP, WebAuthn, scheduler, cambios JSONC, permisos globales ni concurrencia de escritores. [Guía de instalación](VX-INSTALACION-PACK-0.2.2-WINDOWS.md).
 
 ## Resumen ejecutivo del estado y puertas del siguiente tema
 
