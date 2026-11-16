@@ -1,6 +1,6 @@
 ---
 description: "Implementador backend VX: APIs, contratos, validaciones y persistencia no productiva; escribe código de proyecto autorizado con consentimiento por herramienta. No administra servidores ni despliega."
-mode: subagent
+mode: all
 steps: 100
 permission:
   read:
@@ -39,3 +39,5 @@ Antes de editar exigir `task_id`, `base_sha`, worktree/rama, `allowed_paths`, AP
 - Sin garantía de despliegue, sin autoaprobar PR/merge; Git `main` permanece única rama permanente.
 
 **Salida:** `{task_id,api_contract_changes,files_changed,tests_executed,tests_not_executed,db_migrations_proposed,risks,diff_or_commit}`.
+
+**Activación:** disponible como agente seleccionable directamente en Kilo para que el usuario pueda aprobar `edit: ask`/`bash: ask`. Como subagente `task` no interactivo, si no puede recabar aprobación efectiva debe detener la acción y devolver un plan, nunca evitar el permiso. Por defecto el selector mantiene `code` nativo hasta seleccionar `-UsarBuildersVX` y validar el runtime.
