@@ -17,6 +17,10 @@
 | VX-A09 | Media | Catálogos MCP incompatibles en PR #30 (4) y #31 (5) | En PR #31 hay un único catálogo de 5 y bootstrap adaptado al mismo | Test catálogo y doctor |
 | VX-A10 | Media | Tests dependían de conteos heredados de 10 skills y mensajes literales | Fixtures actualizados a Pack 0.2 y aserciones por comportamiento | CI Windows |
 | VX-A11 | Alta | Bootstrap solo revisaba `kilo.jsonc`; otras configuraciones y skills externas podían crear duplicados | Preflight de `kilo.jsonc`, `kilo.json`, `config.json`, paths/urls y compatibilidad `.claude` | Tests de inline y rutas externas |
+| VX-A12 | Alta | `mcp: deny` no garantiza negar herramientas MCP namespaced; inspector carecía de fallback explícito | Los 12 agentes VX inician su ACL con `"*": deny` y habilitan solo herramientas justificadas | Tests de ACL y validador PowerShell; Kilo runtime pendiente |
+| VX-A13 | Alta | `vx-inspector` permitía parámetros amplios `git diff *` capaces de afectar rutas mediante opciones | Terminal completamente denegada; revisión mediante read/glob/grep/lsp y diff aportado | Test bash deny y revisión manual pendiente |
+| VX-A14 | Media | `task: allow` permitía invocar subagentes externos/no verificados | Coordinador restringido a seis lectores VX, fallback deny | Unit test ACL; test de delegación Kilo pendiente |
+| VX-A15 | Alta | Restaurador incremental V4 confiaba en rutas del manifiesto y podía restaurar parcialmente | Validación de destinos, copias, reparse points y hashes ANTES de escribir | CI Windows protege fichero privado y edición posterior |
 
 ## Arquitectura y límites aún abiertos
 

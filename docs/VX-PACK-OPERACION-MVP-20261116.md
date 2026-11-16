@@ -76,3 +76,9 @@ python .\scripts\vx_pack_bootstrap.py --mode simulate
 ```
 
 No ejecutar `--mode apply` ni `--mode restore` en HOME real desde esta PR. El valor `approval_granted=false` de V4.7.2 continúa inactivo.
+
+## Gobierno de permisos MCP y delegación — V0.2
+
+La ACL de cada agente VX inicia con `"*": deny` para herramientas desconocidas; después concede lectura, búsqueda y uso de skills por rol. Esto importa porque **Kilo nombra las herramientas MCP como `servidor_herramienta`**: no considerar `mcp: deny` una barrera suficiente. Ninguna skill amplía permisos; los builders requieren `edit/bash: ask`, salvo bash denegado en documentación. El revisor `vx-inspector` no ejecuta terminal y recibe un diff comprobado por el coordinador. El coordinador solo delega a seis lectores/revisores VX explícitos, no a agentes legacy con permisos desconocidos.
+
+Fuentes: https://kilo.ai/docs/customize/agent-permissions y https://kilo.ai/docs/automate/mcp/using-in-kilo-code. Estas son garantías de la **configuración fuente**; comprobar precedencia y permisos efectivos en Kilo real antes de afirmar aislamiento definitivo.
