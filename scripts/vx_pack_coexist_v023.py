@@ -46,6 +46,14 @@ def _ids(root: Path, *, skill: bool) -> set[str]:
         if skill and entry.is_dir() and (entry / "SKILL.md").is_file():
             vx.safe_entry(entry / "SKILL.md")
             names.add(entry.name.casefold())
+            # Comparar también frontmatter: Kilo tiene rutas con metadatos
+            # heterogéneos; no asumir que el directorio es el nombre cargado.
+            header = (entry / "SKILL.md").read_text(encoding="utf-8-sig")[:8192]
+            front = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)", header, re.S)
+            if front:
+                found = re.search(r"(?m)^name:\s*['\"]?([a-zA-Z0-9-]+)['\"]?\s*$", front.group(1))
+                if found:
+                    names.add(found.group(1).casefold())
         elif not skill and entry.is_file() and entry.suffix.lower() == ".md":
             names.add(entry.stem.casefold())
     return names
