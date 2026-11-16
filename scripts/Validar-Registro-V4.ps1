@@ -54,9 +54,371 @@ foreach ($agent in $agents) {
   }
   if ([int]$agent.steps -lt 1 -or [int]$agent.steps -gt 400) { throw "Steps fuera de limites en $id." }
   if ($agent.writes -eq $false) {
-    if ($front -notmatch '(?m)^\s{2}edit:\s*deny\s*$') { throw "Agente read-only sin edit deny: $id." }
-    if ($front -match '(?m)^\s{2}bash:\s*allow\s*$') { throw "Agente read-only con bash allow: $id." }
-    if ($front -match '(?m)^\s{2}task:\s*allow\s*$') { throw "Agente read-only puede delegar: $id." }
+    if ($front -notmatch '(?m)^\s{2}edit:\s*deny\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+  if ($p.ContainsKey('builder_candidate') -and $p.builder_candidate) {
+    $candidate = [string]$p.builder_candidate
+    if (!$seen.Contains($candidate)) { throw "Perfil $name tiene builder inexistente: $candidate" }
+    $resolved = @($agents | Where-Object { $_.id -eq $candidate })
+    if ($resolved.Count -ne 1 -or $resolved[0].role -ne 'builder' -or $resolved[0].writes -ne $true) {
+      throw "Perfil $name referencia agente sin escritura especial: $candidate"
+    }
+  }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+# El paquete VX es una lista cerrada de origen propio; nunca instalar skills por nombre arbitrario.
+if ($data.ContainsKey('pack')) {
+  $skillIds = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+  foreach ($name in @($data.pack.owned_skills)) {
+    $skill = [string]$name
+    if ($skill -notmatch '^vx-[a-z0-9-]+
+Write-Host "[PASS] Registro V4/VX: $($agents.Count) agentes, $($profiles.Count) perfiles, skills pack declaradas, solo global y un escritor por worktree." -ForegroundColor Green
+) { throw "Agente read-only sin edit deny: $id." }
+    if ($front -match '(?m)^\s{2}bash:\s*allow\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Agente read-only con bash allow: $id." }
+    if ($front -match '(?m)^\s{2}task:\s*allow\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Agente read-only puede delegar: $id." }
+  }
+  if ($agent.role -eq 'builder') {
+    if ($agent.writes -ne $true -or $agent.mode -ne 'all') { throw "Builder invalido, debe ser escribible/selectable: $id." }
+    if ($front -notmatch '(?m)^\s{2}edit:\s*ask\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Builder sin edit ask: $id." }
+    if ($front -notmatch '(?m)^\s{2}bash:\s*(ask|deny)\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Builder sin bash ask/deny: $id." }
+    foreach ($restricted in @('task','mcp','agent_manager','external_directory')) {
+      if ($front -notmatch "(?m)^\s{2}$([regex]::Escape($restricted)):\s*deny\s*$") {
+        throw "Builder con permiso no restringido: $id / $restricted."
+      }
+    }
+  }
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+ -or !$skillIds.Add($skill)) { throw "Skill de pack invalida/duplicada: $skill" }
+    $p = Join-Path $RaizFuentes ('skills/' + $skill + '/SKILL.md')
+    if (!(Test-Path -LiteralPath $p -PathType Leaf)) { throw "Skill de pack ausente: $skill" }
+    $source = Get-Content -LiteralPath $p -Raw -Encoding UTF8
+    if ($source -notmatch '(?m)^name:\s*' + [regex]::Escape($skill) + '\s*
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Agente read-only sin edit deny: $id." }
+    if ($front -match '(?m)^\s{2}bash:\s*allow\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Agente read-only con bash allow: $id." }
+    if ($front -match '(?m)^\s{2}task:\s*allow\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Agente read-only puede delegar: $id." }
+  }
+  if ($agent.role -eq 'builder') {
+    if ($agent.writes -ne $true -or $agent.mode -ne 'all') { throw "Builder invalido, debe ser escribible/selectable: $id." }
+    if ($front -notmatch '(?m)^\s{2}edit:\s*ask\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Builder sin edit ask: $id." }
+    if ($front -notmatch '(?m)^\s{2}bash:\s*(ask|deny)\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Builder sin bash ask/deny: $id." }
+    foreach ($restricted in @('task','mcp','agent_manager','external_directory')) {
+      if ($front -notmatch "(?m)^\s{2}$([regex]::Escape($restricted)):\s*deny\s*$") {
+        throw "Builder con permiso no restringido: $id / $restricted."
+      }
+    }
+  }
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Nombre en frontmatter de skill inconsistente: $skill" }
+  }
+  if ($skillIds.Count -lt 2) { throw 'Pack sin suficientes skills VX.' }
+}
+
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Agente read-only sin edit deny: $id." }
+    if ($front -match '(?m)^\s{2}bash:\s*allow\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Agente read-only con bash allow: $id." }
+    if ($front -match '(?m)^\s{2}task:\s*allow\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Agente read-only puede delegar: $id." }
+  }
+  if ($agent.role -eq 'builder') {
+    if ($agent.writes -ne $true -or $agent.mode -ne 'all') { throw "Builder invalido, debe ser escribible/selectable: $id." }
+    if ($front -notmatch '(?m)^\s{2}edit:\s*ask\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Builder sin edit ask: $id." }
+    if ($front -notmatch '(?m)^\s{2}bash:\s*(ask|deny)\s*
+}
+$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($p in $profiles) {
+  $name = [string]$p.id
+  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
+  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
+  foreach ($phase in @('discover','review')) {
+    $list = @($p[$phase])
+    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
+    foreach ($a in $list) {
+      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
+      $role = @($agents | Where-Object { $_.id -eq $a })[0]
+      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
+    }
+  }
+  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
+}
+if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, solo global y un escritor maximo." -ForegroundColor Green
+) { throw "Builder sin bash ask/deny: $id." }
+    foreach ($restricted in @('task','mcp','agent_manager','external_directory')) {
+      if ($front -notmatch "(?m)^\s{2}$([regex]::Escape($restricted)):\s*deny\s*$") {
+        throw "Builder con permiso no restringido: $id / $restricted."
+      }
+    }
   }
 }
 $profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
