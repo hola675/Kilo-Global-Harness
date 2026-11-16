@@ -837,6 +837,28 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.1 approval contract' }
           Write-Host 'VX V4.7.1: STRICT REQUEST/ASSERTION + HOME AISLADO + SIN AUTH/APPLY: PASS'
 
+      - name: VX 0.2.4 - evidencia runtime sin elevación ni autoverificación
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_runtime_smoke_v1.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Pruebas de evidencia runtime fallidas.' }
+          python -m compileall -q scripts/vx_runtime_smoke_v1.py tests/test_vx_runtime_smoke_v1.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis evidencia runtime.' }
+          $tool = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8
+          if ($tool -notmatch '(?s)^---\r?\ndescription:' -or
+              $tool -notmatch 'external_directory' -or
+              $tool -notmatch 'NO_VERIFICADO') {
+            throw 'Comando vx-certificar incompleto.'
+          }
+          $pack = Get-Content 'commands/vx-pack.md' -Raw -Encoding UTF8
+          if ($pack -match '12 agentes/30 skills') { throw 'Inventario antiguo en vx-pack.' }
+          $registry = Get-Content 'registry/vx-agent-registry-v4.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($registry.pack.version -ne '0.2.4' -or @($registry.pack.owned_skills).Count -ne 31) {
+            throw 'Versión de pack inconsistente.'
+          }
+          Write-Host 'PASS VX RUNTIME 0.2.4: evidencia declarativa sin acciones Kilo'
+
       - name: VX Pack 0.2.3 - convivencia con inline y skills externas sin borrado
         shell: pwsh
         run: |

@@ -68,3 +68,7 @@ Restauración parcial o archivos con hash diferente se bloquean y requieren revi
 ## Puertas del siguiente ciclo
 
 Conservar los 19 agentes inline y skills externos; resolver solo colisiones comprobadas. Certificar Kilo runtime tras /reload, comprobar permisos efectivos y la skill IDA. Solo entonces declarar instalación operativa.
+
+## Actualización de contenido Pack V0.2.4 (posterior a instalación inicial)
+
+La instalación inicial V0.2.3 quedó comprobada en el Windows del operador: 12/12 agentes VX, 31/31 skills VX y contenido íntegro. El nuevo contenido añade comando /vx-certificar, guía de evidencias y aclara que un bloqueo external_directory no es un fallo de instalación. Antes de volver a aplicar el instalador por convivencia V023 (que sigue siendo el mecanismo de distribución), ejecutar Diagnostico y Simular y comprobar que los nuevos destinos VX no colisionan. Cerrar Kilo, conservar el backup anterior y anotar el nuevo backup si se decide actualizar. No modificar JSONC/MCP/skills externas. [Evidencia y pruebas](VX-CERTIFICACION-RUNTIME-20261116.md).

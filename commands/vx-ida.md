@@ -1,3 +1,7 @@
+---
+description: Preparar análisis autorizado de IDA mediante MCP, sin escritura ni autoinstalación
+---
+
 # /vx-ida — Investigación binaria con IDA MCP (solo guía)
 
 Activar la skill global `vx-ida-mcp-reverse-engineering` cuando el usuario pida análisis de binarios autorizados con IDA. Identificar el objetivo, comprobar que el servidor MCP **oficial** está conectado y qué herramientas read-only ofrece realmente. Nunca asumir que un MCP configurado ya está listo.
