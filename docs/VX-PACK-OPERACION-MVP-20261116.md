@@ -82,3 +82,7 @@ No ejecutar `--mode apply` ni `--mode restore` en HOME real desde esta PR. El va
 La ACL de cada agente VX inicia con `"*": deny` para herramientas desconocidas; después concede lectura, búsqueda y uso de skills por rol. Esto importa porque **Kilo nombra las herramientas MCP como `servidor_herramienta`**: no considerar `mcp: deny` una barrera suficiente. Ninguna skill amplía permisos; los builders requieren `edit/bash: ask`, salvo bash denegado en documentación. El revisor `vx-inspector` no ejecuta terminal y recibe un diff comprobado por el coordinador. El coordinador solo delega a seis lectores/revisores VX explícitos, no a agentes legacy con permisos desconocidos.
 
 Fuentes: https://kilo.ai/docs/customize/agent-permissions y https://kilo.ai/docs/automate/mcp/using-in-kilo-code. Estas son garantías de la **configuración fuente**; comprobar precedencia y permisos efectivos en Kilo real antes de afirmar aislamiento definitivo.
+
+## Restricción de restauración forzada
+
+Incluso con `--force-restore`, el bootstrap DPAPI **rechaza** restaurar si detecta agentes o skills nuevos posteriores al respaldo; primero deben preservarse en una copia independiente y revisarse. Force no es un permiso genérico para eliminar archivos ajenos. La restauración nunca debe ejecutarse durante sesiones activas de Kilo; la integración de PR #30 en PR #31 sigue siendo un candidato, no una migración aprobada.
