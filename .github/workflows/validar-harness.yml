@@ -172,6 +172,16 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           Write-Host 'VX PACK V0.2: 12 AGENTES, 30 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
 
+      - name: VX Task DAG V0.1 - contratos de equipo sin tareas efectivas
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_task_dag_v01.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Pruebas de DAG de tareas VX fallaron.' }
+          python -m compileall -q scripts/vx_task_dag.py tests/test_vx_task_dag_v01.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis task DAG VX.' }
+          Write-Host 'VX TASK DAG: GATES Y DEPENDENCIAS SIN AGENTES EJECUTADOS PASS'
+
       - name: VX Skills V0.2 - 30 skills, DAG aciclico y selector sin efectos
         shell: pwsh
         run: |

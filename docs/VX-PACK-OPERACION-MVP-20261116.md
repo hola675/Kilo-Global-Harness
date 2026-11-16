@@ -59,3 +59,7 @@ python .\scripts\vx_skill_router.py --profile frontend --phase verify --task "Pl
 ```
 
 Cobertura nueva: requisitos, DAG de tareas, ADR, codebase, APIs, TypeScript, Python, Workers, D1/KV/R2/Queues, SQL, colaboración, Git CI, supply chain, E2E, WCAG, rendimiento, privacidad/observabilidad, MCP, release y respuesta a incidentes. No se afirma ausencia absoluta de huecos: capacidades se certifican con pruebas de runtime y resultados reales; ampliar solo por brecha medida. Guía técnica original VX, referencias oficiales en cada SKILL.md.
+
+## Grafo de dependencias de tareas VX 0.1
+
+El validador nativo `scripts/vx_task_dag.py` recibe un plan JSON externo con `schema=vx-task-plan/1`, `mode=STRICT` y tareas con `id`, `owner`, `reviewer`, `depends_on`, `state`, `writer`, `worktree` y `allowed_paths` si escribe. Rechaza referencias a agentes inexistentes, revisores iguales al autor, ciclos, escritores concurrentes y tareas RUNNING sin prerequisitos. Una tarea `VERIFIED` exige referencias `review_ref` y `test_report`, pero estas **son declaraciones del plan y no verificación criptográfica**. La herramienta no ejecuta agentes ni habilita modo paralelo.

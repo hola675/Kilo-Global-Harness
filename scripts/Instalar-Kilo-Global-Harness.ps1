@@ -188,6 +188,10 @@ function Global-Assets {
     Source=(Join-Path $root 'scripts/vx_skill_router.py');
     Target=(Join-Path $kiloDir 'harness/scripts/vx_skill_router.py')
   }
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'scripts/vx_task_dag.py');
+    Target=(Join-Path $kiloDir 'harness/scripts/vx_task_dag.py')
+  }
   # Catalogo MCP pasivo y diagnostico sin secretos.
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'registry/vx-mcp-catalog-v1.json');
