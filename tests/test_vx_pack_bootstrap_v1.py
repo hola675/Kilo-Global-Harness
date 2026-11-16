@@ -169,6 +169,21 @@ class PackBootstrap(unittest.TestCase):
         self.assertTrue((self.agents / "vx-backend-builder.md").exists())
 
     @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser requiere Windows")
+    def test_force_restore_never_deletes_new_user_files(self):
+        result = self.cmd("--mode", "apply", "--confirm-migration")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        folder = next((self.home / ".config/kilo-harness-backups").glob("vx-pack-*"))
+        new_skill = self.skills / "user-skill-created-later"
+        new_skill.mkdir()
+        file = new_skill / "SKILL.md"
+        file.write_text("KEEP_USER_SKILL", encoding="utf-8")
+        run = self.cmd("--mode", "restore", "--backup-folder", str(folder),
+                       "--confirm-restore", "--force-restore")
+        self.assertNotEqual(run.returncode, 0)
+        self.assertEqual(file.read_text(encoding="utf-8"), "KEEP_USER_SKILL")
+        self.assertTrue((self.agents / "vx-backend-builder.md").is_file())
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser requiere Windows")
     def test_snapshot_without_apply_cannot_erase_profile(self):
         folder = vx.backup(self.home)
         restored = self.cmd("--mode", "restore", "--backup-folder", str(folder), "--confirm-restore")

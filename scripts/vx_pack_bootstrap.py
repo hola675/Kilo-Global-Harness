@@ -460,13 +460,14 @@ def restore(home: Path, folder: Path, *, force: bool = False):
             if (not isinstance(row.get("sha256"), str) or not target.is_file()
                     or digest(target.read_bytes()) != row["sha256"]):
                 raise Blocked("El Pack cambió después de instalar; restauración cancelada.")
-        # Las carpetas globales pueden haber recibido archivos nuevos del operador.
-        expected_live_files = set(cleanup)
-        for base in managed_roots:
-            for live in files_in(base):
-                verify_path(live)
-                if live not in expected_live_files:
-                    raise Blocked("Hay agentes o skills nuevos sin respaldo: no eliminarlos.")
+    # Force solamente permite reemplazar archivos VX modificados. Nunca autoriza
+    # borrar agentes/skills nuevos creados tras el backup ni sustituye su respaldo.
+    expected_live_files = set(cleanup)
+    for base in managed_roots:
+        for live in files_in(base):
+            verify_path(live)
+            if live not in expected_live_files:
+                raise Blocked("Hay agentes o skills nuevos sin respaldo: no eliminarlos.")
 
     restore_items: list[tuple[Path, bytes]] = []
     cleaned = set(cleanup)
