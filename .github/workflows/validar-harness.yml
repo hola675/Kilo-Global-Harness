@@ -837,6 +837,354 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.1 approval contract' }
           Write-Host 'VX V4.7.1: STRICT REQUEST/ASSERTION + HOME AISLADO + SIN AUTH/APPLY: PASS'
 
+      - name: VX P2.1 - modo de builder y aprobacion manual sin elevar permisos
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -B -I -m unittest discover -s tests -p 'test_vx_p2_mode_gate_v025.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo P2.1 modo/ACL/permisos.' }
+          $cmd = Get-Content 'commands/vx-p2.md' -Raw -Encoding UTF8
+          $agent = Get-Content 'agents/vx-docs-builder.md' -Raw -Encoding UTF8
+          $registry = Get-Content 'registry/vx-agent-registry-v4.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($cmd -notmatch '(?m)^agent: vx-docs-builder
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_runtime_smoke_v1.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Pruebas de evidencia runtime fallidas.' }
+          python -m compileall -q scripts/vx_runtime_smoke_v1.py tests/test_vx_runtime_smoke_v1.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis evidencia runtime.' }
+          $tool = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8
+          if ($tool -notmatch '(?s)^---\r?\ndescription:' -or
+              $tool -notmatch 'external_directory' -or
+              $tool -notmatch 'NO_VERIFICADO') {
+            throw 'Comando vx-certificar incompleto.'
+          }
+          $pack = Get-Content 'commands/vx-pack.md' -Raw -Encoding UTF8
+          if ($pack -match '12 agentes/30 skills') { throw 'Inventario antiguo en vx-pack.' }
+          $registry = Get-Content 'registry/vx-agent-registry-v4.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($registry.pack.version -ne '0.2.5' -or @($registry.pack.owned_skills).Count -ne 31) {
+            throw 'Versión de pack inconsistente.'
+          }
+          $cert = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8
+          $integrator = Get-Content 'agents/vx-integrador.md' -Raw -Encoding UTF8
+          $inspector = Get-Content 'agents/vx-inspector.md' -Raw -Encoding UTF8
+          $readme = Get-Content 'README.md' -Raw -Encoding UTF8
+          if ($cert -notmatch 'confirmación visual' -or
+              $integrator -notmatch 'bloqueos circulares' -or
+              $inspector -notmatch 'selector' -or
+              $readme -match 'Delegación, selector y permisos efectivos aún NO VERIFICADOS') {
+            throw 'Corrección de handoff P1/README ausente o inconsistente.'
+          }
+          Write-Host 'PASS VX RUNTIME 0.2.4: evidencia declarativa sin acciones Kilo'
+
+      - name: VX Pack 0.2.3 - convivencia con inline y skills externas sin borrado
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_coexist_v023.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo fixtures convivencia VX 0.2.3' }
+          python -m compileall -q scripts/vx_pack_coexist_v023.py tests/test_vx_pack_coexist_v023.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis VX 0.2.3' }
+          $tempHome = Join-Path $env:RUNNER_TEMP ('vx-coexist-cli-' + [guid]::NewGuid().ToString('N'))
+          $kilo = Join-Path $tempHome '.config/kilo'
+          New-Item -ItemType Directory -Force -Path $kilo | Out-Null
+          $inline = @{}
+          1..19 | ForEach-Object { $inline["legacy-agent-$_"] = @{mode='primary';steps=90} }
+          @{agent=$inline; mcp=@{INERTE=@{token='CI_ONLY_NEVER_REAL_SECRET'}}} |
+            ConvertTo-Json -Depth 9 | Set-Content -LiteralPath (Join-Path $kilo 'kilo.jsonc') -Encoding UTF8
+          foreach ($compat in @('.agents','.kilocode')) {
+            $base = Join-Path $tempHome ($compat + '/skills/legacy-skill')
+            New-Item -ItemType Directory -Force -Path $base | Out-Null
+            '---', 'name: legacy-skill', 'description: CI only', '---', 'fixture' |
+              Set-Content -LiteralPath (Join-Path $base 'SKILL.md') -Encoding UTF8
+          }
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Diagnostico -RaizUsuario $tempHome
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Simular -RaizUsuario $tempHome
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Aplicar -RaizUsuario $tempHome -ConfirmarConvivencia -ConfirmarKiloCerrado
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Verificar -RaizUsuario $tempHome
+          if (!(Test-Path (Join-Path $tempHome '.config/kilo/agents/vx-integrador.md'))) { throw 'VX agent ausente.' }
+          if (!(Test-Path (Join-Path $tempHome '.kilo/skills/vx-ida-mcp-reverse-engineering/SKILL.md'))) { throw 'IDA skill ausente.' }
+          if (!(Test-Path (Join-Path $tempHome '.agents/skills/legacy-skill/SKILL.md'))) { throw 'Compat skill fue eliminada.' }
+          if (!(Test-Path (Join-Path $tempHome '.kilocode/skills/legacy-skill/SKILL.md'))) { throw 'Legacy skill fue eliminada.' }
+          Write-Host 'PASS VX 0.2.3 convivencia Windows DPAPI, 19 agentes inline y skills externas'
+
+      - name: VX Pack 0.2.2 - rutas seguras, marcadores y DPAPI aislado
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_release_v022.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V0.2.2.' }
+          python -m compileall -q scripts/vx_pack_bootstrap.py tests/test_vx_pack_release_v022.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V0.2.2.' }
+          $tmp = Join-Path $env:RUNNER_TEMP ('vx-pack-release-' + [guid]::NewGuid().ToString('N'))
+          New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Diagnostico -RaizUsuario $tmp
+          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Simular -RaizUsuario $tmp
+          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Aplicar -RaizUsuario $tmp -ConfirmarMigracion -ConfirmarKiloCerrado
+          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Verificar -RaizUsuario $tmp
+          if (!(Test-Path (Join-Path $tmp '.config/kilo/agents/vx-integrador.md'))) { throw 'Agente no instalado.' }
+          if (!(Test-Path (Join-Path $tmp '.kilo/skills/vx-ida-mcp-reverse-engineering/SKILL.md'))) { throw 'Skill IDA no instalada.' }
+          Write-Host 'VX PACK 0.2.2: PREFLIGHT + DPAPI + VERIFICACION PASS'
+
+      - name: VX IDA MCP - skill, catalogo opcional y reglas de no-escritura
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_ida_mcp_skill.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron las pruebas de la skill IDA MCP.' }
+          Write-Host 'VX IDA MCP: SKILL + CATALOGO OPCIONAL + SIN INSTALACION AUTOMATICA: PASS'
+
+      - name: VX Integración - 12 agentes, 31 skills, Academy, MCP único y V4.7.2 inactiva
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_consolidacion_v01.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo la consolidacion VX Pack 0.2 / V4.7.2.' }
+          Write-Host 'VX INTEGRACION: CUATRO PR SIN INSTALACION NI APROBACIONES PASS'
+
+      - name: V4.7.2 - contratos de seguridad aislados y aprobaciones deshabilitadas
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_approval_security_v472.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V4.7.2 approval security' }
+          python -m compileall -q scripts/vx_approval_security_v472.py tests/test_vx_approval_security_v472.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.2 approval security' }
+          Write-Host 'VX V4.7.2: WEBAUTHN STRUCTURE ONLY + IN-MEMORY MODELS + NO EFFECTIVE APPROVAL/APPLY: PASS'
+
+      - name: V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_organizational_audit_v463.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron tests V4.6.3' }
+          python -m compileall -q scripts/vx_organizational_audit.py tests/test_vx_organizational_audit_v463.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.6.3' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx463-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo instalador V4.6.3' }
+          $org = Join-Path $fixture '.config/kilo/harness/scripts/vx_organizational_audit.py'
+          $audit = Join-Path $fixture '.config/kilo/harness/scripts/vx_capability_audit.py'
+          $cmd = Join-Path $fixture '.config/kilo/commands/vx-organizacion.md'
+          $reg = Join-Path $fixture '.config/kilo/harness/vx-agent-registry-v4.json'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (!(Test-Path $org) -or !(Test-Path $audit) -or !(Test-Path $cmd)) {
+            throw 'Archivos V4.6.3 no instalados globalmente'
+          }
+          if (Test-Path $db) { throw 'Instalacion no debe crear SQLite' }
+          $hash = (Get-FileHash $reg -Algorithm SHA256).Hash
+          $report = python -I $org --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo CLI V4.6.3' }
+          $baseline = python -I $audit --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo linea base V4.6.0 en CI V4.6.3' }
+          if ($report.schema -ne 'vx-kilo-organizational-audit/1' -or
+              $report.scope -ne 'HOME_GLOBAL_SOLO_LECTURA_PC_UNICA' -or
+              $report.writes -ne 0 -or $report.database_access -or
+              $report.models_called -or $report.mcp_called -or
+              $report.live_agent_execution -or $report.session_logs_read -or
+              $report.delegation_provenance_verified -or
+              $report.effective_source_verified -or
+              $report.organizational_change_authorized -or $report.scheduler_enabled -or
+              $report.competence -ne 'NO_MEDIDO' -or
+              $report.seniority -ne 'NO_ASIGNADO' -or
+              $report.counts.agent_source_overlaps -ne $baseline.counts.agents_jsonc_and_markdown -or
+              $report.counts.steps_above_configured_threshold -ne $baseline.counts.steps_above_threshold) {
+            throw 'Contrato V4.6.3 incumplido'
+          }
+          foreach ($finding in $report.findings) {
+            if ($finding.automatic_action -ne 'NINGUNA' -or $finding.effective_runtime_verified) {
+              throw 'V4.6.3 no debe activar ni inferir runtime'
+            }
+          }
+          if ((Get-FileHash $reg -Algorithm SHA256).Hash -ne $hash -or (Test-Path $db)) {
+            throw 'V4.6.3 modifico registro o SQLite'
+          }
+          & $installer -Modo Verificar -RaizUsuario $fixture
+          if ($LASTEXITCODE -ne 0) { throw 'Verificacion V4.6.3 fallo' }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          if (!$backup) { throw 'No existe backup de rollback V4.6.3' }
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if ($LASTEXITCODE -ne 0 -or (Test-Path $org)) {
+            throw 'Rollback V4.6.3 incompleto'
+          }
+          Write-Host 'VX V4.6.3: 26 UNIT TESTS + HOME ISOLADO + ROLLBACK WINDOWS PASS'
+ -or
+              $cmd -notmatch 'PRECONDITION_NOT_MET' -or
+              $cmd -notmatch 'FAIL_UNAPPROVED_WRITE' -or
+              $agent -notmatch '(?m)^\s*bash: deny
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_runtime_smoke_v1.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Pruebas de evidencia runtime fallidas.' }
+          python -m compileall -q scripts/vx_runtime_smoke_v1.py tests/test_vx_runtime_smoke_v1.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis evidencia runtime.' }
+          $tool = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8
+          if ($tool -notmatch '(?s)^---\r?\ndescription:' -or
+              $tool -notmatch 'external_directory' -or
+              $tool -notmatch 'NO_VERIFICADO') {
+            throw 'Comando vx-certificar incompleto.'
+          }
+          $pack = Get-Content 'commands/vx-pack.md' -Raw -Encoding UTF8
+          if ($pack -match '12 agentes/30 skills') { throw 'Inventario antiguo en vx-pack.' }
+          $registry = Get-Content 'registry/vx-agent-registry-v4.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+          if ($registry.pack.version -ne '0.2.5' -or @($registry.pack.owned_skills).Count -ne 31) {
+            throw 'Versión de pack inconsistente.'
+          }
+          $cert = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8
+          $integrator = Get-Content 'agents/vx-integrador.md' -Raw -Encoding UTF8
+          $inspector = Get-Content 'agents/vx-inspector.md' -Raw -Encoding UTF8
+          $readme = Get-Content 'README.md' -Raw -Encoding UTF8
+          if ($cert -notmatch 'confirmación visual' -or
+              $integrator -notmatch 'bloqueos circulares' -or
+              $inspector -notmatch 'selector' -or
+              $readme -match 'Delegación, selector y permisos efectivos aún NO VERIFICADOS') {
+            throw 'Corrección de handoff P1/README ausente o inconsistente.'
+          }
+          Write-Host 'PASS VX RUNTIME 0.2.4: evidencia declarativa sin acciones Kilo'
+
+      - name: VX Pack 0.2.3 - convivencia con inline y skills externas sin borrado
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_coexist_v023.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo fixtures convivencia VX 0.2.3' }
+          python -m compileall -q scripts/vx_pack_coexist_v023.py tests/test_vx_pack_coexist_v023.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis VX 0.2.3' }
+          $tempHome = Join-Path $env:RUNNER_TEMP ('vx-coexist-cli-' + [guid]::NewGuid().ToString('N'))
+          $kilo = Join-Path $tempHome '.config/kilo'
+          New-Item -ItemType Directory -Force -Path $kilo | Out-Null
+          $inline = @{}
+          1..19 | ForEach-Object { $inline["legacy-agent-$_"] = @{mode='primary';steps=90} }
+          @{agent=$inline; mcp=@{INERTE=@{token='CI_ONLY_NEVER_REAL_SECRET'}}} |
+            ConvertTo-Json -Depth 9 | Set-Content -LiteralPath (Join-Path $kilo 'kilo.jsonc') -Encoding UTF8
+          foreach ($compat in @('.agents','.kilocode')) {
+            $base = Join-Path $tempHome ($compat + '/skills/legacy-skill')
+            New-Item -ItemType Directory -Force -Path $base | Out-Null
+            '---', 'name: legacy-skill', 'description: CI only', '---', 'fixture' |
+              Set-Content -LiteralPath (Join-Path $base 'SKILL.md') -Encoding UTF8
+          }
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Diagnostico -RaizUsuario $tempHome
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Simular -RaizUsuario $tempHome
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Aplicar -RaizUsuario $tempHome -ConfirmarConvivencia -ConfirmarKiloCerrado
+          & ./scripts/Instalar-Pack-VX-Convivencia-V023.ps1 -Modo Verificar -RaizUsuario $tempHome
+          if (!(Test-Path (Join-Path $tempHome '.config/kilo/agents/vx-integrador.md'))) { throw 'VX agent ausente.' }
+          if (!(Test-Path (Join-Path $tempHome '.kilo/skills/vx-ida-mcp-reverse-engineering/SKILL.md'))) { throw 'IDA skill ausente.' }
+          if (!(Test-Path (Join-Path $tempHome '.agents/skills/legacy-skill/SKILL.md'))) { throw 'Compat skill fue eliminada.' }
+          if (!(Test-Path (Join-Path $tempHome '.kilocode/skills/legacy-skill/SKILL.md'))) { throw 'Legacy skill fue eliminada.' }
+          Write-Host 'PASS VX 0.2.3 convivencia Windows DPAPI, 19 agentes inline y skills externas'
+
+      - name: VX Pack 0.2.2 - rutas seguras, marcadores y DPAPI aislado
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_release_v022.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V0.2.2.' }
+          python -m compileall -q scripts/vx_pack_bootstrap.py tests/test_vx_pack_release_v022.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V0.2.2.' }
+          $tmp = Join-Path $env:RUNNER_TEMP ('vx-pack-release-' + [guid]::NewGuid().ToString('N'))
+          New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Diagnostico -RaizUsuario $tmp
+          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Simular -RaizUsuario $tmp
+          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Aplicar -RaizUsuario $tmp -ConfirmarMigracion -ConfirmarKiloCerrado
+          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Verificar -RaizUsuario $tmp
+          if (!(Test-Path (Join-Path $tmp '.config/kilo/agents/vx-integrador.md'))) { throw 'Agente no instalado.' }
+          if (!(Test-Path (Join-Path $tmp '.kilo/skills/vx-ida-mcp-reverse-engineering/SKILL.md'))) { throw 'Skill IDA no instalada.' }
+          Write-Host 'VX PACK 0.2.2: PREFLIGHT + DPAPI + VERIFICACION PASS'
+
+      - name: VX IDA MCP - skill, catalogo opcional y reglas de no-escritura
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_ida_mcp_skill.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron las pruebas de la skill IDA MCP.' }
+          Write-Host 'VX IDA MCP: SKILL + CATALOGO OPCIONAL + SIN INSTALACION AUTOMATICA: PASS'
+
+      - name: VX Integración - 12 agentes, 31 skills, Academy, MCP único y V4.7.2 inactiva
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_consolidacion_v01.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo la consolidacion VX Pack 0.2 / V4.7.2.' }
+          Write-Host 'VX INTEGRACION: CUATRO PR SIN INSTALACION NI APROBACIONES PASS'
+
+      - name: V4.7.2 - contratos de seguridad aislados y aprobaciones deshabilitadas
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_approval_security_v472.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V4.7.2 approval security' }
+          python -m compileall -q scripts/vx_approval_security_v472.py tests/test_vx_approval_security_v472.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.2 approval security' }
+          Write-Host 'VX V4.7.2: WEBAUTHN STRUCTURE ONLY + IN-MEMORY MODELS + NO EFFECTIVE APPROVAL/APPLY: PASS'
+
+      - name: V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_organizational_audit_v463.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron tests V4.6.3' }
+          python -m compileall -q scripts/vx_organizational_audit.py tests/test_vx_organizational_audit_v463.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.6.3' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx463-' + [guid]::NewGuid().ToString('N'))
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo instalador V4.6.3' }
+          $org = Join-Path $fixture '.config/kilo/harness/scripts/vx_organizational_audit.py'
+          $audit = Join-Path $fixture '.config/kilo/harness/scripts/vx_capability_audit.py'
+          $cmd = Join-Path $fixture '.config/kilo/commands/vx-organizacion.md'
+          $reg = Join-Path $fixture '.config/kilo/harness/vx-agent-registry-v4.json'
+          $db = Join-Path $fixture '.config/kilo/vx-evolution/vx-evolution.sqlite3'
+          if (!(Test-Path $org) -or !(Test-Path $audit) -or !(Test-Path $cmd)) {
+            throw 'Archivos V4.6.3 no instalados globalmente'
+          }
+          if (Test-Path $db) { throw 'Instalacion no debe crear SQLite' }
+          $hash = (Get-FileHash $reg -Algorithm SHA256).Hash
+          $report = python -I $org --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo CLI V4.6.3' }
+          $baseline = python -I $audit --home $fixture --json | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo linea base V4.6.0 en CI V4.6.3' }
+          if ($report.schema -ne 'vx-kilo-organizational-audit/1' -or
+              $report.scope -ne 'HOME_GLOBAL_SOLO_LECTURA_PC_UNICA' -or
+              $report.writes -ne 0 -or $report.database_access -or
+              $report.models_called -or $report.mcp_called -or
+              $report.live_agent_execution -or $report.session_logs_read -or
+              $report.delegation_provenance_verified -or
+              $report.effective_source_verified -or
+              $report.organizational_change_authorized -or $report.scheduler_enabled -or
+              $report.competence -ne 'NO_MEDIDO' -or
+              $report.seniority -ne 'NO_ASIGNADO' -or
+              $report.counts.agent_source_overlaps -ne $baseline.counts.agents_jsonc_and_markdown -or
+              $report.counts.steps_above_configured_threshold -ne $baseline.counts.steps_above_threshold) {
+            throw 'Contrato V4.6.3 incumplido'
+          }
+          foreach ($finding in $report.findings) {
+            if ($finding.automatic_action -ne 'NINGUNA' -or $finding.effective_runtime_verified) {
+              throw 'V4.6.3 no debe activar ni inferir runtime'
+            }
+          }
+          if ((Get-FileHash $reg -Algorithm SHA256).Hash -ne $hash -or (Test-Path $db)) {
+            throw 'V4.6.3 modifico registro o SQLite'
+          }
+          & $installer -Modo Verificar -RaizUsuario $fixture
+          if ($LASTEXITCODE -ne 0) { throw 'Verificacion V4.6.3 fallo' }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          if (!$backup) { throw 'No existe backup de rollback V4.6.3' }
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          if ($LASTEXITCODE -ne 0 -or (Test-Path $org)) {
+            throw 'Rollback V4.6.3 incompleto'
+          }
+          Write-Host 'VX V4.6.3: 26 UNIT TESTS + HOME ISOLADO + ROLLBACK WINDOWS PASS'
+ -or
+              $registry.pack.version -ne '0.2.5') {
+            throw 'Gates P2.1 incompletos.'
+          }
+          Write-Host 'PASS P2.1 selector + aprobacion manual sin cambios ACL'
+
       - name: VX 0.2.4 - evidencia runtime sin elevación ni autoverificación
         shell: pwsh
         run: |
@@ -854,7 +1202,7 @@ jobs:
           $pack = Get-Content 'commands/vx-pack.md' -Raw -Encoding UTF8
           if ($pack -match '12 agentes/30 skills') { throw 'Inventario antiguo en vx-pack.' }
           $registry = Get-Content 'registry/vx-agent-registry-v4.json' -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ($registry.pack.version -ne '0.2.4' -or @($registry.pack.owned_skills).Count -ne 31) {
+          if ($registry.pack.version -ne '0.2.5' -or @($registry.pack.owned_skills).Count -ne 31) {
             throw 'Versión de pack inconsistente.'
           }
           $cert = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8

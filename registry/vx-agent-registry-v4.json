@@ -505,7 +505,7 @@
   ],
   "pack": {
     "id": "vx-development-team",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "owned_agents": [
       "vx-integrador",
       "vx-inspector",

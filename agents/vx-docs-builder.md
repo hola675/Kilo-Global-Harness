@@ -34,7 +34,7 @@ Escritor técnico de README, contratos, arquitectura ADR, ejemplos, planes de pr
 - Trabajo concurrente solo por worktree aislado aprobado, sin escribir el mismo archivo que otro agente.
 - Entrega `{task_id,docs_updated,source_refs,unverified_claims,acceptance_review,diff_or_commit}`. Revisión independiente por Lucas.
 
-**Activación:** disponible como agente seleccionable directamente en Kilo para que el usuario pueda aprobar `edit: ask`/`bash: ask`. Como subagente `task` no interactivo, si no puede recabar aprobación efectiva debe detener la acción y devolver un plan, nunca evitar el permiso. Por defecto el selector mantiene `code` nativo hasta seleccionar `-UsarBuildersVX` y validar el runtime.
+**Activación:** un workspace nuevo puede abrirse en `Code` aunque exista el builder global. Seleccionar visualmente `Vx Docs Builder` o usar `/vx-p2` (que declara `agent: vx-docs-builder`) y confirmar el selector real antes de probar edición. El selector `-UsarBuildersVX` **solo produce un plan**, no activa agentes. Este builder tiene `edit: ask`, **`bash: deny`** y `task: deny`. Como subagente no interactivo, si no recibe aprobación efectiva devuelve un plan sin escribir.
 
 
 ## Contrato de especialización VX 0.2
@@ -44,3 +44,8 @@ Escritor técnico de README, contratos, arquitectura ADR, ejemplos, planes de pr
 Mantener documentación ligada al código/CI actual y ADR; nunca representar diseño o tests pendientes como implantados. Antes de aceptar un handoff, verificar `task_id`, `base_sha`, dependencias y estado de evidencia; si falta contrato o permiso efectivo, devolver `BLOCKED`/plan sin eludir controles. La matriz de dependencias recomienda especialistas y revisores, **no concede permisos** ni certifica una ejecución. Devolver solo resultados acotados, riesgos y procedencia para el siguiente agente; respetar un único escritor por worktree.
 
 **Aislamiento efectivo V0.2:** la primera regla de permisos es `"*": deny`; solo herramientas nativas listadas quedan disponibles. MCP usa nombres de herramientas `servidor_tool`, por lo que `mcp: deny` aislado no protege esos nombres. Cualquier override de configuración del proyecto debe auditarse por precedencia real.
+
+
+## Puerta P2.1: comprobar agente y aprobación efectiva
+
+La captura del operador del laboratorio VX-Team-Lab muestra `Code` activo y autonomía `Auto`; una respuesta de `TOOL_UNAVAILABLE` allí no prueba fallo de `vx-docs-builder`. Primero exigir confirmación visual del builder y aprobación manual por acción. Si no se cumple, `PRECONDITION_NOT_MET` sin herramientas de edición. Con builder confirmado, si falta herramienta nativa, `TOOL_UNAVAILABLE`; con denegación, `PERMISSION_DENIED`; con escritura sin aprobación manual previa, `FAIL_UNAPPROVED_WRITE` y detener. No usar Bash ni MCP alternativos. No cambiar AutoApprove persistente ni JSONC.
