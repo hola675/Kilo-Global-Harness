@@ -35,6 +35,10 @@ Siguen sin demostrar por llamada nativa: selección de vx-integrador, disponibil
 
 El operador mostró `Vx Integrador` activo y cinco builders visibles en el selector de Kilo. En P1 informó dos llamadas `task` a `vx-inspector`: la primera `BLOCKED` por comprobación redundante del selector y la segunda `completed` tras declarar la observación del operador en el handoff, devolviendo una revisión de solo lectura de `README.md`. El README confirma la cabecera reportada y admite desactualizaciones editoriales. Se considera **delegación con resultado observable por informe**; permisos efectivos edit/bash y conexión IDA MCP siguen NO VERIFICADOS. El handoff del coordinador ya transmite fuente del prerequisito y el inspector no intenta volver a verificar la interfaz ni escalar permisos. Próxima puerta: P2 de `edit: ask` en sandbox sintético, solo con autorización separada y verificando que la primera solicitud denegada no escriba. [Acta](VX-CERTIFICACION-RUNTIME-20261116.md).
 
+### Puerta P2.1 — modo activo Code vs Vx Docs Builder (2026-11-16)
+
+La captura del operador en VX-Team-Lab mostró el agente **Code** seleccionado y autonomía **Auto**. La respuesta de falta de herramienta nativa no certifica ausencia de `edit: ask` en Vx Docs Builder. La nueva instrucción global `/vx-p2` solicita el agente `vx-docs-builder` y bloquea toda edición hasta confirmar visualmente el agente y aprobación manual por acción. Se agregó un test sintético de ACL y fase denegar/aprobar; permisos del builder sin ampliación (`edit: ask`, `bash: deny`, `task: deny`). Las pruebas reales P2 aún están **NO VERIFICADAS** y requieren denegación de una única edición en laboratorio. [Acta](VX-CERTIFICACION-RUNTIME-20261116.md).
+
 ## Resumen ejecutivo del estado y puertas del siguiente tema
 
 | Línea de producto | Qué construye | Estado comprobable | Puerta para avanzar |

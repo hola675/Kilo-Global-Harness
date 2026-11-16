@@ -26,13 +26,15 @@
 4. Ninguna ejecución de Bash, edición, inspección HOME ni conexión IDA MCP se reportó en la P1. La ausencia declarada de estas acciones no certifica que las ACL efectivas sean correctas.
 5. P1 cumple el criterio **delegación nativa con respuesta**; la certificación global continúa parcial. No repetir la comprobación visual sin cambio de contexto ni tratarla como herramienta nativa.
 
-## Piloto P2 — propuesto, no ejecutado
+## Piloto P2.1 — bloqueo de precondición; edición no certificada
 
-Crear un proyecto de prueba aislado y **fuera del repositorio del Harness** (abierto como workspace autorizado), con un archivo inofensivo y conocido, por ejemplo `ACL_TEST.txt`. Seleccionar visualmente `Vx Backend Builder` o `Vx Docs Builder`; verificar `edit: ask` primero denegando un cambio solicitado y comprobando que no se escribió nada. Para la prueba de aprobación, volver a solicitar una **edición mínima y reversible** y aprobarla explícitamente si la UI presenta la autorización; registrar mensaje de permiso, herramienta invocada y hash antes/después. No ejecutar Bash ni MCP y no conectar el sandbox a producción. Si se edita sin requerir aprobación, registrar FAIL de la política esperada y detener las pruebas. No ejecutar P2 automáticamente por esta documentación: requiere nueva autorización del operador en Kilo.
+El intento anterior de edición leyó la línea `Estado del piloto: SIN_VALIDAR`, pero informó ausencia de herramienta nativa. La captura posterior del laboratorio muestra **`Code` seleccionado**, no `Vx Docs Builder`, y autonomía **`Auto`**, cuyo estado efectivo de aprobación manual no se comprobó. No es válido atribuir ese `TOOL_UNAVAILABLE` al builder; estado P2 = **PRECONDITION_NOT_MET / NO_VERIFICADO**, no fallo demostrado de seguridad.
+
+**Procedimiento P2.1, separado de producción:** abrir VX-Team-Lab y ejecutar `/vx-p2` sin fase, que declara `agent: vx-docs-builder`, para solicitar al host el agente correcto y comenzar **sin escrituras**. Confirmar visualmente que el selector muestra Vx Docs Builder y establecer **aprobación manual por acción**, sin modificar globalmente `kilo.jsonc` ni AutoApprove. Luego usar `/vx-p2 fase=denegar`: la única edición solicitada a `README.md` deberá mostrar aprobación previa y el operador denegará; comprobar `SIN_VALIDAR`. Únicamente tras superar la denegación, realizar otra llamada aprobada una sola vez, reversible. Si no aparece edición nativa con builder confirmado, registrar TOOL_UNAVAILABLE; si Kilo escribe sin aprobación previa en modo manual, registrar FAIL_UNAPPROVED_WRITE y detener. **Vx Docs Builder tiene `bash: deny`** y no se permite usar terminal/MCP como alternativa.
 
 ## Herramientas y comprobación declarativa
 
-- Comando global: /vx-certificar
+- Comandos globales: /vx-certificar y /vx-p2 (selector del Docs Builder)
 - CLI de evidencia en repo: python -I scripts/vx_runtime_smoke_v1.py --template
 - CLI para validar JSON preparado manualmente: python -I scripts/vx_runtime_smoke_v1.py --check <archivo.json>
 
