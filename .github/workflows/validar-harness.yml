@@ -790,3 +790,35 @@ jobs:
             throw 'Rollback V4.6.3 incompleto'
           }
           Write-Host 'VX V4.6.3: 26 UNIT TESTS + HOME ISOLADO + ROLLBACK WINDOWS PASS'
+
+      - name: VX Pack V0.1 - doce agentes y skills con snapshot DPAPI en HOME sintetico
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_bootstrap_v1.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo pruebas de bootstrap VX Pack' }
+          python -m compileall -q scripts/vx_pack_bootstrap.py tests/test_vx_pack_bootstrap_v1.py
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo sintaxis Pack VX' }
+          & ./scripts/Validar-Registro-V4.ps1
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo validador Pack VX' }
+          $matrix = @{
+            frontend = 'vx-frontend-builder'
+            backend = 'vx-backend-builder'
+            qa = 'vx-qa-builder'
+            database = 'vx-data-builder'
+            docs = 'vx-docs-builder'
+          }
+          foreach ($key in $matrix.Keys) {
+            $plan = (& ./scripts/Seleccionar-Equipo-V4.ps1 -Perfil $key -UsarBuildersVX -Json | Out-String | ConvertFrom-Json)
+            if ($plan.implementation -ne $matrix[$key] -or $plan.max_writers -ne 1 -or
+                $plan.actions_executed -ne 0 -or $plan.implementation_source -ne 'vx-builder-opt-in') {
+              throw "Selector VX para $key no coincide: $($plan.implementation)"
+            }
+          }
+          $tmp = Join-Path $env:RUNNER_TEMP ('vx-pack-cli-' + [guid]::NewGuid().ToString('N'))
+          $safe = python -I scripts/vx_pack_bootstrap.py --mode simulate --home $tmp | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $safe.agents -ne 12 -or $safe.skills -ne 10 -or
+              $safe.mcp_changes -ne 0 -or (Test-Path $tmp)) {
+            throw 'Simulacion VX Pack alteró HOME o conteos incorrectos'
+          }
+          Write-Host 'VX Pack: fixtures DPAPI, instalacion/restauracion, 12 agents y 10 skills PASS'
