@@ -202,6 +202,9 @@ def load_pack(repo: Path, home: Path):
         Asset(registry_path, kilo / "harness/vx-agent-registry-v4.json")
     ]
     for item in sorted((repo / "scripts").iterdir()):
+        # Bootstrap requiere los assets del repositorio fuente, no se copia como runtime.
+        if item.name == "vx_pack_bootstrap.py":
+            continue
         if item.is_file() and (re.fullmatch(r"vx_.*\.py", item.name) or
                 item.name in {"Seleccionar-Equipo-V4.ps1", "Validar-Registro-V4.ps1",
                               "Reconciliar-Agentes-V4.2.ps1"}):
