@@ -149,6 +149,29 @@ jobs:
           if ($restored -ne $before) { throw 'Rollback altero configuracion privada.' }
           Write-Host 'V4 GLOBAL-ONLY, SEGURIDAD, ROUTING Y ROLLBACK: PASS'
 
+      - name: VX Pack 0.1 - doctor, MCP pasivos y 12 agentes 10 skills
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_doctor.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Test de doctor VX fallo.' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx-pack-doctor-' + [guid]::NewGuid().ToString('N'))
+          New-Item -ItemType Directory -Path $fixture -Force | Out-Null
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          $report = (python scripts/vx_pack_doctor.py --home $fixture --source . --json | Out-String | ConvertFrom-Json)
+          if ($LASTEXITCODE -ne 0) { throw 'Doctor VX fallo en Windows.' }
+          if (!$report.ready_for_manual_kilo_smoke -or
+              $report.agents.expected -ne 12 -or $report.agents.found -ne 12 -or
+              $report.skills.expected -ne 10 -or $report.skills.found -ne 10 -or
+              $report.runtime_verified -ne $false -or $report.mcp.connections_verified -ne $false) {
+            throw 'Doctor VX no acredita pack instalado o promete runtime inexistente.'
+          }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          Write-Host 'VX PACK V0.1: 12 AGENTES, 10 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
+
       - name: V4.1 - auditoria de evidencias y comando global
         shell: pwsh
         run: |
