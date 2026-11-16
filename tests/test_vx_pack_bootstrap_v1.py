@@ -108,8 +108,8 @@ class PackBootstrap(unittest.TestCase):
         self.assertNotEqual(blob[:2], b"PK")  # encrypted, not a plaintext zip
         data, receipt = vx.read_backup(backups[0])
         self.assertEqual(receipt["state"], "INSTALLED_FILES_VERIFIED_RUNTIME_NOT_VERIFIED")
-        self.assertIn("config-kilo/kilo.jsonc", data)
-        self.assertEqual(data["config-kilo/kilo.jsonc"], self.config.read_bytes())
+        self.assertIn("kilo-config/kilo.jsonc", data)
+        self.assertEqual(data["kilo-config/kilo.jsonc"], self.config.read_bytes())
         self.assertEqual(vx.digest(self.config.read_bytes()), self.config_hash)
         self.assertEqual(self.cmd("--mode", "verify").returncode, 0)
         self.assertFalse((self.agents / "old-user-agent.md").exists())
