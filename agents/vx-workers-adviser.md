@@ -3,6 +3,7 @@ description: Especialista de arquitectura y diagnostico Cloudflare Workers, KV, 
 mode: subagent
 steps: 55
 permission:
+  "*": deny
   read:
     "*": allow
     "*.env*": deny
@@ -13,9 +14,11 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
+  skill: allow
   edit: deny
   bash: deny
-  mcp: deny
+  websearch: ask
+  webfetch: ask
   task: deny
   agent_manager: deny
   external_directory: deny
@@ -46,3 +49,5 @@ Tu entrega `{task_id,bindings_names,code_changes_proposed,dev_validation_plan,pr
 **Fase prioritaria:** REVIEW. **Skills candidatas bajo demanda:** `vx-cloudflare-worker-runtime`, `vx-cloudflare-storage-messaging`, `vx-sql-query-performance`. La selección la recomienda `vx_skill_router.py` según la tarea; no cargar todas las skills por estar disponibles.
 
 Confirmar bindings, compat_date y consistencia D1/KV/R2/Queues con documentación actual; no desplegar ni acceder a producción. Antes de aceptar un handoff, verificar `task_id`, `base_sha`, dependencias y estado de evidencia; si falta contrato o permiso efectivo, devolver `BLOCKED`/plan sin eludir controles. La matriz de dependencias recomienda especialistas y revisores, **no concede permisos** ni certifica una ejecución. Devolver solo resultados acotados, riesgos y procedencia para el siguiente agente; respetar un único escritor por worktree.
+
+**Aislamiento efectivo V0.2:** la primera regla de permisos es `"*": deny`; solo herramientas nativas listadas quedan disponibles. MCP usa nombres de herramientas `servidor_tool`, por lo que `mcp: deny` aislado no protege esos nombres. Cualquier override de configuración del proyecto debe auditarse por precedencia real.

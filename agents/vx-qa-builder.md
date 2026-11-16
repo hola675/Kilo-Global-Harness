@@ -3,6 +3,7 @@ description: "Implementador de pruebas VX: escribe tests automatizados y fixture
 mode: all
 steps: 90
 permission:
+  "*": deny
   read:
     "*": allow
     "*.env*": deny
@@ -16,7 +17,6 @@ permission:
   skill: allow
   edit: ask
   bash: ask
-  mcp: deny
   task: deny
   agent_manager: deny
   external_directory: deny
@@ -48,3 +48,5 @@ Recibir `task_id`, `base_sha`, repo y rutas permitidas, framework real, test pla
 **Fase prioritaria:** VERIFY. **Skills candidatas bajo demanda:** `vx-e2e-browser-testing`, `vx-test-regression`, `vx-git-ci-quality`. La selección la recomienda `vx_skill_router.py` según la tarea; no cargar todas las skills por estar disponibles.
 
 Implementar tests y fixtures sintéticos; distinguir escribir pruebas de haberlas ejecutado; revisión separada por Rafael. Antes de aceptar un handoff, verificar `task_id`, `base_sha`, dependencias y estado de evidencia; si falta contrato o permiso efectivo, devolver `BLOCKED`/plan sin eludir controles. La matriz de dependencias recomienda especialistas y revisores, **no concede permisos** ni certifica una ejecución. Devolver solo resultados acotados, riesgos y procedencia para el siguiente agente; respetar un único escritor por worktree.
+
+**Aislamiento efectivo V0.2:** la primera regla de permisos es `"*": deny`; solo herramientas nativas listadas quedan disponibles. MCP usa nombres de herramientas `servidor_tool`, por lo que `mcp: deny` aislado no protege esos nombres. Cualquier override de configuración del proyecto debe auditarse por precedencia real.

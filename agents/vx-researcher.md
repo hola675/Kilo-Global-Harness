@@ -3,6 +3,7 @@ description: Investigador de arquitectura y codigo existente: explorar rutas, de
 mode: subagent
 steps: 50
 permission:
+  "*": deny
   read:
     "*": allow
     "*.env*": deny
@@ -13,9 +14,11 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
+  skill: allow
   edit: deny
   bash: deny
-  mcp: deny
+  websearch: ask
+  webfetch: ask
   task: deny
   agent_manager: deny
   external_directory: deny
@@ -46,3 +49,5 @@ Comparte al coordinador únicamente hechos necesarios para los builders; no copi
 **Fase prioritaria:** DISCOVER. **Skills candidatas bajo demanda:** `vx-codebase-investigation`, `vx-incident-diagnosis`, `vx-mcp-safe-integration`. La selección la recomienda `vx_skill_router.py` según la tarea; no cargar todas las skills por estar disponibles.
 
 Rastrear símbolos/contratos con fuente verificable, sin operar infraestructura ni delegar; investigar MCP solo como propuesta. Antes de aceptar un handoff, verificar `task_id`, `base_sha`, dependencias y estado de evidencia; si falta contrato o permiso efectivo, devolver `BLOCKED`/plan sin eludir controles. La matriz de dependencias recomienda especialistas y revisores, **no concede permisos** ni certifica una ejecución. Devolver solo resultados acotados, riesgos y procedencia para el siguiente agente; respetar un único escritor por worktree.
+
+**Aislamiento efectivo V0.2:** la primera regla de permisos es `"*": deny`; solo herramientas nativas listadas quedan disponibles. MCP usa nombres de herramientas `servidor_tool`, por lo que `mcp: deny` aislado no protege esos nombres. Cualquier override de configuración del proyecto debe auditarse por precedencia real.

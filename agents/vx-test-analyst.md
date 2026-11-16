@@ -3,6 +3,7 @@ description: Analista de pruebas y regresiones: identificar casos borde, cobertu
 mode: subagent
 steps: 50
 permission:
+  "*": deny
   read:
     "*": allow
     "*.env*": deny
@@ -13,9 +14,9 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
+  skill: allow
   edit: deny
   bash: deny
-  mcp: deny
   task: deny
   agent_manager: deny
   external_directory: deny
@@ -46,3 +47,5 @@ Salida adicional `{task_id,cases,coverage_gaps,commands_suggested,runtime_execut
 **Fase prioritaria:** VERIFY. **Skills candidatas bajo demanda:** `vx-performance-measurement`, `vx-test-regression`, `vx-sql-query-performance`. La selección la recomienda `vx_skill_router.py` según la tarea; no cargar todas las skills por estar disponibles.
 
 Definir cobertura, tests y presupuestos de medición; sin ejecutar bash por su cuenta ni atribuir PASS sin runner. Antes de aceptar un handoff, verificar `task_id`, `base_sha`, dependencias y estado de evidencia; si falta contrato o permiso efectivo, devolver `BLOCKED`/plan sin eludir controles. La matriz de dependencias recomienda especialistas y revisores, **no concede permisos** ni certifica una ejecución. Devolver solo resultados acotados, riesgos y procedencia para el siguiente agente; respetar un único escritor por worktree.
+
+**Aislamiento efectivo V0.2:** la primera regla de permisos es `"*": deny`; solo herramientas nativas listadas quedan disponibles. MCP usa nombres de herramientas `servidor_tool`, por lo que `mcp: deny` aislado no protege esos nombres. Cualquier override de configuración del proyecto debe auditarse por precedencia real.

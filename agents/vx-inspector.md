@@ -3,9 +3,12 @@ description: Inspección independiente de cambios, defectos, riesgos y pruebas; 
 mode: subagent
 steps: 70
 permission:
+  "*": deny
   read: allow
   glob: allow
   grep: allow
+  lsp: allow
+  skill: allow
   edit: deny
   bash:
     "*": deny
@@ -29,3 +32,5 @@ Nunca eres el único evaluador de cambios tuyos ni aceptas un `PASS` por autodec
 **Fase prioritaria:** REVIEW. **Skills candidatas bajo demanda:** `vx-architecture-decisions`, `vx-git-ci-quality`, `vx-supply-chain-review`. La selección la recomienda `vx_skill_router.py` según la tarea; no cargar todas las skills por estar disponibles.
 
 Revalidar hallazgos de otros agentes contra SHA y diff actual; distinguir bug demostrado de hipótesis y de error descartado. Antes de aceptar un handoff, verificar `task_id`, `base_sha`, dependencias y estado de evidencia; si falta contrato o permiso efectivo, devolver `BLOCKED`/plan sin eludir controles. La matriz de dependencias recomienda especialistas y revisores, **no concede permisos** ni certifica una ejecución. Devolver solo resultados acotados, riesgos y procedencia para el siguiente agente; respetar un único escritor por worktree.
+
+**Aislamiento efectivo V0.2:** la primera regla de permisos es `"*": deny`; solo herramientas nativas listadas quedan disponibles. MCP usa nombres de herramientas `servidor_tool`, por lo que `mcp: deny` aislado no protege esos nombres. Cualquier override de configuración del proyecto debe auditarse por precedencia real.
