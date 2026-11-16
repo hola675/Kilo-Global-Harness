@@ -1,0 +1,78 @@
+{
+  "schema": "vx-pack-mcp-catalog/1",
+  "version": "0.1.0",
+  "status": "OPTIONAL_PROPOSALS_ONLY",
+  "default_enabled": false,
+  "auto_install": false,
+  "auto_authenticate": false,
+  "preserve_existing_mcp": true,
+  "approval": "individual_mcp_by_operator",
+  "catalog": [
+    {
+      "id": "github",
+      "aliases": [
+        "github-mcp-server"
+      ],
+      "purpose": "Repositorios, issues y PR del proyecto autorizado",
+      "source": "https://github.com/github/github-mcp-server",
+      "profile": "development",
+      "required": false,
+      "permission_scope": "read_first; writes only with separate approval",
+      "install_command": null,
+      "network_or_auth": "MAY_REQUIRE_AUTH",
+      "runtime_verified": false
+    },
+    {
+      "id": "context7",
+      "aliases": [
+        "upstash-context7"
+      ],
+      "purpose": "Documentación actualizada de librerías por demanda",
+      "source": "https://github.com/upstash/context7",
+      "profile": "development",
+      "required": false,
+      "permission_scope": "read_only",
+      "install_command": null,
+      "network_or_auth": "DEPENDENT_ON_PROVIDER",
+      "runtime_verified": false
+    },
+    {
+      "id": "playwright",
+      "aliases": [
+        "playwright-mcp"
+      ],
+      "purpose": "Navegador de pruebas frontend cuando CLI no basta",
+      "source": "https://github.com/microsoft/playwright-mcp",
+      "profile": "frontend-qa",
+      "required": false,
+      "permission_scope": "nonproduction-test-fixtures",
+      "install_command": null,
+      "network_or_auth": "MAY_START_BROWSER",
+      "runtime_verified": false,
+      "prefer_compact_cli_when_sufficient": true
+    },
+    {
+      "id": "cloudflare-api",
+      "aliases": [
+        "cloudflare"
+      ],
+      "purpose": "API Cloudflare y documentación para Workers, D1, R2 y KV",
+      "source": "https://github.com/cloudflare/mcp",
+      "profile": "cloudflare",
+      "required": false,
+      "permission_scope": "read_first; execution separate approval",
+      "install_command": null,
+      "network_or_auth": "OAUTH_PERMISSIONS_REQUIRED",
+      "runtime_verified": false,
+      "endpoint": "https://mcp.cloudflare.com/mcp"
+    }
+  ],
+  "comparison_policy": {
+    "matching": "case_insensitive_id_or_alias_only_suggestion",
+    "configured_is_not_connected": true,
+    "registered_mcp_cannot_imply_permission": true,
+    "missing_mcp_can_only_be_proposed": true,
+    "connected_status_requires_runtime_probe": true,
+    "no_secrets_in_reports": true
+  }
+}
