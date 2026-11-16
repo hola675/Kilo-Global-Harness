@@ -162,18 +162,32 @@ def parse_jsonc(source: str) -> dict[str, Any]:
         raise ValueError("La configuración debe ser un objeto JSON")
     return data
 
+def _kilo_configs(home: Path) -> list[Path]:
+    root = home / ".config/kilo"
+    return [p for p in (root / "kilo.jsonc", root / "kilo.json", root / "config.json")
+            if p.is_file()]
+
+
+def _read_configs(home: Path) -> list[dict]:
+    result = []
+    for config in _kilo_configs(home):
+        safe_entry(config)
+        try:
+            result.append(parse_jsonc(config.read_text(encoding="utf-8-sig")))
+        except (ValueError, UnicodeError) as exc:
+            raise Blocked("No se puede interpretar configuración Kilo sin exponer secretos.") from exc
+    return result
+
+
 def configured_mcp(home: Path) -> list[str]:
-    config = home / ".config/kilo/kilo.jsonc"
-    if not config.is_file(): return []
-    safe_entry(config)
-    try:
-        root = parse_jsonc(config.read_text(encoding="utf-8-sig"))
-    except (ValueError, UnicodeError) as exc:
-        raise Blocked("No se puede interpretar configuración MCP sin exponer secretos.") from exc
-    if not isinstance(root, dict): raise Blocked("Raíz JSONC inesperada.")
-    servers = root.get("mcp", {})
-    if not isinstance(servers, dict): raise Blocked("Campo mcp inválido.")
-    return sorted(str(name) for name in servers)
+    names: set[str] = set()
+    for config in _read_configs(home):
+        servers = config.get("mcp", {})
+        if not isinstance(servers, dict):
+            raise Blocked("Campo mcp de Kilo no es objeto.")
+        names.update(str(name) for name in servers)
+    return sorted(names)
+
 
 def mcp_suggestions(repo: Path, home: Path):
     path = repo / "registry/vx-mcp-catalog-v1.json"
@@ -191,18 +205,14 @@ def mcp_suggestions(repo: Path, home: Path):
     return {"configured": configured, "catalog": candidates, "connection_checks": 0}
 
 def inline_agents(home: Path) -> list[str]:
-    config = home / ".config/kilo/kilo.jsonc"
-    if not config.is_file():
-        return []
-    safe_entry(config)
-    try:
-        data = parse_jsonc(config.read_text(encoding="utf-8-sig"))
-    except (ValueError, UnicodeError) as error:
-        raise Blocked("No se puede analizar kilo.jsonc sin riesgo.") from error
-    agents = data.get("agent", {}) if isinstance(data, dict) else {}
-    if not isinstance(agents, dict):
-        raise Blocked("Campo agent no es un objeto JSONC.")
-    return list(agents)
+    names: set[str] = set()
+    for config in _read_configs(home):
+        agents = config.get("agent", {})
+        if not isinstance(agents, dict):
+            raise Blocked("Campo agent no es un objeto JSONC.")
+        names.update(str(name) for name in agents)
+    return sorted(names)
+
 
 @dataclass
 class Asset:
@@ -265,13 +275,15 @@ def load_pack(repo: Path, home: Path):
 def snapshot_items(home: Path) -> list[tuple[str, Path]]:
     kilo = home / ".config/kilo"
     sources = [
-        ("kilo-config", kilo, "kilo.jsonc"), ("kilo-config", kilo, "AGENTS.md"),
+        ("kilo-config", kilo, "kilo.jsonc"), ("kilo-config", kilo, "kilo.json"),
+        ("kilo-config", kilo, "config.json"), ("kilo-config", kilo, "AGENTS.md"),
         ("kilo-config", kilo, "agents"), ("kilo-config", kilo, "commands"),
         ("kilo-config", kilo, "rules"), ("kilo-config", kilo, "harness"),
         ("kilo-config", kilo, "plugin"), ("kilo-config", kilo, "vx-evolution"),
         ("global-skills", home / ".kilo", "skills"),
         ("agents-compat", home / ".agents", "skills"),
-        ("kilocode-compat", home / ".kilocode", "skills")
+        ("kilocode-compat", home / ".kilocode", "skills"),
+        ("claude-compat", home / ".claude", "skills")
     ]
     rows = []
     for label, base, sub in sources:
@@ -342,10 +354,17 @@ def blockers(home: Path) -> list[str]:
     ia = inline_agents(home)
     if ia:
         reasons.append(f"{len(ia)} agentes inline en kilo.jsonc: no se reescribe JSONC con secretos/comentarios automáticamente.")
-    for path in (home / ".agents/skills", home / ".kilocode/skills"):
+    for path in (home / ".agents/skills", home / ".kilocode/skills",
+                 home / ".claude/skills"):
         if path.is_dir() and any(path.iterdir()):
             reasons.append("Skills compatibles externas presentes: " + str(path) +
                            ". No se borran porque pueden pertenecer a otras herramientas.")
+    for config in _read_configs(home):
+        skills_config = config.get("skills", {})
+        if skills_config and not isinstance(skills_config, dict):
+            reasons.append("Declaración de skills externas inválida: revisar perfil.")
+        elif isinstance(skills_config, dict) and (skills_config.get("paths") or skills_config.get("urls")):
+            reasons.append("Rutas o URLs adicionales de skills: revisar precedencia antes de sustituir.")
     return reasons
 
 def managed_text(existing: str, rules: str) -> str:
@@ -438,8 +457,7 @@ def apply(repo: Path, home: Path, assets: list[Asset], agent_ids: list[str], ski
     existing = global_file.read_text(encoding="utf-8") if global_file.is_file() else ""
     rules = (repo / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
     new_global = managed_text(existing, rules)
-    config = home / ".config/kilo/kilo.jsonc"
-    config_hash = digest(config.read_bytes()) if config.exists() else None
+    config_hashes = {config: digest(config.read_bytes()) for config in _kilo_configs(home)}
     folder = backup(home)
     # Destinos que el paquete podría escribir; se registran antes de tocar archivos.
     planned = [{"relative": item.target.relative_to(home).as_posix()} for item in assets]
@@ -456,8 +474,8 @@ def apply(repo: Path, home: Path, assets: list[Asset], agent_ids: list[str], ski
         write_atomic(global_file, new_global.encode("utf-8"))
         after.append({"relative": global_file.relative_to(home).as_posix(),
                       "sha256": digest(new_global.encode("utf-8"))})
-        if config_hash != (digest(config.read_bytes()) if config.exists() else None):
-            raise Blocked("kilo.jsonc cambió inesperadamente.")
+        if config_hashes != {config: digest(config.read_bytes()) for config in _kilo_configs(home)}:
+            raise Blocked("Configuración Kilo cambió inesperadamente.")
         verify(home, repo, assets, agent_ids, skill_ids)
         (folder / "installed-files.json").write_text(json.dumps(after, indent=2), encoding="utf-8")
         receipt = json.loads((folder / "receipt.json").read_text(encoding="utf-8"))
