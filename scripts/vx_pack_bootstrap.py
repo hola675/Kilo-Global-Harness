@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# VX Pack Bootstrap 0.1.0 — Windows/Kilo Code exclusively.
+# VX Pack Bootstrap 0.2.2 — Windows/Kilo Code exclusively.
 # Preview by default. Real apply only with --home and --confirm-migration.
 # Existing MCP/providers/credentials remain byte-identical in kilo.jsonc.
 # Secret-bearing profile snapshot is encrypted using CurrentUser DPAPI.
@@ -22,7 +22,7 @@ import sys
 import uuid
 from zipfile import ZipFile, ZIP_DEFLATED
 
-PACK_VERSION = "0.2.0"
+PACK_VERSION = "0.2.2"
 MAX_BACKUP_BYTES = 256 * 1024 * 1024
 MAX_FILE_BYTES = 64 * 1024 * 1024
 BACKUP_MAGIC = "vx-pack-snapshot/1"
@@ -356,6 +356,21 @@ def read_backup(folder: Path):
             extracted[name] = raw
         return extracted, receipt
 
+def assert_safe_install_targets(home: Path, assets: list[Asset]) -> None:
+    """Rechaza symlinks/junctions/reparse en cualquier antecesor de un destino VX."""
+    home = home.absolute()
+    for target in [home / ".config/kilo/AGENTS.md", *(item.target for item in assets)]:
+        if not target.is_relative_to(home):
+            raise Blocked("Destino fuera del HOME.")
+        cursor = target
+        while True:
+            if cursor.is_symlink() or cursor.exists():
+                safe_entry(cursor)
+            if cursor == home:
+                break
+            cursor = cursor.parent
+
+
 def blockers(home: Path) -> list[str]:
     reasons = []
     ia = inline_agents(home)
@@ -377,8 +392,9 @@ def blockers(home: Path) -> list[str]:
 def managed_text(existing: str, rules: str) -> str:
     block = BEGIN + "\n" + rules.strip() + "\n" + END
     start, end = existing.find(BEGIN), existing.find(END)
-    if (start < 0) != (end < 0) or (start >= 0 and end < start):
-        raise Blocked("AGENTS.md tiene marcadores VX dañados.")
+    if ((start < 0) != (end < 0) or (start >= 0 and end < start)
+            or existing.count(BEGIN) > 1 or existing.count(END) > 1):
+        raise Blocked("AGENTS.md tiene marcadores VX dañados o repetidos.")
     if start >= 0:
         return existing[:start] + block + existing[end + len(END):]
     return existing.rstrip() + ("\n\n" if existing.strip() else "") + block + "\n"
@@ -515,6 +531,7 @@ def restore(home: Path, folder: Path, *, force: bool = False):
 
 
 def apply(repo: Path, home: Path, assets: list[Asset], agent_ids: list[str], skill_ids: list[str]):
+    assert_safe_install_targets(home, assets)
     pending = blockers(home)
     if pending:
         raise Blocked("Migración limpia BLOQUEADA sin modificar perfil: " + " | ".join(pending))
@@ -548,6 +565,7 @@ def apply(repo: Path, home: Path, assets: list[Asset], agent_ids: list[str], ski
                 if name.startswith(("kilo-config/agents/", "global-skills/skills/"))}
     if current != expected:
         raise Blocked("Agentes o skills cambiaron después del backup; sustitución cancelada.")
+    assert_safe_install_targets(home, assets)
     try:
         for path in [home / ".config/kilo/agents", home / ".kilo/skills"]:
             if path.exists(): shutil.rmtree(path)
@@ -591,8 +609,13 @@ def main():
     registry, assets = load_pack(repo, home)
     agents, skills = registry["pack"]["owned_agents"], registry["pack"]["owned_skills"]
     if args.mode in {"diagnose", "simulate"}:
+        pending = blockers(home)
+        try:
+            assert_safe_install_targets(home, assets)
+        except Blocked:
+            pending.append("Ruta de destino con symlink/junction/reparse point o fuera de HOME.")
         print(json.dumps({"mode": args.mode, "agents": len(agents), "skills": len(skills),
-                          "files": len(assets), "blockers": blockers(home),
+                          "files": len(assets), "blockers": pending,
                           "requires_explicit_apply": True, "mcp_changes": 0,
                           "mcp_inventory": mcp_suggestions(repo, home),
                           "candidate_paths": [str(a.target) for a in assets] if args.mode == "simulate" else []},

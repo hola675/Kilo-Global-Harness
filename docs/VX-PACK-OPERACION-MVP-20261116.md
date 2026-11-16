@@ -1,13 +1,13 @@
-# VX Pack 0.2.1 — Base operativa multiagente para Kilo Code (16-11-2026)
+# VX Pack 0.2.2 — Base operativa multiagente para Kilo Code (16-11-2026)
 
-**Estado:** Pack V0.2 fusionado en main; V0.2.1 añade skill IDA MCP (31 skills). NO instalado en HOME Windows real. No instalar ni migrar hasta diagnóstico/backup y autorización de operación específica. Alcance: un PC Windows; global Kilo, sin directorios de configuración dentro de proyectos.
+**Estado:** Pack 0.2.2 preparado para instalación supervisada en Windows; autorizado por el operador (2026-11-16), todavía sin validación real de HOME ni del runtime Kilo. 12 agentes, 31 skills y 6 MCP candidatos. Primero diagnóstico/simulación y Kilo cerrado. [Procedimiento actualizado](VX-INSTALACION-PACK-0.2.2-WINDOWS.md). Alcance: un PC Windows; global Kilo, sin directorios de configuración dentro de proyectos.
 
 ## Contenido real
 
 - 7 agentes VX originales y 5 builders adicionales (frontend, backend, QA, datos, docs); 31 skills VX nativas bajo demanda.
 - Instalador V4 reparado: sigue siendo reversible, realiza copia previa de los destinos VX que modifica, copia los componentes VX y preserva `kilo.jsonc`, MCP, modelos, credenciales y permisos ajenos.
 - `vx_pack_doctor.py`: diagnóstico **solo lectura**, inventaría componentes esperados, solapamientos de nombre y presencia de MCP (no conectividad).
-- Catálogo de cinco MCP candidatos con fuentes oficiales. **No instala ni conecta ninguno**; requiere decisión individual y validación de permisos.
+- Catálogo de seis MCP candidatos con fuentes oficiales. **No instala ni conecta ninguno**; requiere decisión individual y validación de permisos.
 - `/vx-pack`, `/vx-equipo` y `/vx-dependencias` para revisar preparación y seleccionar tareas. No hay nuevo scheduler.
 
 ## Preparación (PowerShell 7, desde el repositorio)
@@ -44,7 +44,7 @@ Mantener **todos** los MCP existentes. Usar Kilo Settings > Agent Behaviour > MC
 - P1: instalar Pack VX en HOME autorizado y probar subagentes/skills en la extensión.
 - P2: seleccionar MCP faltantes individualmente, medir herramientas disponibles y coste de contexto.
 - P3: introducir contratos máquina-a-máquina y DAG de dependencias, mensajes entre sesiones Agent Manager y evaluaciones independientes.
-- P4: aprobación fuerte V4.7.2 en PR #29 y migración de archivos legacy solamente tras pruebas y autorización; scheduler sigue OFF.
+- P4: autenticación efectiva pendiente tras integrar contratos V4.7.2 y migración de archivos legacy solamente tras pruebas y autorización; scheduler sigue OFF.
 
 **Límites:** el instalador V4 es incremental y no archiva componentes ajenos; el bootstrap DPAPI tiene otras reglas de sustitución. Ninguno resuelve automáticamente duplicados inline del JSONC. `approval_granted=false` y `apply_supported=false` de la propuesta V4.7.2 continúan sin ser autorizaciones efectivas.
 
@@ -75,7 +75,7 @@ python .\scripts\vx_pack_bootstrap.py --mode diagnose
 python .\scripts\vx_pack_bootstrap.py --mode simulate
 ```
 
-No ejecutar `--mode apply` ni `--mode restore` en HOME real desde esta PR. El valor `approval_granted=false` de V4.7.2 continúa inactivo.
+La instalación del Pack VX en HOME está autorizada por el operador **solo tras** preflight limpio, snapshot DPAPI y Kilo cerrado. No autoriza activar MCP, V4.7.2, scheduler ni modificar credenciales.
 
 ## Gobierno de permisos MCP y delegación — V0.2
 
@@ -102,3 +102,7 @@ python .\scripts\vx_pack_bootstrap.py --mode simulate
 ```
 
 La CI prueba contratos e inventario, no la conexión a IDA ni disponibilidad de decompilación en el Windows del operador.
+
+## Preflight de la entrega 0.2.2
+
+Los destinos globales rechazan symlinks, junctions y otros reparse points también en carpetas intermedias, incluidos `commands`, `rules` y `harness/scripts`. El preflight publica bloqueos antes de escribir; la comprobación se repite antes de sustituir. Los marcadores duplicados en `AGENTS.md` provocan bloqueo conservador. El nuevo `scripts/Instalar-Pack-VX-V022.ps1` orquesta diagnóstico, simulación, aplicación autorizada con DPAPI y verificación. No sustituye silenciosamente la migración limpia por el instalador V4 incremental. [Guía](VX-INSTALACION-PACK-0.2.2-WINDOWS.md).
