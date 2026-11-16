@@ -170,7 +170,7 @@ jobs:
           $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
             Sort-Object Name -Descending | Select-Object -First 1
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
-          Write-Host 'VX PACK V0.1: 12 AGENTES, 10 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
+          Write-Host 'VX PACK V0.2: 12 AGENTES, 30 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
 
       - name: VX Skills V0.2 - 30 skills, DAG aciclico y selector sin efectos
         shell: pwsh

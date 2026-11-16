@@ -566,7 +566,9 @@
     {
       "id": "vx-evolution-core",
       "phase": "review",
-      "profiles": [],
+      "profiles": [
+        "general"
+      ],
       "keywords": [
         "evolution core"
       ],
@@ -695,7 +697,9 @@
     {
       "id": "vx-self-improvement",
       "phase": "review",
-      "profiles": [],
+      "profiles": [
+        "general"
+      ],
       "keywords": [
         "self improvement"
       ],
