@@ -190,7 +190,10 @@
       ],
       "skills": [
         "vx-engineering-harness",
-        "vx-implementation-handoff"
+        "vx-implementation-handoff",
+        "vx-requirements-acceptance",
+        "vx-task-dependency-graph",
+        "vx-agent-collaboration"
       ],
       "writer": "code",
       "builder_candidate": null,
@@ -218,7 +221,11 @@
       "skills": [
         "vx-engineering-harness",
         "vx-implementation-handoff",
-        "vx-debugging-root-cause"
+        "vx-debugging-root-cause",
+        "vx-api-contract-design",
+        "vx-typescript-engineering",
+        "vx-python-engineering",
+        "vx-observability-privacy"
       ],
       "writer": "code",
       "builder_candidate": "vx-backend-builder",
@@ -248,7 +255,11 @@
       ],
       "skills": [
         "vx-frontend-quality",
-        "vx-implementation-handoff"
+        "vx-implementation-handoff",
+        "vx-typescript-engineering",
+        "vx-e2e-browser-testing",
+        "vx-accessibility-review",
+        "vx-performance-measurement"
       ],
       "writer": "code",
       "builder_candidate": "vx-frontend-builder",
@@ -278,7 +289,10 @@
       "skills": [
         "vx-implementation-handoff",
         "vx-security-review",
-        "vx-data-contracts"
+        "vx-data-contracts",
+        "vx-cloudflare-worker-runtime",
+        "vx-cloudflare-storage-messaging",
+        "vx-observability-privacy"
       ],
       "writer": "code",
       "builder_candidate": "vx-backend-builder",
@@ -306,7 +320,9 @@
       ],
       "skills": [
         "vx-data-contracts",
-        "vx-test-regression"
+        "vx-test-regression",
+        "vx-sql-query-performance",
+        "vx-cloudflare-storage-messaging"
       ],
       "writer": "code",
       "builder_candidate": "vx-data-builder",
@@ -333,7 +349,9 @@
       ],
       "skills": [
         "vx-security-review",
-        "vx-debugging-root-cause"
+        "vx-debugging-root-cause",
+        "vx-supply-chain-review",
+        "vx-mcp-safe-integration"
       ],
       "writer": "code",
       "builder_candidate": null,
@@ -359,7 +377,10 @@
       ],
       "skills": [
         "vx-debugging-root-cause",
-        "vx-test-regression"
+        "vx-test-regression",
+        "vx-codebase-investigation",
+        "vx-typescript-engineering",
+        "vx-python-engineering"
       ],
       "writer": "code",
       "builder_candidate": null,
@@ -384,7 +405,9 @@
         "vx-inspector"
       ],
       "skills": [
-        "vx-frontend-quality"
+        "vx-frontend-quality",
+        "vx-accessibility-review",
+        "vx-performance-measurement"
       ],
       "writer": "code",
       "builder_candidate": "vx-frontend-builder",
@@ -407,7 +430,9 @@
         "vx-inspector"
       ],
       "skills": [
-        "vx-docs-traceability"
+        "vx-docs-traceability",
+        "vx-requirements-acceptance",
+        "vx-architecture-decisions"
       ],
       "writer": "code",
       "builder_candidate": "vx-docs-builder",
@@ -435,7 +460,10 @@
       ],
       "skills": [
         "vx-test-regression",
-        "vx-debugging-root-cause"
+        "vx-debugging-root-cause",
+        "vx-e2e-browser-testing",
+        "vx-git-ci-quality",
+        "vx-performance-measurement"
       ],
       "writer": "code",
       "builder_candidate": "vx-qa-builder",
@@ -444,7 +472,7 @@
   ],
   "pack": {
     "id": "vx-development-team",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "owned_agents": [
       "vx-integrador",
       "vx-inspector",
@@ -469,7 +497,27 @@
       "vx-security-review",
       "vx-data-contracts",
       "vx-docs-traceability",
-      "vx-self-improvement"
+      "vx-self-improvement",
+      "vx-requirements-acceptance",
+      "vx-task-dependency-graph",
+      "vx-architecture-decisions",
+      "vx-codebase-investigation",
+      "vx-api-contract-design",
+      "vx-typescript-engineering",
+      "vx-python-engineering",
+      "vx-cloudflare-worker-runtime",
+      "vx-cloudflare-storage-messaging",
+      "vx-sql-query-performance",
+      "vx-agent-collaboration",
+      "vx-git-ci-quality",
+      "vx-supply-chain-review",
+      "vx-e2e-browser-testing",
+      "vx-accessibility-review",
+      "vx-performance-measurement",
+      "vx-observability-privacy",
+      "vx-mcp-safe-integration",
+      "vx-release-readiness",
+      "vx-incident-diagnosis"
     ],
     "inline_agents_not_mutated": true,
     "configured_mcp_never_modified": true,
