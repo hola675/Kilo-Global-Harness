@@ -61,6 +61,21 @@ class SmokeTests(unittest.TestCase):
         self.assertEqual(result["team_operability"], "EVIDENCIA_DECLARADA_REQUIERE_REVISION_HUMANA")
         self.assertFalse(result["runtime_certified_independently"])
 
+    def test_p1_inspector_task_completed_does_not_certify_builder_acl(self):
+        data = smoke.template()
+        data["observations"]["primary_agent_picker"] = {
+            "status": "VERIFICADO", "source": "operator-ui",
+            "tool": "operator-ui", "evidence_ref": "captura de selector del operador"}
+        data["observations"]["inspector_task"] = {
+            "status": "VERIFICADO", "source": "kilo-native-tool",
+            "tool": "task", "evidence_ref": "segundo intento completed; primero BLOCKED"}
+        result = smoke.analyze(data)
+        self.assertEqual(result["status_by_gate"]["inspector_task"], "VERIFICADO")
+        self.assertIn("builder_ask", result["pending_gates"])
+        self.assertIn("inspector_readonly", result["pending_gates"])
+        self.assertEqual(result["team_operability"], "NO_VERIFICADO")
+        self.assertFalse(result["runtime_certified_independently"])
+
     def test_extra_key_rejected(self):
         data = smoke.template()
         data["secret"] = "private"
