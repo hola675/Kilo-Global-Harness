@@ -5,14 +5,16 @@
 .EXAMPLE
   pwsh -NoProfile -File .\scripts\Seleccionar-Equipo-V4.ps1 -Perfil cloudflare -Json
   pwsh -NoProfile -File .\scripts\Seleccionar-Equipo-V4.ps1 -Tarea "Corregir UI React" -Json
+  pwsh -NoProfile -File .\scripts\Seleccionar-Equipo-V4.ps1 -Perfil frontend -UsarBuildersVX -Json # opt-in, SOLO PLANIFICA
 #>
 [CmdletBinding()]
 param(
-  [ValidateSet('auto','general','backend','frontend','cloudflare','database','security','refactor','design','docs')]
+  [ValidateSet('auto','general','backend','frontend','cloudflare','database','security','refactor','design','docs','qa')]
   [string]$Perfil = 'auto',
   [string]$Tarea = '',
   [ValidateRange(1,3)][int]$MaxLectores = 3,
   [switch]$SoloLectura,
+  [switch]$UsarBuildersVX,
   [switch]$Json,
   [string]$RaizUsuario = $HOME
 )
@@ -26,7 +28,7 @@ if ($data.schema -ne 'vx-agent-registry/1' -or $data.global_only -ne $true) { th
 $profileMap = @{}
 foreach ($p in $data.profiles) { $profileMap[[string]$p.id] = $p }
 if ($Perfil -eq 'auto') {
-  $priority = @('cloudflare','security','database','frontend','backend','refactor','design','docs')
+  $priority = @('cloudflare','security','database','frontend','backend','qa','refactor','design','docs')
   $scores = @()
   foreach ($key in $priority) {
     $score = 0
@@ -46,7 +48,14 @@ if (!$p) { throw "Perfil no disponible: $Perfil" }
 $known = @($data.agents | ForEach-Object { $_.id })
 $discovery = @($p.discover | Where-Object { $_ -in $known } | Select-Object -First $MaxLectores)
 $review = @($p.review | Where-Object { $_ -in $known } | Select-Object -First $MaxLectores)
-$writer = if ($SoloLectura) { $null } else { $p.writer }
+$candidate = if ($p.ContainsKey('builder_candidate')) { [string]$p.builder_candidate } else { '' }
+$builderValid = $false
+if ($candidate) {
+  $match = @($data.agents | Where-Object { $_.id -eq $candidate -and $_.writes -eq $true -and $_.role -eq 'builder' })
+  $builderValid = $match.Count -eq 1
+}
+if ($UsarBuildersVX -and !$SoloLectura -and (!$candidate -or !$builderValid)) { throw "Perfil '$Perfil' sin builder VX validado. Elija otro perfil o no utilice -UsarBuildersVX." }
+$writer = if ($SoloLectura) { $null } elseif ($UsarBuildersVX) { $candidate } else { $p.writer }
 $plan = [ordered]@{
   schema = 'vx-team-plan/1'
   profile = $Perfil
@@ -55,6 +64,8 @@ $plan = [ordered]@{
   coordinator = 'vx-integrador'
   discover_parallel = $discovery
   implementation = $writer
+  builder_candidate = $(if($builderValid){$candidate}else{$null})
+  implementation_source = $(if($SoloLectura){'none'}elseif($UsarBuildersVX){'vx-builder-opt-in'}else{'kilo-native-code'})
   review_parallel = $review
   max_parallel_readers = $MaxLectores
   max_writers = $(if ($SoloLectura) {0}else{1})
@@ -62,7 +73,7 @@ $plan = [ordered]@{
   actions_executed = 0
   git_policy = 'main permanente; solo work/<tarea> temporal; merge tras pruebas; borrar solo rama propia'
   requires_user_confirmation = 'produccion, infraestructura, datos destructivos, ampliacion a worktrees paralelos'
-  limitations = 'Este script SOLO PLANIFICA. La delegacion real ocurre en Kilo y su runtime.'
+  limitations = 'Este script SOLO PLANIFICA. Builders con edit/bash ask deben recibir aprobaciones del host. task subagent no interactivo puede quedar bloqueado; elegir agente directamente o sesion Agent Manager autorizada. No garantiza aislamiento.'
 }
 if ($Json) {
   ConvertTo-Json -InputObject $plan -Depth 8
@@ -71,6 +82,7 @@ if ($Json) {
   Write-Host "Perfil: $Perfil | Modo: strict | Lectores max: $MaxLectores"
   Write-Host "Descubrimiento en paralelo: $($discovery -join ', ')"
   Write-Host "Implementacion unica: $(if($writer){$writer}else{'ninguna: solo lectura'})"
+  Write-Host "Builder VX disponible: $(if($builderValid){$candidate}else{'no asignado'}). Opt-in: $([bool]$UsarBuildersVX)"
   Write-Host "Revision en paralelo (despues del diff): $($review -join ', ')"
   Write-Host "Skills sugeridas, por demanda: $(@($p.skills) -join ', ')"
   Write-Host 'Sin tareas lanzadas, sin modificaciones, sin consumo de modelos.' -ForegroundColor Green

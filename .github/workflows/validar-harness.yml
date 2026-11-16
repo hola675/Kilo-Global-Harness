@@ -149,6 +149,110 @@ jobs:
           if ($restored -ne $before) { throw 'Rollback altero configuracion privada.' }
           Write-Host 'V4 GLOBAL-ONLY, SEGURIDAD, ROUTING Y ROLLBACK: PASS'
 
+      - name: VX Pack 0.2 - doctor, MCP pasivos y 12 agentes 30 skills
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_doctor.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Test de doctor VX fallo.' }
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx-pack-doctor-' + [guid]::NewGuid().ToString('N'))
+          New-Item -ItemType Directory -Path $fixture -Force | Out-Null
+          $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          & $installer -Modo Aplicar -RaizUsuario $fixture
+          $report = (python scripts/vx_pack_doctor.py --home $fixture --source . --json | Out-String | ConvertFrom-Json)
+          if ($LASTEXITCODE -ne 0) { throw 'Doctor VX fallo en Windows.' }
+          if (!$report.ready_for_manual_kilo_smoke -or
+              $report.agents.expected -ne 12 -or $report.agents.found -ne 12 -or
+              $report.skills.expected -ne 30 -or $report.skills.found -ne 30 -or
+              $report.runtime_verified -ne $false -or $report.mcp.connections_verified -ne $false) {
+            throw 'Doctor VX no acredita pack instalado o promete runtime inexistente.'
+          }
+          $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Sort-Object Name -Descending | Select-Object -First 1
+          & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
+          Write-Host 'VX PACK V0.2: 12 AGENTES, 30 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
+
+      - name: VX Pack DPAPI V0.2 - bootstrap seguro en Windows aislado
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_pack_bootstrap_v1.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas bootstrap DPAPI.' }
+          python -m compileall -q scripts/vx_pack_bootstrap.py tests/test_vx_pack_bootstrap_v1.py
+          if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis bootstrap DPAPI.' }
+          Write-Host 'VX PACK DPAPI: HOME SINTETICO Y ROLLBACK WINDOWS PASS'
+
+      - name: VX Permisos - MCP namespaced con fallback deny y verificación de 12 roles
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_agent_permissions_v02.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Permisos VX no aíslan herramientas namespaced.' }
+          & ./scripts/Validar-Registro-V4.ps1
+          Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 12 AGENTES PASS'
+
+      - name: VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $script = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx-restore-secure-' + [guid]::NewGuid().ToString('N'))
+          $fakeBackup = Join-Path $fixture '.config/kilo-harness-backups/falso'
+          New-Item -ItemType Directory -Path $fakeBackup -Force | Out-Null
+          $private = Join-Path $fixture 'fichero-privado.txt'
+          'NO_BORRAR' | Set-Content -LiteralPath $private -Encoding utf8
+          $evilManifest = @{
+            version='4.0.0'
+            BackupFolder=$fakeBackup
+            files=@(@{target=$private;existed=$false;backup='';installedSha256=$null})
+            observerMoved=$false
+            observerBackup=''
+          } | ConvertTo-Json -Depth 7
+          $evilManifest | Set-Content (Join-Path $fakeBackup 'manifest.json') -Encoding utf8
+          $rejected = $false
+          try { & $script -Modo Restaurar -RaizUsuario $fixture -BackupFolder $fakeBackup }
+          catch { $rejected = $true }
+          if (!$rejected -or (Get-Content -LiteralPath $private -Raw) -notmatch 'NO_BORRAR') {
+            throw 'Vulnerabilidad: restaurador V4 no bloqueó un manifiesto externo.'
+          }
+          & $script -Modo Aplicar -RaizUsuario $fixture
+          $realBackup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Where-Object { $_.Name -ne 'falso' } | Sort-Object Name -Descending | Select-Object -First 1
+          if (!$realBackup) { throw 'Falta backup V4 de prueba.' }
+          $edited = Join-Path $fixture '.config/kilo/agents/vx-inspector.md'
+          'CAMBIO_POSTERIOR' | Add-Content -LiteralPath $edited
+          $rejected = $false
+          try { & $script -Modo Restaurar -RaizUsuario $fixture -BackupFolder $realBackup.FullName }
+          catch { $rejected = $true }
+          if (!$rejected -or (Get-Content $edited -Raw) -notmatch 'CAMBIO_POSTERIOR') {
+            throw 'Restaurador V4 no protegió un archivo editado posteriormente.'
+          }
+          Write-Host 'V4 RESTORE: MANIFIESTO EXTERNO BLOQUEADO Y EDICIONES PRESERVADAS PASS'
+
+      - name: VX Task DAG V0.1 - contratos de equipo sin tareas efectivas
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_task_dag_v01.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Pruebas de DAG de tareas VX fallaron.' }
+          python -m compileall -q scripts/vx_task_dag.py tests/test_vx_task_dag_v01.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis task DAG VX.' }
+          Write-Host 'VX TASK DAG: GATES Y DEPENDENCIAS SIN AGENTES EJECUTADOS PASS'
+
+      - name: VX Skills V0.2 - 30 skills, DAG aciclico y selector sin efectos
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_skill_router_v02.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Falló matrix de skills VX V0.2.' }
+          python -m compileall -q scripts/vx_skill_router.py tests/test_vx_skill_router_v02.py
+          if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis skill router VX.' }
+          $check = python scripts/vx_skill_router.py --validate-only | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or $check.status -ne 'PASS' -or $check.skills -ne 30) {
+            throw 'Skill pack incompleto o dependencias no válidas.'
+          }
+          Write-Host 'VX SKILLS V0.2: 30 SKILLS, DAG Y PERMISOS INTACTOS PASS'
+
       - name: V4.1 - auditoria de evidencias y comando global
         shell: pwsh
         run: |
@@ -598,7 +702,7 @@ jobs:
               $output.models_called -or $output.mcp_called -or
               $output.scheduler_enabled_by_audit -or
               $output.counts.agent_definitions -lt 7 -or
-              $output.counts.router_profiles -ne 9) {
+              $output.counts.router_profiles -ne 10) {
             throw 'Contrato de auditoria global de solo lectura incumplido'
           }
           if ((Get-FileHash $registry -Algorithm SHA256).Hash -ne $before -or
@@ -731,6 +835,24 @@ jobs:
           python -m compileall -q scripts/vx_approval_contract.py tests/test_vx_approval_contract_v471.py
           if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.1 approval contract' }
           Write-Host 'VX V4.7.1: STRICT REQUEST/ASSERTION + HOME AISLADO + SIN AUTH/APPLY: PASS'
+
+      - name: VX Integración - 12 agentes, 30 skills, Academy, MCP único y V4.7.2 inactiva
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_consolidacion_v01.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallo la consolidacion VX Pack 0.2 / V4.7.2.' }
+          Write-Host 'VX INTEGRACION: CUATRO PR SIN INSTALACION NI APROBACIONES PASS'
+
+      - name: V4.7.2 - contratos de seguridad aislados y aprobaciones deshabilitadas
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_approval_security_v472.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V4.7.2 approval security' }
+          python -m compileall -q scripts/vx_approval_security_v472.py tests/test_vx_approval_security_v472.py
+          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V4.7.2 approval security' }
+          Write-Host 'VX V4.7.2: WEBAUTHN STRUCTURE ONLY + IN-MEMORY MODELS + NO EFFECTIVE APPROVAL/APPLY: PASS'
 
       - name: V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura
         shell: pwsh

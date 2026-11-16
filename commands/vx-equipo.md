@@ -23,3 +23,6 @@ Informa roles ejecutados frente a roles solo sugeridos, PASS/FAIL/NO VERIFICADO,
 
 
 **Evolución selectiva V4.3:** si una tarea revela una falla recurrente, corrección humana o carencia importante, se puede proponer una observación breve a /vx-observer. No registrar cada tool call ni almacenar código privado, rutas de clientes o credenciales. El inventario/agenda de VX Evolution es global a Kilo e independiente del repositorio actual; este comando no inicia observación continua ni crea nuevos jefes o skills de manera autónoma.
+
+
+**Selección de skills VX V0.2:** Antes de usar una especialidad, ejecutar `python "$HOME/.config/kilo/harness/scripts/vx_skill_router.py" --profile <perfil> --phase <discover|plan|build|verify|review|release> --task "<resumen sin secretos>"`. El resultado es un PLAN (no hace llamadas Kilo). Selecciona solo skills necesarias, comprueba prerequisitos y pasa sus contratos al agente propietario; no cargues las 30 skills. Si router no está instalado, usar skills disponibles y declarar el bloqueo. Nunca pasar tokens, nombres de clientes ni prompts íntegros como argumento de shell.
