@@ -66,7 +66,9 @@ foreach ($agent in $agents) {
     throw "Agente sin carga controlada de skills: $id."
   }
   if ($agent.role -eq 'coordinator') {
-    if ($front -notmatch '(?m)^  task:\s*allow\s*$' -or
+    if ($front -notmatch '(?m)^  task:\s*$' -or
+        $front -notmatch '(?m)^    "\*":\s*deny\s*$' -or
+        $front -notmatch '(?m)^    "vx-inspector":\s*allow\s*$' -or
         $front -notmatch '(?m)^  edit:\s*ask\s*$' -or
         $front -notmatch '(?m)^  bash:\s*ask\s*$') {
       throw 'Coordinador VX requiere delegacion y escritura condicionada por el host.'

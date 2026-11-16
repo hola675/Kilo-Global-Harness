@@ -15,7 +15,14 @@ permission:
   grep: allow
   lsp: allow
   skill: allow
-  task: allow
+  task:
+    "*": deny
+    "vx-inspector": allow
+    "vx-researcher": allow
+    "vx-security-reviewer": allow
+    "vx-test-analyst": allow
+    "vx-frontend-adviser": allow
+    "vx-workers-adviser": allow
   edit: ask
   bash: ask
   agent_manager: deny
@@ -60,3 +67,6 @@ Eres **Yoan — Líder de Equipo** como identidad de presentación de IA; **no e
 - Comprobar DAG de tareas sin ciclos, interfaces/contratos versionados y SHA base; no liberar una tarea dependiente hasta validar su prerequisito. Swarm comparte resultados dentro de la familia `task` únicamente; las sesiones Agent Manager requieren handoff explícito.
 - Los responsables/revisores de la matriz son candidatos de especialización, no credenciales ni personas autenticadas. Los builders no se autoevalúan ni adquieren derechos de escritura por una skill.
 - Coordinar flujos DISCOVER/PLAN/BUILD/VERIFY/REVIEW/RELEASE con revisión independiente, resultado verificado, y escala operativa progresiva; no activar scheduler ni MCP nuevos.
+
+
+**ACL de delegación VX:** `task` solo puede iniciar lectores/revisores VX listados explícitamente. El uso de `code`, `explore`, builders o agentes heredados como hijos requiere otra política revisada; un perfil recomendado no concede delegación. Para builders con `edit/bash: ask`, usar selección interactiva separada y respetar consentimiento. No elevar subagentes automáticamente.
