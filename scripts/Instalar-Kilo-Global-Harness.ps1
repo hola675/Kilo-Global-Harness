@@ -285,7 +285,7 @@ function Assert-VXRestoreTarget([string]$Path) {
     '^\.config/kilo/plugin/vx-observer-light\.js$',
     '^\.kilo/skills/vx-[a-z0-9-]+/SKILL\.md$'
   )
-  if (!@($patterns | Where-Object { $relative -match $_ }).Count) {
+  if (@($patterns | Where-Object { $relative -match $_ }).Count -eq 0) {
     throw "Destino fuera del alcance VX: $relative"
   }
   Assert-NoReparse $full
@@ -372,7 +372,12 @@ if (!(Test-Path -LiteralPath $validator -PathType Leaf)) { throw 'Falta el valid
 $assets = @(Global-Assets)
 $expectedPaths = @($assets | ForEach-Object Target)
 if ($expectedPaths.Count -ne @($expectedPaths | Select-Object -Unique).Count) { throw 'Colision de rutas internas en el paquete.' }
-foreach ($a in $assets) { if (!(Test-Path -LiteralPath $a.Source -PathType Leaf)) { throw "Paquete incompleto: $($a.Source)" } }
+foreach ($a in $assets) {
+  if (!(Test-Path -LiteralPath $a.Source -PathType Leaf)) { throw "Paquete incompleto: $($a.Source)" }
+  Assert-NoReparse $a.Source
+  Assert-NoReparse $a.Target
+}
+Assert-NoReparse $globalAgentsFile
 $block = Managed-AgentsBlock
 $currentAgents = if (Test-Path -LiteralPath $globalAgentsFile) { Read-Utf8 $globalAgentsFile } else { '' }
 $plannedAgents = Replace-ManagedBlock $currentAgents $block

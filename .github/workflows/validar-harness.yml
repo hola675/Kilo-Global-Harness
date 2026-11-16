@@ -182,6 +182,44 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis bootstrap DPAPI.' }
           Write-Host 'VX PACK DPAPI: HOME SINTETICO Y ROLLBACK WINDOWS PASS'
 
+      - name: VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $script = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          $fixture = Join-Path $env:RUNNER_TEMP ('vx-restore-secure-' + [guid]::NewGuid().ToString('N'))
+          $fakeBackup = Join-Path $fixture '.config/kilo-harness-backups/falso'
+          New-Item -ItemType Directory -Path $fakeBackup -Force | Out-Null
+          $private = Join-Path $fixture 'fichero-privado.txt'
+          'NO_BORRAR' | Set-Content -LiteralPath $private -Encoding utf8
+          $evilManifest = @{
+            version='4.0.0'
+            BackupFolder=$fakeBackup
+            files=@(@{target=$private;existed=$false;backup='';installedSha256=$null})
+            observerMoved=$false
+            observerBackup=''
+          } | ConvertTo-Json -Depth 7
+          $evilManifest | Set-Content (Join-Path $fakeBackup 'manifest.json') -Encoding utf8
+          $rejected = $false
+          try { & $script -Modo Restaurar -RaizUsuario $fixture -BackupFolder $fakeBackup }
+          catch { $rejected = $true }
+          if (!$rejected -or (Get-Content -LiteralPath $private -Raw) -notmatch 'NO_BORRAR') {
+            throw 'Vulnerabilidad: restaurador V4 no bloqueó un manifiesto externo.'
+          }
+          & $script -Modo Aplicar -RaizUsuario $fixture
+          $realBackup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
+            Where-Object { $_.Name -ne 'falso' } | Sort-Object Name -Descending | Select-Object -First 1
+          if (!$realBackup) { throw 'Falta backup V4 de prueba.' }
+          $edited = Join-Path $fixture '.config/kilo/agents/vx-inspector.md'
+          'CAMBIO_POSTERIOR' | Add-Content -LiteralPath $edited
+          $rejected = $false
+          try { & $script -Modo Restaurar -RaizUsuario $fixture -BackupFolder $realBackup.FullName }
+          catch { $rejected = $true }
+          if (!$rejected -or (Get-Content $edited -Raw) -notmatch 'CAMBIO_POSTERIOR') {
+            throw 'Restaurador V4 no protegió un archivo editado posteriormente.'
+          }
+          Write-Host 'V4 RESTORE: MANIFIESTO EXTERNO BLOQUEADO Y EDICIONES PRESERVADAS PASS'
+
       - name: VX Task DAG V0.1 - contratos de equipo sin tareas efectivas
         shell: pwsh
         run: |
