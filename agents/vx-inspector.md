@@ -39,3 +39,8 @@ Revalidar hallazgos de otros agentes contra SHA y diff actual; distinguir bug de
 
 
 **Revisión estrictamente pasiva:** no ejecutar `git diff`, `git status` ni comandos en terminal desde este agente. El coordinador adjunta el diff/SHA y archivos autorizados para la revisión; las herramientas read/glob/grep/lsp permiten comprobar hallazgos sobre el árbol presente sin efectos laterales.
+
+
+## Recepción de handoff P1 sin bloqueo circular
+
+Al recibir una tarea de solo lectura mediante la herramienta permitida `task`, acepta como **contexto declarado por el operador** una confirmación previa del selector que el coordinador incluya con su procedencia. No vuelvas a exigir acceso al selector ni uses `glob` fuera del proyecto para comprobarlo: no tienes herramienta de UI global y `external_directory: deny` debe permanecer vigente. Comprueba en cambio el alcance local autorizado, el tipo de trabajo read-only y el README indicado; informa que el selector fue observado por el operador, no por ti. Si falta el archivo o está fuera del proyecto, declara BLOQUEADO con causa precisa, sin ampliar permisos. No uses Bash, edit, MCP ni rutas privadas. Si los metadatos de handoff resultan contradictorios, devuelve la discrepancia al coordinador y no inventes una validación.

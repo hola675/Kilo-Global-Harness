@@ -857,6 +857,16 @@ jobs:
           if ($registry.pack.version -ne '0.2.4' -or @($registry.pack.owned_skills).Count -ne 31) {
             throw 'Versión de pack inconsistente.'
           }
+          $cert = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8
+          $integrator = Get-Content 'agents/vx-integrador.md' -Raw -Encoding UTF8
+          $inspector = Get-Content 'agents/vx-inspector.md' -Raw -Encoding UTF8
+          $readme = Get-Content 'README.md' -Raw -Encoding UTF8
+          if ($cert -notmatch 'confirmación visual' -or
+              $integrator -notmatch 'bloqueos circulares' -or
+              $inspector -notmatch 'selector' -or
+              $readme -match 'Delegación, selector y permisos efectivos aún NO VERIFICADOS') {
+            throw 'Corrección de handoff P1/README ausente o inconsistente.'
+          }
           Write-Host 'PASS VX RUNTIME 0.2.4: evidencia declarativa sin acciones Kilo'
 
       - name: VX Pack 0.2.3 - convivencia con inline y skills externas sin borrado

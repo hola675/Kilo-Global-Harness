@@ -31,6 +31,10 @@ Evidencia aportada por el operador: Pack V0.2.3 instalado por convivencia en su 
 
 Siguen sin demostrar por llamada nativa: selección de vx-integrador, disponibilidad de builders, delegación task real a vx-inspector, permisos efectivos edit/bash de builders y conexión al MCP IDA. El agente activo informó Kilo con alias Yoan, no prueba la activación de vx-integrador. NO aumentar external_directory ni usar glob fuera del proyecto para certificar. Nuevo comando /vx-certificar y validador sintético vx_runtime_smoke_v1.py para separar las ocho puertas y rechazar certificaciones basadas únicamente en autoinformes. La evidencia declarada nunca concede permisos. [Acta y próximo piloto](VX-CERTIFICACION-RUNTIME-20261116.md).
 
+### Piloto P1 de delegación nativa (2026-11-16)
+
+El operador mostró `Vx Integrador` activo y cinco builders visibles en el selector de Kilo. En P1 informó dos llamadas `task` a `vx-inspector`: la primera `BLOCKED` por comprobación redundante del selector y la segunda `completed` tras declarar la observación del operador en el handoff, devolviendo una revisión de solo lectura de `README.md`. El README confirma la cabecera reportada y admite desactualizaciones editoriales. Se considera **delegación con resultado observable por informe**; permisos efectivos edit/bash y conexión IDA MCP siguen NO VERIFICADOS. El handoff del coordinador ya transmite fuente del prerequisito y el inspector no intenta volver a verificar la interfaz ni escalar permisos. Próxima puerta: P2 de `edit: ask` en sandbox sintético, solo con autorización separada y verificando que la primera solicitud denegada no escriba. [Acta](VX-CERTIFICACION-RUNTIME-20261116.md).
+
 ## Resumen ejecutivo del estado y puertas del siguiente tema
 
 | Línea de producto | Qué construye | Estado comprobable | Puerta para avanzar |
