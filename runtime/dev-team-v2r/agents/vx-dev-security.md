@@ -13,6 +13,7 @@ permission:
     "*.key": deny
     "*credentials*": deny
     "*secret*": deny
+    "mcp:*": deny
   glob: allow
   grep: allow
   lsp: allow
