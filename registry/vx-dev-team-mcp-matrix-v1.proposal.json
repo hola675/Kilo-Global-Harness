@@ -1,0 +1,309 @@
+{
+  "schema": "vx-dev-team-mcp-matrix/1",
+  "version": "1.0.0-proposal",
+  "status": "PROPOSAL",
+  "runtime_active": false,
+  "legend": {
+    "A": "allow-read-query",
+    "Q": "ask-gate",
+    "D": "deny",
+    "C": "conditional",
+    "AQ": "allow-read-ask-mutation",
+    "AD": "allow-read-deny-mutation",
+    "CQ": "conditional-ask",
+    "CD": "conditional-read-deny-mutation"
+  },
+  "roles": [
+    "lead",
+    "research",
+    "frontend",
+    "backend",
+    "data",
+    "qa-analyst",
+    "qa-engineer",
+    "reviewer",
+    "security",
+    "ux",
+    "cloud",
+    "docs",
+    "reverse"
+  ],
+  "universal_policy": {
+    "max_writers_per_worktree": 1,
+    "subagent_noninteractive": true,
+    "subagent_ask_behavior": "BLOCKED_FOR_APPROVAL",
+    "destructive_actions": "human-approval-required",
+    "production_mutations": "human-approval-required",
+    "server_allow_never_implies_all_tools_allow": true
+  },
+  "matrix": {
+    "codebase-memory": {
+      "lead": "AQ",
+      "research": "AD",
+      "frontend": "AD",
+      "backend": "AD",
+      "data": "AD",
+      "qa-analyst": "AD",
+      "qa-engineer": "AD",
+      "reviewer": "AD",
+      "security": "AD",
+      "ux": "CD",
+      "cloud": "CD",
+      "docs": "AD",
+      "reverse": "AD"
+    },
+    "serena": {
+      "lead": "AQ",
+      "research": "AD",
+      "frontend": "AD",
+      "backend": "AD",
+      "data": "AD",
+      "qa-analyst": "AD",
+      "qa-engineer": "AD",
+      "reviewer": "AD",
+      "security": "AD",
+      "ux": "CD",
+      "cloud": "CD",
+      "docs": "AD",
+      "reverse": "AD"
+    },
+    "github": {
+      "lead": "AQ",
+      "research": "AD",
+      "frontend": "AD",
+      "backend": "AD",
+      "data": "CD",
+      "qa-analyst": "AD",
+      "qa-engineer": "AD",
+      "reviewer": "AD",
+      "security": "AD",
+      "ux": "D",
+      "cloud": "AD",
+      "docs": "AD",
+      "reverse": "CD"
+    },
+    "context7": {
+      "lead": "A",
+      "research": "A",
+      "frontend": "A",
+      "backend": "A",
+      "data": "A",
+      "qa-analyst": "A",
+      "qa-engineer": "A",
+      "reviewer": "A",
+      "security": "A",
+      "ux": "A",
+      "cloud": "A",
+      "docs": "A",
+      "reverse": "C"
+    },
+    "microsoft-learn": {
+      "lead": "A",
+      "research": "A",
+      "frontend": "C",
+      "backend": "C",
+      "data": "C",
+      "qa-analyst": "A",
+      "qa-engineer": "A",
+      "reviewer": "A",
+      "security": "A",
+      "ux": "C",
+      "cloud": "A",
+      "docs": "A",
+      "reverse": "C"
+    },
+    "playwright": {
+      "lead": "CQ",
+      "research": "D",
+      "frontend": "AQ",
+      "backend": "CQ",
+      "data": "D",
+      "qa-analyst": "AQ",
+      "qa-engineer": "AQ",
+      "reviewer": "CD",
+      "security": "CQ",
+      "ux": "AQ",
+      "cloud": "D",
+      "docs": "D",
+      "reverse": "D"
+    },
+    "chrome-devtools": {
+      "lead": "CQ",
+      "research": "D",
+      "frontend": "AQ",
+      "backend": "CQ",
+      "data": "D",
+      "qa-analyst": "AQ",
+      "qa-engineer": "AQ",
+      "reviewer": "AD",
+      "security": "AQ",
+      "ux": "AQ",
+      "cloud": "CQ",
+      "docs": "D",
+      "reverse": "D"
+    },
+    "postman": {
+      "lead": "AQ",
+      "research": "CD",
+      "frontend": "CD",
+      "backend": "AQ",
+      "data": "D",
+      "qa-analyst": "AD",
+      "qa-engineer": "AQ",
+      "reviewer": "CD",
+      "security": "CD",
+      "ux": "D",
+      "cloud": "CD",
+      "docs": "CD",
+      "reverse": "D"
+    },
+    "snyk": {
+      "lead": "CQ",
+      "research": "D",
+      "frontend": "D",
+      "backend": "CD",
+      "data": "CD",
+      "qa-analyst": "D",
+      "qa-engineer": "CD",
+      "reviewer": "CD",
+      "security": "AQ",
+      "ux": "D",
+      "cloud": "CD",
+      "docs": "D",
+      "reverse": "CD"
+    },
+    "sentry": {
+      "lead": "AQ",
+      "research": "CD",
+      "frontend": "CD",
+      "backend": "AD",
+      "data": "D",
+      "qa-analyst": "AD",
+      "qa-engineer": "AD",
+      "reviewer": "AD",
+      "security": "AD",
+      "ux": "D",
+      "cloud": "AD",
+      "docs": "CD",
+      "reverse": "D"
+    },
+    "cloudflare-api": {
+      "lead": "CQ",
+      "research": "D",
+      "frontend": "D",
+      "backend": "CD",
+      "data": "CD",
+      "qa-analyst": "D",
+      "qa-engineer": "CD",
+      "reviewer": "CD",
+      "security": "AD",
+      "ux": "D",
+      "cloud": "AQ",
+      "docs": "CD",
+      "reverse": "D"
+    },
+    "imagegen": {
+      "lead": "CQ",
+      "research": "D",
+      "frontend": "AQ",
+      "backend": "D",
+      "data": "D",
+      "qa-analyst": "D",
+      "qa-engineer": "D",
+      "reviewer": "D",
+      "security": "D",
+      "ux": "AQ",
+      "cloud": "D",
+      "docs": "CQ",
+      "reverse": "D"
+    },
+    "ida": {
+      "lead": "CQ",
+      "research": "D",
+      "frontend": "D",
+      "backend": "D",
+      "data": "D",
+      "qa-analyst": "D",
+      "qa-engineer": "D",
+      "reviewer": "CD",
+      "security": "CD",
+      "ux": "D",
+      "cloud": "D",
+      "docs": "CD",
+      "reverse": "AQ"
+    }
+  },
+  "phase_priority": {
+    "INTAKE": [],
+    "DISCOVER": [
+      "codebase-memory",
+      "serena",
+      "context7",
+      "microsoft-learn",
+      "github"
+    ],
+    "PLAN": [
+      "codebase-memory",
+      "serena",
+      "github",
+      "context7"
+    ],
+    "DESIGN_CONTRACT": [
+      "serena",
+      "codebase-memory",
+      "postman",
+      "context7"
+    ],
+    "BUILD": [
+      "serena",
+      "codebase-memory",
+      "postman",
+      "cloudflare-api"
+    ],
+    "VERIFY": [
+      "playwright",
+      "chrome-devtools",
+      "postman",
+      "github",
+      "sentry"
+    ],
+    "REVIEW": [
+      "serena",
+      "codebase-memory",
+      "github",
+      "snyk",
+      "chrome-devtools"
+    ],
+    "INTEGRATE": [
+      "github",
+      "serena",
+      "codebase-memory"
+    ],
+    "RELEASE_GATE": [
+      "github",
+      "snyk",
+      "sentry",
+      "cloudflare-api"
+    ],
+    "CLOSE": [
+      "github"
+    ]
+  },
+  "mandatory_human_gates": [
+    "merge-main",
+    "production-deploy",
+    "dns-mutation",
+    "infrastructure-create-delete",
+    "auth-role-iam-change",
+    "irreversible-database-change",
+    "external-organization-settings",
+    "economic-or-destructive-browser-action"
+  ],
+  "implementation_requirements": [
+    "enumerate-effective-mcp-tool-names",
+    "classify-read-mutation-destructive",
+    "generate-explicit-namespaced-permission-rules",
+    "validate-permission-precedence",
+    "smoke-test-allow-deny-ask-per-agent"
+  ]
+}
