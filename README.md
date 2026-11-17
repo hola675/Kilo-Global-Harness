@@ -59,7 +59,7 @@ Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R n
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Explorer y Security ya tienen evidencia runtime aportada por el operador que cumple V2-R.2. Architect, Frontend, Backend/Data, Quality y Research quedan pendientes de la certificación reproducible incluida en este repositorio.
+**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Los **7/7 subagentes V2-R.2** tienen evidencia runtime aportada por el operador que cumple el contrato vigente. La siguiente fase es diseñar la matriz MCP read-only tool-by-tool; no hay MCP habilitados todavía para los hijos.
 
 
 ## Principios
@@ -337,6 +337,8 @@ La herramienta muestra cinco escenarios de revisión, regresión y calidad de ev
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **V2-R.2 certificación · 2026-11-17:** 7/7 especialistas runtime certificados mediante evidencia del operador; glob/grep disponibles, LSP opcional, read/mutación/shell/task/skill/MCP ausentes. Próxima fase: diseño MCP read-only tool-by-tool, sin activación todavía.
 
 - **Dev Team V1 · 2026-11-17:** nuevo agente primario `vx-dev-team` visible como `👥 Dev Team`, color propio, 13 agentes VX/31 skills, delegación a especialistas y política MCP conservadora (`Context7`/`Microsoft Learn` allow; resto ask). No modifica `kilo.jsonc` ni los 13 MCP; smoke visual en Desktop pendiente tras instalación/reload.
 
