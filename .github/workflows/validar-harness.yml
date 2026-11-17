@@ -212,25 +212,25 @@ jobs:
           & ./scripts/Validar-Registro-V4.ps1
           Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 13 AGENTES PASS'
 
-      - name: Dev Team V2-R - líder único y siete subagentes ocultos read-only
+      - name: Dev Team V2-R.1 - líder único, hijos no mutables y recursos MCP ocultos
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_dev_team_v1.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato Dev Team V2-R inválido.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato Dev Team V2-R.1 inválido.' }
           & ./scripts/Validar-Registro-V4.ps1
           $agent = Get-Content 'agents/vx-dev-team.md' -Raw -Encoding UTF8
           if ($agent -notmatch '👥 Dev Team' -or $agent -notmatch '#8B5CF6') {
             throw 'Identidad visual Dev Team ausente.'
           }
-          Write-Host 'DEV TEAM V2-R: ONE VISIBLE LEADER + 7 HIDDEN READ-ONLY SPECIALISTS PASS'
+          Write-Host 'DEV TEAM V2-R.1: ONE VISIBLE LEADER + 7 HIDDEN NON-MUTATING SPECIALISTS + READ DENY PASS'
 
-      - name: Dev Team V2-R - instalar pool oculto, preservar MCP/terceros y restaurar
+      - name: Dev Team V2-R.1 - instalar pool estricto, preservar MCP/terceros y restaurar
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           & ./tests/Test-DevTeam-Only-Reset.ps1
-          Write-Host 'DEV TEAM V2-R INSTALL/VERIFY/RESTORE: WINDOWS SMOKE PASS'
+          Write-Host 'DEV TEAM V2-R.1 INSTALL/VERIFY/RESTORE: WINDOWS SMOKE PASS'
 
       - name: VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores
         shell: pwsh
