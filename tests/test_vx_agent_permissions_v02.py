@@ -26,7 +26,6 @@ class VXAgentPermissionsTests(unittest.TestCase):
             with self.subTest(agent=file.name):
                 front = file.read_text(encoding="utf-8").split("---", 2)[1]
                 self.assertRegex(front, r'(?m)^  "\*": deny\s*$')
-                self.assertRegex(front, r'(?m)^    "mcp:\*": deny\s*$')
                 self.assertLess(front.index('  "*": deny'), front.index("  read:"))
                 if file.name == "vx-dev-team.md":
                     self.assertRegex(front, r"(?m)^  skill: deny\s*$")
@@ -61,6 +60,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
             with self.subTest(child=file.name):
                 front = file.read_text(encoding="utf-8").split("---", 2)[1]
                 self.assertRegex(front, r'(?m)^  "\*": deny\s*$')
+                self.assertRegex(front, r'(?m)^    "mcp:\*": deny\s*$')
                 self.assertLess(front.index('  "*": deny'), front.index("  read:"))
                 self.assertRegex(front, r"(?m)^mode: subagent\s*$")
                 self.assertRegex(front, r"(?m)^hidden: true\s*$")
