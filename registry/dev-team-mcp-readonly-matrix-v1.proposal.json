@@ -356,7 +356,7 @@
           "name": "query_graph",
           "permission": "codebase-memory_query_graph",
           "class": "UNKNOWN",
-          "decision": "DENY_INITIAL",
+          "decision": "DENY",
           "note": "Graph query semantics must be verified as non-mutating for actual build."
         },
         {
