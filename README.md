@@ -45,7 +45,7 @@ Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`
 - `vx-dev-security`
 - `vx-dev-research`
 
-Todos los hijos están limitados a lectura, búsqueda y LSP. Tienen `edit/write/apply_patch/bash/task/skill/agent_manager/board: deny` y ninguna herramienta MCP namespaced permitida.
+Todos los hijos están limitados a lectura, búsqueda y LSP. Tienen `edit/write/apply_patch/bash/task/skill/agent_manager/board: deny`, ninguna herramienta MCP namespaced permitida y además `read → "mcp:*": deny` para bloquear los recursos MCP genéricos. En Windows esas tools pueden seguir apareciendo como expuestas por Kilo, pero su ejecución debe quedar denegada.
 
 El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los siete por defecto y la profundidad máxima es una sola: **Usuario → Dev Team → Subagente**.
 
