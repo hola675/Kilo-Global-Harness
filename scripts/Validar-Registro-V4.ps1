@@ -162,33 +162,45 @@ if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
 
 $runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
 $installedAgentDir = Join-Path $RaizFuentes 'agents'
-foreach ($child in $childIds) {
-  $childFile = Join-Path $runtimeAgentDir ($child + '.md')
-  if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
-    $childFile = Join-Path $installedAgentDir ($child + '.md')
+$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
+if (!$validateChildren) {
+  $validateChildren = $true
+  foreach ($child in $childIds) {
+    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
+      $validateChildren = $false
+      break
+    }
   }
-  if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
-  $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
-  $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
-  if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
-  $childFront = $childFrontMatch.Groups[1].Value
-  foreach ($required in @(
-    '(?m)^mode:\s*subagent\s*$',
-    '(?m)^hidden:\s*true\s*$',
-    '(?m)^\s{2}skill:\s*deny\s*$',
-    '(?m)^\s{2}task:\s*deny\s*$',
-    '(?m)^\s{2}edit:\s*deny\s*$',
-    '(?m)^\s{2}write:\s*deny\s*$',
-    '(?m)^\s{2}apply_patch:\s*deny\s*$',
-    '(?m)^\s{2}bash:\s*deny\s*$',
-    '(?m)^\s{2}agent_manager:\s*deny\s*$',
-    '(?m)^\s{2}board_read:\s*deny\s*$',
-    '(?m)^\s{2}board_post:\s*deny\s*$'
-  )) {
-    if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
-  }
-  if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-    throw "Subagente $child contiene permisos MCP automaticos."
+}
+if ($validateChildren) {
+  foreach ($child in $childIds) {
+    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
+      $childFile = Join-Path $installedAgentDir ($child + '.md')
+    }
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
+    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
+    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
+    $childFront = $childFrontMatch.Groups[1].Value
+    foreach ($required in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}skill:\s*deny\s*$',
+      '(?m)^\s{2}task:\s*deny\s*$',
+      '(?m)^\s{2}edit:\s*deny\s*$',
+      '(?m)^\s{2}write:\s*deny\s*$',
+      '(?m)^\s{2}apply_patch:\s*deny\s*$',
+      '(?m)^\s{2}bash:\s*deny\s*$',
+      '(?m)^\s{2}agent_manager:\s*deny\s*$',
+      '(?m)^\s{2}board_read:\s*deny\s*$',
+      '(?m)^\s{2}board_post:\s*deny\s*$'
+    )) {
+      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
+    }
+    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $child contiene permisos MCP automaticos."
+    }
   }
 }
 
