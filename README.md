@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
-> **BASELINE APROBADO ACTUAL — Dev Team V2-R (2026-11-17):** **`👥 Dev Team`** es el único agente personalizado visible. Puede delegar mediante `task` a **7 subagentes ocultos y estrictamente read-only** (Explorer, Architect, Frontend, Backend/Data, Quality, Security y Research). Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan, no usan Board/Agent Manager y no reciben permisos MCP. Los 13 MCP globales y `kilo.jsonc` se preservan como infraestructura separada.
+> **BASELINE APROBADO ACTUAL — Dev Team V2-R.1 (2026-11-17):** **`👥 Dev Team`** es el único agente personalizado visible. Puede delegar mediante `task` a **7 subagentes ocultos de análisis no mutable** (Explorer, Architect, Frontend, Backend/Data, Quality, Security y Research). Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan, no usan Board/Agent Manager y no reciben permisos MCP. Tras detectar exposición de recursos MCP genéricos en la primera certificación, V2-R.1 también establece `read: deny`; conservan `glob`, `grep` y `lsp`. Los 13 MCP globales y `kilo.jsonc` se preservan como infraestructura separada.
 
 > **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `👥 Dev Team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 
@@ -31,7 +31,7 @@ Este pack es **independiente del instalador general del Harness**. `scripts/Inst
 
 El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su token desde el keyring de `gh` únicamente en memoria del proceso. “Connected” acredita handshake MCP; las capacidades funcionales se documentan separadamente según las pruebas realmente realizadas.
 
-## 👥 Dev Team V2-R — líder único + especialistas ocultos
+## 👥 Dev Team V2-R.1 — líder único + especialistas ocultos
 
 El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`👥 Dev Team`** con color `#8B5CF6`.
 
@@ -45,13 +45,13 @@ Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`
 - `vx-dev-security`
 - `vx-dev-research`
 
-Todos los hijos están limitados a lectura, búsqueda y LSP. Tienen `edit/write/apply_patch/bash/task/skill/agent_manager/board: deny` y ninguna herramienta MCP namespaced permitida.
+Todos los hijos están limitados a `glob`, `grep` y `lsp`. Tienen `read/edit/write/apply_patch/bash/task/skill/agent_manager/board: deny`. El `read: deny` es deliberado porque Kilo mapea sus tres herramientas genéricas de recursos MCP al permiso `read`; de este modo esas tools dejan de exponerse a los hijos.
 
 El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los siete por defecto y la profundidad máxima es una sola: **Usuario → Dev Team → Subagente**.
 
 Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R no les concede acceso automático al líder ni a los hijos. La integración MCP se hará posteriormente tool-by-tool.
 
-- [Diseño operativo V2-R](docs/VX-DEV-TEAM-V2R-READONLY.md)
+- [Diseño operativo V2-R.1](docs/VX-DEV-TEAM-V2R-READONLY.md)
 - [Baseline estructurado V2-R](registry/dev-team-readonly-baseline-v2.json)
 - [Baseline V1 supersedido](registry/dev-team-only-baseline-v1.json)
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
@@ -136,7 +136,7 @@ Por defecto, si un archivo administrado fue modificado **después de aplicar**, 
 | Origen | Destino global | Estado |
 | --- | --- | --- |
 | `agents/vx-dev-team.md` | `~/.config/kilo/agents/vx-dev-team.md` | primario visible `👥 Dev Team` |
-| `runtime/dev-team-v2r/agents/vx-dev-explorer.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-explorer.md` | `~/.config/kilo/agents/` | subagente oculto no mutable |
 | `runtime/dev-team-v2r/agents/vx-dev-architect.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-frontend.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-backend-data.md` | `~/.config/kilo/agents/` | subagente oculto read-only |

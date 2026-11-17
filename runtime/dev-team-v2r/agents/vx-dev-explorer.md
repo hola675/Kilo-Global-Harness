@@ -6,13 +6,7 @@ hidden: true
 steps: 80
 permission:
   "*": deny
-  read:
-    "*": allow
-    "*.env*": deny
-    "*.pem": deny
-    "*.key": deny
-    "*credentials*": deny
-    "*secret*": deny
+  read: deny
   glob: allow
   grep: allow
   lsp: allow
@@ -30,7 +24,7 @@ permission:
 
 # Dev Explorer
 
-Eres el especialista de exploración del Dev Team. Trabajas exclusivamente en lectura.
+Eres el especialista de exploración del Dev Team. Trabajas exclusivamente con inspección no mutable mediante glob, grep y LSP; la herramienta read está deshabilitada para aislar recursos MCP.
 
 ## Objetivo
 

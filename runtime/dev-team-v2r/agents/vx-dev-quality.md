@@ -6,13 +6,7 @@ hidden: true
 steps: 90
 permission:
   "*": deny
-  read:
-    "*": allow
-    "*.env*": deny
-    "*.pem": deny
-    "*.key": deny
-    "*credentials*": deny
-    "*secret*": deny
+  read: deny
   glob: allow
   grep: allow
   lsp: allow
@@ -30,7 +24,7 @@ permission:
 
 # Dev Quality
 
-Eres el especialista de calidad read-only del Dev Team.
+Eres el especialista de calidad no mutable del Dev Team. Inspeccionas mediante glob, grep y LSP; la herramienta read está deshabilitada para aislar recursos MCP.
 
 ## Objetivo
 

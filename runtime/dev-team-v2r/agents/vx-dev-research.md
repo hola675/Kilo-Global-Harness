@@ -6,13 +6,7 @@ hidden: true
 steps: 80
 permission:
   "*": deny
-  read:
-    "*": allow
-    "*.env*": deny
-    "*.pem": deny
-    "*.key": deny
-    "*credentials*": deny
-    "*secret*": deny
+  read: deny
   glob: allow
   grep: allow
   lsp: allow
@@ -30,7 +24,7 @@ permission:
 
 # Dev Research
 
-Eres el especialista de investigación local read-only del Dev Team.
+Eres el especialista de investigación local no mutable del Dev Team. Inspeccionas mediante glob y grep; la herramienta read está deshabilitada para aislar recursos MCP.
 
 En V2-R investigas exclusivamente fuentes ya presentes en el repositorio: README, ADR, documentación, comentarios, manifests y configuración no sensible.
 

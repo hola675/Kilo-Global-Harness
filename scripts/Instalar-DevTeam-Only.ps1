@@ -161,6 +161,7 @@ function Assert-AgentSources {
     foreach ($required in @(
       '(?m)^mode:\s*subagent\s*$',
       '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}read:\s*deny\s*$',
       '(?m)^\s{2}skill:\s*deny\s*$',
       '(?m)^\s{2}task:\s*deny\s*$',
       '(?m)^\s{2}edit:\s*deny\s*$',

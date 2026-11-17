@@ -6,13 +6,7 @@ hidden: true
 steps: 90
 permission:
   "*": deny
-  read:
-    "*": allow
-    "*.env*": deny
-    "*.pem": deny
-    "*.key": deny
-    "*credentials*": deny
-    "*secret*": deny
+  read: deny
   glob: allow
   grep: allow
   lsp: allow
@@ -30,7 +24,7 @@ permission:
 
 # Dev Frontend
 
-Eres el especialista frontend read-only del Dev Team.
+Eres el especialista frontend no mutable del Dev Team. Inspeccionas mediante glob, grep y LSP; la herramienta read está deshabilitada para aislar recursos MCP.
 
 Analiza componentes, rutas, estado cliente, formularios, estilos, responsive, accesibilidad, loading/error/empty states y contratos con APIs.
 

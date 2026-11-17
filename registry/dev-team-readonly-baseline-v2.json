@@ -1,6 +1,6 @@
 {
   "schema": "kilo-dev-team-v2r/1",
-  "version": "2.0.0-readonly",
+  "version": "2.0.1-strict-no-mcp-resources",
   "status": "ACTIVE_APPROVED_BASELINE",
   "primary": {
     "id": "vx-dev-team",
@@ -79,12 +79,12 @@
   },
   "child_permissions": {
     "allowed": [
-      "read",
       "glob",
       "grep",
       "lsp"
     ],
     "denied": [
+      "read",
       "edit",
       "write",
       "apply_patch",
@@ -96,7 +96,7 @@
       "board_read",
       "board_post"
     ],
-    "mcp": "deny-until-tool-level-policy"
+    "mcp": "not-exposed-by-read-deny-and-no-namespaced-allows"
   },
   "handoff_contract": {
     "input": [
@@ -137,5 +137,6 @@
     "old_vx_agents": "versioned-for-history-not-installed",
     "old_vx_skills": "versioned-for-history-not-installed"
   },
-  "next_phase": "runtime-smoke-and-readonly-delegation-evaluation"
+  "next_phase": "runtime-recertification-after-strict-mcp-resource-isolation",
+  "runtime_note": "Kilo maps list_mcp_resources, list_mcp_resource_templates and read_mcp_resource to permission read. V2-R.1 denies read on children so those generic MCP resource tools are not exposed."
 }

@@ -95,6 +95,7 @@ KEEP-AFTER
     foreach ($pat in @(
       '(?m)^mode:\s*subagent\s*$',
       '(?m)^hidden:\s*true\s*$',
+      '(?m)^  read:\s*deny\s*$',
       '(?m)^  edit:\s*deny\s*$',
       '(?m)^  write:\s*deny\s*$',
       '(?m)^  bash:\s*deny\s*$',
@@ -175,7 +176,7 @@ KEEP-AFTER
     throw 'Restore altero kilo.jsonc.'
   }
 
-  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+  Write-Host 'DEV TEAM V2-R.1: APPLY + VERIFY + HIDDEN NON-MUTATING CHILDREN + NO GENERIC READ + RESTORE PASS' -ForegroundColor Green
 }
 finally {
   if (Test-Path -LiteralPath $tmp) {
