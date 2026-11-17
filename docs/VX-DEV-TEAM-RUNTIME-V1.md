@@ -1,126 +1,122 @@
-# VX Dev Team Runtime V1
+# Dev Team Only — baseline aprobado V1
 
-**Estado:** ACTIVE_V1 en código  
 **Fecha:** 2026-11-17  
-**Agente primario:** `vx-dev-team`  
-**Nombre visible:** `👥 Dev Team`  
-**Color:** `#8B5CF6`
+**Estado:** ACTIVE_APPROVED_BASELINE  
+**Único agente personalizado aprobado:** `👥 Dev Team`  
+**ID interno:** `vx-dev-team`
 
-## Identidad visual
+## Decisión
 
-Kilo soporta oficialmente `displayName` y `color` para agentes personalizados. La versión actual no expone un campo oficial para sustituir el glifo izquierdo del selector por un SVG/ícono arbitrario.
+El Harness se reinicia sobre un baseline mínimo. Por ahora solo está aprobado el agente `vx-dev-team`.
 
-Por eso V1 usa una estrategia compatible y verificable:
+No están aprobados todavía:
 
-- ID interno estable: `vx-dev-team`;
-- display name: `👥 Dev Team`;
-- color propio: `#8B5CF6`;
-- sin campo `icon:` inventado.
+- subagentes VX;
+- builders VX;
+- advisers/reviewers VX;
+- skills VX;
+- comandos o workflows VX;
+- reglas globales VX;
+- plugins/observer VX;
+- runtime organizativo VX;
+- Agent Manager;
+- board;
+- permisos MCP automáticos desde Dev Team.
 
-La UI debe mostrar el emoji dentro del nombre visible y aplicar el color del agente donde Kilo lo represente.
-
-## Instalación global
-
-El instalador general ya copia todos los archivos `agents/*.md` al perfil global, por lo que `agents/vx-dev-team.md` se instala en:
-
-```text
-~/.config/kilo/agents/vx-dev-team.md
-```
-
-No se modifica `kilo.jsonc` y no se tocan los 13 MCP.
-
-## Runtime V1
-
-`vx-dev-team` es `mode: primary`, por tanto debe aparecer en el selector principal después de instalar y recargar Kilo.
-
-Puede delegar mediante `task` a:
-
-- vx-researcher
-- vx-inspector
-- vx-security-reviewer
-- vx-test-analyst
-- vx-frontend-adviser
-- vx-workers-adviser
-- vx-frontend-builder
-- vx-backend-builder
-- vx-qa-builder
-- vx-data-builder
-- vx-docs-builder
-
-Los builders conservan sus propios permisos. Dev Team no convierte `ask` en `allow`.
-
-## Escritura y shell
-
-El Team Lead tiene:
-
-- `edit: ask`
-- `write: ask`
-- `apply_patch: ask`
-- `bash: ask`
-- `agent_manager: deny` en V1
-- `external_directory: deny`
-
-Esto mantiene la interacción visible en el Permission Dock para cambios con efectos.
+Los componentes históricos permanecen versionados únicamente como referencia y para conservar trazabilidad. No forman parte del runtime aprobado.
 
 ## MCP
 
-V1 aplica una política conservadora a nivel de servidor:
+La configuración global de los 13 MCP se considera infraestructura separada. El reset Dev Team Only:
 
-### Allow
+- no modifica `kilo.jsonc`;
+- no elimina servidores MCP;
+- no autentica/desautentica servidores;
+- no concede permisos automáticos de MCP al agente.
 
-- `context7_*`
-- `microsoft-learn_*`
+Cada tool/MCP que vaya a usar Dev Team será definido y aprobado después.
 
-### Ask
+## Dev Team
 
-- `codebase-memory_*`
-- `serena_*`
-- `github_*`
-- `playwright_*`
-- `chrome-devtools_*`
-- `postman_*`
-- `snyk_*`
-- `sentry_*`
-- `cloudflare-api_*`
-- `imagegen_*`
-- `ida_*`
+El agente aprobado tiene:
 
-La matriz detallada por rol sigue en `registry/vx-dev-team-mcp-matrix-v1.json`. La siguiente refinación debe enumerar tools efectivas de cada MCP y separar lectura/mutación/destructivo tool-by-tool.
+- `mode: primary`;
+- `displayName: "👥 Dev Team"`;
+- color `#8B5CF6`;
+- lectura/búsqueda/LSP;
+- `edit/write/apply_patch: ask`;
+- `bash: ask`;
+- `skill: deny`;
+- `task: deny`;
+- `agent_manager: deny`;
+- board denegado;
+- ninguna regla MCP namespaced en allow/ask.
 
-## Invariantes
+## Instalación y limpieza
 
-- 1 escritor efectivo por worktree.
-- hasta 3 lectores en paralelo.
-- merge a main requiere autorización humana.
-- deploy/DNS/IAM/infra/DDL destructivo requiere autorización humana.
-- no autoevaluación como único revisor.
-- no instalación silenciosa de skills/MCP.
-- no alteración de AutoApprove.
-- no secretos en prompts, logs o repositorio.
-
-## Smoke test local esperado
-
-Después del merge e instalación:
+Usa únicamente:
 
 ```powershell
 Set-Location 'D:\Proyectos\Kilo-Global-Harness'
 git switch main
 git pull --ff-only origin main
 
-$script = '.\scripts\Instalar-Kilo-Global-Harness.ps1'
+$script = '.\scripts\Instalar-DevTeam-Only.ps1'
+
 pwsh -NoProfile -File $script -Modo Diagnostico
 pwsh -NoProfile -File $script -Modo Simular
 pwsh -NoProfile -File $script -Modo Aplicar
 pwsh -NoProfile -File $script -Modo Verificar
 ```
 
-Luego reiniciar/recargar Kilo y confirmar visualmente:
+El modo Aplicar crea un backup privado en:
 
-1. aparece `👥 Dev Team` en el selector;
-2. su color es distinto;
-3. puede delegar una tarea read-only a `vx-researcher`;
-4. una acción `edit` solicita aprobación;
-5. Context7 o Microsoft Learn no requieren aprobación adicional del agente;
-6. un MCP con efectos como GitHub/Serena/Cloudflare solicita aprobación.
+```text
+~/.config/kilo-devteam-backups/
+```
 
-La prueba visual del selector y del Permission Dock es evidencia runtime; CI solo valida archivos y contratos.
+Después ejecuta `/reload` en Kilo.
+
+## Qué retira del perfil global
+
+Solo recursos VX:
+
+- agentes `vx-*.md` excepto `vx-dev-team.md`;
+- comandos `vx-*.md`;
+- reglas `vx-*.md`;
+- plugin `vx-observer-light.js`;
+- skills `vx-*` de `.kilo`, `.agents` y `.kilocode`;
+- metadatos/scripts VX del directorio global `harness`;
+- bloque administrado `VX-HARNESS-V3` dentro de `AGENTS.md`.
+
+No elimina recursos de terceros.
+
+## Rollback
+
+Usa la carpeta de backup que imprimió Aplicar:
+
+```powershell
+pwsh -NoProfile -File $script -Modo Restaurar -BackupFolder 'C:\ruta\al\backup'
+```
+
+## Criterio de aceptación visual
+
+Después de `/reload`, dentro del selector personalizado VX debe quedar únicamente:
+
+```text
+👥 Dev Team
+```
+
+Los modos nativos de Kilo, como Code, Plan, Ask y Debug, permanecen intactos.
+
+## Próxima fase
+
+A partir de este baseline, cada incorporación será incremental:
+
+1. definir necesidad;
+2. diseñar agente/skill/tool/workflow;
+3. aprobar;
+4. implementar;
+5. probar;
+6. integrar;
+7. solo entonces instalarlo globalmente.
