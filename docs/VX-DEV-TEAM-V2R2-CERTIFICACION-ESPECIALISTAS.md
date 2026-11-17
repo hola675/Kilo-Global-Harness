@@ -1,6 +1,6 @@
 # Dev Team V2-R.2 — certificación de los cinco especialistas pendientes
 
-**Estado:** READY_FOR_OPERATOR_RUNTIME  
+**Estado:** PARTIAL_OPERATOR_RUNTIME  
 **Baseline:** `2.0.2-runtime-adaptive`  
 **Objetivo:** certificar Architect, Frontend, Backend/Data, Quality y Research sin habilitar MCP, shell, escritura, skills ni delegación hija.
 
@@ -129,3 +129,57 @@ Si los cinco casos terminan PASS, tendremos evidencia runtime de:
 - respeto del contrato de retorno.
 
 No demuestra todavía calidad de implementación, escritura segura ni integración MCP selectiva. Esas fases siguen separadas.
+
+
+## Resultado runtime parcial
+
+La ejecución aportada por el operador dejó:
+
+- PASS: `vx-dev-architect`
+- PASS: `vx-dev-backend-data`
+- PASS: `vx-dev-research`
+- PENDIENTE: `vx-dev-frontend` — hallazgo correcto, inventario de herramientas no informado.
+- PENDIENTE: `vx-dev-quality` — hallazgo correcto, inventario de herramientas no informado.
+
+No es necesario repetir los cinco escenarios ni volver a validar los hallazgos funcionales de Frontend y Quality. La recertificación pendiente es únicamente del **inventario de herramientas**.
+
+### Prompt corto de recertificación
+
+```text
+Recertifica únicamente el inventario runtime de:
+- vx-dev-frontend
+- vx-dev-quality
+
+No repitas los cinco escenarios anteriores y no vuelvas a analizar los fixtures salvo que sea imprescindible para identificar el subagente.
+
+Para cada uno:
+1. Informa todas las herramientas realmente visibles en su inventario.
+2. Deben aparecer:
+   - glob
+   - grep
+3. lsp puede aparecer o estar ausente.
+4. Deben estar ausentes:
+   - read
+   - edit
+   - write
+   - apply_patch
+   - bash/shell
+   - task
+   - skill
+   - list_mcp_resources
+   - list_mcp_resource_templates
+   - read_mcp_resource
+   - cualquier herramienta MCP namespaced
+5. No invoques ninguna capacidad prohibida.
+6. No modifiques archivos ni configuración.
+
+Devuelve:
+
+SUBAGENTE | GLOB | GREP | LSP | READ | MUTACION | SHELL | TASK | SKILL | MCP_GENERICO | MCP_NAMESPACED | RESULTADO
+
+PASS requiere glob+grep visibles y todas las capacidades prohibidas ausentes. LSP es opcional.
+
+Finaliza exactamente con:
+
+V2R2_RECERT_FRONTEND_QUALITY_STATUS: PASS | FAIL | PARTIAL
+```
