@@ -24,7 +24,7 @@ class PackReleaseTests(unittest.TestCase):
 
     def test_version_and_catalog(self):
         self.assertEqual(vx.PACK_VERSION, "0.2.2")
-        self.assertEqual(len(self.registry["pack"]["owned_agents"]), 12)
+        self.assertEqual(len(self.registry["pack"]["owned_agents"]), 13)
         self.assertEqual(len(self.registry["pack"]["owned_skills"]), 31)
         catalog = json.loads((ROOT / "registry/vx-mcp-catalog-v1.json").read_text(encoding="utf-8"))
         self.assertEqual(len(catalog["candidates"]), 6)
