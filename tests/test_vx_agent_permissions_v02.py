@@ -16,35 +16,35 @@ class VXAgentPermissionsTests(unittest.TestCase):
                 front = file.read_text(encoding="utf-8").split("---", 2)[1]
                 self.assertRegex(front, r'(?m)^  "\*": deny\s*$')
                 self.assertLess(front.index('  "*": deny'), front.index("  read:"))
-                self.assertRegex(front, r"(?m)^  skill: allow\s*$")
+                if file.name == "vx-dev-team.md":
+                    self.assertRegex(front, r"(?m)^  skill: deny\s*$")
+                    self.assertRegex(front, r"(?m)^  task: deny\s*$")
+                else:
+                    self.assertRegex(front, r"(?m)^  skill: allow\s*$")
                 self.assertNotRegex(front, r"(?m)^  mcp:\s*deny\s*$")
 
-    def test_coordinators_can_delegate_with_explicit_permission(self):
-        for name in ("vx-integrador.md", "vx-dev-team.md"):
-            with self.subTest(agent=name):
-                front = (AGENT_DIR / name).read_text(encoding="utf-8").split("---", 2)[1]
-                self.assertRegex(front, r"(?m)^  task:\s*$")
-                self.assertRegex(front, r'(?m)^    "\*": deny\s*$')
-                self.assertRegex(front, r'(?m)^    "vx-inspector": allow\s*$')
-                self.assertRegex(front, r"(?m)^  edit: ask\s*$")
-                self.assertRegex(front, r"(?m)^  bash: ask\s*$")
+    def test_legacy_integrator_can_delegate_but_dev_team_is_singleton(self):
+        front = (AGENT_DIR / "vx-integrador.md").read_text(encoding="utf-8").split("---", 2)[1]
+        self.assertRegex(front, r"(?m)^  task:\s*$")
+        self.assertRegex(front, r'(?m)^    "\*": deny\s*$')
+        self.assertRegex(front, r'(?m)^    "vx-inspector": allow\s*$')
 
-    def test_dev_team_has_distinct_identity_and_safe_mcp_defaults(self):
+        dev = (AGENT_DIR / "vx-dev-team.md").read_text(encoding="utf-8").split("---", 2)[1]
+        self.assertRegex(dev, r"(?m)^  task: deny\s*$")
+        self.assertRegex(dev, r"(?m)^  skill: deny\s*$")
+        self.assertRegex(dev, r"(?m)^  edit: ask\s*$")
+        self.assertRegex(dev, r"(?m)^  bash: ask\s*$")
+
+    def test_dev_team_has_distinct_identity_and_no_unapproved_extensions(self):
         front = (AGENT_DIR / "vx-dev-team.md").read_text(encoding="utf-8").split("---", 2)[1]
         self.assertRegex(front, r'(?m)^displayName:\s*"👥 Dev Team"\s*$')
         self.assertRegex(front, r'(?m)^color:\s*"#8B5CF6"\s*$')
-        self.assertRegex(front, r'(?m)^  "context7_\*": allow\s*$')
-        self.assertRegex(front, r'(?m)^  "microsoft-learn_\*": allow\s*$')
-        for server in (
-            "codebase-memory", "serena", "github", "playwright", "chrome-devtools",
-            "postman", "snyk", "sentry", "cloudflare-api", "imagegen", "ida",
-        ):
-            self.assertRegex(front, rf'(?m)^  "{re.escape(server)}_\*": ask\s*$')
-        for builder in (
-            "vx-frontend-builder", "vx-backend-builder", "vx-qa-builder",
-            "vx-data-builder", "vx-docs-builder",
-        ):
-            self.assertRegex(front, rf'(?m)^    "{re.escape(builder)}": allow\s*$')
+        self.assertRegex(front, r"(?m)^  skill: deny\s*$")
+        self.assertRegex(front, r"(?m)^  task: deny\s*$")
+        self.assertRegex(front, r"(?m)^  agent_manager: deny\s*$")
+        self.assertRegex(front, r"(?m)^  board_read: deny\s*$")
+        self.assertRegex(front, r"(?m)^  board_post: deny\s*$")
+        self.assertNotRegex(front, r'(?m)^  "[a-z0-9-]+_\*":\s*(allow|ask)\s*$')
 
     def test_inspector_terminal_and_sensitive_reads_are_denied(self):
         front = (AGENT_DIR / "vx-inspector.md").read_text(encoding="utf-8").split("---", 2)[1]

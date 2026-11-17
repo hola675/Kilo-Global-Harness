@@ -1,0 +1,48 @@
+{
+  "schema": "kilo-dev-team-only/1",
+  "version": "1.0.0",
+  "status": "ACTIVE_APPROVED_BASELINE",
+  "approved": {
+    "agents": [
+      "vx-dev-team"
+    ],
+    "skills": [],
+    "commands": [],
+    "workflows": [],
+    "plugins": [],
+    "custom_runtime": [],
+    "rules": []
+  },
+  "preserved_not_managed": {
+    "kilo_jsonc": true,
+    "builtin_agents": [
+      "Code",
+      "Plan",
+      "Ask",
+      "Debug"
+    ],
+    "mcp_configuration": true,
+    "third_party_agents": true,
+    "third_party_skills": true
+  },
+  "legacy_cleanup": {
+    "agents": "remove repo-namespaced vx-*.md except vx-dev-team.md",
+    "commands": "remove vx-*.md",
+    "rules": "remove vx-*.md",
+    "plugins": [
+      "vx-observer-light.js"
+    ],
+    "skills": "remove vx-* skill directories from .kilo/.agents/.kilocode",
+    "harness_runtime": "remove VX-namespaced legacy metadata/scripts",
+    "agents_md_block": "remove VX-HARNESS-V3 managed block"
+  },
+  "approvals": {
+    "subagents": false,
+    "skills": false,
+    "workflows": false,
+    "board": false,
+    "automatic_mcp_permissions": false,
+    "agent_manager": false
+  },
+  "note": "Los archivos VX historicos pueden permanecer en el repositorio como referencia, pero no forman parte del baseline instalado."
+}

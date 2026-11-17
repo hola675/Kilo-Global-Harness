@@ -62,16 +62,21 @@ foreach ($agent in $agents) {
   if ($front -match '(?m)^  mcp:\s*deny\s*$') {
     throw "Declaracion mcp:deny no protege herramientas namespaced: $id."
   }
-  if ($front -notmatch '(?m)^  skill:\s*allow\s*$') {
+  if ($id -eq 'vx-dev-team') {
+    if ($front -notmatch '(?m)^  skill:\s*deny\s*$' -or
+        $front -notmatch '(?m)^  task:\s*deny\s*$') {
+      throw 'Dev Team debe permanecer sin skills ni delegacion en el baseline actual.'
+    }
+  } elseif ($front -notmatch '(?m)^  skill:\s*allow\s*$') {
     throw "Agente sin carga controlada de skills: $id."
   }
-  if ($agent.role -eq 'coordinator') {
+  if ($agent.role -eq 'coordinator' -and $id -ne 'vx-dev-team') {
     if ($front -notmatch '(?m)^  task:\s*$' -or
         $front -notmatch '(?m)^    "\*":\s*deny\s*$' -or
         $front -notmatch '(?m)^    "vx-inspector":\s*allow\s*$' -or
         $front -notmatch '(?m)^  edit:\s*ask\s*$' -or
         $front -notmatch '(?m)^  bash:\s*ask\s*$') {
-      throw 'Coordinador VX requiere delegacion y escritura condicionada por el host.'
+      throw 'Coordinador VX legacy requiere delegacion y escritura condicionada por el host.'
     }
   }
   if ($agent.writes -eq $false) {
@@ -113,7 +118,7 @@ foreach ($p in $profiles) {
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
 
-# Dev Team V1: modo primario visible, identidad diferenciada y minimo privilegio MCP.
+# Dev Team baseline: único agente aprobado para instalación activa.
 if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
     $data.execution.dev_team_display_name -ne '👥 Dev Team' -or
     $data.execution.dev_team_runtime -ne 'active-v1') {
@@ -133,21 +138,16 @@ $devFront = $devFrontMatch.Groups[1].Value
 foreach ($required in @(
   '(?m)^displayName:\s*"👥 Dev Team"\s*$',
   '(?m)^color:\s*"#8B5CF6"\s*$',
-  '(?m)^\s{2}"context7_\*":\s*allow\s*$',
-  '(?m)^\s{2}"microsoft-learn_\*":\s*allow\s*$'
+  '(?m)^\s{2}skill:\s*deny\s*$',
+  '(?m)^\s{2}task:\s*deny\s*$',
+  '(?m)^\s{2}agent_manager:\s*deny\s*$',
+  '(?m)^\s{2}board_read:\s*deny\s*$',
+  '(?m)^\s{2}board_post:\s*deny\s*$'
 )) {
-  if ($devFront -notmatch $required) { throw "Dev Team sin identidad visual o permiso documental requerido: $required" }
+  if ($devFront -notmatch $required) { throw "Dev Team fuera del baseline minimo: $required" }
 }
-foreach ($builder in @('vx-frontend-builder','vx-backend-builder','vx-qa-builder','vx-data-builder','vx-docs-builder')) {
-  $pat = '(?m)^\s{4}"' + [regex]::Escape($builder) + '":\s*allow\s*$'
-  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar al builder registrado: $builder" }
-}
-foreach ($server in @(
-  'codebase-memory','serena','github','playwright','chrome-devtools',
-  'postman','snyk','sentry','cloudflare-api','imagegen','ida'
-)) {
-  $pat = '(?m)^\s{2}"' + [regex]::Escape($server) + '_\*":\s*ask\s*$'
-  if ($devFront -notmatch $pat) { throw "Dev Team relajo o perdio el gate MCP: $server" }
+if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+  throw 'Dev Team no puede tener permisos MCP automaticos en el baseline actual.'
 }
 
 if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }

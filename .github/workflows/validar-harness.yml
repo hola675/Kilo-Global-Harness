@@ -212,7 +212,7 @@ jobs:
           & ./scripts/Validar-Registro-V4.ps1
           Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 13 AGENTES PASS'
 
-      - name: Dev Team V1 - modo primario, identidad visual, delegación y MCP gates
+      - name: Dev Team V1 - modo primario único, identidad visual y extensiones bloqueadas
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -223,7 +223,14 @@ jobs:
           if ($agent -notmatch '👥 Dev Team' -or $agent -notmatch '#8B5CF6') {
             throw 'Identidad visual Dev Team ausente.'
           }
-          Write-Host 'DEV TEAM V1: PRIMARY + VISUAL IDENTITY + DELEGATION + MCP GATES PASS'
+          Write-Host 'DEV TEAM V1: PRIMARY SINGLETON + VISUAL IDENTITY + NO UNAPPROVED EXTENSIONS PASS'
+
+      - name: Dev Team Only - limpiar legacy, preservar MCP/terceros y restaurar
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & ./tests/Test-DevTeam-Only-Reset.ps1
+          Write-Host 'DEV TEAM ONLY RESET: WINDOWS SMOKE PASS'
 
       - name: VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores
         shell: pwsh
