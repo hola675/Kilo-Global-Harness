@@ -197,6 +197,16 @@ function Global-Assets {
     Source=(Join-Path $root 'registry/vx-mcp-catalog-v1.json');
     Target=(Join-Path $kiloDir 'harness/vx-mcp-catalog-v1.json')
   }
+  # V2 registra el pack operativo de 13 MCP. Sigue siendo metadato pasivo:
+  # este instalador general NO instala, autentica ni modifica servidores MCP.
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'registry/vx-mcp-catalog-v2.json');
+    Target=(Join-Path $kiloDir 'harness/vx-mcp-catalog-v2.json')
+  }
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'scripts/Validar-MCP-Pack.ps1');
+    Target=(Join-Path $kiloDir 'harness/scripts/Validar-MCP-Pack.ps1')
+  }
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'scripts/vx_pack_doctor.py');
     Target=(Join-Path $kiloDir 'harness/scripts/vx_pack_doctor.py')
