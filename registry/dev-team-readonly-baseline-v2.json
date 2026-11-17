@@ -144,7 +144,7 @@
     "old_vx_agents": "versioned-for-history-not-installed",
     "old_vx_skills": "versioned-for-history-not-installed"
   },
-  "next_phase": "design-readonly-mcp-tool-matrix",
+  "next_phase": "review-mcp-readonly-matrix-v1-and-capture-runtime-tool-ids",
   "runtime_note": "Kilo expone la tool lsp solo cuando el host habilita KILO_EXPERIMENTAL_LSP_TOOL. V2-R.2 permite lsp pero no la exige; glob y grep son las capacidades mínimas requeridas. read permanece denegado para ocultar recursos MCP genéricos.",
   "certification": {
     "contract": "registry/dev-team-v2r2-specialist-certification-v1.json",
@@ -161,5 +161,13 @@
     "pending_runtime": [],
     "status": "PASS_OPERATOR_RUNTIME",
     "result": "7/7"
+  },
+  "mcp_design": {
+    "proposal": "registry/dev-team-mcp-readonly-matrix-v1.proposal.json",
+    "guide": "docs/VX-DEV-TEAM-MCP-READONLY-MATRIX-V1.md",
+    "active": false,
+    "current_child_mcp": "DENY",
+    "first_candidate_wave": "WAVE-1-DOCS",
+    "activation_requires": "runtime exact-tool inventory + isolated smoke + human approval"
   }
 }
