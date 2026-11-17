@@ -63,7 +63,7 @@ class DevTeamV2RTests(unittest.TestCase):
                 self.assertRegex(front, r"(?m)^hidden:\s*true\s*$")
                 self.assertRegex(front, r'(?m)^  "\*":\s*deny\s*$')
                 for tool in (
-                    "skill", "task", "edit", "write", "apply_patch", "bash",
+                    "read", "skill", "task", "edit", "write", "apply_patch", "bash",
                     "agent_manager", "external_directory", "board_read", "board_post",
                 ):
                     self.assertRegex(front, rf"(?m)^  {re.escape(tool)}:\s*deny\s*$")
@@ -79,7 +79,7 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertTrue(all(x["read_only"] for x in baseline["subagents"]))
         self.assertEqual(baseline["orchestration"]["depth"], 1)
         self.assertFalse(baseline["orchestration"]["invoke_all_by_default"])
-        self.assertEqual(baseline["child_permissions"]["mcp"], "deny-until-tool-level-policy")
+        self.assertEqual(baseline["child_permissions"]["mcp"], "not-exposed-by-read-deny-and-no-namespaced-allows")
 
     def test_installer_preserves_mcp_config_and_manages_eight_agents(self):
         source = INSTALLER.read_text(encoding="utf-8")
