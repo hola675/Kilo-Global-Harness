@@ -1,11 +1,11 @@
-# Dev Team V2-R — líder único + especialistas ocultos read-only
+# Dev Team V2-R.1 — líder único + especialistas ocultos con aislamiento MCP estricto
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE APPROVED BASELINE  
+**Estado:** ACTIVE APPROVED BASELINE · V2-R.1  
 **Primario visible:** `👥 Dev Team`  
 **Especialistas ocultos:** 7  
 **Mutaciones de subagentes:** DENY  
-**MCP de subagentes:** DENY en esta fase
+**MCP de subagentes:** NO EXPUESTO en esta fase
 
 ## Objetivo
 
@@ -91,13 +91,13 @@ No se devuelve el transcript completo como contrato normal.
 
 Permitidos:
 
-- `read`
 - `glob`
 - `grep`
 - `lsp`
 
 Denegados:
 
+- `read`
 - `edit`
 - `write`
 - `apply_patch`
@@ -110,7 +110,22 @@ Denegados:
 - `board_post`
 - herramientas MCP namespaced
 
-Los archivos sensibles siguen bloqueados por patrones de lectura.
+### Nota de compatibilidad Kilo
+
+La certificación runtime V2-R original detectó que Kilo exponía `list_mcp_resources`, `list_mcp_resource_templates` y `read_mcp_resource` a los hijos.
+
+La causa está en Kilo actual: esas tres tools genéricas se clasifican internamente bajo el permiso `read`. Con `read: allow`, permanecen visibles aunque las tools MCP namespaced estén denegadas.
+
+V2-R.1 prioriza aislamiento estricto:
+
+```yaml
+read: deny
+glob: allow
+grep: allow
+lsp: allow
+```
+
+Así los especialistas mantienen inspección local no mutable, pero pierden la herramienta `read` directa y, con ella, la exposición de los recursos MCP genéricos. Este tradeoff es deliberado hasta que Kilo ofrezca separación agent-level entre lectura de archivos y lectura de recursos MCP.
 
 ## Instalación
 
@@ -151,7 +166,7 @@ Antes de permitir cualquier subagente escritor:
 
 ## Próxima fase
 
-Después del smoke real V2-R:
+Después del smoke real V2-R.1:
 
 - medir routing del líder;
 - ajustar descripciones/prompts;
