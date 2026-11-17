@@ -1,7 +1,7 @@
 # Dev Team Only — baseline aprobado V1
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE_APPROVED_BASELINE  
+**Estado:** SUPERSEDED — reemplazado por Dev Team V2-R  
 **Único agente personalizado aprobado:** `👥 Dev Team`  
 **ID interno:** `vx-dev-team`
 
