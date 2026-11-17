@@ -64,8 +64,9 @@ foreach ($agent in $agents) {
   }
   if ($id -eq 'vx-dev-team') {
     if ($front -notmatch '(?m)^  skill:\s*deny\s*$' -or
-        $front -notmatch '(?m)^  task:\s*deny\s*$') {
-      throw 'Dev Team debe permanecer sin skills ni delegacion en el baseline actual.'
+        $front -notmatch '(?m)^  task:\s*$' -or
+        $front -notmatch '(?m)^    "\*":\s*deny\s*$') {
+      throw 'Dev Team V2-R requiere skills bloqueadas y delegacion allowlist.'
     }
   } elseif ($front -notmatch '(?m)^  skill:\s*allow\s*$') {
     throw "Agente sin carga controlada de skills: $id."
@@ -118,16 +119,16 @@ foreach ($p in $profiles) {
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
 
-# Dev Team baseline: único agente aprobado para instalación activa.
+# Dev Team V2-R: único primario visible + siete subagentes ocultos read-only.
 if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
     $data.execution.dev_team_display_name -ne '👥 Dev Team' -or
     $data.execution.dev_team_runtime -ne 'active-v1') {
-  throw 'Registro Dev Team V1 incompleto o inactivo.'
+  throw 'Registro Dev Team primario incompleto.'
 }
 $devTeam = @($agents | Where-Object { $_.id -eq 'vx-dev-team' })
 if ($devTeam.Count -ne 1 -or $devTeam[0].mode -ne 'primary' -or
     $devTeam[0].role -ne 'coordinator' -or $devTeam[0].writes -ne $true) {
-  throw 'vx-dev-team no esta registrado como coordinador primario escritor condicionado.'
+  throw 'vx-dev-team no esta registrado como coordinador primario.'
 }
 $devFile = Join-Path $RaizFuentes 'agents/vx-dev-team.md'
 if (!(Test-Path -LiteralPath $devFile -PathType Leaf)) { throw 'Falta agente global vx-dev-team.' }
@@ -139,15 +140,68 @@ foreach ($required in @(
   '(?m)^displayName:\s*"👥 Dev Team"\s*$',
   '(?m)^color:\s*"#8B5CF6"\s*$',
   '(?m)^\s{2}skill:\s*deny\s*$',
-  '(?m)^\s{2}task:\s*deny\s*$',
+  '(?m)^\s{2}task:\s*$',
+  '(?m)^\s{4}"\*":\s*deny\s*$',
   '(?m)^\s{2}agent_manager:\s*deny\s*$',
   '(?m)^\s{2}board_read:\s*deny\s*$',
   '(?m)^\s{2}board_post:\s*deny\s*$'
 )) {
-  if ($devFront -notmatch $required) { throw "Dev Team fuera del baseline minimo: $required" }
+  if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
+}
+$childIds = @(
+  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend-data',
+  'vx-dev-quality','vx-dev-security','vx-dev-research'
+)
+foreach ($child in $childIds) {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
 }
 if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-  throw 'Dev Team no puede tener permisos MCP automaticos en el baseline actual.'
+  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
+}
+
+$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
+$installedAgentDir = Join-Path $RaizFuentes 'agents'
+$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
+if (!$validateChildren) {
+  $validateChildren = $true
+  foreach ($child in $childIds) {
+    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
+      $validateChildren = $false
+      break
+    }
+  }
+}
+if ($validateChildren) {
+  foreach ($child in $childIds) {
+    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
+      $childFile = Join-Path $installedAgentDir ($child + '.md')
+    }
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
+    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
+    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
+    $childFront = $childFrontMatch.Groups[1].Value
+    foreach ($required in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}skill:\s*deny\s*$',
+      '(?m)^\s{2}task:\s*deny\s*$',
+      '(?m)^\s{2}edit:\s*deny\s*$',
+      '(?m)^\s{2}write:\s*deny\s*$',
+      '(?m)^\s{2}apply_patch:\s*deny\s*$',
+      '(?m)^\s{2}bash:\s*deny\s*$',
+      '(?m)^\s{2}agent_manager:\s*deny\s*$',
+      '(?m)^\s{2}board_read:\s*deny\s*$',
+      '(?m)^\s{2}board_post:\s*deny\s*$'
+    )) {
+      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
+    }
+    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $child contiene permisos MCP automaticos."
+    }
+  }
 }
 
 if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }

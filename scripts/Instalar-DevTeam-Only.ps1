@@ -1,11 +1,11 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  Instala el baseline minimo aprobado de Kilo Global Harness: solo Dev Team.
+  Instala Dev Team V2-R: un lider visible y siete subagentes ocultos read-only.
 .DESCRIPTION
-  Elimina del perfil global los recursos VX heredados, hace backup reversible y
-  copia unicamente agents/vx-dev-team.md. NO modifica kilo.jsonc, MCP, modelos,
-  AutoApprove, agentes nativos ni recursos de terceros.
+  Retira runtime VX legacy, instala unicamente el runtime aprobado V2-R y crea
+  backup reversible. NO modifica kilo.jsonc, MCP, modelos, AutoApprove, agentes
+  nativos ni recursos de terceros.
 #>
 [CmdletBinding()]
 param(
@@ -32,11 +32,22 @@ $pluginDir = Join-Path $kiloDir 'plugin'
 $harnessDir = Join-Path $kiloDir 'harness'
 $agentsFile = Join-Path $kiloDir 'AGENTS.md'
 $configFile = Join-Path $kiloDir 'kilo.jsonc'
-$devSource = Join-Path $repoRoot 'agents/vx-dev-team.md'
-$devTarget = Join-Path $agentDir 'vx-dev-team.md'
 $backupRoot = Join-Path $homeRoot '.config/kilo-devteam-backups'
 $startMarker = '<!-- VX-HARNESS-V3:BEGIN -->'
 $endMarker = '<!-- VX-HARNESS-V3:END -->'
+
+$approvedAgents = [ordered]@{
+  'vx-dev-team.md'         = (Join-Path $repoRoot 'agents/vx-dev-team.md')
+  'vx-dev-explorer.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-explorer.md')
+  'vx-dev-architect.md'    = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-architect.md')
+  'vx-dev-frontend.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-frontend.md')
+  'vx-dev-backend-data.md' = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-backend-data.md')
+  'vx-dev-quality.md'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-quality.md')
+  'vx-dev-security.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-security.md')
+  'vx-dev-research.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-research.md')
+}
+$approvedNames = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($name in $approvedAgents.Keys) { [void]$approvedNames.Add($name) }
 
 function Hash-File([string]$Path) {
   if (!(Test-Path -LiteralPath $Path -PathType Leaf)) { return $null }
@@ -78,9 +89,7 @@ function Add-UniqueItem(
 ) {
   if ([string]::IsNullOrWhiteSpace($Path)) { return }
   $full = [IO.Path]::GetFullPath($Path)
-  if ($Seen.Add($full)) {
-    [void]$List.Add([pscustomobject]@{Path=$full;Kind=$Kind})
-  }
+  if ($Seen.Add($full)) { [void]$List.Add([pscustomobject]@{Path=$full;Kind=$Kind}) }
 }
 
 function Get-LegacyItems {
@@ -88,9 +97,8 @@ function Get-LegacyItems {
   $seen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 
   if (Test-Path -LiteralPath $agentDir) {
-    foreach ($f in @(Get-ChildItem -LiteralPath $agentDir -Filter 'vx-*.md' -File -ErrorAction SilentlyContinue |
-        Where-Object Name -ne 'vx-dev-team.md')) {
-      Add-UniqueItem $items $seen $f.FullName 'file'
+    foreach ($f in @(Get-ChildItem -LiteralPath $agentDir -Filter 'vx-*.md' -File -ErrorAction SilentlyContinue)) {
+      if (!$approvedNames.Contains($f.Name)) { Add-UniqueItem $items $seen $f.FullName 'file' }
     }
   }
 
@@ -106,9 +114,7 @@ function Get-LegacyItems {
   }
 
   $observer = Join-Path $pluginDir 'vx-observer-light.js'
-  if (Test-Path -LiteralPath $observer -PathType Leaf) {
-    Add-UniqueItem $items $seen $observer 'file'
-  }
+  if (Test-Path -LiteralPath $observer -PathType Leaf) { Add-UniqueItem $items $seen $observer 'file' }
 
   foreach ($skillRoot in @(
     (Join-Path $homeRoot '.kilo/skills'),
@@ -133,35 +139,55 @@ function Get-LegacyItems {
   return @($items)
 }
 
-function Assert-DevTeamSource {
-  if (!(Test-Path -LiteralPath $devSource -PathType Leaf)) { throw "Falta fuente Dev Team: $devSource" }
-  $text = Get-Content -LiteralPath $devSource -Raw -Encoding UTF8
+function Assert-AgentSources {
+  foreach ($pair in $approvedAgents.GetEnumerator()) {
+    if (!(Test-Path -LiteralPath $pair.Value -PathType Leaf)) { throw "Falta fuente aprobada: $($pair.Value)" }
+  }
+
+  $leader = Get-Content -LiteralPath $approvedAgents['vx-dev-team.md'] -Raw -Encoding UTF8
   foreach ($required in @(
     '(?m)^displayName:\s*"👥 Dev Team"\s*$',
     '(?m)^mode:\s*primary\s*$',
     '(?m)^color:\s*"#8B5CF6"\s*$',
     '(?m)^\s{2}skill:\s*deny\s*$',
-    '(?m)^\s{2}task:\s*deny\s*$',
+    '(?m)^\s{2}task:\s*$',
     '(?m)^\s{2}agent_manager:\s*deny\s*$'
   )) {
-    if ($text -notmatch $required) { throw "Dev Team no cumple baseline minimo: $required" }
+    if ($leader -notmatch $required) { throw "Dev Team V2-R invalido: $required" }
   }
-  if ($text -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-    throw 'Dev Team contiene permisos MCP automaticos; baseline bloqueado.'
+
+  foreach ($name in $approvedAgents.Keys | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $text = Get-Content -LiteralPath $approvedAgents[$name] -Raw -Encoding UTF8
+    foreach ($required in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}skill:\s*deny\s*$',
+      '(?m)^\s{2}task:\s*deny\s*$',
+      '(?m)^\s{2}edit:\s*deny\s*$',
+      '(?m)^\s{2}write:\s*deny\s*$',
+      '(?m)^\s{2}apply_patch:\s*deny\s*$',
+      '(?m)^\s{2}bash:\s*deny\s*$',
+      '(?m)^\s{2}agent_manager:\s*deny\s*$',
+      '(?m)^\s{2}board_read:\s*deny\s*$',
+      '(?m)^\s{2}board_post:\s*deny\s*$'
+    )) {
+      if ($text -notmatch $required) { throw "Subagente $name no es read-only/oculto: $required" }
+    }
+    if ($text -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $name contiene permisos MCP automaticos."
+    }
   }
 }
 
 function Show-State {
   $legacy = @(Get-LegacyItems)
-  $vxAgents = @()
-  if (Test-Path -LiteralPath $agentDir) {
-    $vxAgents = @(Get-ChildItem -LiteralPath $agentDir -Filter 'vx-*.md' -File -ErrorAction SilentlyContinue |
-      Select-Object -ExpandProperty Name)
+  $installed = @()
+  foreach ($name in $approvedAgents.Keys) {
+    if (Test-Path -LiteralPath (Join-Path $agentDir $name) -PathType Leaf) { $installed += $name }
   }
-  Write-Host "=== DEV TEAM ONLY | $Modo ===" -ForegroundColor Cyan
+  Write-Host "=== DEV TEAM V2-R | $Modo ===" -ForegroundColor Cyan
   Write-Host "HOME: $homeRoot"
-  Write-Host "Dev Team instalado: $(Test-Path -LiteralPath $devTarget -PathType Leaf)"
-  Write-Host "Agentes VX visibles: $($vxAgents.Count) [$($vxAgents -join ', ')]"
+  Write-Host "Agentes aprobados instalados detectados: $($installed.Count)/8"
   Write-Host "Recursos VX legacy detectados para retirar: $($legacy.Count)"
   Write-Host "kilo.jsonc: $(if(Test-Path -LiteralPath $configFile){'PRESERVADO'}else{'NO EXISTE'})"
   Write-Host 'MCP: fuera del alcance de este instalador; no se modifican.'
@@ -208,7 +234,9 @@ function Restore-Backup([string]$Dir) {
   $manifestPath = Join-Path $Dir 'manifest.json'
   if (!(Test-Path -LiteralPath $manifestPath -PathType Leaf)) { throw "Falta manifiesto: $manifestPath" }
   $m = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
-  if ($m.schema -ne 'dev-team-only-backup/1') { throw 'Backup incompatible.' }
+  if (@('dev-team-only-backup/1','dev-team-v2r-backup/1') -notcontains [string]$m.schema) {
+    throw 'Backup incompatible.'
+  }
 
   foreach ($entry in @($m.entries)) {
     $target = [string]$entry.target
@@ -223,11 +251,10 @@ function Restore-Backup([string]$Dir) {
       }
     }
   }
-
   Write-Host '[PASS] Estado VX previo restaurado desde backup.' -ForegroundColor Green
 }
 
-Assert-DevTeamSource
+Assert-AgentSources
 
 if ($Modo -eq 'Restaurar') {
   Restore-Backup $BackupFolder
@@ -245,7 +272,7 @@ if ($Modo -eq 'Diagnostico') {
 if ($Modo -eq 'Simular') {
   Show-State
   foreach ($item in $legacy) { Write-Host "[RETIRAR] $($item.Path)" }
-  Write-Host "[INSTALAR/ACTUALIZAR] $devTarget"
+  foreach ($name in $approvedAgents.Keys) { Write-Host "[INSTALAR/ACTUALIZAR] $(Join-Path $agentDir $name)" }
   if (Test-Path -LiteralPath $agentsFile -PathType Leaf) {
     $raw = Get-Content -LiteralPath $agentsFile -Raw -Encoding UTF8
     if ($raw.Contains($startMarker)) { Write-Host "[LIMPIAR BLOQUE LEGACY] $agentsFile" }
@@ -256,16 +283,18 @@ if ($Modo -eq 'Simular') {
 
 if ($Modo -eq 'Verificar') {
   $errors = [System.Collections.Generic.List[string]]::new()
-  if (!(Test-Path -LiteralPath $devTarget -PathType Leaf)) {
-    $errors.Add('Dev Team no esta instalado.')
-  } elseif ((Hash-File $devTarget) -ne (Hash-File $devSource)) {
-    $errors.Add('Dev Team instalado difiere de la fuente aprobada.')
+
+  foreach ($pair in $approvedAgents.GetEnumerator()) {
+    $target = Join-Path $agentDir $pair.Key
+    if (!(Test-Path -LiteralPath $target -PathType Leaf)) {
+      $errors.Add("Falta agente aprobado: $($pair.Key)")
+    } elseif ((Hash-File $target) -ne (Hash-File $pair.Value)) {
+      $errors.Add("Agente instalado difiere de fuente aprobada: $($pair.Key)")
+    }
   }
 
   $remaining = @(Get-LegacyItems)
-  if ($remaining.Count -gt 0) {
-    $errors.Add("Quedan $($remaining.Count) recursos VX legacy.")
-  }
+  if ($remaining.Count -gt 0) { $errors.Add("Quedan $($remaining.Count) recursos VX legacy.") }
 
   if (Test-Path -LiteralPath $agentsFile -PathType Leaf) {
     $raw = Get-Content -LiteralPath $agentsFile -Raw -Encoding UTF8
@@ -276,24 +305,26 @@ if ($Modo -eq 'Verificar') {
 
   if ($errors.Count -gt 0) {
     foreach ($e in $errors) { Write-Host "[FAIL] $e" -ForegroundColor Red }
-    throw "Baseline Dev Team Only incompleto: $($errors.Count) errores."
+    throw "Baseline Dev Team V2-R incompleto: $($errors.Count) errores."
   }
 
-  Write-Host '[PASS] Solo Dev Team queda activo dentro del namespace VX.' -ForegroundColor Green
+  Write-Host '[PASS] Dev Team es el unico primario VX aprobado.' -ForegroundColor Green
+  Write-Host '[PASS] Siete subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
   Write-Host '[PASS] Skills/workflows/reglas/plugins/runtime VX legacy no estan instalados.' -ForegroundColor Green
   Write-Host '[PASS] Este verificador no modifica ni autentica MCP.' -ForegroundColor Green
   return
 }
 
-# Aplicar
 $stamp = (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + ([guid]::NewGuid().ToString('N').Substring(0,8))
 $backupDir = Join-Path $backupRoot $stamp
 New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
 $entries = [System.Collections.ArrayList]::new()
 $index = 0
 
-Backup-Target $backupDir $entries $devTarget 'file' $index
-$index++
+foreach ($name in $approvedAgents.Keys) {
+  Backup-Target $backupDir $entries (Join-Path $agentDir $name) 'file' $index
+  $index++
+}
 Backup-Target $backupDir $entries $agentsFile 'file' $index
 $index++
 foreach ($item in $legacy) {
@@ -303,19 +334,18 @@ foreach ($item in $legacy) {
 
 $configHashBefore = Hash-File $configFile
 $manifest = [ordered]@{
-  schema='dev-team-only-backup/1'
+  schema='dev-team-v2r-backup/1'
   created=$stamp
   home=$homeRoot
   config_hash_before=$configHashBefore
+  approved_agents=@($approvedAgents.Keys)
   entries=@($entries)
 }
 Save-Manifest $backupDir $manifest
 
 try {
   foreach ($item in $legacy) {
-    if (Test-Path -LiteralPath $item.Path) {
-      Remove-Item -LiteralPath $item.Path -Recurse -Force
-    }
+    if (Test-Path -LiteralPath $item.Path) { Remove-Item -LiteralPath $item.Path -Recurse -Force }
   }
 
   if (Test-Path -LiteralPath $agentsFile -PathType Leaf) {
@@ -329,7 +359,9 @@ try {
   }
 
   New-Item -ItemType Directory -Path $agentDir -Force | Out-Null
-  Copy-Item -LiteralPath $devSource -Destination $devTarget -Force
+  foreach ($pair in $approvedAgents.GetEnumerator()) {
+    Copy-Item -LiteralPath $pair.Value -Destination (Join-Path $agentDir $pair.Key) -Force
+  }
 
   $configHashAfter = Hash-File $configFile
   if ($configHashBefore -ne $configHashAfter) {
@@ -342,7 +374,7 @@ try {
   throw
 }
 
-Write-Host '[PASS] Baseline aplicado: solo Dev Team dentro del Harness VX.' -ForegroundColor Green
+Write-Host '[PASS] Baseline aplicado: Dev Team + 7 subagentes ocultos read-only.' -ForegroundColor Green
 Write-Host '[PASS] kilo.jsonc y configuracion MCP preservados.' -ForegroundColor Green
 Write-Host "BACKUP: $backupDir" -ForegroundColor Yellow
 Write-Host 'Ejecuta este mismo script con -Modo Verificar y luego /reload en Kilo.' -ForegroundColor Cyan

@@ -1,7 +1,7 @@
 {
   "schema": "kilo-dev-team-only/1",
   "version": "1.0.0",
-  "status": "ACTIVE_APPROVED_BASELINE",
+  "status": "SUPERSEDED",
   "approved": {
     "agents": [
       "vx-dev-team"
@@ -44,5 +44,6 @@
     "automatic_mcp_permissions": false,
     "agent_manager": false
   },
-  "note": "Los archivos VX historicos pueden permanecer en el repositorio como referencia, pero no forman parte del baseline instalado."
+  "note": "Baseline V1 histórico. Supersedido por Dev Team V2-R; no es el runtime aprobado actual.",
+  "superseded_by": "registry/dev-team-readonly-baseline-v2.json"
 }

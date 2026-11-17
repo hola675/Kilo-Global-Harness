@@ -1,15 +1,25 @@
-"""Dev Team V1: contrato estático del modo primario, identidad visual y gates MCP."""
+"""Dev Team V2-R: contrato estático del líder visible y especialistas ocultos read-only."""
 from pathlib import Path
 import json
 import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-AGENT = ROOT / "agents" / "vx-dev-team.md"
-REGISTRY = ROOT / "registry" / "vx-agent-registry-v4.json"
-BASELINE = ROOT / "registry" / "dev-team-only-baseline-v1.json"
-INSTALLER = ROOT / "scripts" / "Instalar-Kilo-Global-Harness.ps1"
-RUNTIME_DOC = ROOT / "docs" / "VX-DEV-TEAM-RUNTIME-V1.md"
+LEADER = ROOT / "agents" / "vx-dev-team.md"
+RUNTIME_DIR = ROOT / "runtime" / "dev-team-v2r" / "agents"
+BASELINE = ROOT / "registry" / "dev-team-readonly-baseline-v2.json"
+INSTALLER = ROOT / "scripts" / "Instalar-DevTeam-Only.ps1"
+RUNTIME_DOC = ROOT / "docs" / "VX-DEV-TEAM-V2R-READONLY.md"
+
+CHILDREN = (
+    "vx-dev-explorer",
+    "vx-dev-architect",
+    "vx-dev-frontend",
+    "vx-dev-backend-data",
+    "vx-dev-quality",
+    "vx-dev-security",
+    "vx-dev-research",
+)
 
 
 def frontmatter(path: Path) -> str:
@@ -20,56 +30,65 @@ def frontmatter(path: Path) -> str:
     return match.group(1)
 
 
-class DevTeamV1Tests(unittest.TestCase):
-    def test_primary_agent_has_distinct_supported_identity(self):
-        self.assertTrue(AGENT.is_file())
-        front = frontmatter(AGENT)
+class DevTeamV2RTests(unittest.TestCase):
+    def test_primary_agent_is_the_only_visible_custom_leader(self):
+        front = frontmatter(LEADER)
         self.assertRegex(front, r'(?m)^displayName:\s*"👥 Dev Team"\s*$')
         self.assertRegex(front, r'(?m)^mode:\s*primary\s*$')
         self.assertRegex(front, r'(?m)^color:\s*"#8B5CF6"\s*$')
-        self.assertNotRegex(front, r"(?m)^icon:\s*")
-        self.assertRegex(front, r'(?m)^\s{2}"\*":\s*deny\s*$')
-        self.assertRegex(front, r"(?m)^\s{2}edit:\s*ask\s*$")
-        self.assertRegex(front, r"(?m)^\s{2}bash:\s*ask\s*$")
-        self.assertRegex(front, r"(?m)^\s{2}agent_manager:\s*deny\s*$")
+        self.assertNotRegex(front, r"(?m)^hidden:\s*true\s*$")
+        self.assertRegex(front, r"(?m)^  edit:\s*ask\s*$")
+        self.assertRegex(front, r"(?m)^  bash:\s*ask\s*$")
+        self.assertRegex(front, r"(?m)^  skill:\s*deny\s*$")
+        self.assertRegex(front, r"(?m)^  agent_manager:\s*deny\s*$")
+        self.assertRegex(front, r"(?m)^  board_read:\s*deny\s*$")
+        self.assertRegex(front, r"(?m)^  board_post:\s*deny\s*$")
 
-    def test_dev_team_is_singleton_without_subagents_or_skills(self):
-        front = frontmatter(AGENT)
-        self.assertRegex(front, r"(?m)^\s{2}task:\s*deny\s*$")
-        self.assertRegex(front, r"(?m)^\s{2}skill:\s*deny\s*$")
-        self.assertRegex(front, r"(?m)^\s{2}agent_manager:\s*deny\s*$")
-        self.assertRegex(front, r"(?m)^\s{2}board_read:\s*deny\s*$")
-        self.assertRegex(front, r"(?m)^\s{2}board_post:\s*deny\s*$")
-        self.assertNotRegex(front, r'(?m)^\s{4}"vx-[^"]+":\s*allow\s*$')
+    def test_leader_allowlists_exactly_seven_children(self):
+        front = frontmatter(LEADER)
+        self.assertRegex(front, r"(?m)^  task:\s*$")
+        self.assertRegex(front, r'(?m)^    "\*":\s*deny\s*$')
+        for child in CHILDREN:
+            self.assertRegex(front, rf'(?m)^    "{re.escape(child)}":\s*allow\s*$')
+        allows = set(re.findall(r'(?m)^    "(vx-dev-[^"]+)":\s*allow\s*$', front))
+        self.assertEqual(allows, set(CHILDREN))
 
-    def test_mcp_permissions_are_not_granted_by_baseline(self):
-        front = frontmatter(AGENT)
-        self.assertNotRegex(front, r'(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$')
+    def test_children_are_hidden_and_cannot_mutate_or_delegate(self):
+        files = sorted(RUNTIME_DIR.glob("vx-dev-*.md"))
+        self.assertEqual({p.stem for p in files}, set(CHILDREN))
+        for file in files:
+            with self.subTest(child=file.name):
+                front = frontmatter(file)
+                self.assertRegex(front, r"(?m)^mode:\s*subagent\s*$")
+                self.assertRegex(front, r"(?m)^hidden:\s*true\s*$")
+                self.assertRegex(front, r'(?m)^  "\*":\s*deny\s*$')
+                for tool in (
+                    "skill", "task", "edit", "write", "apply_patch", "bash",
+                    "agent_manager", "external_directory", "board_read", "board_post",
+                ):
+                    self.assertRegex(front, rf"(?m)^  {re.escape(tool)}:\s*deny\s*$")
+                self.assertNotRegex(front, r'(?m)^  "[a-z0-9-]+_\*":\s*(allow|ask)\s*$')
 
-    def test_active_baseline_is_dev_team_only(self):
+    def test_baseline_declares_one_visible_leader_and_readonly_children(self):
         baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
         self.assertEqual(baseline["status"], "ACTIVE_APPROVED_BASELINE")
-        self.assertEqual(baseline["approved"]["agents"], ["vx-dev-team"])
-        self.assertEqual(baseline["approved"]["skills"], [])
-        self.assertEqual(baseline["approved"]["commands"], [])
-        self.assertEqual(baseline["approved"]["workflows"], [])
-        self.assertEqual(baseline["approved"]["plugins"], [])
-        self.assertFalse(baseline["approvals"]["subagents"])
-        self.assertFalse(baseline["approvals"]["skills"])
-        self.assertFalse(baseline["approvals"]["workflows"])
-        self.assertFalse(baseline["approvals"]["automatic_mcp_permissions"])
+        self.assertEqual(baseline["primary"]["id"], "vx-dev-team")
+        self.assertTrue(baseline["primary"]["visible"])
+        self.assertEqual(len(baseline["subagents"]), 7)
+        self.assertTrue(all(x["hidden"] for x in baseline["subagents"]))
+        self.assertTrue(all(x["read_only"] for x in baseline["subagents"]))
+        self.assertEqual(baseline["orchestration"]["depth"], 1)
+        self.assertFalse(baseline["orchestration"]["invoke_all_by_default"])
+        self.assertEqual(baseline["child_permissions"]["mcp"], "deny-until-tool-level-policy")
 
-    def test_dev_team_only_installer_exists_and_preserves_mcp_config(self):
-        installer = ROOT / "scripts" / "Instalar-DevTeam-Only.ps1"
-        baseline = ROOT / "registry" / "dev-team-only-baseline-v1.json"
-        source = installer.read_text(encoding="utf-8")
-        self.assertTrue(installer.is_file())
-        self.assertTrue(baseline.is_file())
+    def test_installer_preserves_mcp_config_and_manages_eight_agents(self):
+        source = INSTALLER.read_text(encoding="utf-8")
+        self.assertIn("Dev Team V2-R", source)
+        self.assertIn("approvedAgents", source)
+        self.assertIn("vx-dev-explorer.md", source)
+        self.assertIn("vx-dev-research.md", source)
         self.assertIn("kilo.jsonc y configuracion MCP preservados", source)
-        self.assertIn("vx-dev-team.md", source)
-        self.assertIn("Get-LegacyItems", source)
         self.assertTrue(RUNTIME_DOC.is_file())
-
 
 
 if __name__ == "__main__":
