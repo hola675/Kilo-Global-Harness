@@ -52,6 +52,8 @@ El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas si
 Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R no les concede acceso automático al líder ni a los hijos. La integración MCP se hará posteriormente tool-by-tool.
 
 - [Diseño operativo V2-R.2](docs/VX-DEV-TEAM-V2R-READONLY.md)
+- [Matriz MCP read-only V1 — propuesta inactiva](docs/VX-DEV-TEAM-MCP-READONLY-MATRIX-V1.md)
+- [Registro estructurado MCP read-only V1](registry/dev-team-mcp-readonly-matrix-v1.proposal.json)
 - [Certificación runtime de los cinco especialistas pendientes](docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md)
 - [Contrato estructurado de certificación](registry/dev-team-v2r2-specialist-certification-v1.json)
 - [Baseline estructurado V2-R](registry/dev-team-readonly-baseline-v2.json)
@@ -59,7 +61,7 @@ Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R n
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Los **7/7 subagentes V2-R.2** tienen evidencia runtime aportada por el operador que cumple el contrato vigente. La siguiente fase es diseñar la matriz MCP read-only tool-by-tool; no hay MCP habilitados todavía para los hijos.
+**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Los **7/7 subagentes V2-R.2** tienen evidencia runtime aportada por el operador que cumple el contrato vigente. La matriz MCP read-only V1 ya está diseñada como **propuesta inactiva**; no hay MCP habilitados todavía para los hijos. La primera candidata es Wave 1 de documentación para Research/Architect, pendiente de inventario runtime y aprobación.
 
 
 ## Principios
