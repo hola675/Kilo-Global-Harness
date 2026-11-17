@@ -1,6 +1,6 @@
 ---
 description: Diagnosticar el Pack VX y preparar operaciones multiagente sin modificar Kilo ni los MCP
-agent: vx-integrador
+agent: vx-dev-team
 ---
 
 Analiza el estado del Pack VX para: $ARGUMENTS. NO ejecutes Bash desde Kilo para inspeccionar HOME si external_directory esta denegado. El operador puede ejecutar el doctor desde su PowerShell externo cuando sea necesario. No muestres archivos de credenciales ni valores del JSONC.
@@ -9,7 +9,7 @@ Usa `/vx-equipo` para tareas reales, eligiendo el perfil y la menor cantidad de 
 
 No muevas agentes y skills legacy, ni reemplaces inline agents dentro de `kilo.jsonc`. Solicita revisión del inventario, backup privado completo y prueba de restauracion antes de cualquier futura sustitucion. Separa hechos de runtime verificado, metadatos declarados y propuestas.
 
-Entrega estado de 12 agentes/31 skills, skills faltantes, solapamientos y MCP candidatos, limitaciones y siguiente paso seguro. La salida de inventario no certifica ejecucion nativa del agente o de Swarm.
+Entrega estado de 13 agentes/31 skills, skills faltantes, solapamientos y MCP candidatos, limitaciones y siguiente paso seguro. La salida de inventario no certifica ejecucion nativa del agente o de Swarm.
 
 
 **Evidencia funcional:** si el usuario pide verificar el runtime, utiliza /vx-certificar. Dos llamadas nativas exitosas a skill no demuestran descubrimiento de agentes, permisos de builders, delegacion ni conexion IDA MCP. Las 11 coincidencias inline/Markdown del doctor corresponden a agentes heredados, no a IDs VX; no cambiar configuraciones ni permisos por ese inventario. El instalador vigente para el HOME con inline y skills externas es Instalar-Pack-VX-Convivencia-V023.ps1, condicionado a simulacion limpia, respaldo DPAPI y Kilo cerrado.
