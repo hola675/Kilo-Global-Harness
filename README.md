@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
-> **BASELINE APROBADO ACTUAL — Dev Team Only V1 (2026-11-17):** el único agente personalizado aprobado e instalable es **`👥 Dev Team`**. No hay subagentes, builders, skills, workflows, reglas, plugins ni runtime VX aprobados en esta fase. Los componentes VX anteriores permanecen en Git únicamente como **legacy/historial** y el instalador canónico los retira del perfil global. La configuración `kilo.jsonc` y los 13 MCP globales se preservan, pero Dev Team no recibe permisos MCP automáticos.
+> **BASELINE APROBADO ACTUAL — Dev Team V2-R (2026-11-17):** **`👥 Dev Team`** es el único agente personalizado visible. Puede delegar mediante `task` a **7 subagentes ocultos y estrictamente read-only** (Explorer, Architect, Frontend, Backend/Data, Quality, Security y Research). Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan, no usan Board/Agent Manager y no reciben permisos MCP. Los 13 MCP globales y `kilo.jsonc` se preservan como infraestructura separada.
 
 > **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `👥 Dev Team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 
@@ -31,20 +31,34 @@ Este pack es **independiente del instalador general del Harness**. `scripts/Inst
 
 El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su token desde el keyring de `gh` únicamente en memoria del proceso. “Connected” acredita handshake MCP; las capacidades funcionales se documentan separadamente según las pruebas realmente realizadas.
 
-## 👥 Dev Team V1 — modo primario de desarrollo
+## 👥 Dev Team V2-R — líder único + especialistas ocultos
 
-El código actual incorpora **`vx-dev-team`** como agente `mode: primary`, visible en Kilo como **`👥 Dev Team`** y con color **`#8B5CF6`**. Kilo soporta `displayName` y `color`; esta versión no publica un campo oficial para sustituir el glifo del selector por un SVG arbitrario, por lo que la identidad diferenciada usa emoji visible + color sin inventar `icon:`.
+El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`👥 Dev Team`** con color `#8B5CF6`.
 
-En el baseline actual Dev Team trabaja **sin subagentes ni delegación**. Tiene `task: deny`, `skill: deny`, `agent_manager: deny` y board denegado. Las escrituras y el shell permanecen en `ask`.
+Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`:
 
-Los 13 MCP globales se conservan como infraestructura separada, pero este baseline **no concede permisos MCP automáticos**. Cada MCP/tool se conectará al agente únicamente después de definirlo, aprobarlo y probarlo. **No se modifica `kilo.jsonc`.**
+- `vx-dev-explorer`
+- `vx-dev-architect`
+- `vx-dev-frontend`
+- `vx-dev-backend-data`
+- `vx-dev-quality`
+- `vx-dev-security`
+- `vx-dev-research`
 
-- [Runtime Dev Team Only V1](docs/VX-DEV-TEAM-RUNTIME-V1.md)
-- [Baseline aprobado](registry/dev-team-only-baseline-v1.json)
-- [Arquitectura histórica del equipo — legacy/no aprobada](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
-- [Matriz MCP histórica — legacy/no aprobada](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
+Todos los hijos están limitados a lectura, búsqueda y LSP. Tienen `edit/write/apply_patch/bash/task/skill/agent_manager/board: deny` y ninguna herramienta MCP namespaced permitida.
 
-**Estado de evidencia:** CI valida estructura, permisos y reversión. La aparición real de `👥 Dev Team` en el selector y el Permission Dock deben comprobarse en el Kilo Desktop del operador después de instalar y ejecutar `/reload`; hasta ese smoke test, la UI del Desktop se considera **NO VERIFICADA**.
+El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los siete por defecto y la profundidad máxima es una sola: **Usuario → Dev Team → Subagente**.
+
+Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R no les concede acceso automático al líder ni a los hijos. La integración MCP se hará posteriormente tool-by-tool.
+
+- [Diseño operativo V2-R](docs/VX-DEV-TEAM-V2R-READONLY.md)
+- [Baseline estructurado V2-R](registry/dev-team-readonly-baseline-v2.json)
+- [Baseline V1 supersedido](registry/dev-team-only-baseline-v1.json)
+- [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
+- [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
+
+**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. La delegación real y el ocultamiento visual deben comprobarse en Kilo Desktop después del merge, instalación y `/reload`.
+
 
 ## Principios
 
@@ -119,21 +133,19 @@ Por defecto, si un archivo administrado fue modificado **después de aplicar**, 
 
 ## Qué instala
 
-| Origen del repositorio | Ubicación global en Windows | Resultado |
+| Origen | Destino global | Estado |
 | --- | --- | --- |
-| `rules/AGENTS-global-managed.md` | Sección marcada dentro de `~/.config/kilo/AGENTS.md` | Política corta y universal |
-| `rules/vx-global-harness-v3.md` | `~/.config/kilo/rules/` | Manual ampliado de trabajo |
-| `commands/vx-*.md` | `~/.config/kilo/commands/` | Workflows `/vx-*` |
-| `agents/vx-*.md` | `~/.config/kilo/agents/` | `👥 Dev Team` primario + especialistas, builders y revisores VX |
-| `skills/vx-engineering-harness/SKILL.md` | `~/.kilo/skills/` | Orquestación bajo demanda |
-| `registry/vx-agent-registry-v4.json` | `~/.config/kilo/harness/` | Registro de agentes y nueve perfiles |
-| `scripts/{Seleccionar-Equipo-V4,Validar-Registro-V4,Reconciliar-Agentes-V4.2}.ps1` | `~/.config/kilo/harness/scripts/` | Enrutamiento, validación y diagnóstico |
-| `scripts/vx_evolution_core.py` | `~/.config/kilo/harness/scripts/` | Motor local Kilo-only; no crea BD durante la instalación |
-| `skills/vx-evolution-core/SKILL.md` | `~/.kilo/skills/` | Guía de gobernanza por demanda |
-| `commands/vx-{evolution,observer,upgrade,capacitacion,auditoria-equipo,reunion}.md` | `~/.config/kilo/commands/` | Departamentos lógicos de VX Evolution |
-| `plugins/vx-observer-light.js` | `~/.config/kilo/plugin/` | **Solo opt-in** con `-InstalarVXObserverV44`; permanece apagado hasta `observer-mode light` |
+| `agents/vx-dev-team.md` | `~/.config/kilo/agents/vx-dev-team.md` | primario visible `👥 Dev Team` |
+| `runtime/dev-team-v2r/agents/vx-dev-explorer.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-architect.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-frontend.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-backend-data.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-quality.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-security.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-research.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 
-Todos los destinos anteriores están bajo HOME. Si se ejecuta desde `D:\Proyectos`, **no escribe allí**; esa carpeta es exclusivamente la fuente versionada del instalador.
+El instalador canónico es `scripts/Instalar-DevTeam-Only.ps1`. Retira del perfil global agentes VX legacy no aprobados, comandos/rules/plugins/skills VX heredados y preserva recursos de terceros. **No modifica `kilo.jsonc`, modelos, AutoApprove ni MCP.**
+
 
 ### Limitaciones deliberadas
 
