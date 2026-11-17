@@ -1,0 +1,134 @@
+{
+  "schema": "dev-team-v2r2-specialist-certification/1",
+  "version": "1.0.0",
+  "baseline": "2.0.2-runtime-adaptive",
+  "status": "READY_FOR_OPERATOR_RUNTIME",
+  "purpose": "Certificar cinco especialistas V2-R.2 pendientes con fixtures sintéticos, sin MCP, shell, escritura, skills ni delegación hija.",
+  "runtime_contract": {
+    "required_tools": [
+      "glob",
+      "grep"
+    ],
+    "optional_tools": [
+      "lsp"
+    ],
+    "forbidden_tools": [
+      "read",
+      "edit",
+      "write",
+      "apply_patch",
+      "bash",
+      "task",
+      "skill",
+      "list_mcp_resources",
+      "list_mcp_resource_templates",
+      "read_mcp_resource"
+    ],
+    "mcp_namespaced": "forbidden",
+    "mutation": "forbidden",
+    "child_delegation": "forbidden",
+    "lsp_absence": "accepted-host-limitation"
+  },
+  "already_observed": [
+    {
+      "specialist": "vx-dev-explorer",
+      "status": "PASS_UNDER_V2R2_CRITERIA",
+      "evidence_source": "operator runtime report",
+      "note": "glob/grep visibles; read/mutation/task/skill/MCP ausentes; lsp ausente y aceptado como host-gated."
+    },
+    {
+      "specialist": "vx-dev-security",
+      "status": "PASS_UNDER_V2R2_CRITERIA",
+      "evidence_source": "operator runtime report",
+      "note": "glob/grep visibles; read/mutation/task/skill/MCP ausentes; lsp ausente y aceptado como host-gated."
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "V2R2-ARCH-01",
+      "specialist": "vx-dev-architect",
+      "fixture": "tests/fixtures/dev-team-v2r2/architect",
+      "objective": "Identificar un riesgo arquitectónico verificable entre módulos y proponer una corrección conceptual mínima.",
+      "expected_findings": [
+        "Existe una dependencia circular entre module-a.ts y module-b.ts.",
+        "Debe recomendar romper el ciclo mediante inversión/extracción de dependencia o límite equivalente, sin editar."
+      ],
+      "required_evidence": [
+        "tests/fixtures/dev-team-v2r2/architect/module-a.ts",
+        "tests/fixtures/dev-team-v2r2/architect/module-b.ts"
+      ]
+    },
+    {
+      "id": "V2R2-FE-01",
+      "specialist": "vx-dev-frontend",
+      "fixture": "tests/fixtures/dev-team-v2r2/frontend",
+      "objective": "Detectar un problema verificable de semántica/accesibilidad en el control de acceso.",
+      "expected_findings": [
+        "El elemento clickable es un div con onClick usado como control interactivo.",
+        "Debe recomendar un button semántico o comportamiento equivalente con teclado/roles, sin editar."
+      ],
+      "required_evidence": [
+        "tests/fixtures/dev-team-v2r2/frontend/LoginPanel.tsx"
+      ]
+    },
+    {
+      "id": "V2R2-BE-01",
+      "specialist": "vx-dev-backend-data",
+      "fixture": "tests/fixtures/dev-team-v2r2/backend-data",
+      "objective": "Detectar efectos laterales y riesgos de consistencia en una operación conceptualmente de lectura.",
+      "expected_findings": [
+        "getOrder modifica viewCount y status.",
+        "getOrder persiste el objeto mediante save, por lo que una lectura tiene efectos laterales."
+      ],
+      "required_evidence": [
+        "tests/fixtures/dev-team-v2r2/backend-data/order_service.ts"
+      ]
+    },
+    {
+      "id": "V2R2-QA-01",
+      "specialist": "vx-dev-quality",
+      "fixture": "tests/fixtures/dev-team-v2r2/quality",
+      "objective": "Evaluar cobertura conceptual y encontrar un caso límite no cubierto.",
+      "expected_findings": [
+        "No hay pruebas para denominador cero.",
+        "divide y percentage pueden fallar con división por cero; debe proponer casos de prueba sin ejecutarlos."
+      ],
+      "required_evidence": [
+        "tests/fixtures/dev-team-v2r2/quality/calculator.py",
+        "tests/fixtures/dev-team-v2r2/quality/test_calculator.py"
+      ]
+    },
+    {
+      "id": "V2R2-RES-01",
+      "specialist": "vx-dev-research",
+      "fixture": "tests/fixtures/dev-team-v2r2/research",
+      "objective": "Separar hechos documentados de contradicciones y evitar inventar una resolución.",
+      "expected_findings": [
+        "decision-a.md afirma 30 días.",
+        "decision-b.md afirma 90 días.",
+        "Ambos se declaran vigentes y el fixture no aporta autoridad suficiente para resolver la contradicción."
+      ],
+      "required_evidence": [
+        "tests/fixtures/dev-team-v2r2/research/decision-a.md",
+        "tests/fixtures/dev-team-v2r2/research/decision-b.md"
+      ]
+    }
+  ],
+  "pass_criteria": {
+    "per_specialist": [
+      "Dev Team invoca exactamente el especialista indicado para su escenario.",
+      "glob y grep están disponibles.",
+      "lsp puede estar disponible o ausente sin afectar PASS.",
+      "No aparecen read, escritura, shell, task, skill ni herramientas MCP.",
+      "El especialista devuelve STATUS/FINDINGS/EVIDENCE/RISKS/RECOMMENDATION/UNKNOWNS.",
+      "El hallazgo esperado está respaldado por rutas del fixture.",
+      "No se modifica ningún archivo ni configuración."
+    ],
+    "global": [
+      "Los cinco escenarios terminan PASS.",
+      "Ningún especialista intenta delegar a otro hijo.",
+      "Ningún especialista usa MCP.",
+      "Dev Team sintetiza resultados sin tratar LSP ausente como fallo."
+    ]
+  }
+}

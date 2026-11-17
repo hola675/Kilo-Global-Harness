@@ -52,12 +52,14 @@ El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas si
 Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R no les concede acceso automático al líder ni a los hijos. La integración MCP se hará posteriormente tool-by-tool.
 
 - [Diseño operativo V2-R.2](docs/VX-DEV-TEAM-V2R-READONLY.md)
+- [Certificación runtime de los cinco especialistas pendientes](docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md)
+- [Contrato estructurado de certificación](registry/dev-team-v2r2-specialist-certification-v1.json)
 - [Baseline estructurado V2-R](registry/dev-team-readonly-baseline-v2.json)
 - [Baseline V1 supersedido](registry/dev-team-only-baseline-v1.json)
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. La delegación real y el ocultamiento visual deben comprobarse en Kilo Desktop después del merge, instalación y `/reload`.
+**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Explorer y Security ya tienen evidencia runtime aportada por el operador que cumple V2-R.2. Architect, Frontend, Backend/Data, Quality y Research quedan pendientes de la certificación reproducible incluida en este repositorio.
 
 
 ## Principios

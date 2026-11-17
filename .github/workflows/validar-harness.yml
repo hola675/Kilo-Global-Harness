@@ -218,6 +218,8 @@ jobs:
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_dev_team_v1.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Contrato Dev Team V2-R.2 inválido.' }
+          python -I -m unittest discover -s tests -p 'test_vx_dev_team_v2r2_specialists.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato de certificación de especialistas V2-R.2 inválido.' }
           & ./scripts/Validar-Registro-V4.ps1
           $agent = Get-Content 'agents/vx-dev-team.md' -Raw -Encoding UTF8
           if ($agent -notmatch '👥 Dev Team' -or $agent -notmatch '#8B5CF6') {
