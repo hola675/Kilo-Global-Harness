@@ -65,7 +65,7 @@ function Remove-VXManagedBlock([string]$Text) {
   if ($end -lt $begin) { throw 'AGENTS.md tiene marcadores VX desordenados.' }
   $finish = $end + $endMarker.Length
   $clean = $Text.Substring(0,$begin) + $Text.Substring($finish)
-  $clean = $clean -replace '(\r?\n){3,}',[Environment]::NewLine + [Environment]::NewLine
+  $clean = $clean -replace '(\r?\n){3,}',([Environment]::NewLine + [Environment]::NewLine)
   if ($clean.Trim().Length -eq 0) { return '' }
   return $clean.TrimEnd() + [Environment]::NewLine
 }
