@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
-> **Integración #28–#32 + ampliación IDA (2026-11-16):** **Pack VX V0.2.5 en código** — 12 agentes VX, 31 skills, 6 MCP candidatos deshabilitados, router/DAG read-only, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
+> **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `👥 Dev Team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 
 **Versión del código:** 4.6.3 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 tiene CI Windows PASS y CLI local validado (5 casos y destinos); después se recibieron 5/5 respuestas coincidentes en chat con fixtures sintéticos públicos. Atribución efectiva a especialistas/skills y competencia real NO_VERIFICADAS. PowerShell dentro de Kilo permanece bloqueado por política. V4.6.3 tiene CI Windows PASS y CLI local validado: 11 solapamientos de agentes, 0 diferencias explícitas comparadas, 19 límites steps elevados y 30 hallazgos de revisión; ninguna colisión de runtime ni competencia verificada. Ninguna reunión automática está habilitada.
 
@@ -8,9 +8,9 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 
 **IDA MCP (Pack VX 0.2.1, 2026-11-16):** [skill original para IDA 9.4+](skills/vx-ida-mcp-reverse-engineering/SKILL.md) y [comando /vx-ida](commands/vx-ida.md), perfil `reverse-engineering`, router con 31 skills y un sexto MCP **opcional y deshabilitado**. Preferencia por [servidor oficial Hex-Rays](https://github.com/HexRaysSA/ida-mcp); diagnóstico de HCLI/IDAPython sin cambios de configuración. **No equivale a instalar o conectar IDA MCP**, ni amplía ACL de agentes. Las menciones históricas a 30 skills/5 MCP describen el Pack antes de esta ampliación.
 
-**VX Academy (V4.8 en diseño, no activa):** el trabajo de PR #28 añade [currículo](docs/VX-ACADEMY-CAPACITACION-V1-20261115.md), [mentoría](docs/VX-ACADEMY-MENTORIA-EVOLUCION-V1-20261115.md), [evaluación independiente](docs/VX-ACADEMY-EVALUADOR-INDEPENDIENTE-V1-20261115.md) y [grafo de organización propuesto](registry/vx-organization-graph-v1.proposal.json). Su inventario original de 7 agentes y 2 skills corresponde a una fotografía del **15 de noviembre**, anterior al Pack actual de **12 agentes VX/31 skills VX**; el recuento histórico de **30 skills VX** es de antes de añadir la skill IDA. Los catálogos académicos son propuestas, no roles adicionales, certificados ni mecanismos de activación.
+**VX Academy (V4.8 en diseño, no activa):** el trabajo de PR #28 añade [currículo](docs/VX-ACADEMY-CAPACITACION-V1-20261115.md), [mentoría](docs/VX-ACADEMY-MENTORIA-EVOLUCION-V1-20261115.md), [evaluación independiente](docs/VX-ACADEMY-EVALUADOR-INDEPENDIENTE-V1-20261115.md) y [grafo de organización propuesto](registry/vx-organization-graph-v1.proposal.json). Su inventario original de 7 agentes y 2 skills corresponde a una fotografía del **15 de noviembre**, anterior al Pack actual de **13 agentes VX/31 skills VX**; el recuento histórico de **30 skills VX** es de antes de añadir la skill IDA. Los catálogos académicos son propuestas, no roles adicionales, certificados ni mecanismos de activación.
 
-**Pack VX global instalado y P1 completada en Kilo (2026-11-16):** el operador instaló por convivencia con 19 agentes inline y skills externas intactas: 12/12 agentes VX y 31/31 skills VX en disco, respaldos DPAPI y MCP sin cambios. Se observó en captura el selector `Vx Integrador` activo y los cinco builders visibles; la herramienta nativa `skill` cargó `vx-engineering-harness` y `vx-ida-mcp-reverse-engineering`. En P1, `task` a `vx-inspector` terminó primero `BLOCKED` por repetir un prerequisito de interfaz y, después de trasladar la confirmación visual del operador, `completed` con revisión del README de solo lectura declarada. **Delegación efectiva de lectura: evidenciada por respuesta de `task`; permisos efectivos de inspector y builders, conexión IDA MCP y precedencia siguen NO VERIFICADOS.** [Guía de convivencia](docs/VX-INSTALACION-CONVIVENCIA-0.2.3-WINDOWS.md) · [Acta y piloto siguiente](docs/VX-CERTIFICACION-RUNTIME-20261116.md). El instalador 0.2.2 limpio no es el mecanismo recomendado para este HOME.
+**Pack VX global instalado y P1 completada en Kilo (2026-11-16, estado histórico previo a Dev Team V1):** el operador instaló por convivencia con 19 agentes inline y skills externas intactas: 12/12 agentes VX de aquella versión y 31/31 skills VX en disco, respaldos DPAPI y MCP sin cambios. Se observó en captura el selector `Vx Integrador` activo y los cinco builders visibles; la herramienta nativa `skill` cargó `vx-engineering-harness` y `vx-ida-mcp-reverse-engineering`. En P1, `task` a `vx-inspector` terminó primero `BLOCKED` por repetir un prerequisito de interfaz y, después de trasladar la confirmación visual del operador, `completed` con revisión del README de solo lectura declarada. **Delegación efectiva de lectura: evidenciada por respuesta de `task`; permisos efectivos de inspector y builders, conexión IDA MCP y precedencia siguen NO VERIFICADOS.** [Guía de convivencia](docs/VX-INSTALACION-CONVIVENCIA-0.2.3-WINDOWS.md) · [Acta y piloto siguiente](docs/VX-CERTIFICACION-RUNTIME-20261116.md). El instalador 0.2.2 limpio no es el mecanismo recomendado para este HOME.
 
 **P2.1: selector correcto antes de editar (2026-11-16).** En la captura de VX-Team-Lab el agente seleccionado era **Code**, no **Vx Docs Builder**, y el control de autonomía mostraba **Auto** (sin prueba de aprobación manual). Por ello la respuesta anterior de `TOOL_UNAVAILABLE` **no demuestra un fallo de ACL del builder**. El nuevo comando global `/vx-p2` solicita `vx-docs-builder` mediante frontmatter y empieza en diagnóstico de solo lectura; la edición requiere confirmación visual del agente y aprobación manual por acción, con la primera solicitud rechazada. Se conservan `edit: ask`, `bash: deny` y los 19 agentes inline/skills externas. [Acta y procedimiento](docs/VX-CERTIFICACION-RUNTIME-20261116.md).
 
@@ -28,6 +28,22 @@ Este pack es **independiente del instalador general del Harness**. `scripts/Inst
 - [Wrapper GitHub sin token persistente](scripts/mcp/github-mcp-kilo.ps1)
 
 El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su token desde el keyring de `gh` únicamente en memoria del proceso. “Connected” acredita handshake MCP; las capacidades funcionales se documentan separadamente según las pruebas realmente realizadas.
+
+## 👥 Dev Team V1 — modo primario de desarrollo
+
+El código actual incorpora **`vx-dev-team`** como agente `mode: primary`, visible en Kilo como **`👥 Dev Team`** y con color **`#8B5CF6`**. Kilo soporta `displayName` y `color`; esta versión no publica un campo oficial para sustituir el glifo del selector por un SVG arbitrario, por lo que la identidad diferenciada usa emoji visible + color sin inventar `icon:`.
+
+El Team Lead puede delegar a los especialistas VX de investigación, frontend, backend, datos, QA, documentación, seguridad, UX, Cloudflare y revisión. Mantiene **un escritor efectivo por worktree**, permisos de escritura/shell en `ask` y `agent_manager: deny` en V1.
+
+La política MCP inicial es deliberadamente conservadora: **Context7** y **Microsoft Learn** quedan permitidos para consulta; los otros 11 MCP quedan en `ask` desde el Team Lead hasta completar la clasificación tool-by-tool. **No se modifica `kilo.jsonc` ni se reinstala ningún MCP.**
+
+- [Runtime Dev Team V1](docs/VX-DEV-TEAM-RUNTIME-V1.md)
+- [Arquitectura del equipo](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
+- [Matriz MCP por rol](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
+- [Registro activo Dev Team](registry/vx-dev-team-v1.json)
+- [Política MCP activa V1](registry/vx-dev-team-mcp-matrix-v1.json)
+
+**Estado de evidencia:** CI valida estructura, permisos y reversión. La aparición real de `👥 Dev Team` en el selector y el Permission Dock deben comprobarse en el Kilo Desktop del operador después de instalar y ejecutar `/reload`; hasta ese smoke test, la UI del Desktop se considera **NO VERIFICADA**.
 
 ## Principios
 
@@ -107,7 +123,7 @@ Por defecto, si un archivo administrado fue modificado **después de aplicar**, 
 | `rules/AGENTS-global-managed.md` | Sección marcada dentro de `~/.config/kilo/AGENTS.md` | Política corta y universal |
 | `rules/vx-global-harness-v3.md` | `~/.config/kilo/rules/` | Manual ampliado de trabajo |
 | `commands/vx-*.md` | `~/.config/kilo/commands/` | Workflows `/vx-*` |
-| `agents/vx-*.md` | `~/.config/kilo/agents/` | Coordinador y revisor |
+| `agents/vx-*.md` | `~/.config/kilo/agents/` | `👥 Dev Team` primario + especialistas, builders y revisores VX |
 | `skills/vx-engineering-harness/SKILL.md` | `~/.kilo/skills/` | Orquestación bajo demanda |
 | `registry/vx-agent-registry-v4.json` | `~/.config/kilo/harness/` | Registro de agentes y nueve perfiles |
 | `scripts/{Seleccionar-Equipo-V4,Validar-Registro-V4,Reconciliar-Agentes-V4.2}.ps1` | `~/.config/kilo/harness/scripts/` | Enrutamiento, validación y diagnóstico |
@@ -306,6 +322,8 @@ La herramienta muestra cinco escenarios de revisión, regresión y calidad de ev
 Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**, con dos secciones independientes del acta: cierre mensual del mes anterior y seguimiento semanal. No hay scheduler ni notificaciones. Para usuarios con SQLite v3, migrar explícitamente mediante `python -I $vx joint-migrate --json` (genera backup) y comprobar `integrity` antes de crear actas; v2 requiere antes `meeting-migrate`. Los comandos manuales `meeting-joint-calendar`, `meeting-joint-prepare`, `meeting-joint-view` y `meeting-joint-close` no programan reuniones. La confirmación de decisiones y cierre sigue siendo interactiva.
 
 ## Changelog
+
+- **Dev Team V1 · 2026-11-17:** nuevo agente primario `vx-dev-team` visible como `👥 Dev Team`, color propio, 13 agentes VX/31 skills, delegación a especialistas y política MCP conservadora (`Context7`/`Microsoft Learn` allow; resto ask). No modifica `kilo.jsonc` ni los 13 MCP; smoke visual en Desktop pendiente tras instalación/reload.
 
 - **Validación Desktop · 2026-11-14:** inventario global VX y delegación de tarea confirmados con limitaciones, sin certificar carga de skill. Próxima fase V4.7: diseño de publicación segura, pruebas aisladas y aprobación explícita; ningún cambio activo.
 
