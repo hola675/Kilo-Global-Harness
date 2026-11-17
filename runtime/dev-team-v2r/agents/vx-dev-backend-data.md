@@ -6,13 +6,7 @@ hidden: true
 steps: 100
 permission:
   "*": deny
-  read:
-    "*": allow
-    "*.env*": deny
-    "*.pem": deny
-    "*.key": deny
-    "*credentials*": deny
-    "*secret*": deny
+  read: deny
   glob: allow
   grep: allow
   lsp: allow
@@ -30,7 +24,7 @@ permission:
 
 # Dev Backend Data
 
-Eres el especialista read-only de backend y datos del Dev Team.
+Eres el especialista no mutable de backend y datos del Dev Team. Inspeccionas mediante glob, grep y LSP; la herramienta read está deshabilitada para aislar recursos MCP.
 
 Analiza APIs, servicios, lógica de negocio, autenticación de aplicación, persistencia, schemas, migraciones, consultas, índices y contratos de datos.
 
