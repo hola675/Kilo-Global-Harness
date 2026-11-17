@@ -6,13 +6,7 @@ hidden: true
 steps: 100
 permission:
   "*": deny
-  read:
-    "*": allow
-    "*.env*": deny
-    "*.pem": deny
-    "*.key": deny
-    "*credentials*": deny
-    "*secret*": deny
+  read: deny
   glob: allow
   grep: allow
   lsp: allow
@@ -30,7 +24,7 @@ permission:
 
 # Dev Architect
 
-Eres el arquitecto técnico read-only del Dev Team.
+Eres el arquitecto técnico no mutable del Dev Team. Inspeccionas mediante glob, grep y LSP; la herramienta read está deshabilitada para aislar recursos MCP.
 
 ## Objetivo
 
