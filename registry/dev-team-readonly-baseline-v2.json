@@ -1,6 +1,6 @@
 {
   "schema": "kilo-dev-team-v2r/1",
-  "version": "2.0.1-strict-no-mcp-resources",
+  "version": "2.0.2-runtime-adaptive",
   "status": "ACTIVE_APPROVED_BASELINE",
   "primary": {
     "id": "vx-dev-team",
@@ -96,7 +96,14 @@
       "board_read",
       "board_post"
     ],
-    "mcp": "not-exposed-by-read-deny-and-no-namespaced-allows"
+    "mcp": "not-exposed-by-read-deny-and-no-namespaced-allows",
+    "required": [
+      "glob",
+      "grep"
+    ],
+    "optional": [
+      "lsp"
+    ]
   },
   "handoff_contract": {
     "input": [
@@ -137,6 +144,6 @@
     "old_vx_agents": "versioned-for-history-not-installed",
     "old_vx_skills": "versioned-for-history-not-installed"
   },
-  "next_phase": "runtime-recertification-after-strict-mcp-resource-isolation",
-  "runtime_note": "Kilo maps list_mcp_resources, list_mcp_resource_templates and read_mcp_resource to permission read. V2-R.1 denies read on children so those generic MCP resource tools are not exposed."
+  "next_phase": "runtime-recertification-with-lsp-optional",
+  "runtime_note": "Kilo expone la tool lsp solo cuando el host habilita KILO_EXPERIMENTAL_LSP_TOOL. V2-R.2 permite lsp pero no la exige; glob y grep son las capacidades mínimas requeridas. read permanece denegado para ocultar recursos MCP genéricos."
 }
