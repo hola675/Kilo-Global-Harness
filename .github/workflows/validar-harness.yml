@@ -149,7 +149,7 @@ jobs:
           if ($restored -ne $before) { throw 'Rollback altero configuracion privada.' }
           Write-Host 'V4 GLOBAL-ONLY, SEGURIDAD, ROUTING Y ROLLBACK: PASS'
 
-      - name: VX Pack 0.2 - doctor, MCP pasivos y 12 agentes 31 skills
+      - name: VX Pack 0.3 - doctor, MCP pasivos y 13 agentes 31 skills
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -162,7 +162,7 @@ jobs:
           $report = (python scripts/vx_pack_doctor.py --home $fixture --source . --json | Out-String | ConvertFrom-Json)
           if ($LASTEXITCODE -ne 0) { throw 'Doctor VX fallo en Windows.' }
           if (!$report.ready_for_manual_kilo_smoke -or
-              $report.agents.expected -ne 12 -or $report.agents.found -ne 12 -or
+              $report.agents.expected -ne 13 -or $report.agents.found -ne 13 -or
               $report.skills.expected -ne 31 -or $report.skills.found -ne 31 -or
               $report.runtime_verified -ne $false -or $report.mcp.connections_verified -ne $false) {
             throw 'Doctor VX no acredita pack instalado o promete runtime inexistente.'
@@ -170,7 +170,7 @@ jobs:
           $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
             Sort-Object Name -Descending | Select-Object -First 1
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
-          Write-Host 'VX PACK V0.2: 12 AGENTES, 31 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
+          Write-Host 'VX PACK V0.3: 13 AGENTES, 31 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
 
       - name: VX Pack DPAPI V0.2 - bootstrap seguro en Windows aislado
         shell: pwsh
@@ -203,14 +203,14 @@ jobs:
           }
           Write-Host 'MCP PACK V1: REGISTRO 13/13, INSTALADOR Y DOCUMENTACIÓN PASS'
 
-      - name: VX Permisos - MCP namespaced con fallback deny y verificación de 12 roles
+      - name: VX Permisos - MCP namespaced con fallback deny y verificación de 13 roles
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_agent_permissions_v02.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Permisos VX no aíslan herramientas namespaced.' }
           & ./scripts/Validar-Registro-V4.ps1
-          Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 12 AGENTES PASS'
+          Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 13 AGENTES PASS'
 
       - name: VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores
         shell: pwsh
@@ -871,7 +871,7 @@ jobs:
               $cmd -notmatch 'PRECONDITION_NOT_MET' -or
               $cmd -notmatch 'FAIL_UNAPPROVED_WRITE' -or
               $agent -notmatch '(?m)^\s*bash: deny\r?$' -or
-              $registry.pack.version -ne '0.2.5') {
+              $registry.pack.version -ne '0.3.0') {
             throw 'Gates P2.1 incompletos.'
           }
           Write-Host 'PASS P2.1 selector + aprobacion manual sin cambios ACL'
@@ -965,7 +965,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Fallaron las pruebas de la skill IDA MCP.' }
           Write-Host 'VX IDA MCP: SKILL + CATALOGO OPCIONAL + SIN INSTALACION AUTOMATICA: PASS'
 
-      - name: VX Integración - 12 agentes, 31 skills, Academy, MCP único y V4.7.2 inactiva
+      - name: VX Integración - 13 agentes, 31 skills, Academy, MCP único y V4.7.2 inactiva
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
