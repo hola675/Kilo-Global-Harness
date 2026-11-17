@@ -1,0 +1,141 @@
+{
+  "schema": "kilo-dev-team-v2r/1",
+  "version": "2.0.0-readonly",
+  "status": "ACTIVE_APPROVED_BASELINE",
+  "primary": {
+    "id": "vx-dev-team",
+    "displayName": "👥 Dev Team",
+    "mode": "primary",
+    "visible": true,
+    "writes": "ask",
+    "shell": "ask",
+    "skills": false,
+    "agent_manager": false,
+    "board": false,
+    "automatic_mcp_permissions": false
+  },
+  "subagents": [
+    {
+      "id": "vx-dev-explorer",
+      "role": "exploration",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true
+    },
+    {
+      "id": "vx-dev-architect",
+      "role": "architecture",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true
+    },
+    {
+      "id": "vx-dev-frontend",
+      "role": "frontend-analysis",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true
+    },
+    {
+      "id": "vx-dev-backend-data",
+      "role": "backend-data-analysis",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true
+    },
+    {
+      "id": "vx-dev-quality",
+      "role": "quality-analysis",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true
+    },
+    {
+      "id": "vx-dev-security",
+      "role": "security-analysis",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true
+    },
+    {
+      "id": "vx-dev-research",
+      "role": "local-research",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true
+    }
+  ],
+  "orchestration": {
+    "pattern": "single-visible-leader-with-hidden-specialists",
+    "depth": 1,
+    "simple": "0-1 specialist",
+    "medium": "1-2 specialists",
+    "complex": "2-4 specialists",
+    "invoke_all_by_default": false,
+    "child_interactive": false,
+    "child_to_child_delegation": false,
+    "board": false,
+    "agent_manager": false
+  },
+  "child_permissions": {
+    "allowed": [
+      "read",
+      "glob",
+      "grep",
+      "lsp"
+    ],
+    "denied": [
+      "edit",
+      "write",
+      "apply_patch",
+      "bash",
+      "task",
+      "skill",
+      "agent_manager",
+      "external_directory",
+      "board_read",
+      "board_post"
+    ],
+    "mcp": "deny-until-tool-level-policy"
+  },
+  "handoff_contract": {
+    "input": [
+      "objective",
+      "scope",
+      "questions",
+      "allowed_paths",
+      "known_facts",
+      "unknowns",
+      "evidence_required",
+      "exclusions",
+      "output_format",
+      "budget"
+    ],
+    "output": [
+      "STATUS",
+      "FINDINGS",
+      "EVIDENCE",
+      "RISKS",
+      "RECOMMENDATION",
+      "UNKNOWNS"
+    ]
+  },
+  "preserved_not_managed": {
+    "kilo_jsonc": true,
+    "builtin_agents": [
+      "Code",
+      "Plan",
+      "Ask",
+      "Debug"
+    ],
+    "mcp_configuration": true,
+    "third_party_agents": true,
+    "third_party_skills": true
+  },
+  "legacy": {
+    "v1_baseline": "registry/dev-team-only-baseline-v1.json",
+    "old_vx_agents": "versioned-for-history-not-installed",
+    "old_vx_skills": "versioned-for-history-not-installed"
+  },
+  "next_phase": "runtime-smoke-and-readonly-delegation-evaluation"
+}
