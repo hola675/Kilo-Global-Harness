@@ -85,8 +85,1423 @@ KEEP-AFTER
   }
 
   $leader = Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8
-  if ($leader -notmatch '(?m)^  task:\s*$' -or
-      $leader -notmatch '(?m)^    "vx-dev-explorer":\s*allow\s*$') {
+  if ($leader -notmatch '(?m)^  task:\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+ -or
+      $leader -notmatch '(?m)^    "vx-dev-explorer":\s*allow\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+ -or
+      $leader -notmatch '(?m)^    "mcp:\*":\s*deny\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+) {
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+,
+      '(?m)^    "mcp:\*":\s*deny\s*
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+ -or
+      $leader -notmatch '(?m)^    "vx-dev-explorer":\s*allow\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+ -or
+      $leader -notmatch '(?m)^    "mcp:\*":\s*deny\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+) {
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+,
+      '(?m)^  bash:\s*deny\s*
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+ -or
+      $leader -notmatch '(?m)^    "vx-dev-explorer":\s*allow\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+ -or
+      $leader -notmatch '(?m)^    "mcp:\*":\s*deny\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+) {
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+,
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+ -or
+      $leader -notmatch '(?m)^    "vx-dev-explorer":\s*allow\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+ -or
+      $leader -notmatch '(?m)^    "mcp:\*":\s*deny\s*
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $kilo 'rules/vx-global-harness-v3.md'),
+    (Join-Path $kilo 'plugin/vx-observer-light.js'),
+    (Join-Path $kilo 'harness/vx-old.json'),
+    (Join-Path $kilo 'harness/scripts/vx_old.py'),
+    (Join-Path $tmp '.kilo/skills/vx-old'),
+    (Join-Path $tmp '.agents/skills/vx-old'),
+    (Join-Path $tmp '.kilocode/skills/vx-old')
+  )) {
+    if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
+  }
+
+  if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
+    throw 'Se elimino agente de terceros.'
+  }
+  if (!(Test-Path -LiteralPath (Join-Path $tmp '.kilo/skills/third-party/SKILL.md'))) {
+    throw 'Se elimino skill de terceros.'
+  }
+
+  $agentsText = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($agentsText -notmatch 'KEEP-BEFORE' -or $agentsText -notmatch 'KEEP-AFTER') {
+    throw 'Se perdio contenido ajeno de AGENTS.md.'
+  }
+  if ($agentsText -match 'VX-HARNESS-V3') {
+    throw 'No se retiro bloque VX legacy de AGENTS.md.'
+  }
+
+  $configHashAfter = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
+  if ($configHashBefore -ne $configHashAfter) {
+    throw 'kilo.jsonc fue modificado.'
+  }
+
+  $backup = Get-ChildItem -LiteralPath (Join-Path $tmp '.config/kilo-devteam-backups') -Directory |
+    Sort-Object Name -Descending | Select-Object -First 1
+  if (!$backup) { throw 'No se creo backup.' }
+
+  & $installer -Modo Restaurar -RaizUsuario $tmp -BackupFolder $backup.FullName
+
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
+    throw 'Restore no recupero Dev Team previo.'
+  }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
+  foreach ($path in @(
+    (Join-Path $kilo 'agents/vx-backend-builder.md'),
+    (Join-Path $kilo 'agents/vx-integrador.md'),
+    (Join-Path $kilo 'commands/vx-pack.md'),
+    (Join-Path $tmp '.kilo/skills/vx-old')
+  )) {
+    if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
+  }
+
+  $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
+  if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
+    throw 'Restore no recupero AGENTS.md.'
+  }
+  if ($configHashBefore -ne (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash) {
+    throw 'Restore altero kilo.jsonc.'
+  }
+
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
+}
+finally {
+  if (Test-Path -LiteralPath $tmp) {
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+}
+) {
     throw 'Dev Team no puede delegar al pool V2-R.'
   }
 
