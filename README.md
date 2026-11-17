@@ -14,6 +14,21 @@ Harness de ingeniería autónoma **exclusivamente para Kilo Code** en VS Code/VS
 
 **P2.1: selector correcto antes de editar (2026-11-16).** En la captura de VX-Team-Lab el agente seleccionado era **Code**, no **Vx Docs Builder**, y el control de autonomía mostraba **Auto** (sin prueba de aprobación manual). Por ello la respuesta anterior de `TOOL_UNAVAILABLE` **no demuestra un fallo de ACL del builder**. El nuevo comando global `/vx-p2` solicita `vx-docs-builder` mediante frontmatter y empieza en diagnóstico de solo lectura; la edición requiere confirmación visual del agente y aprobación manual por acción, con la primera solicitud rechazada. Se conservan `edit: ask`, `bash: deny` y los 19 agentes inline/skills externas. [Acta y procedimiento](docs/VX-CERTIFICACION-RUNTIME-20261116.md).
 
+## MCP Pack global V1 — 13 servidores reproducibles (2026-11-17)
+
+El entorno Kilo Desktop de referencia tiene **13/13 MCP conectados**: Codebase Memory, IDA, Playwright, Context7, ImageGen, GitHub, Cloudflare API, Chrome DevTools, Snyk, Postman, Microsoft Learn, Sentry y Serena.
+
+Este pack es **independiente del instalador general del Harness**. `scripts/Instalar-Kilo-Global-Harness.ps1` conserva su política histórica y **no modifica MCP ni credenciales**. Solo `scripts/Instalar-MCP-Pack-Windows.ps1`, invocado explícitamente por el operador, puede instalar dependencias locales y registrar esos 13 MCP en `kilo.jsonc`, siempre con backup previo.
+
+- [Guía completa de instalación, autenticación, actualización y rollback](docs/VX-MCP-PACK-WINDOWS-V1-20261117.md)
+- [Registro operativo MCP V2](registry/vx-mcp-catalog-v2.json)
+- [Snapshot del runtime validado](inventory/mcp-runtime-2026-11-17.json)
+- [Instalador MCP para Windows](scripts/Instalar-MCP-Pack-Windows.ps1)
+- [Validador estático del pack](scripts/Validar-MCP-Pack.ps1)
+- [Wrapper GitHub sin token persistente](scripts/mcp/github-mcp-kilo.ps1)
+
+El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su token desde el keyring de `gh` únicamente en memoria del proceso. “Connected” acredita handshake MCP; las capacidades funcionales se documentan separadamente según las pruebas realmente realizadas.
+
 ## Principios
 
 - **Global-only**: `~/.config/kilo/{AGENTS.md,agents/,commands/,rules/}` y `~/.kilo/skills/`.
