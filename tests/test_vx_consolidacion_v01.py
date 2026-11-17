@@ -15,7 +15,7 @@ class ConsolidationTests(unittest.TestCase):
         self.assertEqual(len(data["candidates"]), 6)
         self.assertTrue(all(item["enabled_by_default"] is False for item in data["candidates"]))
         pack = json.loads((ROOT / "registry/vx-agent-registry-v4.json").read_text(encoding="utf-8"))["pack"]
-        self.assertEqual((len(pack["owned_agents"]), len(pack["owned_skills"])), (12, 31))
+        self.assertEqual((len(pack["owned_agents"]), len(pack["owned_skills"])), (13, 31))
 
     def test_academy_design_remains_declarative(self):
         for name in ("vx-academy-catalog-v1.proposal.json",
