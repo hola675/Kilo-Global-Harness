@@ -52,6 +52,14 @@ function Require-Command([string]$Name,[string]$Reason) {
   return $path
 }
 
+function Resolve-SnykCmd {
+  $candidate = Join-Path $env:APPDATA 'npm\snyk.cmd'
+  if (Test-Path -LiteralPath $candidate -PathType Leaf) { return $candidate }
+  $cmd = Get-Command snyk.cmd -ErrorAction SilentlyContinue
+  if ($cmd) { return $cmd.Source }
+  return $null
+}
+
 function Read-Json([string]$Path) {
   if (!(Test-Path -LiteralPath $Path -PathType Leaf)) { throw "No existe: $Path" }
   return (Get-Content -LiteralPath $Path -Raw -Encoding UTF8 | ConvertFrom-Json)
@@ -195,13 +203,14 @@ function Ensure-GitHubMcp {
 }
 
 function Ensure-Snyk {
-  $snyk = Command-Path 'snyk'
+  $snyk = Resolve-SnykCmd
   if (-not $snyk -or $ActualizarLocales) {
     $npm = Require-Command 'npm' 'Node.js/npm son necesarios para Snyk.'
     & $npm install -g snyk@latest
     if ($LASTEXITCODE -ne 0) { throw 'Fallo instalando Snyk CLI.' }
   }
-  $snyk = Require-Command 'snyk' 'Snyk CLI no quedo disponible.'
+  $snyk = Resolve-SnykCmd
+  if (-not $snyk) { throw 'Snyk CLI se instalo pero snyk.cmd no quedo disponible.' }
   $output = Join-Path $env:LOCALAPPDATA 'SnykMCP\output'
   New-Item -ItemType Directory -Force -Path $output | Out-Null
   Write-Ok "Snyk presente: $snyk"
@@ -413,7 +422,7 @@ switch ($Modo) {
     if ($SoloConfig) {
       $cbmExe = Join-Path $env:LOCALAPPDATA 'Programs\codebase-memory-mcp\codebase-memory-mcp.exe'
       $githubWrapper = Join-Path $env:LOCALAPPDATA 'Programs\github-mcp-server\github-mcp-kilo.ps1'
-      $snykExe = Command-Path 'snyk'
+      $snykExe = Resolve-SnykCmd
       $serenaExe = Command-Path 'serena'
       if (-not $serenaExe) {
         $fallback = Join-Path $HOME '.local\bin\serena.exe'
