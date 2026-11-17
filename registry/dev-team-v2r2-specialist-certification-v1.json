@@ -2,7 +2,7 @@
   "schema": "dev-team-v2r2-specialist-certification/1",
   "version": "1.0.0",
   "baseline": "2.0.2-runtime-adaptive",
-  "status": "READY_FOR_OPERATOR_RUNTIME",
+  "status": "PARTIAL_OPERATOR_RUNTIME",
   "purpose": "Certificar cinco especialistas V2-R.2 pendientes con fixtures sintéticos, sin MCP, shell, escritura, skills ni delegación hija.",
   "runtime_contract": {
     "required_tools": [
@@ -129,6 +129,71 @@
       "Ningún especialista intenta delegar a otro hijo.",
       "Ningún especialista usa MCP.",
       "Dev Team sintetiza resultados sin tratar LSP ausente como fallo."
+    ]
+  },
+  "runtime_results": [
+    {
+      "scenario": "V2R2-ARCH-01",
+      "specialist": "vx-dev-architect",
+      "status": "PASS",
+      "evidence_source": "operator runtime report",
+      "tools": "glob/grep confirmed; lsp absent; no prohibited tools reported",
+      "finding": "circular dependency and mutual recursion identified",
+      "isolation": "reported zero modifications"
+    },
+    {
+      "scenario": "V2R2-FE-01",
+      "specialist": "vx-dev-frontend",
+      "status": "PENDING_RECERTIFICATION",
+      "evidence_source": "operator runtime report",
+      "tools": "inventory not reported",
+      "finding": "div onClick accessibility/semantics issue correctly identified",
+      "isolation": "reported zero modifications",
+      "reason": "tool inventory incomplete"
+    },
+    {
+      "scenario": "V2R2-BE-01",
+      "specialist": "vx-dev-backend-data",
+      "status": "PASS",
+      "evidence_source": "operator runtime report",
+      "tools": "glob/grep confirmed; no prohibited tools reported",
+      "finding": "read-like operation mutates viewCount/status and persists via save",
+      "isolation": "reported zero modifications"
+    },
+    {
+      "scenario": "V2R2-QA-01",
+      "specialist": "vx-dev-quality",
+      "status": "PENDING_RECERTIFICATION",
+      "evidence_source": "operator runtime report",
+      "tools": "inventory not reported",
+      "finding": "missing denominator-zero coverage correctly identified",
+      "isolation": "reported zero modifications; tests not executed",
+      "reason": "tool inventory incomplete"
+    },
+    {
+      "scenario": "V2R2-RES-01",
+      "specialist": "vx-dev-research",
+      "status": "PASS",
+      "evidence_source": "operator runtime report",
+      "tools": "glob/grep confirmed; no prohibited tools reported",
+      "finding": "30 vs 90 day contradiction correctly identified without invented resolution",
+      "isolation": "reported zero modifications"
+    }
+  ],
+  "recertification": {
+    "pending": [
+      "vx-dev-frontend",
+      "vx-dev-quality"
+    ],
+    "scope": "tool-inventory-only",
+    "rerun_fixtures": false,
+    "success_requires": [
+      "glob and grep visible",
+      "lsp optional",
+      "read/edit/write/apply_patch/bash/task/skill absent",
+      "generic MCP resource tools absent",
+      "namespaced MCP tools absent",
+      "zero modifications"
     ]
   }
 }
