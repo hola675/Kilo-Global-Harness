@@ -22,7 +22,7 @@ class DevTeamV2R2SpecialistCertificationTests(unittest.TestCase):
         self.baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
 
     def test_registry_is_bound_to_active_baseline(self):
-        self.assertEqual(self.registry["status"], "PARTIAL_OPERATOR_RUNTIME")
+        self.assertEqual(self.registry["status"], "PASS_OPERATOR_RUNTIME")
         self.assertEqual(self.registry["baseline"], self.baseline["version"])
         self.assertEqual(self.baseline["version"], "2.0.2-runtime-adaptive")
 
@@ -55,18 +55,29 @@ class DevTeamV2R2SpecialistCertificationTests(unittest.TestCase):
                 for evidence in scenario["required_evidence"]:
                     self.assertTrue((ROOT / evidence).is_file(), evidence)
 
-    def test_partial_runtime_evidence_tracks_three_pass_and_two_pending(self):
+    def test_runtime_evidence_closes_all_seven_specialists(self):
         results = {x["specialist"]: x for x in self.registry["runtime_results"]}
-        self.assertEqual(results["vx-dev-architect"]["status"], "PASS")
-        self.assertEqual(results["vx-dev-backend-data"]["status"], "PASS")
-        self.assertEqual(results["vx-dev-research"]["status"], "PASS")
-        self.assertEqual(results["vx-dev-frontend"]["status"], "PENDING_RECERTIFICATION")
-        self.assertEqual(results["vx-dev-quality"]["status"], "PENDING_RECERTIFICATION")
         self.assertEqual(
-            self.registry["recertification"]["pending"],
-            ["vx-dev-frontend", "vx-dev-quality"],
+            {x["status"] for x in results.values()},
+            {"PASS"},
         )
-        self.assertEqual(self.registry["recertification"]["scope"], "tool-inventory-only")
+        self.assertEqual(self.registry["recertification"]["pending"], [])
+        self.assertEqual(self.registry["recertification"]["scope"], "complete")
+        self.assertEqual(self.registry["recertification"]["result"], "PASS")
+        self.assertEqual(self.registry["summary"]["count"], "7/7")
+        self.assertEqual(self.registry["summary"]["result"], "PASS")
+        self.assertEqual(
+            set(self.registry["summary"]["certified_runtime"]),
+            {
+                "vx-dev-explorer",
+                "vx-dev-security",
+                "vx-dev-architect",
+                "vx-dev-frontend",
+                "vx-dev-backend-data",
+                "vx-dev-quality",
+                "vx-dev-research",
+            },
+        )
 
     def test_previous_runtime_observations_remain_declared_as_operator_evidence(self):
         observed = {x["specialist"]: x for x in self.registry["already_observed"]}
