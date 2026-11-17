@@ -1,6 +1,6 @@
 {
   "schema": "kilo-dev-team-v2r/1",
-  "version": "2.0.0-readonly",
+  "version": "2.0.1-readonly",
   "status": "ACTIVE_APPROVED_BASELINE",
   "primary": {
     "id": "vx-dev-team",
@@ -12,7 +12,8 @@
     "skills": false,
     "agent_manager": false,
     "board": false,
-    "automatic_mcp_permissions": false
+    "automatic_mcp_permissions": false,
+    "mcp_resource_reads": "deny-via-read-pattern-mcp:*"
   },
   "subagents": [
     {
@@ -96,7 +97,10 @@
       "board_read",
       "board_post"
     ],
-    "mcp": "deny-until-tool-level-policy"
+    "mcp": "deny-tools-and-resource-reads; generic resource tool names may remain exposed by Kilo on Windows",
+    "read_denied_patterns": [
+      "mcp:*"
+    ]
   },
   "handoff_contract": {
     "input": [
@@ -137,5 +141,10 @@
     "old_vx_agents": "versioned-for-history-not-installed",
     "old_vx_skills": "versioned-for-history-not-installed"
   },
-  "next_phase": "runtime-smoke-and-readonly-delegation-evaluation"
+  "next_phase": "runtime-smoke-and-readonly-delegation-evaluation",
+  "runtime_notes": [
+    "Kilo resource-capable MCP servers may expose list_mcp_resources, list_mcp_resource_templates and read_mcp_resource to the model.",
+    "V2-R denies their execution using read pattern mcp:* while preserving ordinary repository reads.",
+    "On Windows Kilo sandbox network restriction is unavailable, so exposure and executable permission are distinct."
+  ]
 }
