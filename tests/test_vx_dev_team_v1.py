@@ -9,7 +9,7 @@ LEADER = ROOT / "agents" / "vx-dev-team.md"
 RUNTIME_DIR = ROOT / "runtime" / "dev-team-v2r" / "agents"
 BASELINE = ROOT / "registry" / "dev-team-readonly-baseline-v2.json"
 INSTALLER = ROOT / "scripts" / "Instalar-DevTeam-Only.ps1"
-RUNTIME_DOC = ROOT / "docs" / "VX-DEV-TEAM-RUNTIME-V1.md"
+RUNTIME_DOC = ROOT / "docs" / "VX-DEV-TEAM-V2R-READONLY.md"
 
 CHILDREN = (
     "vx-dev-explorer",
