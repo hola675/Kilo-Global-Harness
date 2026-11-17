@@ -144,21 +144,22 @@
     "old_vx_agents": "versioned-for-history-not-installed",
     "old_vx_skills": "versioned-for-history-not-installed"
   },
-  "next_phase": "operator-runtime-certification-of-five-pending-specialists",
+  "next_phase": "recertify-frontend-and-quality-tool-inventory-only",
   "runtime_note": "Kilo expone la tool lsp solo cuando el host habilita KILO_EXPERIMENTAL_LSP_TOOL. V2-R.2 permite lsp pero no la exige; glob y grep son las capacidades mínimas requeridas. read permanece denegado para ocultar recursos MCP genéricos.",
   "certification": {
     "contract": "registry/dev-team-v2r2-specialist-certification-v1.json",
     "guide": "docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md",
     "completed_runtime": [
       "vx-dev-explorer",
-      "vx-dev-security"
+      "vx-dev-security",
+      "vx-dev-architect",
+      "vx-dev-backend-data",
+      "vx-dev-research"
     ],
     "pending_runtime": [
-      "vx-dev-architect",
       "vx-dev-frontend",
-      "vx-dev-backend-data",
-      "vx-dev-quality",
-      "vx-dev-research"
-    ]
+      "vx-dev-quality"
+    ],
+    "status": "PARTIAL_OPERATOR_RUNTIME"
   }
 }
