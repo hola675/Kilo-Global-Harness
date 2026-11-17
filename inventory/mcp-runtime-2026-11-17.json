@@ -1,0 +1,112 @@
+{
+  "schema": "vx-mcp-runtime-snapshot/1",
+  "captured_at": "2026-11-17",
+  "source": "operator-validated-kilo-mcp-list-and-functional-smoke-tests",
+  "client": {
+    "name": "Kilo Desktop",
+    "version": "0.1.16"
+  },
+  "result": {
+    "configured": 13,
+    "connected": 13,
+    "failed": 0,
+    "disabled": 0
+  },
+  "dependencies_observed": {
+    "powershell": "7.6.8",
+    "node": "26.12.1",
+    "npm": "12.2.2",
+    "chrome": "detected",
+    "github_cli": "authenticated",
+    "uv": "available",
+    "uvx": "available",
+    "ida": "9.4",
+    "snyk": "1.1308.4"
+  },
+  "servers": [
+    {
+      "id": "codebase-memory",
+      "connected": true,
+      "command": "%LOCALAPPDATA%\\Programs\\codebase-memory-mcp\\codebase-memory-mcp.exe",
+      "functional_test": "available; structural code intelligence previously validated"
+    },
+    {
+      "id": "ida",
+      "connected": true,
+      "command": "uvx --exclude-newer=1s ida-mcp stdio --agent=kilo-desktop",
+      "functional_test": "connected; IDA integration installed"
+    },
+    {
+      "id": "playwright",
+      "connected": true,
+      "command": "cmd /c npx -y @playwright/mcp@latest",
+      "functional_test": "connected"
+    },
+    {
+      "id": "context7",
+      "connected": true,
+      "url": "https://mcp.context7.com/mcp",
+      "functional_test": "connected after migration from local npx to remote"
+    },
+    {
+      "id": "imagegen",
+      "connected": true,
+      "command": "cmd /c npx -y codex-imagegen-mcp@0.2 serve",
+      "functional_test": "doctor and handshake validated"
+    },
+    {
+      "id": "github",
+      "connected": true,
+      "command": "pwsh ... %LOCALAPPDATA%\\Programs\\github-mcp-server\\github-mcp-kilo.ps1",
+      "functional_test": "repository listing validated, including private repositories"
+    },
+    {
+      "id": "cloudflare-api",
+      "connected": true,
+      "url": "https://mcp.cloudflare.com/mcp",
+      "functional_test": "account and Workers queried read-only"
+    },
+    {
+      "id": "chrome-devtools",
+      "connected": true,
+      "command": "cmd /c npx -y chrome-devtools-mcp@latest",
+      "functional_test": "console, network and Lighthouse read-only audit validated"
+    },
+    {
+      "id": "snyk",
+      "connected": true,
+      "command": "snyk mcp -t stdio --profile full -o %LOCALAPPDATA%\\SnykMCP\\output",
+      "functional_test": "MCP operational; Snyk Code affected by API timeout, Secrets unavailable for organization"
+    },
+    {
+      "id": "postman",
+      "connected": true,
+      "url": "https://mcp.postman.com/minimal",
+      "functional_test": "connected"
+    },
+    {
+      "id": "microsoft-learn",
+      "connected": true,
+      "url": "https://learn.microsoft.com/api/mcp",
+      "functional_test": "official PowerShell, Windows, Active Directory and .NET documentation retrieved"
+    },
+    {
+      "id": "sentry",
+      "connected": true,
+      "url": "https://mcp.sentry.dev/mcp",
+      "functional_test": "organization visible; no projects available at validation time"
+    },
+    {
+      "id": "serena",
+      "connected": true,
+      "command": "serena start-mcp-server --context ide --project-from-cwd --open-web-dashboard false",
+      "functional_test": "Kilo-Global-Harness activated; TypeScript symbols and semantic reference lookup validated"
+    }
+  ],
+  "security": {
+    "secrets_recorded": false,
+    "tokens_recorded": false,
+    "account_ids_recorded": false,
+    "oauth_credentials_recorded": false
+  }
+}
