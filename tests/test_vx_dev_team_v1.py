@@ -80,6 +80,8 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertEqual(baseline["orchestration"]["depth"], 1)
         self.assertFalse(baseline["orchestration"]["invoke_all_by_default"])
         self.assertEqual(baseline["child_permissions"]["mcp"], "not-exposed-by-read-deny-and-no-namespaced-allows")
+        self.assertEqual(baseline["child_permissions"]["required"], ["glob", "grep"])
+        self.assertEqual(baseline["child_permissions"]["optional"], ["lsp"])
 
     def test_installer_preserves_mcp_config_and_manages_eight_agents(self):
         source = INSTALLER.read_text(encoding="utf-8")
