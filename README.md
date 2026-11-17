@@ -39,11 +39,10 @@ En el baseline actual Dev Team trabaja **sin subagentes ni delegación**. Tiene 
 
 Los 13 MCP globales se conservan como infraestructura separada, pero este baseline **no concede permisos MCP automáticos**. Cada MCP/tool se conectará al agente únicamente después de definirlo, aprobarlo y probarlo. **No se modifica `kilo.jsonc`.**
 
-- [Runtime Dev Team V1](docs/VX-DEV-TEAM-RUNTIME-V1.md)
-- [Arquitectura del equipo](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
-- [Matriz MCP por rol](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
-- [Registro activo Dev Team](registry/vx-dev-team-v1.json)
-- [Política MCP activa V1](registry/vx-dev-team-mcp-matrix-v1.json)
+- [Runtime Dev Team Only V1](docs/VX-DEV-TEAM-RUNTIME-V1.md)
+- [Baseline aprobado](registry/dev-team-only-baseline-v1.json)
+- [Arquitectura histórica del equipo — legacy/no aprobada](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
+- [Matriz MCP histórica — legacy/no aprobada](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
 **Estado de evidencia:** CI valida estructura, permisos y reversión. La aparición real de `👥 Dev Team` en el selector y el Permission Dock deben comprobarse en el Kilo Desktop del operador después de instalar y ejecutar `/reload`; hasta ese smoke test, la UI del Desktop se considera **NO VERIFICADA**.
 
