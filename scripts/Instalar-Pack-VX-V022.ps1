@@ -31,10 +31,10 @@ if ([string]::IsNullOrWhiteSpace($python) -or !(Test-Path -LiteralPath $python -
 }
 $registry = Get-Content -LiteralPath $registryPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json
-if (@($registry.pack.owned_agents).Count -ne 12 -or @($registry.pack.owned_skills).Count -ne 31 -or
+if (@($registry.pack.owned_agents).Count -ne 13 -or @($registry.pack.owned_skills).Count -ne 31 -or
     @($catalog.candidates).Count -ne 6 -or
     @($catalog.candidates | Where-Object { $_.enabled_by_default -ne $false }).Count -ne 0) {
-  throw 'Pack incompatible: requiere 12 agentes, 31 skills y 6 MCP deshabilitados.'
+  throw 'Pack incompatible: requiere 13 agentes, 31 skills y 6 MCP deshabilitados.'
 }
 function Invoke-VX([string]$Mode) {
   & $python -I $bootstrap --mode $Mode --home $homeRoot
@@ -48,7 +48,7 @@ if ($Modo -eq 'Verificar') {
 $raw = & $python -I $bootstrap --mode simulate --home $homeRoot
 if ($LASTEXITCODE -ne 0) { throw 'Preflight falló. NO se instaló.' }
 $plan = ($raw -join [Environment]::NewLine) | ConvertFrom-Json
-if ([int]$plan.agents -ne 12 -or [int]$plan.skills -ne 31 -or [int]$plan.mcp_changes -ne 0 -or
+if ([int]$plan.agents -ne 13 -or [int]$plan.skills -ne 31 -or [int]$plan.mcp_changes -ne 0 -or
     @($plan.mcp_inventory.catalog).Count -ne 6) {
   throw 'Inventario de simulación inesperado. NO se instaló.'
 }
