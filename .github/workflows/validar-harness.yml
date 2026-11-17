@@ -212,6 +212,19 @@ jobs:
           & ./scripts/Validar-Registro-V4.ps1
           Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 13 AGENTES PASS'
 
+      - name: Dev Team V1 - modo primario, identidad visual, delegación y MCP gates
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_dev_team_v1.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato Dev Team V1 inválido.' }
+          & ./scripts/Validar-Registro-V4.ps1
+          $agent = Get-Content 'agents/vx-dev-team.md' -Raw -Encoding UTF8
+          if ($agent -notmatch '👥 Dev Team' -or $agent -notmatch '#8B5CF6') {
+            throw 'Identidad visual Dev Team ausente.'
+          }
+          Write-Host 'DEV TEAM V1: PRIMARY + VISUAL IDENTITY + DELEGATION + MCP GATES PASS'
+
       - name: VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores
         shell: pwsh
         run: |
