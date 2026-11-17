@@ -22,7 +22,7 @@ class IdaMcpSkillTests(unittest.TestCase):
         skills = self.registry["pack"]["owned_skills"]
         self.assertEqual(len(skills), 31)
         self.assertIn("vx-ida-mcp-reverse-engineering", skills)
-        self.assertEqual(len(self.registry["agents"]), 12)
+        self.assertEqual(len(self.registry["agents"]), 13)
         self.assertIn("reverse-engineering", {p["id"] for p in self.registry["profiles"]})
         catalog = json.loads((ROOT / "registry/vx-mcp-catalog-v1.json").read_text(encoding="utf-8"))
         self.assertEqual(len(catalog["candidates"]), 6)
