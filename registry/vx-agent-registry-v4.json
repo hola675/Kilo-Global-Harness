@@ -1,6 +1,6 @@
 {
   "schema": "vx-agent-registry/1",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "global_only": true,
   "runtime": "kilo-native",
   "source_policy": "origin-authored-vx-no-external-agent-code",
@@ -18,9 +18,35 @@
     "builder_selection": "opt-in-via-selector-UsarBuildersVX",
     "builders_in_agent_picker": true,
     "all_builder_writes_require_Kilo_ask": true,
-    "approval_unavailable_in_noninteractive_task": "BLOCK_AND_RETURN_PLAN"
+    "approval_unavailable_in_noninteractive_task": "BLOCK_AND_RETURN_PLAN",
+    "dev_team_primary": "vx-dev-team",
+    "dev_team_display_name": "👥 Dev Team",
+    "dev_team_runtime": "active-v1"
   },
   "agents": [
+    {
+      "id": "vx-dev-team",
+      "file": "agents/vx-dev-team.md",
+      "mode": "primary",
+      "role": "coordinator",
+      "writes": true,
+      "steps": 400,
+      "capabilities": [
+        "team-lead",
+        "technical-lead",
+        "delegate-specialists",
+        "integrate",
+        "verify",
+        "git-close"
+      ],
+      "visual": {
+        "displayName": "👥 Dev Team",
+        "color": "#8B5CF6",
+        "custom_icon_field_supported": false,
+        "visual_fallback": "emoji-displayName-plus-color"
+      },
+      "mcp_policy": "minimum-privilege-v1"
+    },
     {
       "id": "vx-integrador",
       "file": "agents/vx-integrador.md",
@@ -505,8 +531,9 @@
   ],
   "pack": {
     "id": "vx-development-team",
-    "version": "0.2.5",
+    "version": "0.3.0",
     "owned_agents": [
+      "vx-dev-team",
       "vx-integrador",
       "vx-inspector",
       "vx-researcher",
@@ -556,6 +583,8 @@
     "inline_agents_not_mutated": true,
     "configured_mcp_never_modified": true,
     "clean_mode_requires_backup": true,
-    "experience_status": "SIN_EVALUAR"
+    "experience_status": "SIN_EVALUAR",
+    "dev_team_primary": "vx-dev-team",
+    "dev_team_status": "ACTIVE_V1"
   }
 }

@@ -49,12 +49,12 @@ if ($Modo -eq 'Restaurar') {
 $raw= & $python -I $impl --mode simulate --home $homeRoot
 if ($LASTEXITCODE -ne 0) { throw 'Preflight no se pudo interpretar. No se escribió HOME.' }
 $preflight=($raw -join [Environment]::NewLine) | ConvertFrom-Json
-if ([int]$preflight.agents_expected -ne 12 -or [int]$preflight.skills_expected -ne 31 -or
+if ([int]$preflight.agents_expected -ne 13 -or [int]$preflight.skills_expected -ne 31 -or
     [int]$preflight.mcp_changes -ne 0 -or [int]$preflight.jsonc_changes -ne 0) {
   throw 'Plan contiene inventario o permisos inesperados.'
 }
 Write-Host "VX Pack convivencia 0.2.3 | $Modo | HOME: $homeRoot" -ForegroundColor Cyan
-Write-Host "Inline existentes: $($preflight.inline_agents_existing); agentes VX: 12; skills VX: 31."
+Write-Host "Inline existentes: $($preflight.inline_agents_existing); agentes VX: 13; skills VX: 31."
 Write-Host "Skills externas compatibles: .agents=$($preflight.compat_skills_existing.'.agents'), .kilocode=$($preflight.compat_skills_existing.'.kilocode'), .claude=$($preflight.compat_skills_existing.'.claude')"
 Write-Host "Archivos VX a crear/actualizar: $($preflight.files_changed); sin cambios: $($preflight.files_unchanged)."
 if (!$preflight.ready_to_apply) {

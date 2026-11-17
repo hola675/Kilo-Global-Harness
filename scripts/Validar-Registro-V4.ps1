@@ -112,6 +112,44 @@ foreach ($p in $profiles) {
   }
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+
+# Dev Team V1: modo primario visible, identidad diferenciada y minimo privilegio MCP.
+if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
+    $data.execution.dev_team_display_name -ne '👥 Dev Team' -or
+    $data.execution.dev_team_runtime -ne 'active-v1') {
+  throw 'Registro Dev Team V1 incompleto o inactivo.'
+}
+$devTeam = @($agents | Where-Object { $_.id -eq 'vx-dev-team' })
+if ($devTeam.Count -ne 1 -or $devTeam[0].mode -ne 'primary' -or
+    $devTeam[0].role -ne 'coordinator' -or $devTeam[0].writes -ne $true) {
+  throw 'vx-dev-team no esta registrado como coordinador primario escritor condicionado.'
+}
+$devFile = Join-Path $RaizFuentes 'agents/vx-dev-team.md'
+if (!(Test-Path -LiteralPath $devFile -PathType Leaf)) { throw 'Falta agente global vx-dev-team.' }
+$devRaw = Get-Content -LiteralPath $devFile -Raw -Encoding UTF8
+$devFrontMatch = [regex]::Match($devRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+if (!$devFrontMatch.Success) { throw 'Frontmatter Dev Team invalido.' }
+$devFront = $devFrontMatch.Groups[1].Value
+foreach ($required in @(
+  '(?m)^displayName:\s*"👥 Dev Team"\s*$',
+  '(?m)^color:\s*"#8B5CF6"\s*$',
+  '(?m)^\s{2}"context7_\*":\s*allow\s*$',
+  '(?m)^\s{2}"microsoft-learn_\*":\s*allow\s*$'
+)) {
+  if ($devFront -notmatch $required) { throw "Dev Team sin identidad visual o permiso documental requerido: $required" }
+}
+foreach ($builder in @('vx-frontend-builder','vx-backend-builder','vx-qa-builder','vx-data-builder','vx-docs-builder')) {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($builder) + '":\s*allow\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar al builder registrado: $builder" }
+}
+foreach ($server in @(
+  'codebase-memory','serena','github','playwright','chrome-devtools',
+  'postman','snyk','sentry','cloudflare-api','imagegen','ida'
+)) {
+  $pat = '(?m)^\s{2}"' + [regex]::Escape($server) + '_\*":\s*ask\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team relajo o perdio el gate MCP: $server" }
+}
+
 if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
 if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
 foreach ($id in @($data.pack.owned_agents)) {

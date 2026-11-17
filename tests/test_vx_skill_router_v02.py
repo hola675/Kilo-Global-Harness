@@ -22,7 +22,7 @@ class SkillMatrixTests(unittest.TestCase):
     def test_registry_is_closed_thirty_one(self):
         self.assertEqual(len(self.registry["pack"]["owned_skills"]), 31)
         self.assertEqual(len(self.matrix["skills"]), 31)
-        self.assertEqual(len(self.registry["agents"]), 12)
+        self.assertEqual(len(self.registry["agents"]), 13)
 
     def test_dependency_graph_validated_no_cycles(self):
         corrupted = copy.deepcopy(self.matrix)
