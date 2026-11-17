@@ -1,5 +1,7 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
+> **BASELINE APROBADO ACTUAL — Dev Team Only V1 (2026-11-17):** el único agente personalizado aprobado e instalable es **`👥 Dev Team`**. No hay subagentes, builders, skills, workflows, reglas, plugins ni runtime VX aprobados en esta fase. Los componentes VX anteriores permanecen en Git únicamente como **legacy/historial** y el instalador canónico los retira del perfil global. La configuración `kilo.jsonc` y los 13 MCP globales se preservan, pero Dev Team no recibe permisos MCP automáticos.
+
 > **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `👥 Dev Team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 
 **Versión del código:** 4.6.3 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 tiene CI Windows PASS y CLI local validado (5 casos y destinos); después se recibieron 5/5 respuestas coincidentes en chat con fixtures sintéticos públicos. Atribución efectiva a especialistas/skills y competencia real NO_VERIFICADAS. PowerShell dentro de Kilo permanece bloqueado por política. V4.6.3 tiene CI Windows PASS y CLI local validado: 11 solapamientos de agentes, 0 diferencias explícitas comparadas, 19 límites steps elevados y 30 hallazgos de revisión; ninguna colisión de runtime ni competencia verificada. Ninguna reunión automática está habilitada.
@@ -33,9 +35,9 @@ El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su
 
 El código actual incorpora **`vx-dev-team`** como agente `mode: primary`, visible en Kilo como **`👥 Dev Team`** y con color **`#8B5CF6`**. Kilo soporta `displayName` y `color`; esta versión no publica un campo oficial para sustituir el glifo del selector por un SVG arbitrario, por lo que la identidad diferenciada usa emoji visible + color sin inventar `icon:`.
 
-El Team Lead puede delegar a los especialistas VX de investigación, frontend, backend, datos, QA, documentación, seguridad, UX, Cloudflare y revisión. Mantiene **un escritor efectivo por worktree**, permisos de escritura/shell en `ask` y `agent_manager: deny` en V1.
+En el baseline actual Dev Team trabaja **sin subagentes ni delegación**. Tiene `task: deny`, `skill: deny`, `agent_manager: deny` y board denegado. Las escrituras y el shell permanecen en `ask`.
 
-La política MCP inicial es deliberadamente conservadora: **Context7** y **Microsoft Learn** quedan permitidos para consulta; los otros 11 MCP quedan en `ask` desde el Team Lead hasta completar la clasificación tool-by-tool. **No se modifica `kilo.jsonc` ni se reinstala ningún MCP.**
+Los 13 MCP globales se conservan como infraestructura separada, pero este baseline **no concede permisos MCP automáticos**. Cada MCP/tool se conectará al agente únicamente después de definirlo, aprobarlo y probarlo. **No se modifica `kilo.jsonc`.**
 
 - [Runtime Dev Team V1](docs/VX-DEV-TEAM-RUNTIME-V1.md)
 - [Arquitectura del equipo](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
@@ -95,23 +97,23 @@ git pull --ff-only origin main
 Después:
 
 ```powershell
-$script = Join-Path (Get-Location) 'scripts\Instalar-Kilo-Global-Harness.ps1'
+$script = Join-Path (Get-Location) 'scripts\Instalar-DevTeam-Only.ps1'
 pwsh -NoProfile -File $script -Modo Diagnostico
 pwsh -NoProfile -File $script -Modo Simular
-pwsh -NoProfile -File $script -Modo Aplicar -PausarTaskObserver
+pwsh -NoProfile -File $script -Modo Aplicar
 pwsh -NoProfile -File $script -Modo Verificar
 ```
 
-Si ya pausaste `task-observer`, la opción no realiza ningún nuevo movimiento. El respaldo único por ejecución (incluye milisegundos y sufijo aleatorio) se guarda en `~/.config/kilo-harness-backups/AAAAmmdd-HHMMSS-fff-sufijo` y **nunca debe subirse a GitHub**.
+El reset crea un respaldo privado reversible en `~/.config/kilo-devteam-backups/AAAAmmdd-HHMMSS-fff-sufijo`. No modifica `kilo.jsonc`, MCP ni recursos ajenos al namespace VX.
 
-Finalmente, en Kilo ejecuta `/reload`, `/vx-harness-estado` y `/vx-equipo`. Antes de delegaciones automáticas, revisa la [guía operativa V4](docs/OPERACION-EQUIPOS-V4.md).
+Finalmente, en Kilo ejecuta `/reload` y confirma visualmente que, además de los modos nativos, el único agente VX visible sea `👥 Dev Team`. No uses comandos `/vx-*` legacy.
 
 ## Reversión
 
 Utiliza la ruta de respaldo que imprimió el instalador:
 
 ```powershell
-pwsh -NoProfile -File $script -Modo Restaurar -BackupFolder 'C:\Users\Admin\.config\kilo-harness-backups\AAAAMMDD-HHMMSS-fff-sufijo'
+pwsh -NoProfile -File $script -Modo Restaurar -BackupFolder 'C:\Users\Admin\.config\kilo-devteam-backups\AAAAMMDD-HHMMSS-fff-sufijo'
 ```
 
 Por defecto, si un archivo administrado fue modificado **después de aplicar**, la restauración lo omite para evitar perder cambios. `-ForzarRestauracion` únicamente tras revisar esos cambios.
