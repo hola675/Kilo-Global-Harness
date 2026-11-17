@@ -1,6 +1,6 @@
 # Dev Team V2-R.2 — certificación de los cinco especialistas pendientes
 
-**Estado:** PARTIAL_OPERATOR_RUNTIME  
+**Estado:** PASS_OPERATOR_RUNTIME · 7/7 especialistas certificados  
 **Baseline:** `2.0.2-runtime-adaptive`  
 **Objetivo:** certificar Architect, Frontend, Backend/Data, Quality y Research sin habilitar MCP, shell, escritura, skills ni delegación hija.
 
@@ -183,3 +183,44 @@ Finaliza exactamente con:
 
 V2R2_RECERT_FRONTEND_QUALITY_STATUS: PASS | FAIL | PARTIAL
 ```
+
+
+## Cierre de certificación 7/7
+
+La recertificación final de inventario confirmó:
+
+- `vx-dev-frontend`: PASS
+- `vx-dev-quality`: PASS
+
+En ambos casos:
+
+- `glob`: disponible;
+- `grep`: disponible;
+- `lsp`: ausente y aceptado;
+- `read`: ausente;
+- mutación: ausente;
+- shell: ausente;
+- `task`: ausente;
+- `skill`: ausente;
+- MCP genérico: ausente;
+- MCP namespaced: ausente;
+- `multi_tool_use.parallel`: visible;
+- cero modificaciones reportadas.
+
+Con esto, el conjunto V2-R.2 queda certificado en runtime por evidencia aportada por el operador:
+
+1. vx-dev-explorer — PASS
+2. vx-dev-security — PASS
+3. vx-dev-architect — PASS
+4. vx-dev-frontend — PASS
+5. vx-dev-backend-data — PASS
+6. vx-dev-quality — PASS
+7. vx-dev-research — PASS
+
+Resultado global:
+
+```text
+V2R2_RUNTIME_SPECIALISTS: PASS 7/7
+```
+
+La siguiente fase aprobada es **diseñar** la matriz MCP read-only tool-by-tool. No se habilita todavía ningún MCP en los hijos.

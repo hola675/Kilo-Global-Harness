@@ -2,7 +2,7 @@
   "schema": "dev-team-v2r2-specialist-certification/1",
   "version": "1.0.0",
   "baseline": "2.0.2-runtime-adaptive",
-  "status": "PARTIAL_OPERATOR_RUNTIME",
+  "status": "PASS_OPERATOR_RUNTIME",
   "purpose": "Certificar cinco especialistas V2-R.2 pendientes con fixtures sintéticos, sin MCP, shell, escritura, skills ni delegación hija.",
   "runtime_contract": {
     "required_tools": [
@@ -144,12 +144,11 @@
     {
       "scenario": "V2R2-FE-01",
       "specialist": "vx-dev-frontend",
-      "status": "PENDING_RECERTIFICATION",
+      "status": "PASS",
       "evidence_source": "operator runtime report",
-      "tools": "inventory not reported",
+      "tools": "glob/grep confirmed; lsp absent; read/mutation/shell/task/skill/generic MCP/namespaced MCP absent; multi_tool_use.parallel visible",
       "finding": "div onClick accessibility/semantics issue correctly identified",
-      "isolation": "reported zero modifications",
-      "reason": "tool inventory incomplete"
+      "isolation": "reported zero modifications"
     },
     {
       "scenario": "V2R2-BE-01",
@@ -163,12 +162,11 @@
     {
       "scenario": "V2R2-QA-01",
       "specialist": "vx-dev-quality",
-      "status": "PENDING_RECERTIFICATION",
+      "status": "PASS",
       "evidence_source": "operator runtime report",
-      "tools": "inventory not reported",
+      "tools": "glob/grep confirmed; lsp absent; read/mutation/shell/task/skill/generic MCP/namespaced MCP absent; multi_tool_use.parallel visible",
       "finding": "missing denominator-zero coverage correctly identified",
-      "isolation": "reported zero modifications; tests not executed",
-      "reason": "tool inventory incomplete"
+      "isolation": "reported zero modifications; tests not executed"
     },
     {
       "scenario": "V2R2-RES-01",
@@ -181,19 +179,24 @@
     }
   ],
   "recertification": {
-    "pending": [
-      "vx-dev-frontend",
-      "vx-dev-quality"
-    ],
-    "scope": "tool-inventory-only",
+    "pending": [],
+    "scope": "complete",
     "rerun_fixtures": false,
-    "success_requires": [
-      "glob and grep visible",
-      "lsp optional",
-      "read/edit/write/apply_patch/bash/task/skill absent",
-      "generic MCP resource tools absent",
-      "namespaced MCP tools absent",
-      "zero modifications"
-    ]
+    "result": "PASS",
+    "evidence_source": "operator runtime report",
+    "note": "Frontend and Quality tool inventories recertified successfully under V2-R.2 criteria."
+  },
+  "summary": {
+    "certified_runtime": [
+      "vx-dev-explorer",
+      "vx-dev-security",
+      "vx-dev-architect",
+      "vx-dev-frontend",
+      "vx-dev-backend-data",
+      "vx-dev-quality",
+      "vx-dev-research"
+    ],
+    "count": "7/7",
+    "result": "PASS"
   }
 }
