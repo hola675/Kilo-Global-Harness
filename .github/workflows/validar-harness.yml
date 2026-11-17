@@ -182,6 +182,27 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis bootstrap DPAPI.' }
           Write-Host 'VX PACK DPAPI: HOME SINTETICO Y ROLLBACK WINDOWS PASS'
 
+      - name: MCP Pack V1 - registro reproducible de 13 servidores
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & ./scripts/Validar-MCP-Pack.ps1
+          $r = (& ./scripts/Validar-MCP-Pack.ps1 -Json | Out-String | ConvertFrom-Json)
+          if (!$r.valid -or $r.server_count -ne 13 -or @($r.errors).Count -ne 0) {
+            throw 'Registro MCP V2 o pack de instalación inválido.'
+          }
+          $catalog = Get-Content 'registry/vx-mcp-catalog-v2.json' -Raw -Encoding UTF8 | ConvertFrom-Json
+          if (@($catalog.servers).Count -ne 13) { throw 'Catálogo MCP V2 no contiene 13 servidores.' }
+          foreach ($path in @(
+            'inventory/mcp-runtime-2026-11-17.json',
+            'docs/VX-MCP-PACK-WINDOWS-V1-20261117.md',
+            'scripts/Instalar-MCP-Pack-Windows.ps1',
+            'scripts/mcp/github-mcp-kilo.ps1'
+          )) {
+            if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Falta asset MCP Pack: $path" }
+          }
+          Write-Host 'MCP PACK V1: REGISTRO 13/13, INSTALADOR Y DOCUMENTACIÓN PASS'
+
       - name: VX Permisos - MCP namespaced con fallback deny y verificación de 12 roles
         shell: pwsh
         run: |

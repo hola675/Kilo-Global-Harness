@@ -197,6 +197,16 @@ function Global-Assets {
     Source=(Join-Path $root 'registry/vx-mcp-catalog-v1.json');
     Target=(Join-Path $kiloDir 'harness/vx-mcp-catalog-v1.json')
   }
+  # V2 registra el pack operativo de 13 MCP. Sigue siendo metadato pasivo:
+  # este instalador general NO instala, autentica ni modifica servidores MCP.
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'registry/vx-mcp-catalog-v2.json');
+    Target=(Join-Path $kiloDir 'harness/vx-mcp-catalog-v2.json')
+  }
+  $assets += [pscustomobject]@{
+    Source=(Join-Path $root 'scripts/Validar-MCP-Pack.ps1');
+    Target=(Join-Path $kiloDir 'harness/scripts/Validar-MCP-Pack.ps1')
+  }
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'scripts/vx_pack_doctor.py');
     Target=(Join-Path $kiloDir 'harness/scripts/vx_pack_doctor.py')
@@ -281,7 +291,7 @@ function Assert-VXRestoreTarget([string]$Path) {
     '^\.config/kilo/(agents|commands)/vx-[a-z0-9-]+\.md$',
     '^\.config/kilo/rules/vx-[a-z0-9-]+\.md$',
     '^\.config/kilo/harness/vx-[a-z0-9-]+\.json$',
-    '^\.config/kilo/harness/scripts/(vx_[a-z0-9_]+\.py|Seleccionar-Equipo-V4\.ps1|Validar-Registro-V4\.ps1|Reconciliar-Agentes-V4\.2\.ps1|Auditar-Kilo-Global\.ps1)$',
+    '^\.config/kilo/harness/scripts/(vx_[a-z0-9_]+\.py|Seleccionar-Equipo-V4\.ps1|Validar-Registro-V4\.ps1|Reconciliar-Agentes-V4\.2\.ps1|Auditar-Kilo-Global\.ps1|Validar-MCP-Pack\.ps1)$',
     '^\.config/kilo/plugin/vx-observer-light\.js$',
     '^\.kilo/skills/vx-[a-z0-9-]+/SKILL\.md$'
   )
