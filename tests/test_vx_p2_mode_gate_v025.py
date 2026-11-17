@@ -42,13 +42,13 @@ class P2ModeGateTests(unittest.TestCase):
 
     def test_pack_includes_global_command_and_version(self):
         registry = json.loads((ROOT / "registry/vx-agent-registry-v4.json").read_text(encoding="utf-8"))
-        self.assertEqual(registry["pack"]["version"], "0.2.5")
+        self.assertEqual(registry["pack"]["version"], "0.3.0")
         sys.path.insert(0, str(ROOT / "scripts"))
         import vx_pack_bootstrap as vx
         with tempfile.TemporaryDirectory() as tmp:
             home = Path(tmp)
             _, assets = vx.load_pack(ROOT, home)
-            self.assertEqual(len(assets), 91)
+            self.assertEqual(len(assets), 92)
             self.assertTrue(any(a.target == home / ".config/kilo/commands/vx-p2.md" for a in assets))
 
 if __name__ == "__main__":
