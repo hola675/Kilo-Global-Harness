@@ -161,8 +161,12 @@ if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
 }
 
 $runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
+$installedAgentDir = Join-Path $RaizFuentes 'agents'
 foreach ($child in $childIds) {
   $childFile = Join-Path $runtimeAgentDir ($child + '.md')
+  if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
+    $childFile = Join-Path $installedAgentDir ($child + '.md')
+  }
   if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
   $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
   $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
