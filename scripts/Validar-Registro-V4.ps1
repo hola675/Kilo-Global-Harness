@@ -112,6 +112,250 @@ foreach ($p in $profiles) {
   }
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
+
+# Dev Team V1: modo primario visible, identidad diferenciada y minimo privilegio MCP.
+if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
+    $data.execution.dev_team_display_name -ne '👥 Dev Team' -or
+    $data.execution.dev_team_runtime -ne 'active-v1') {
+  throw 'Registro Dev Team V1 incompleto o inactivo.'
+}
+$devTeam = @($agents | Where-Object { $_.id -eq 'vx-dev-team' })
+if ($devTeam.Count -ne 1 -or $devTeam[0].mode -ne 'primary' -or
+    $devTeam[0].role -ne 'coordinator' -or $devTeam[0].writes -ne $true) {
+  throw 'vx-dev-team no esta registrado como coordinador primario escritor condicionado.'
+}
+$devFile = Join-Path $RaizFuentes 'agents/vx-dev-team.md'
+if (!(Test-Path -LiteralPath $devFile -PathType Leaf)) {
+  $devFile = Join-Path $RaizFuentes 'agents/vx-dev-team.md'
+}
+$devRaw = Get-Content -LiteralPath $devFile -Raw -Encoding UTF8
+$devFrontMatch = [regex]::Match($devRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+if (!$devFrontMatch.Success) { throw 'Frontmatter Dev Team invalido.' }
+$devFront = $devFrontMatch.Groups[1].Value
+foreach ($required in @(
+  '(?m)^displayName:\s*"👥 Dev Team"\s*
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+,
+  '(?m)^color:\s*"#8B5CF6"\s*
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+,
+  '(?m)^\s{2}"context7_\*":\s*allow\s*
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+,
+  '(?m)^\s{2}"microsoft-learn_\*":\s*allow\s*
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+
+)) {
+  if ($devFront -notmatch $required) { throw "Dev Team sin identidad visual o permiso documental requerido: $required" }
+}
+foreach ($builder in @('vx-frontend-builder','vx-backend-builder','vx-qa-builder','vx-data-builder','vx-docs-builder')) {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($builder) + '":\s*allow\s*
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar al builder registrado: $builder" }
+}
+foreach ($server in @(
+  'codebase-memory','serena','github','playwright','chrome-devtools',
+  'postman','snyk','sentry','cloudflare-api','imagegen','ida'
+)) {
+  $pat = '(?m)^\s{2}"' + [regex]::Escape($server) + '_\*":\s*ask\s*
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+
+  if ($devFront -notmatch $pat) { throw "Dev Team relajo o perdio el gate MCP: $server" }
+}
+
 if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
 if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
 foreach ($id in @($data.pack.owned_agents)) {
