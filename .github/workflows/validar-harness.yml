@@ -906,7 +906,7 @@ jobs:
           $pack = Get-Content 'commands/vx-pack.md' -Raw -Encoding UTF8
           if ($pack -match '12 agentes/30 skills') { throw 'Inventario antiguo en vx-pack.' }
           $registry = Get-Content 'registry/vx-agent-registry-v4.json' -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ($registry.pack.version -ne '0.2.5' -or @($registry.pack.owned_skills).Count -ne 31) {
+          if ($registry.pack.version -ne '0.3.0' -or @($registry.pack.owned_agents).Count -ne 13 -or @($registry.pack.owned_skills).Count -ne 31) {
             throw 'Versión de pack inconsistente.'
           }
           $cert = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8
