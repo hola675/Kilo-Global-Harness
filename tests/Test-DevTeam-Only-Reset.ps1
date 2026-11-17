@@ -3,7 +3,18 @@ $ErrorActionPreference = 'Stop'
 
 $repo = Split-Path $PSScriptRoot -Parent
 $installer = Join-Path $repo 'scripts/Instalar-DevTeam-Only.ps1'
-$tmp = Join-Path ([IO.Path]::GetTempPath()) ('devteam-only-test-' + [guid]::NewGuid().ToString('N'))
+$tmp = Join-Path ([IO.Path]::GetTempPath()) ('devteam-v2r-test-' + [guid]::NewGuid().ToString('N'))
+
+$approved = @(
+  'vx-dev-team.md',
+  'vx-dev-explorer.md',
+  'vx-dev-architect.md',
+  'vx-dev-frontend.md',
+  'vx-dev-backend-data.md',
+  'vx-dev-quality.md',
+  'vx-dev-security.md',
+  'vx-dev-research.md'
+)
 
 try {
   $kilo = Join-Path $tmp '.config/kilo'
@@ -34,6 +45,7 @@ try {
   $configHashBefore = (Get-FileHash -LiteralPath $config -Algorithm SHA256).Hash
 
   'OLD DEV TEAM' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Encoding UTF8
+  'OLD CHILD' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Encoding UTF8
   'LEGACY BACKEND' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-backend-builder.md') -Encoding UTF8
   'LEGACY INTEGRATOR' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-integrador.md') -Encoding UTF8
   'THIRD PARTY' | Set-Content -LiteralPath (Join-Path $kilo 'agents/my-agent.md') -Encoding UTF8
@@ -67,9 +79,29 @@ KEEP-AFTER
   & $installer -Modo Aplicar -RaizUsuario $tmp
   & $installer -Modo Verificar -RaizUsuario $tmp
 
-  $dev = Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8
-  if ($dev -notmatch '(?m)^  skill:\s*deny\s*$' -or $dev -notmatch '(?m)^  task:\s*deny\s*$') {
-    throw 'Dev Team instalado no es singleton.'
+  foreach ($name in $approved) {
+    $path = Join-Path $kilo ('agents/' + $name)
+    if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Falta aprobado instalado: $name" }
+  }
+
+  $leader = Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8
+  if ($leader -notmatch '(?m)^  task:\s*$' -or
+      $leader -notmatch '(?m)^    "vx-dev-explorer":\s*allow\s*$') {
+    throw 'Dev Team no puede delegar al pool V2-R.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $child = Get-Content -LiteralPath (Join-Path $kilo ('agents/' + $name)) -Raw -Encoding UTF8
+    foreach ($pat in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^  edit:\s*deny\s*$',
+      '(?m)^  write:\s*deny\s*$',
+      '(?m)^  bash:\s*deny\s*$',
+      '(?m)^  task:\s*deny\s*$'
+    )) {
+      if ($child -notmatch $pat) { throw "Subagente $name no cumple read-only/hidden: $pat" }
+    }
   }
 
   foreach ($path in @(
@@ -116,6 +148,16 @@ KEEP-AFTER
   if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Raw -Encoding UTF8) -notmatch 'OLD DEV TEAM') {
     throw 'Restore no recupero Dev Team previo.'
   }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
+    throw 'Restore no recupero subagente previo.'
+  }
+
+  foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
+    if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
+      throw "Restore dejo agente que no existia antes: $name"
+    }
+  }
+
   foreach ($path in @(
     (Join-Path $kilo 'agents/vx-backend-builder.md'),
     (Join-Path $kilo 'agents/vx-integrador.md'),
@@ -124,6 +166,7 @@ KEEP-AFTER
   )) {
     if (!(Test-Path -LiteralPath $path)) { throw "Restore no recupero: $path" }
   }
+
   $restoredAgents = Get-Content -LiteralPath (Join-Path $kilo 'AGENTS.md') -Raw -Encoding UTF8
   if ($restoredAgents -notmatch 'LEGACY MANAGED BLOCK') {
     throw 'Restore no recupero AGENTS.md.'
@@ -132,7 +175,7 @@ KEEP-AFTER
     throw 'Restore altero kilo.jsonc.'
   }
 
-  Write-Host 'DEV TEAM ONLY RESET: APPLY + VERIFY + RESTORE PASS' -ForegroundColor Green
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + HIDDEN READ-ONLY CHILDREN + RESTORE PASS' -ForegroundColor Green
 }
 finally {
   if (Test-Path -LiteralPath $tmp) {
