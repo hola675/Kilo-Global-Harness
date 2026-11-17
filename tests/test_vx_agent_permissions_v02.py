@@ -63,7 +63,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
                 self.assertRegex(front, r"(?m)^mode: subagent\s*$")
                 self.assertRegex(front, r"(?m)^hidden: true\s*$")
                 for tool in (
-                    "skill", "task", "edit", "write", "apply_patch", "bash",
+                    "read", "skill", "task", "edit", "write", "apply_patch", "bash",
                     "agent_manager", "external_directory", "board_read", "board_post",
                 ):
                     self.assertRegex(front, rf"(?m)^  {re.escape(tool)}: deny\s*$")
