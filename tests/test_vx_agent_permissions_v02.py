@@ -62,6 +62,9 @@ class VXAgentPermissionsTests(unittest.TestCase):
                 self.assertLess(front.index('  "*": deny'), front.index("  read:"))
                 self.assertRegex(front, r"(?m)^mode: subagent\s*$")
                 self.assertRegex(front, r"(?m)^hidden: true\s*$")
+                self.assertRegex(front, r"(?m)^  glob: allow\s*$")
+                self.assertRegex(front, r"(?m)^  grep: allow\s*$")
+                self.assertRegex(front, r"(?m)^  lsp: allow\s*$")
                 for tool in (
                     "read", "skill", "task", "edit", "write", "apply_patch", "bash",
                     "agent_manager", "external_directory", "board_read", "board_post",

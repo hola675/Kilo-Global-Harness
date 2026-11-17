@@ -1,7 +1,7 @@
-# Dev Team V2-R.1 — líder único + especialistas ocultos con aislamiento MCP estricto
+# Dev Team V2-R.2 — líder único + especialistas ocultos con capacidades adaptativas
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE APPROVED BASELINE · V2-R.1  
+**Estado:** ACTIVE APPROVED BASELINE · V2-R.2  
 **Primario visible:** `👥 Dev Team`  
 **Especialistas ocultos:** 7  
 **Mutaciones de subagentes:** DENY  
@@ -89,10 +89,13 @@ No se devuelve el transcript completo como contrato normal.
 
 ## Permisos de hijos
 
-Permitidos:
+Requeridos:
 
 - `glob`
 - `grep`
+
+Opcional según el host:
+
 - `lsp`
 
 Denegados:
@@ -116,7 +119,7 @@ La certificación runtime V2-R original detectó que Kilo exponía `list_mcp_res
 
 La causa está en Kilo actual: esas tres tools genéricas se clasifican internamente bajo el permiso `read`. Con `read: allow`, permanecen visibles aunque las tools MCP namespaced estén denegadas.
 
-V2-R.1 prioriza aislamiento estricto:
+V2-R.1 priorizó aislamiento MCP estricto:
 
 ```yaml
 read: deny
@@ -125,7 +128,19 @@ grep: allow
 lsp: allow
 ```
 
-Así los especialistas mantienen inspección local no mutable, pero pierden la herramienta `read` directa y, con ella, la exposición de los recursos MCP genéricos. Este tradeoff es deliberado hasta que Kilo ofrezca separación agent-level entre lectura de archivos y lectura de recursos MCP.
+Así los especialistas mantienen inspección local no mutable, pero pierden la herramienta `read` directa y, con ella, la exposición de los recursos MCP genéricos.
+
+### LSP adaptativo en V2-R.2
+
+La segunda certificación runtime confirmó que `glob` y `grep` están disponibles, mientras que `lsp` no aparece en el inventario del host actual.
+
+Esto no es un fallo de ACL. En Kilo actual, la tool `lsp` se registra únicamente cuando el host habilita la bandera experimental `KILO_EXPERIMENTAL_LSP_TOOL`. Por tanto:
+
+- `lsp: allow` significa "permitirla si existe";
+- no significa "forzar que Kilo la registre";
+- V2-R.2 exige `glob` + `grep`;
+- `lsp` es una capacidad opcional;
+- no se activa ninguna bandera experimental global automáticamente.
 
 ## Instalación
 
@@ -166,7 +181,7 @@ Antes de permitir cualquier subagente escritor:
 
 ## Próxima fase
 
-Después del smoke real V2-R.1:
+Después del smoke real V2-R.2:
 
 - medir routing del líder;
 - ajustar descripciones/prompts;
