@@ -109,6 +109,7 @@ Denegados:
 - `board_read`
 - `board_post`
 - herramientas MCP namespaced
+- recursos MCP genéricos mediante `read: "mcp:*": deny`
 
 Los archivos sensibles siguen bloqueados por patrones de lectura.
 
@@ -158,3 +159,24 @@ Después del smoke real V2-R:
 - conectar MCP read-only tool-by-tool donde aporte valor;
 - mantener mutaciones denegadas;
 - solo después evaluar builders aislados/worktrees como V2-W.
+
+
+## Nota de runtime sobre recursos MCP en Windows
+
+Kilo puede seguir mostrando al modelo las herramientas genéricas `list_mcp_resources`, `list_mcp_resource_templates` y `read_mcp_resource` cuando existen servidores con recursos conectados. En el runtime actual esas herramientas pasan por el permiso `read` usando patrones `mcp:<server>:...`.
+
+V2-R añade por tanto una excepción explícita después del allow general de lectura:
+
+```yaml
+read:
+  "*": allow
+  "*.env*": deny
+  "*.pem": deny
+  "*.key": deny
+  "*credentials*": deny
+  "*secret*": deny
+  "mcp:*": deny
+```
+
+En Windows Kilo no dispone del sandbox de red, por lo que **exposición visual de la tool** y **permiso efectivo de ejecución** son conceptos distintos. El criterio de certificación V2-R es que cualquier intento de usar un recurso MCP sea rechazado por el host. La mera aparición del nombre de la tool no constituye permiso.
+
