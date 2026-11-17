@@ -179,6 +179,13 @@ function Global-Assets {
     Source=(Join-Path $root 'registry/vx-agent-registry-v4.json');
     Target=(Join-Path $kiloDir 'harness/vx-agent-registry-v4.json')
   }
+  # Dev Team V1: metadatos activos del equipo y su politica MCP; no reescriben kilo.jsonc.
+  foreach ($name in @('vx-dev-team-v1.json','vx-dev-team-mcp-matrix-v1.json')) {
+    $assets += [pscustomobject]@{
+      Source=(Join-Path (Join-Path $root 'registry') $name);
+      Target=(Join-Path (Join-Path $kiloDir 'harness') $name)
+    }
+  }
   # Matriz DAG y router de skills: únicamente metadatos, sin cambios MCP ni permisos.
   $assets += [pscustomobject]@{
     Source=(Join-Path $root 'registry/vx-skill-dependencies-v1.json');
