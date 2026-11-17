@@ -182,10 +182,8 @@ function Assert-AgentSources {
 function Show-State {
   $legacy = @(Get-LegacyItems)
   $installed = @()
-  if (Test-Path -LiteralPath $agentDir) {
-    $installed = @(Get-ChildItem -LiteralPath $agentDir -Filter 'vx-dev-*.md' -File -ErrorAction SilentlyContinue |
-      Select-Object -ExpandProperty Name)
-    if (Test-Path -LiteralPath (Join-Path $agentDir 'vx-dev-team.md')) { $installed += 'vx-dev-team.md' }
+  foreach ($name in $approvedAgents.Keys) {
+    if (Test-Path -LiteralPath (Join-Path $agentDir $name) -PathType Leaf) { $installed += $name }
   }
   Write-Host "=== DEV TEAM V2-R | $Modo ===" -ForegroundColor Cyan
   Write-Host "HOME: $homeRoot"
