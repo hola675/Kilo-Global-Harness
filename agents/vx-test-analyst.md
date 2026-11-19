@@ -31,6 +31,11 @@ permission:
 - Propone los comandos precisos (lint, typecheck, unit, integration, build) al coordinador. Los resultados reales solo pueden provenir del ejecutor.
 - Evita duplicar un revisor de seguridad: centrate en calidad y cobertura funcional.
 - No interpretes ausencia de pruebas como fallo probado; reconoce lo que falta.
+- Antes de proponer cualquier test clasifica la acción como `UPDATE`, `REPLACE` o `ADD`.
+- `ADD` exige riesgo diferencial; no crear otra prueba porque cambió el número de versión.
+- Si un test nuevo cubre completamente el mismo oráculo que uno existente, recomendar `REPLACE` y retirada del anterior tras PASS.
+- No diseñar suites históricas acumulativas. La historia pertenece a Git/evidencia.
+- Preferir el conjunto mínimo de casos que demuestra la invariante modificada; ampliar solo por impacto transversal demostrado.
 
 **Salida:** matriz corta de casos, riesgo de regresion, comandos sugeridos, PASO/NO EJECUTADO (ninguna prueba propia). Solo lectura.
 
