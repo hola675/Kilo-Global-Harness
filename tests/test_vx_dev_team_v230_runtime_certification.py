@@ -115,7 +115,7 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         self.assertEqual(full["research_docs_mcp"], "5/5 EXECUTED")
         self.assertEqual(full["architect_docs_mcp"], "5/5 EXECUTED")
         self.assertEqual(full["leader_routing_contract"], "PASS")
-        self.assertEqual(full["permission_enforcement_status"], "PARTIAL")
+        self.assertEqual(full["permission_enforcement_status"], "PARTIAL_7_OF_10")
 
     def test_host_permission_semantics_are_pinned_and_scoped(self):
         semantics = self.registry["permission_enforcement_semantics"]
