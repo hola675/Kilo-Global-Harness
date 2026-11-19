@@ -31,9 +31,9 @@ Este pack es **independiente del instalador general del Harness**. `scripts/Inst
 
 El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su token desde el keyring de `gh` únicamente en memoria del proceso. “Connected” acredita handshake MCP; las capacidades funcionales se documentan separadamente según las pruebas realmente realizadas.
 
-## vx-dev-team — source 2.3.0 + evidencia runtime V2-R.2
+## vx-dev-team — Dev Team 2.3.0 runtime certified
 
-El diseño mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`. La evidencia runtime aprobada V2-R.2 es histórica. La baseline 2.3.0 ya fue sincronizada 11/11 y cargada tras reinicio fresco en Kilo Desktop, pero su certificación runtime completa sigue **PARTIAL**.
+El diseño mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`. La evidencia V2-R.2 se conserva como histórica. La baseline **2.3.0** está sincronizada 11/11, cargada tras reinicio fresco en Kilo Desktop y **certificada en runtime** para sus 10 especialistas.
 
 Detrás del líder existen diez especialistas `mode: subagent` y `hidden: true`:
 
@@ -54,7 +54,7 @@ El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas si
 
 La evolución del equipo se hace por responsabilidades estables, no por cantidad de agentes. `vx-dev-backend` y `vx-dev-data` sustituyen al antiguo `vx-dev-backend-data`; `vx-dev-platform` y `vx-dev-reviewer` ya forman parte del source y de la ACL del líder. Ninguno de los especialistas nuevos hereda automáticamente certificación runtime histórica.
 
-GitHub no despliega automáticamente estas definiciones al runtime de Kilo Desktop. Para la baseline 2.3.0 el operador ya completó sync en disco, backup, verificación 11/11 y reinicio fresco; aún faltan cerrar contratos y enforcement efectivo de permisos.
+GitHub no despliega automáticamente estas definiciones al runtime de Kilo Desktop. Para la baseline 2.3.0 el operador completó sync en disco, backup, verificación 11/11, reinicio fresco y certificación runtime completa. Cualquier cambio futuro en agentes, permisos o semántica del host requiere recertificación explícita.
 
 Los MCP globales siguen siendo infraestructura independiente y deny-by-default para el equipo. `vx-dev-research` y `vx-dev-architect` tienen únicamente cinco tools documentales explícitas de Context7/Microsoft Learn cada uno; cualquier otra tool MCP requiere allowlist específica y certificación separada.
 
@@ -70,7 +70,7 @@ Los MCP globales siguen siendo infraestructura independiente y deny-by-default p
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al supersedido `vx-dev-backend-data`. La baseline source **2.3.0** contiene **10 especialistas** y ya fue sincronizada/cargada en Kilo Desktop. Los 10 especialistas tienen delegación, herramientas positivas y contratos de rol cerrados; Research y Architect además completaron sus MCP documentales 5/5, y el routing del líder quedó PASS. La certificación global sigue PARTIAL únicamente por el gate de enforcement efectivo de permisos. El estado actual es **7/10 PASS**: Backend, Data, Platform, Reviewer, Explorer, Frontend y Research están cerrados; Quality, Security y Architect requieren una última observación de superficie efectiva.
+**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al supersedido `vx-dev-backend-data`. La baseline **2.3.0** está certificada sobre las identidades actuales: delegación **10/10 PASS**, contratos de rol **10/10 PASS**, permission enforcement **10/10 PASS**, Research MCP **5/5 PASS**, Architect MCP **5/5 PASS**, routing del líder **PASS**, source/runtime **11/11 MATCH**, `kilo.jsonc` preservado y **0 mutaciones** durante la campaña.
 
 
 ## Principios
@@ -352,6 +352,7 @@ Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**,
 
 ## Changelog
 
+- **Dev Team 2.3.0 runtime certified · 2026-11-19:** 10/10 especialistas actuales certificados en Kilo Desktop Windows; 11/11 source/runtime MATCH, contratos 10/10, permission enforcement 10/10, Research/Architect MCP 5/5, routing PASS, configuración preservada y cero mutaciones durante la certificación.
 - **V2-R.2 certificación · 2026-11-17:** 7/7 especialistas runtime certificados mediante evidencia del operador; glob/grep disponibles, LSP opcional, read/mutación/shell/task/skill/MCP ausentes. Próxima fase: diseño MCP read-only tool-by-tool, sin activación todavía.
 
 - **Dev Team V1 · 2026-11-17:** nuevo agente primario `vx-dev-team` visible como `vx-dev-team`, color propio, 13 agentes VX/31 skills, delegación a especialistas y política MCP conservadora (`Context7`/`Microsoft Learn` allow; resto ask). No modifica `kilo.jsonc` ni los 13 MCP; smoke visual en Desktop pendiente tras instalación/reload.
