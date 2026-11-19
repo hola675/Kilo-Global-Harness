@@ -36,6 +36,12 @@
       "reason": "Current registry 4.2.0/global-only/rollback behavior."
     },
     {
+      "name": "VX Pack - certificacion viva del contrato actual",
+      "class": "CURRENT",
+      "kind": "pack",
+      "reason": "Canonical current Pack VX certification manifest/runner."
+    },
+    {
       "name": "VX Pack 0.3 - doctor, MCP pasivos y 13 agentes 31 skills",
       "class": "CURRENT",
       "kind": "pack",
