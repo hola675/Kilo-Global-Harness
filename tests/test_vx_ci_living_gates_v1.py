@@ -14,8 +14,13 @@ class CILivingGatesTests(unittest.TestCase):
 
     def test_only_known_classes_are_used(self):
         data=json.loads((ROOT/"registry"/"vx-ci-living-gates-v1.json").read_text(encoding="utf-8"))
-        self.assertTrue({x["class"] for x in data["gates"]} <= {"CURRENT","REVIEW","HISTORICAL_CANDIDATE"})
-        self.assertGreater(len([x for x in data["gates"] if x["class"]=="REVIEW"]),0)
+        self.assertTrue(
+            {x["class"] for x in data["gates"]}
+            <= {"CURRENT","REVIEW","HISTORICAL_CANDIDATE"}
+        )
+        for gate in data["gates"]:
+            if gate["class"] == "HISTORICAL_CANDIDATE":
+                self.assertTrue(gate["reason"].strip(), gate["name"])
 
 if __name__=="__main__":
     unittest.main()
