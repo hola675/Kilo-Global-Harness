@@ -25,3 +25,8 @@ metadata:
 
 ## Salida
 `INVARIANTS`, `TEST_MATRIX`, `TEST_ORACLES`, `REGRESSION_SURFACE`, `ACCEPTANCE_GAPS`, `VERIFICATION_PLAN`, `EXECUTION_EVIDENCE`.
+
+## Integración de evidencia/MCP
+- MCP puede aportar evidencia existente (CI, browser, logs, source remoto), pero esta skill no convierte esa evidencia en PASS sin ejecución identificable.
+- Usar GitHub/Playwright/Sentry solo cuando cubran el oráculo del caso propuesto y estén autorizados.
+- Registrar `NO_EJECUTADO` cuando solo exista diseño de prueba.
