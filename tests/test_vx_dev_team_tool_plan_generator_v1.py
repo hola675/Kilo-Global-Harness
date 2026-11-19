@@ -10,7 +10,9 @@ class ToolPlanGeneratorV1Tests(unittest.TestCase):
         self.assertIn("NO_AUTO_APPLY",text)
         self.assertIn("review_unexpected",text)
         self.assertNotIn("Set-Acl",text)
-        self.assertNotIn("kilo.jsonc",text)
+        self.assertIn("No cambia ACL ni kilo.jsonc.",text)
+        self.assertNotIn("Set-Content -LiteralPath $HOME",text)
+        self.assertNotIn("Add-Content",text)
         self.assertNotIn("Remove-Item",text)
 
     def test_doc_warns_against_auto_apply(self):
