@@ -163,7 +163,16 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         for agent, path in sources.items():
             content = path.read_text(encoding="utf-8")
             self.assertRegex(content, r"(?m)^\s{2}skill:\s*$")
-            self.assertRegex(content, r'(?m)^\s{4}"\*":\s*deny\s*
+            self.assertRegex(content, r'(?m)^\s{4}"\*":\s*deny\s*$')
+            allowed = set(
+                re.findall(r'(?m)^\s{4}"(vx-dev-[^"]+)":\s*allow\s*$', content)
+            )
+            self.assertEqual(
+                allowed,
+                EXPECTED_PERMISSIONS[agent],
+                f"{agent} must expose only its exact approved skill allowlist",
+            )
+
     def test_skill_pack_never_grants_non_skill_permissions(self):
         invariants = "\n".join(self.proposal["permission_matrix"]["invariants"])
         self.assertIn(
@@ -223,153 +232,6 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertIn("approved_skills=@($approvedSkills.Keys)", installer)
         self.assertIn("$skillDir", installer)
         self.assertIn("Assert-SkillSources", installer)
-
-    def test_research_basis_contains_primary_sources_and_originality_rule(self):
-        research = self.proposal["research_basis"]
-        self.assertEqual(research["status"], "COMPLETED_SOURCE_SYNTHESIS")
-        self.assertGreaterEqual(len(research["primary_sources"]), 10)
-        design = self.proposal["dev_team_pack"]["design"]
-        self.assertIn("Original VX Dev skills", design)
-        self.assertIn("no copied external skill bodies", design)
-
-
-if __name__ == "__main__":
-    unittest.main()
-)
-            allowed = set(
-                re.findall(r'(?m)^\s{4}"(vx-dev-[^"]+)":\s*allow\s*
-    def test_skill_pack_never_grants_non_skill_permissions(self):
-        invariants = "\n".join(self.proposal["permission_matrix"]["invariants"])
-        self.assertIn(
-            "A skill cannot grant read/edit/write/bash/task/MCP permissions.",
-            invariants,
-        )
-        self.assertIn(
-            "Research/Architect keep their existing five documentation MCP tools",
-            invariants,
-        )
-        self.assertIn("Children remain depth=1", invariants)
-
-    def test_trigger_evals_cover_every_skill_with_positive_and_negative_cases(self):
-        self.assertEqual(self.evals["status"], "DESIGNED_NOT_EXECUTED")
-        evals_by_skill = {item["skill"]: item for item in self.evals["skills"]}
-        declared = {
-            item["id"] for item in self.proposal["dev_team_pack"]["skills"]
-        }
-        self.assertEqual(set(evals_by_skill), declared)
-        for skill, item in evals_by_skill.items():
-            with self.subTest(skill=skill):
-                self.assertGreaterEqual(len(item["should_trigger"]), 2)
-                self.assertGreaterEqual(len(item["should_not_trigger"]), 2)
-                self.assertTrue(all(text.strip() for text in item["should_trigger"]))
-                self.assertTrue(all(text.strip() for text in item["should_not_trigger"]))
-
-    def test_activation_requires_full_runtime_recertification(self):
-        phase = self.proposal["activation_plan"]["phase_1"]
-        self.assertEqual(phase["status"], "PENDING_EXPLICIT_APPROVAL")
-        self.assertEqual(phase["certification_scope"], "FULL_DEV_TEAM_RUNTIME")
-        self.assertIn(
-            "shared pool",
-            phase["reason_for_full_recertification"],
-        )
-        gates = "\n".join(phase["gates"])
-        self.assertIn("18/18 source-runtime skill hashes", gates)
-        self.assertIn("Role contracts 10/10 remain PASS", gates)
-        self.assertIn("Permission enforcement 10/10 remains PASS", gates)
-        self.assertIn("Research/Architect MCP 5/5 surfaces unchanged", gates)
-
-    def test_installer_strategy_is_explicit_but_not_implemented_yet(self):
-        strategy = self.proposal["installer_strategy"]
-        self.assertEqual(strategy["managed_runtime_root"], "~/.kilo/skills")
-        self.assertEqual(strategy["source_root"], "runtime/dev-team-v2r/skills")
-        self.assertIn("exactly the 18 Dev Team skills", strategy["target_behavior"])
-        self.assertIn("explicit -Modo Aplicar", strategy["install_requires"])
-
-        installer = INSTALLER.read_text(encoding="utf-8")
-        self.assertIn(".kilo/skills", installer)
-        self.assertIn(".agents/skills", installer)
-        self.assertIn(".kilocode/skills", installer)
-        self.assertIn("-Filter 'vx-*'", installer)
-
-        # Phase 0 safety: installer still has the certified pre-skills behavior.
-        self.assertRegex(installer, r"(?m)^\s*'\(\?m\)\^\\s\{2\}skill:\\s\*deny")
-        self.assertNotIn("runtime/dev-team-v2r/skills", installer)
-
-    def test_research_basis_contains_primary_sources_and_originality_rule(self):
-        research = self.proposal["research_basis"]
-        self.assertEqual(research["status"], "COMPLETED_SOURCE_SYNTHESIS")
-        self.assertGreaterEqual(len(research["primary_sources"]), 10)
-        design = self.proposal["dev_team_pack"]["design"]
-        self.assertIn("Original VX Dev skills", design)
-        self.assertIn("no copied external skill bodies", design)
-
-
-if __name__ == "__main__":
-    unittest.main()
-, content)
-            )
-            self.assertEqual(
-                allowed,
-                EXPECTED_PERMISSIONS[agent],
-                f"{agent} must expose only its exact approved skill allowlist",
-            )
-
-    def test_skill_pack_never_grants_non_skill_permissions(self):
-        invariants = "\n".join(self.proposal["permission_matrix"]["invariants"])
-        self.assertIn(
-            "A skill cannot grant read/edit/write/bash/task/MCP permissions.",
-            invariants,
-        )
-        self.assertIn(
-            "Research/Architect keep their existing five documentation MCP tools",
-            invariants,
-        )
-        self.assertIn("Children remain depth=1", invariants)
-
-    def test_trigger_evals_cover_every_skill_with_positive_and_negative_cases(self):
-        self.assertEqual(self.evals["status"], "DESIGNED_NOT_EXECUTED")
-        evals_by_skill = {item["skill"]: item for item in self.evals["skills"]}
-        declared = {
-            item["id"] for item in self.proposal["dev_team_pack"]["skills"]
-        }
-        self.assertEqual(set(evals_by_skill), declared)
-        for skill, item in evals_by_skill.items():
-            with self.subTest(skill=skill):
-                self.assertGreaterEqual(len(item["should_trigger"]), 2)
-                self.assertGreaterEqual(len(item["should_not_trigger"]), 2)
-                self.assertTrue(all(text.strip() for text in item["should_trigger"]))
-                self.assertTrue(all(text.strip() for text in item["should_not_trigger"]))
-
-    def test_activation_requires_full_runtime_recertification(self):
-        phase = self.proposal["activation_plan"]["phase_1"]
-        self.assertEqual(phase["status"], "PENDING_EXPLICIT_APPROVAL")
-        self.assertEqual(phase["certification_scope"], "FULL_DEV_TEAM_RUNTIME")
-        self.assertIn(
-            "shared pool",
-            phase["reason_for_full_recertification"],
-        )
-        gates = "\n".join(phase["gates"])
-        self.assertIn("18/18 source-runtime skill hashes", gates)
-        self.assertIn("Role contracts 10/10 remain PASS", gates)
-        self.assertIn("Permission enforcement 10/10 remains PASS", gates)
-        self.assertIn("Research/Architect MCP 5/5 surfaces unchanged", gates)
-
-    def test_installer_strategy_is_explicit_but_not_implemented_yet(self):
-        strategy = self.proposal["installer_strategy"]
-        self.assertEqual(strategy["managed_runtime_root"], "~/.kilo/skills")
-        self.assertEqual(strategy["source_root"], "runtime/dev-team-v2r/skills")
-        self.assertIn("exactly the 18 Dev Team skills", strategy["target_behavior"])
-        self.assertIn("explicit -Modo Aplicar", strategy["install_requires"])
-
-        installer = INSTALLER.read_text(encoding="utf-8")
-        self.assertIn(".kilo/skills", installer)
-        self.assertIn(".agents/skills", installer)
-        self.assertIn(".kilocode/skills", installer)
-        self.assertIn("-Filter 'vx-*'", installer)
-
-        # Phase 0 safety: installer still has the certified pre-skills behavior.
-        self.assertRegex(installer, r"(?m)^\s*'\(\?m\)\^\\s\{2\}skill:\\s\*deny")
-        self.assertNotIn("runtime/dev-team-v2r/skills", installer)
 
     def test_research_basis_contains_primary_sources_and_originality_rule(self):
         research = self.proposal["research_basis"]
