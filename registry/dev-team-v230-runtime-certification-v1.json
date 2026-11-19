@@ -450,7 +450,7 @@
       "note": "New specialist contracts closed 4/4; full 2.3.0 runtime certification remains pending for six specialists and Research/Architect MCP allowlists."
     },
     "remaining_six": {
-      "status": "PENDING",
+      "status": "PASS",
       "specialists": [
         "vx-dev-explorer",
         "vx-dev-frontend",
@@ -459,10 +459,29 @@
         "vx-dev-research",
         "vx-dev-architect"
       ],
-      "role_contracts": "0/6 PASS",
-      "research_docs_mcp": "0/5 EXECUTED",
-      "architect_docs_mcp": "0/5 EXECUTED",
-      "leader_routing_contract": "PENDING"
+      "delegation": "6/6 PASS",
+      "positive_tools": "6/6 PASS",
+      "role_contracts": "6/6 PASS",
+      "tool_surface_isolation": "0/6 OBSERVED",
+      "permission_deny_enforcement": "0/6 PROVEN",
+      "research_docs_mcp": "5/5 EXECUTED",
+      "architect_docs_mcp": "5/5 EXECUTED",
+      "leader_routing_contract": "PASS",
+      "note": "Role/MCP/routing gates closed from operator runtime evidence. Negative-tool surface was not explicitly inventoried for these six."
+    },
+    "full_team": {
+      "role_contracts": "10/10 PASS",
+      "delegation": "10/10 PASS",
+      "positive_tools": "10/10 PASS",
+      "research_docs_mcp": "5/5 EXECUTED",
+      "architect_docs_mcp": "5/5 EXECUTED",
+      "leader_routing_contract": "PASS",
+      "disk_verify": "PASS",
+      "config_integrity": "PASS",
+      "git_worktree_clean": "YES",
+      "runtime_mutations": "NO",
+      "permission_enforcement_status": "PARTIAL",
+      "note": "Functional/runtime contracts are closed. Permission enforcement remains partial only because explicit tool-surface evidence exists for 4/10 specialists."
     }
   },
   "pass_criteria": {
@@ -483,6 +502,32 @@
       "La ausencia de LSP no bloquea.",
       "El routing final del líder respeta selección mínima por incertidumbre."
     ],
-    "runtime_baseline_recording": "La baseline completa 2.3.0 no se marca runtime-certified hasta cerrar además los seis especialistas restantes, Research/Architect MCP 5/5 y routing del líder."
+    "runtime_baseline_recording": "La baseline completa 2.3.0 no se marca runtime-certified hasta cerrar además los seis especialistas restantes, Research/Architect MCP 5/5 y routing del líder.",
+    "permission_enforcement": [
+      "For scalar deny rules, NOT_VISIBLE may count as enforcement because Kilo documents deny as disabling/blocking the tool and current host implementation removes disabled tools from the visible catalog.",
+      "Each specialist still needs runtime evidence that the denied tool surface is actually absent (or equivalent session evidence) before permission enforcement is marked PASS for that specialist.",
+      "No destructive/mutating negative invocation is required."
+    ]
+  },
+  "permission_enforcement_semantics": {
+    "status": "HOST_SEMANTICS_VERIFIED",
+    "checked_against": "Kilo-Org/kilocode",
+    "source_revision": "fc6a4749e6c88edf9093d3dac351a0bc10d7e564",
+    "official_docs": [
+      "packages/kilo-docs/pages/customize/custom-subagents.md",
+      "packages/kilo-docs/pages/customize/agent-permissions.md"
+    ],
+    "implementation": [
+      "packages/opencode/src/permission/index.ts",
+      "packages/opencode/test/kilocode/task-nesting.test.ts"
+    ],
+    "facts": [
+      "Official docs define deny as disabling/blocking the tool entirely.",
+      "Permission.disabled treats a scalar '*' deny as disabled.",
+      "Permission.visibleTools removes disabled tool definitions from the visible catalog.",
+      "Official task-nesting tests assert child tools.task is false when task is denied.",
+      "Therefore NOT_VISIBLE is valid enforcement evidence when the effective scalar deny rule is known to be loaded for that child."
+    ],
+    "limitation": "Do not promote a specialist on host semantics alone unless its effective tool surface was observed in runtime or equivalent session evidence proves the deny rule was loaded."
   }
 }
