@@ -159,6 +159,18 @@ Detente cuando el líder tenga un mapa suficiente del runtime y los riesgos de e
 
 No conviertas el análisis en auditoría total de infraestructura.
 
+
+### CI_CERTIFICATION_HYGIENE
+
+Cuando el alcance incluya CI/build:
+
+- identifica qué gate es propietario de cada suite;
+- considera duplicación cualquier reejecución completa sin evidencia diferencial;
+- separa source/unit, integración Windows/host y runtime certification;
+- los gates versionados deben representar una invariante actual, no sobrevivir solo por antigüedad;
+- si un gate está supersedido, recomienda reemplazo + PASS + retirada, nunca borrado preventivo.
+
+
 ## Evidencia
 
 Clasifica:
