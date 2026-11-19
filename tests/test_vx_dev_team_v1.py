@@ -18,6 +18,7 @@ CHILDREN = (
     "vx-dev-backend",
     "vx-dev-data",
     "vx-dev-platform",
+    "vx-dev-reviewer",
     "vx-dev-quality",
     "vx-dev-security",
     "vx-dev-research",
@@ -46,7 +47,7 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertRegex(front, r"(?m)^  board_read:\s*deny\s*$")
         self.assertRegex(front, r"(?m)^  board_post:\s*deny\s*$")
 
-    def test_leader_allowlists_exactly_nine_children(self):
+    def test_leader_allowlists_exactly_ten_children(self):
         front = frontmatter(LEADER)
         self.assertRegex(front, r"(?m)^  task:\s*$")
         self.assertRegex(front, r'(?m)^    "\*":\s*deny\s*$')
@@ -79,7 +80,7 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertEqual(baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING")
         self.assertEqual(baseline["primary"]["id"], "vx-dev-team")
         self.assertTrue(baseline["primary"]["visible"])
-        self.assertEqual(len(baseline["subagents"]), 9)
+        self.assertEqual(len(baseline["subagents"]), 10)
         self.assertTrue(all(x["hidden"] for x in baseline["subagents"]))
         self.assertTrue(all(x["read_only"] for x in baseline["subagents"]))
         self.assertEqual(baseline["orchestration"]["depth"], 1)
@@ -88,7 +89,7 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertEqual(baseline["child_permissions"]["required"], ["glob", "grep"])
         self.assertEqual(baseline["child_permissions"]["optional"], ["lsp"])
 
-    def test_installer_preserves_mcp_config_and_manages_ten_agent_files(self):
+    def test_installer_preserves_mcp_config_and_manages_eleven_agent_files(self):
         source = INSTALLER.read_text(encoding="utf-8")
         self.assertIn("Dev Team V2-R", source)
         self.assertIn("approvedAgents", source)
@@ -96,6 +97,7 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertIn("vx-dev-backend.md", source)
         self.assertIn("vx-dev-data.md", source)
         self.assertIn("vx-dev-platform.md", source)
+        self.assertIn("vx-dev-reviewer.md", source)
         self.assertNotIn("'vx-dev-backend-data.md' =", source)
         self.assertIn("vx-dev-research.md", source)
         self.assertIn("kilo.jsonc y configuracion MCP preservados", source)
