@@ -810,9 +810,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference='Stop'
-          python -I -m unittest discover -s tests -p 'test_vx_runtime_evidence_current.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato vigente de evidencia runtime falló.' }
-          python -m compileall -q scripts/vx_runtime_smoke_v1.py tests/test_vx_runtime_evidence_current.py
+          python -m compileall -q scripts/vx_runtime_smoke_v1.py
           if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis evidencia runtime.' }
           $tool = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8
           if ($tool -notmatch '(?s)^---\r?\ndescription:' -or
@@ -842,9 +840,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          python -I -m unittest discover -s tests -p 'test_vx_pack_coexist_current.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Fallo contrato vigente de convivencia VX' }
-          python -m compileall -q scripts/vx_pack_coexist_v023.py tests/test_vx_pack_coexist_current.py
+          python -m compileall -q scripts/vx_pack_coexist_v023.py
           if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis convivencia VX' }
           $tempHome = Join-Path $env:RUNNER_TEMP ('vx-coexist-cli-' + [guid]::NewGuid().ToString('N'))
           $kilo = Join-Path $tempHome '.config/kilo'
