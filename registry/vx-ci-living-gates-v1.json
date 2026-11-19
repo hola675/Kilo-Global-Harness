@@ -120,10 +120,16 @@
       "reason": "Potentially current behavior; must map to active invariant."
     },
     {
-      "name": "V4.3 - probar VX Evolution Core sin HOME real",
-      "class": "REVIEW",
+      "name": "VX Evolution - certificacion viva de contratos source",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Synthetic core test may remain useful; consolidate by current behavior."
+      "reason": "Canonical source-unit certification for current VX Evolution contracts."
+    },
+    {
+      "name": "VX Evolution Core - sintaxis source vigente",
+      "class": "CURRENT",
+      "kind": "evolution",
+      "reason": "Syntax-only source guard; behavioral tests owned by Evolution current manifest."
     },
     {
       "name": "V4.3 - instalar código global sin inicializar ni borrar datos",
@@ -174,34 +180,34 @@
       "reason": "Roadmap validation should not duplicate current behavioral tests."
     },
     {
-      "name": "V4.6.0 - auditoria global Kilo sin efectos en Windows",
-      "class": "REVIEW",
+      "name": "VX Capability Audit - smoke Windows sin efectos",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Behavior may remain current; version-labelled gate candidate for consolidation."
+      "reason": "Current focused contract/integration gate; source unit coverage owned by Evolution manifest."
     },
     {
-      "name": "V4.6.1 - matriz y evidencias Kilo sin escritura ni autoevaluacion",
-      "class": "REVIEW",
+      "name": "VX Competency Matrix - smoke Windows read-only",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Current safety concept, but may overlap newer organizational audit."
+      "reason": "Current focused contract/integration gate; source unit coverage owned by Evolution manifest."
     },
     {
-      "name": "V4.6.2 - cinco ensayos sintéticos sin ejecución de agentes ni cambios",
-      "class": "REVIEW",
+      "name": "VX Competency Trials - smoke Windows sin ejecución",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Synthetic trial contract; review whether still distinct."
+      "reason": "Current focused contract/integration gate; source unit coverage owned by Evolution manifest."
     },
     {
-      "name": "V4.7.0 - contrato SemVer y dry-run sin publicación",
-      "class": "REVIEW",
+      "name": "VX Publish Preview - contrato source vigente",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Source-only preview contract; likely distinct but can be renamed/currentized."
+      "reason": "Current focused contract/integration gate; source unit coverage owned by Evolution manifest."
     },
     {
-      "name": "V4.7.1 - solicitud de aprobación estructural sin autorización",
-      "class": "REVIEW",
+      "name": "VX Approval Contract - estructura sin autorización",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Approval invariant may be covered by V4.7.2."
+      "reason": "Current focused contract/integration gate; source unit coverage owned by Evolution manifest."
     },
     {
       "name": "VX P2.1 - modo de builder y aprobacion manual sin elevar permisos",
@@ -240,16 +246,16 @@
       "reason": "Integration meta-test risks duplicating lower-level invariants; review after current manifests stabilize."
     },
     {
-      "name": "V4.7.2 - contratos de seguridad aislados y aprobaciones deshabilitadas",
+      "name": "VX Approval Security - diseño aislado sin aprobación",
       "class": "CURRENT",
       "kind": "security",
-      "reason": "Latest approval-security invariant."
+      "reason": "Current focused contract/integration gate; source unit coverage owned by Evolution manifest."
     },
     {
-      "name": "V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura",
+      "name": "VX Organizational Audit - smoke Windows read-only",
       "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Latest organizational audit/read-only invariant."
+      "reason": "Current focused contract/integration gate; source unit coverage owned by Evolution manifest."
     }
   ],
   "rules": {
