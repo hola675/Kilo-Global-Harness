@@ -69,10 +69,11 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
             actual = set(by_specialist[specialist]["required_sections"])
             self.assertEqual(actual, expected, specialist)
 
-    def test_evidence_model_does_not_conflate_visibility_with_permission_enforcement(self):
+    def test_evidence_model_scopes_visibility_based_permission_enforcement(self):
         model = self.registry["evidence_model"]
         self.assertIn("NOT_VISIBLE", model["tool_surface_isolation"])
-        self.assertIn("no se convierte", model["permission_deny_enforcement"])
+        self.assertIn("effective tool surface", model["permission_deny_enforcement"])
+        self.assertIn("verified Kilo host semantics", model["permission_deny_enforcement"])
         observed = self.registry["observed_runtime"]["new_specialists"]
         self.assertEqual(len(observed), 4)
         for item in observed:
