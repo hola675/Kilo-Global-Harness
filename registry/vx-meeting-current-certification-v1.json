@@ -1,0 +1,21 @@
+{
+  "schema": "vx-meeting-current-certification/1",
+  "version": "1.0.0",
+  "status": "CURRENT_REPLACEMENT_PENDING_PASS",
+  "current_policy": "config/vx-reunion-policy.v1.json",
+  "active_replacement": "test_vx_meeting_current_contract.py",
+  "superseded_candidates": [
+    {
+      "test": "test_vx_meeting_v45.py",
+      "status": "REMOVE_AFTER_REPLACEMENT_PASS"
+    },
+    {
+      "test": "test_vx_joint_meeting_v451.py",
+      "status": "REMOVE_AFTER_REPLACEMENT_PASS"
+    }
+  ],
+  "retained_cross_domain_tests": [
+    "test_vx_observer_light.py",
+    "test_vx_evolution_core.py"
+  ]
+}
