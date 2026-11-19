@@ -77,7 +77,7 @@ class DevTeamV2RTests(unittest.TestCase):
 
     def test_baseline_declares_one_visible_leader_and_readonly_children(self):
         baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
-        self.assertEqual(baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING")
+        self.assertEqual(baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_CERTIFIED")
         self.assertEqual(baseline["primary"]["id"], "vx-dev-team")
         self.assertTrue(baseline["primary"]["visible"])
         self.assertEqual(len(baseline["subagents"]), 10)
