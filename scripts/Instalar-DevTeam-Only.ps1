@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  Instala Dev Team V2-R: un lider visible y ocho subagentes ocultos read-only.
+  Instala Dev Team V2-R: un lider visible y nueve subagentes ocultos read-only.
 .DESCRIPTION
   Retira runtime VX legacy, instala unicamente el runtime aprobado V2-R y crea
   backup reversible. NO modifica kilo.jsonc, MCP, modelos, AutoApprove, agentes
@@ -43,6 +43,7 @@ $approvedAgents = [ordered]@{
   'vx-dev-frontend.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-frontend.md')
   'vx-dev-backend.md'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-backend.md')
   'vx-dev-data.md'         = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-data.md')
+  'vx-dev-platform.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-platform.md')
   'vx-dev-quality.md'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-quality.md')
   'vx-dev-security.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-security.md')
   'vx-dev-research.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-research.md')
