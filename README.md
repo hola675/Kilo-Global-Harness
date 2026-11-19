@@ -42,7 +42,7 @@ Detrás del líder existen ocho especialistas `mode: subagent` y `hidden: true`:
 - `vx-dev-frontend` — UI flows, component/state model, interaction states, accessibility/responsive y API touchpoints
 - `vx-dev-backend` — APIs, servicios, dominio, auth de aplicación e integraciones
 - `vx-dev-data` — schemas, persistencia, queries, constraints, índices y migraciones
-- `vx-dev-quality`
+- `vx-dev-quality` — invariants, test matrix, oracles, regression surface y verification plan
 - `vx-dev-security`
 - `vx-dev-research` — investigación técnica con `SOURCE_LEDGER`, `CONTRADICTIONS` y allowlist documental Context7/Microsoft Learn
 
