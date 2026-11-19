@@ -11,6 +11,18 @@ description: "Usar cuando se solicita implementar pruebas automatizadas VX de un
 
 Identificar el framework de tests y sus dependencias ya presentes. Recibir alcance de cambios, rutas permitidas, línea base, escenario, oráculos verificables y restricciones. Evitar tests contra producción, bases de datos reales, endpoints que incurran en cargos o credenciales.
 
+## Certificación viva
+
+Antes de escribir o proponer un test:
+
+1. Identificar la invariante actual.
+2. Clasificar la acción como `UPDATE`, `REPLACE` o `ADD`.
+3. `ADD` solo cuando exista riesgo diferencial.
+4. Si `REPLACE`, mantener temporalmente el test anterior únicamente hasta obtener PASS real del reemplazo.
+5. Tras PASS, retirar el supersedido del CI activo si el alcance autorizado lo permite.
+6. No crear suites nuevas solo porque cambió la versión del componente.
+7. La historia queda en Git/PR/registry, no en tests activos duplicados.
+
 ## Casos mínimos por cambio
 
 - **Positivos:** resultado esperado para entrada permitida.
