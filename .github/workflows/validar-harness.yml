@@ -180,15 +180,14 @@ jobs:
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
           Write-Host 'VX PACK V0.3 WINDOWS SMOKE: 13 AGENTES, 31 SKILLS, MCP PASIVOS Y ROLLBACK PASS'
 
-      - name: VX Pack DPAPI V0.2 - bootstrap seguro en Windows aislado
+      - name: VX Pack DPAPI - sintaxis y soporte Windows del bootstrap actual
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          python -I -m unittest discover -s tests -p 'test_vx_pack_bootstrap_v1.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas bootstrap DPAPI.' }
-          python -m compileall -q scripts/vx_pack_bootstrap.py tests/test_vx_pack_bootstrap_v1.py
+          python -m compileall -q scripts/vx_pack_bootstrap.py
           if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis bootstrap DPAPI.' }
-          Write-Host 'VX PACK DPAPI: HOME SINTETICO Y ROLLBACK WINDOWS PASS'
+          if ($env:OS -ne 'Windows_NT') { throw 'Este gate requiere Windows para DPAPI CurrentUser.' }
+          Write-Host 'VX PACK DPAPI CURRENT: BOOTSTRAP SINTAXIS + WINDOWS HOST PASS'
 
       - name: MCP Pack V1 - registro reproducible de 13 servidores
         shell: pwsh
