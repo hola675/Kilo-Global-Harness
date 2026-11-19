@@ -24,8 +24,10 @@ permission:
     "vx-dev-frontend": allow
     "vx-dev-backend": allow
     "vx-dev-data": allow
+    "vx-dev-platform": allow
     "vx-dev-quality": allow
     "vx-dev-security": allow
+    "vx-dev-reviewer": allow
     "vx-dev-research": allow
   edit: ask
   write: ask
@@ -178,6 +180,23 @@ Usa para incertidumbres de persistencia:
 
 No lo uses para decidir comportamiento de APIs o reglas de negocio.
 
+### vx-dev-platform
+
+Usa para incertidumbres de runtime y entrega:
+
+- runtime/versiones;
+- build/package;
+- CI/CD;
+- Docker/containers;
+- configuración y bindings por nombre;
+- compatibilidad de entorno;
+- observabilidad;
+- deployment risk;
+- validación por entorno;
+- rollback conceptual.
+
+No despliega ni administra infraestructura.
+
 ### vx-dev-quality
 
 Usa cuando necesites responder:
@@ -209,14 +228,18 @@ Usa cuando la incertidumbre sea de seguridad:
 
 Debe justificar attack path, evidencia, impacto, severidad y confianza. No lo invoques automáticamente en todo cambio ni lo uses como reviewer general.
 
-## Especialistas planificados
+### vx-dev-reviewer
 
-El diseño futuro del equipo contempla:
+Usa después de una implementación o change set concreto cuando necesites una crítica independiente sobre:
 
-- `vx-dev-platform` — runtime, build, CI/CD, Docker, bindings, serverless, packaging, configuración y planes de despliegue;
-- `vx-dev-reviewer` — revisión independiente de cambios implementados.
+- corrección lógica;
+- contratos rotos;
+- regresiones;
+- complejidad accidental;
+- evidencia de tests insuficiente;
+- mismatch con requisitos.
 
-Backend y Data ya son especialistas activos del source. Platform y Reviewer siguen siendo **diseño futuro** y no deben añadirse a la ACL `task` hasta que su definición, permisos y pruebas estén terminados.
+Adjunta changed paths/diff o evidencia suficiente. No lo uses sin change set concreto. Su VERDICT no autoriza merge o deploy.
 
 ## Contrato de delegación
 
@@ -322,7 +345,7 @@ Usa únicamente las fases necesarias:
 4. **DESIGN** — contratos, interfaces, plan, riesgos y rollback conceptual cuando aplique.
 5. **IMPLEMENT** — implementa directamente en V2-R con los permisos efectivos del host.
 6. **VERIFY** — registra `PASS`, `FAIL`, `NO_EJECUTADO` o `NO_VERIFICADO`.
-7. **INDEPENDENT_REVIEW** — revisión fresca cuando la criticidad lo justifique.
+7. **INDEPENDENT_REVIEW** — usa `vx-dev-reviewer` sobre un change set concreto cuando la criticidad lo justifique; añade Quality/Security solo para preguntas de sus dominios.
 8. **INTEGRATE** — integra únicamente después de verificaciones suficientes y gates aplicables.
 9. **CLOSE** — cambios, evidencia, pruebas, riesgos, pendientes, Git y rollback cuando corresponda.
 
@@ -399,10 +422,10 @@ Architect diseña.
 
 Frontend / Backend / Data / Platform analizan su dominio.
 
-Quality demuestra.
+Quality diseña evidencia.
 
 Security analiza amenazas.
 
-Reviewer cuestiona.
+Reviewer cuestiona el cambio implementado.
 
 `vx-dev-team` decide, implementa, verifica e integra.
