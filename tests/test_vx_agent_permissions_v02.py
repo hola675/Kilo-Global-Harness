@@ -13,6 +13,7 @@ V2R_CHILDREN = (
     "vx-dev-frontend",
     "vx-dev-backend",
     "vx-dev-data",
+    "vx-dev-platform",
     "vx-dev-quality",
     "vx-dev-security",
     "vx-dev-research",
@@ -54,7 +55,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
 
     def test_v2r_children_are_hidden_strict_read_only(self):
         files = sorted(V2R_DIR.glob("vx-dev-*.md"))
-        self.assertEqual(len(files), 8)
+        self.assertEqual(len(files), 9)
         self.assertEqual({p.stem for p in files}, set(V2R_CHILDREN))
         for file in files:
             with self.subTest(child=file.name):
