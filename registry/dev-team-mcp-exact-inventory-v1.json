@@ -17,7 +17,15 @@
     "runtime_exact_ids_required_before_allow": true,
     "unknown_default": "DENY",
     "wildcard": "DENY",
-    "source_candidate_is_not_runtime_visibility": true
+    "source_candidate_is_not_runtime_visibility": true,
+    "candidate_default": "DENY",
+    "disallowed_classes": [
+      "UNKNOWN",
+      "MIXED",
+      "MUTABLE",
+      "DESTRUCTIVE_ADMIN"
+    ],
+    "candidate_tools_are_not_authorized": true
   },
   "servers": {
     "context7": {
