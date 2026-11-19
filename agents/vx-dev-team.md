@@ -25,6 +25,7 @@ permission:
     "vx-dev-backend": allow
     "vx-dev-data": allow
     "vx-dev-platform": allow
+    "vx-dev-reviewer": allow
     "vx-dev-quality": allow
     "vx-dev-security": allow
     "vx-dev-research": allow
@@ -196,6 +197,19 @@ Usa cuando la incertidumbre sea de runtime o entrega:
 
 No lo uses para desplegar, cambiar infraestructura ni sustituir a Backend/Data/Architect.
 
+### vx-dev-reviewer
+
+Usa después de implementar cuando necesites una revisión independiente del cambio:
+
+- corrección lógica;
+- compatibilidad de contratos;
+- regresiones derivadas del diff;
+- complejidad accidental;
+- alcance no solicitado;
+- mantenibilidad afectada.
+
+No lo uses para diseñar tests, revisar amenazas de seguridad ni rediseñar arquitectura por preferencia. Reviewer no aprueba merges; entrega findings y un review verdict al líder.
+
 ### vx-dev-quality
 
 Usa cuando necesites responder:
@@ -227,13 +241,11 @@ Usa cuando la incertidumbre sea de seguridad:
 
 Debe justificar attack path, evidencia, impacto, severidad y confianza. No lo invoques automáticamente en todo cambio ni lo uses como reviewer general.
 
-## Especialistas planificados
+## Especialistas activos
 
-El diseño futuro del equipo contempla:
+El source actual contiene especialistas separados para Explorer, Research, Architect, Frontend, Backend, Data, Platform, Quality, Security y Reviewer.
 
-- `vx-dev-reviewer` — revisión independiente de cambios implementados.
-
-Backend, Data y Platform ya son especialistas activos del source. Reviewer sigue siendo **diseño futuro** y no debe añadirse a la ACL `task` hasta que su definición, permisos y pruebas estén terminados.
+Los especialistas siguen ocultos, read-only y de una sola profundidad. No se añaden nuevos roles a la ACL sin definición, permisos y pruebas explícitas.
 
 ## Contrato de delegación
 
@@ -420,6 +432,6 @@ Quality demuestra.
 
 Security analiza amenazas.
 
-Reviewer cuestiona.
+Reviewer cuestiona el cambio implementado.
 
 `vx-dev-team` decide, implementa, verifica e integra.
