@@ -10,7 +10,8 @@ $approved = @(
   'vx-dev-explorer.md',
   'vx-dev-architect.md',
   'vx-dev-frontend.md',
-  'vx-dev-backend-data.md',
+  'vx-dev-backend.md',
+  'vx-dev-data.md',
   'vx-dev-quality.md',
   'vx-dev-security.md',
   'vx-dev-research.md'
@@ -46,6 +47,7 @@ try {
 
   'OLD DEV TEAM' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-team.md') -Encoding UTF8
   'OLD CHILD' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Encoding UTF8
+  'OLD COMBINED CHILD' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-backend-data.md') -Encoding UTF8
   'LEGACY BACKEND' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-backend-builder.md') -Encoding UTF8
   'LEGACY INTEGRATOR' | Set-Content -LiteralPath (Join-Path $kilo 'agents/vx-integrador.md') -Encoding UTF8
   'THIRD PARTY' | Set-Content -LiteralPath (Join-Path $kilo 'agents/my-agent.md') -Encoding UTF8
@@ -120,6 +122,10 @@ KEEP-AFTER
     if (Test-Path -LiteralPath $path) { throw "No se retiro legacy: $path" }
   }
 
+  if (Test-Path -LiteralPath (Join-Path $kilo 'agents/vx-dev-backend-data.md')) {
+    throw 'No se retiro el subagente combinado supersedido.'
+  }
+
   if (!(Test-Path -LiteralPath (Join-Path $kilo 'agents/my-agent.md'))) {
     throw 'Se elimino agente de terceros.'
   }
@@ -152,6 +158,9 @@ KEEP-AFTER
   if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-explorer.md') -Raw -Encoding UTF8) -notmatch 'OLD CHILD') {
     throw 'Restore no recupero subagente previo.'
   }
+  if ((Get-Content -LiteralPath (Join-Path $kilo 'agents/vx-dev-backend-data.md') -Raw -Encoding UTF8) -notmatch 'OLD COMBINED CHILD') {
+    throw 'Restore no recupero el subagente combinado previo.'
+  }
 
   foreach ($name in $approved | Where-Object { $_ -notin @('vx-dev-team.md','vx-dev-explorer.md') }) {
     if (Test-Path -LiteralPath (Join-Path $kilo ('agents/' + $name))) {
@@ -176,7 +185,7 @@ KEEP-AFTER
     throw 'Restore altero kilo.jsonc.'
   }
 
-  Write-Host 'DEV TEAM V2-R.1: APPLY + VERIFY + HIDDEN NON-MUTATING CHILDREN + NO GENERIC READ + RESTORE PASS' -ForegroundColor Green
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + 8 HIDDEN NON-MUTATING CHILDREN + BACKEND/DATA SPLIT + RESTORE PASS' -ForegroundColor Green
 }
 finally {
   if (Test-Path -LiteralPath $tmp) {
