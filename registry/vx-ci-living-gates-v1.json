@@ -1,0 +1,242 @@
+{
+  "schema": "vx-ci-living-gates/1",
+  "version": "1.0.0",
+  "status": "AUDIT_ACTIVE",
+  "workflow": ".github/workflows/validar-harness.yml",
+  "policy": "registry/dev-team-living-certification-policy-v1.json",
+  "gates": [
+    {
+      "name": "Obtener codigo",
+      "class": "CURRENT",
+      "kind": "setup",
+      "reason": "Required checkout."
+    },
+    {
+      "name": "Python 3.13 para VX Evolution",
+      "class": "CURRENT",
+      "kind": "setup",
+      "reason": "Required Python runtime for active tests."
+    },
+    {
+      "name": "Analisis estatico y smoke test aislado",
+      "class": "CURRENT",
+      "kind": "contract",
+      "reason": "Current installer smoke/rollback invariant."
+    },
+    {
+      "name": "Auditar fixture JSONC sin filtrar secretos",
+      "class": "CURRENT",
+      "kind": "security",
+      "reason": "Current secret-redaction invariant."
+    },
+    {
+      "name": "V4 - validar registro, equipos, global-only y rollback",
+      "class": "CURRENT",
+      "kind": "contract",
+      "reason": "Current registry 4.2.0/global-only/rollback behavior."
+    },
+    {
+      "name": "VX Pack 0.3 - doctor, MCP pasivos y 13 agentes 31 skills",
+      "class": "CURRENT",
+      "kind": "pack",
+      "reason": "Matches current pack version 0.3.0."
+    },
+    {
+      "name": "VX Pack DPAPI V0.2 - bootstrap seguro en Windows aislado",
+      "class": "REVIEW",
+      "kind": "pack",
+      "reason": "Bootstrap implementation is still used, but label/version is historical; consolidate into current Pack certification."
+    },
+    {
+      "name": "MCP Pack V1 - registro reproducible de 13 servidores",
+      "class": "CURRENT",
+      "kind": "mcp",
+      "reason": "Current MCP catalog invariant."
+    },
+    {
+      "name": "VX Permisos - MCP namespaced con fallback deny y verificación de 13 roles",
+      "class": "CURRENT",
+      "kind": "permissions",
+      "reason": "Current deny-by-default permission invariant."
+    },
+    {
+      "name": "Dev Team - certificacion viva del contrato actual",
+      "class": "CURRENT",
+      "kind": "dev-team",
+      "reason": "Canonical current Dev Team certification."
+    },
+    {
+      "name": "Dev Team MCP Read-Only Matrix V1 - propuesta inactiva y deny-by-default",
+      "class": "REVIEW",
+      "kind": "dev-team",
+      "reason": "Historical proposal now partially superseded by canonical capability/exact MCP inventories; retain until replacement test passes."
+    },
+    {
+      "name": "Dev Team 2.3.0 - instalar 10 especialistas, preservar MCP/terceros y restaurar",
+      "class": "CURRENT",
+      "kind": "dev-team",
+      "reason": "Current runtime install/verify/restore smoke."
+    },
+    {
+      "name": "VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores",
+      "class": "CURRENT",
+      "kind": "security",
+      "reason": "Current restore tamper-protection invariant."
+    },
+    {
+      "name": "VX Task DAG V0.1 - contratos de equipo sin tareas efectivas",
+      "class": "REVIEW",
+      "kind": "orchestration",
+      "reason": "Version label historical; functionality may still be active."
+    },
+    {
+      "name": "VX Skills V0.2 - 31 skills, DAG aciclico y selector sin efectos",
+      "class": "REVIEW",
+      "kind": "skills",
+      "reason": "Legacy 31-skill pack still referenced by global pack; review against current capability/skill model."
+    },
+    {
+      "name": "V4.1 - auditoria de evidencias y comando global",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Potentially current invariant but old milestone-labelled gate."
+    },
+    {
+      "name": "V4.2 - reconciliar agentes de forma segura",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Potentially current behavior; must map to active invariant."
+    },
+    {
+      "name": "V4.3 - probar VX Evolution Core sin HOME real",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Synthetic core test may remain useful; consolidate by current behavior."
+    },
+    {
+      "name": "V4.3 - instalar código global sin inicializar ni borrar datos",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Install safety invariant likely current; rename/consolidate."
+    },
+    {
+      "name": "VX Reunion - política confirmada sin scheduler activo",
+      "class": "CURRENT",
+      "kind": "evolution",
+      "reason": "Current explicit scheduler-disabled policy."
+    },
+    {
+      "name": "V4.4 - Observer ligero Kilo-only y migración aislada",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Current component possible; review overlap with later observer/evolution gates."
+    },
+    {
+      "name": "V4.4 - evento sintético plugin a SQLite sin datos de sesión",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Synthetic privacy invariant; review against current observer contract."
+    },
+    {
+      "name": "V4.5 - calendario, reuniones manuales y migración sin scheduler",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Likely superseded by V4.5.1 policy."
+    },
+    {
+      "name": "V4.5.1 - reunion conjunta sin duplicación ni programador",
+      "class": "CURRENT",
+      "kind": "evolution",
+      "reason": "Matches latest confirmed meeting policy."
+    },
+    {
+      "name": "ROADMAP V4.6 - coherencia de estado y scheduler desactivado",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Roadmap validation should not duplicate current behavioral tests."
+    },
+    {
+      "name": "V4.6.0 - auditoria global Kilo sin efectos en Windows",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Behavior may remain current; version-labelled gate candidate for consolidation."
+    },
+    {
+      "name": "V4.6.1 - matriz y evidencias Kilo sin escritura ni autoevaluacion",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Current safety concept, but may overlap newer organizational audit."
+    },
+    {
+      "name": "V4.6.2 - cinco ensayos sintéticos sin ejecución de agentes ni cambios",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Synthetic trial contract; review whether still distinct."
+    },
+    {
+      "name": "V4.7.0 - contrato SemVer y dry-run sin publicación",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Source-only preview contract; likely distinct but can be renamed/currentized."
+    },
+    {
+      "name": "V4.7.1 - solicitud de aprobación estructural sin autorización",
+      "class": "REVIEW",
+      "kind": "evolution",
+      "reason": "Approval invariant may be covered by V4.7.2."
+    },
+    {
+      "name": "VX P2.1 - modo de builder y aprobacion manual sin elevar permisos",
+      "class": "CURRENT",
+      "kind": "permissions",
+      "reason": "Current manual approval/no elevation invariant."
+    },
+    {
+      "name": "VX 0.2.4 - evidencia runtime sin elevación ni autoverificación",
+      "class": "CURRENT",
+      "kind": "runtime-evidence",
+      "reason": "Protects current declared-vs-independent certification semantics."
+    },
+    {
+      "name": "VX Pack 0.2.3 - convivencia con inline y skills externas sin borrado",
+      "class": "REVIEW",
+      "kind": "pack",
+      "reason": "Distinct coexistence behavior; retain until semantic replacement exists."
+    },
+    {
+      "name": "VX Pack 0.2.2 - rutas seguras, marcadores y DPAPI aislado",
+      "class": "HISTORICAL_CANDIDATE",
+      "kind": "pack",
+      "reason": "Superseded by current Pack contract + bootstrap safety suite; remove only after replacement PASS."
+    },
+    {
+      "name": "VX IDA MCP - skill, catalogo opcional y reglas de no-escritura",
+      "class": "CURRENT",
+      "kind": "specialized",
+      "reason": "Distinct optional reverse-engineering capability contract."
+    },
+    {
+      "name": "VX Integración - 13 agentes, 31 skills, Academy, MCP único y V4.7.2 inactiva",
+      "class": "REVIEW",
+      "kind": "integration",
+      "reason": "Integration meta-test risks duplicating lower-level invariants; review after current manifests stabilize."
+    },
+    {
+      "name": "V4.7.2 - contratos de seguridad aislados y aprobaciones deshabilitadas",
+      "class": "CURRENT",
+      "kind": "security",
+      "reason": "Latest approval-security invariant."
+    },
+    {
+      "name": "V4.6.3 - diagnostico organizativo sin procedencia inventada ni escritura",
+      "class": "CURRENT",
+      "kind": "evolution",
+      "reason": "Latest organizational audit/read-only invariant."
+    }
+  ],
+  "rules": {
+    "historical_candidate_requires_replacement_pass_before_removal": true,
+    "review_requires_current_invariant_mapping": true,
+    "every_workflow_step_must_be_classified": true
+  }
+}
