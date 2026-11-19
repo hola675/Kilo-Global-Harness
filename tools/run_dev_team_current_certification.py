@@ -18,9 +18,20 @@ def load_manifest() -> dict:
     return json.loads(MANIFEST.read_text(encoding="utf-8"))
 
 
+def _historical_name(item: dict) -> str:
+    names = [
+        item.get("superseded_test"),
+        item.get("retired_test"),
+    ]
+    names = [name for name in names if name]
+    if len(names) != 1:
+        raise ValueError("Cada evidencia histórica debe declarar superseded_test o retired_test.")
+    return names[0]
+
+
 def validate_manifest(data: dict) -> None:
     active = data["active_tests"]
-    historical = {item["superseded_test"] for item in data["historical_evidence"]}
+    historical = {_historical_name(item) for item in data["historical_evidence"]}
     overlap = set(active) & historical
     if overlap:
         raise ValueError(f"Tests históricos activos: {sorted(overlap)}")
