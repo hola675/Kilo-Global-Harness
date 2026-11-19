@@ -28,7 +28,7 @@
       "replacement": [
         "test_vx_meeting_current_contract.py"
       ],
-      "pass_evidence": "registry/vx-historical-test-pass-evidence-run-457.json",
+      "pass_evidence": "registry/vx-historical-test-pass-evidence-meeting-run-463.json",
       "status": "RETIRED_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS"
     },
     {
@@ -36,7 +36,7 @@
       "replacement": [
         "test_vx_meeting_current_contract.py"
       ],
-      "pass_evidence": "registry/vx-historical-test-pass-evidence-run-457.json",
+      "pass_evidence": "registry/vx-historical-test-pass-evidence-meeting-run-463.json",
       "status": "RETIRED_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS"
     }
   ]
