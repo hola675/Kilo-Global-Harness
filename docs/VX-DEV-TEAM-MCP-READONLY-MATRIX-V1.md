@@ -1,6 +1,6 @@
 # Dev Team MCP Read-Only Matrix V1 — propuesta de mínimo privilegio
 
-> **Nota de topología:** esta matriz fue diseñada contra la baseline histórica `2.0.2-runtime-adaptive` de siete especialistas. La baseline source `2.1.0-specialist-split` contiene ocho tras sustituir `vx-dev-backend-data` por `vx-dev-backend` + `vx-dev-data`. La matriz no concede MCP automáticamente a los dos agentes nuevos.
+> **Nota de topología:** esta matriz fue diseñada contra la baseline histórica `2.0.2-runtime-adaptive` de siete especialistas. La baseline source actual `2.2.0-specialist-expansion` contiene diez: Backend/Data están separados y se añadieron Platform/Reviewer. La matriz no concede MCP automáticamente a Backend, Data, Platform ni Reviewer; solo Research/Architect conservan la allowlist documental explícita ya certificada.
 
 **Fecha:** 2026-11-17  
 **Estado:** PROPOSAL_ONLY_NOT_ACTIVE  
