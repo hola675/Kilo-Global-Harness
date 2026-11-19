@@ -212,16 +212,16 @@ jobs:
           & ./scripts/Validar-Registro-V4.ps1
           Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 13 AGENTES PASS'
 
-      - name: Dev Team source 2.2.0 + evidencia histórica V2-R.2
+      - name: Dev Team source 2.3.0 + evidencia histórica V2-R.2
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_dev_team_v1.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato source Dev Team 2.1.0 inválido.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato source Dev Team 2.3.0 inválido.' }
           python -I -m unittest discover -s tests -p 'test_vx_dev_team_v2r2_specialists.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Contrato de certificación histórica V2-R.2 inválido.' }
           python -I -m unittest discover -s tests -p 'test_vx_dev_team_v210_split.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato source 2.1.0 Backend/Data split inválido.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato source actual de especialistas inválido.' }
           & ./scripts/Validar-Registro-V4.ps1
           $agent = Get-Content 'agents/vx-dev-team.md' -Raw -Encoding UTF8
           if ($agent -notmatch 'displayName:\s*"vx-dev-team"' -or $agent -notmatch '#8B5CF6') {
@@ -242,12 +242,12 @@ jobs:
           if (@($matrix.servers).Count -ne 13) { throw 'La matriz MCP no clasifica los 13 servidores.' }
           Write-Host 'DEV TEAM MCP MATRIX V1: 13 SERVERS + EXACT TOOLS + DENY DEFAULT + NO ACTIVATION PASS'
 
-      - name: Dev Team 2.2.0 - instalar 9 especialistas, preservar MCP/terceros y restaurar
+      - name: Dev Team 2.3.0 - instalar 10 especialistas, preservar MCP/terceros y restaurar
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           & ./tests/Test-DevTeam-Only-Reset.ps1
-          Write-Host 'DEV TEAM 2.2.0 INSTALL/VERIFY/RESTORE: WINDOWS SMOKE PASS'
+          Write-Host 'DEV TEAM 2.3.0 INSTALL/VERIFY/RESTORE: WINDOWS SMOKE PASS'
 
       - name: VX Restore V4 - rechazar manifiestos manipulados y cambios posteriores
         shell: pwsh
