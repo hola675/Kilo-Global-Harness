@@ -17,10 +17,14 @@
   "subagents": [
     {
       "id": "vx-dev-explorer",
-      "role": "exploration",
+      "role": "codebase-cartography",
       "mode": "subagent",
       "hidden": true,
-      "read_only": true
+      "read_only": true,
+      "special_output": [
+        "CODE_MAP",
+        "IMPACT_SURFACE"
+      ]
     },
     {
       "id": "vx-dev-architect",
@@ -169,5 +173,39 @@
     "current_child_mcp": "DENY",
     "first_candidate_wave": "WAVE-1-DOCS",
     "activation_requires": "runtime exact-tool inventory + isolated smoke + human approval"
+  },
+  "specialist_contracts": {
+    "vx-dev-explorer": {
+      "mission": "map codebase entry points, relationships, dependencies and impact surface without designing the solution",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "CODE_MAP",
+        "IMPACT_SURFACE",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "impact_classes": [
+        "DIRECT",
+        "INDIRECT",
+        "POSSIBLE",
+        "OUT_OF_SCOPE"
+      ],
+      "evidence_classes": [
+        "OBSERVED",
+        "INFERRED",
+        "UNKNOWN"
+      ],
+      "routing_boundary": {
+        "research": "documentation, ADR, standards or authorized external sources",
+        "architect": "architecture, contracts and tradeoffs",
+        "domain_specialists": "frontend/backend-data/quality/security behavior analysis"
+      }
+    }
   }
 }

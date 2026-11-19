@@ -37,7 +37,7 @@ El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-tea
 
 Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`:
 
-- `vx-dev-explorer`
+- `vx-dev-explorer` — cartografía del codebase con `CODE_MAP` e `IMPACT_SURFACE`
 - `vx-dev-architect`
 - `vx-dev-frontend`
 - `vx-dev-backend-data`
