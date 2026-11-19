@@ -35,7 +35,7 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
 
     def test_active_source_baseline_has_ten_specialists(self):
         self.assertEqual(self.baseline["version"], "2.3.0-reviewer-specialist")
-        self.assertEqual(self.baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING")
+        self.assertEqual(self.baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_CERTIFIED")
         ids = {item["id"] for item in self.baseline["subagents"]}
         self.assertEqual(ids, EXPECTED_SPECIALISTS)
         self.assertNotIn("vx-dev-backend-data", ids)
@@ -222,13 +222,16 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
             certification["historical_v2r2"]["includes_superseded_specialist"],
             "vx-dev-backend-data",
         )
-        self.assertEqual(
-            certification["current_source"]["pending_runtime"],
-            ["vx-dev-backend", "vx-dev-data", "vx-dev-platform", "vx-dev-reviewer"],
-        )
+        self.assertEqual(certification["current_source"]["pending_runtime"], [])
         self.assertEqual(
             certification["current_source"]["deployed_runtime"],
-            "NOT_VERIFIED_AFTER_REVIEWER_ADD",
+            "VERIFIED_KILO_DESKTOP_WINDOWS",
+        )
+        self.assertEqual(certification["current_source"]["status"], "PASS_OPERATOR_RUNTIME")
+        self.assertEqual(certification["current_source"]["result"], "10/10")
+        self.assertEqual(
+            certification["current_source"]["certified_agent_source_head"],
+            "a7efb25a9bdf978d9c03de6cb5d7ba5dd79318df",
         )
 
 

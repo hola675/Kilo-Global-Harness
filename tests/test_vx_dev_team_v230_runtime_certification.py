@@ -39,11 +39,11 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         self.registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
         self.baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
 
-    def test_registry_targets_current_source_baseline_without_claiming_pass(self):
+    def test_registry_targets_current_certified_source_baseline(self):
         self.assertEqual(self.registry["source_baseline"], "2.3.0-reviewer-specialist")
         self.assertEqual(self.baseline["version"], "2.3.0-reviewer-specialist")
-        self.assertEqual(self.registry["status"], "PARTIAL_OPERATOR_RUNTIME")
-        self.assertNotIn("PASS_OPERATOR_RUNTIME", self.registry["status"])
+        self.assertEqual(self.registry["status"], "PASS_OPERATOR_RUNTIME")
+        self.assertEqual(self.baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_CERTIFIED")
 
     def test_all_ten_specialist_fixtures_are_defined(self):
         fixtures = self.registry["fixtures"]
@@ -69,10 +69,11 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
             actual = set(by_specialist[specialist]["required_sections"])
             self.assertEqual(actual, expected, specialist)
 
-    def test_evidence_model_does_not_conflate_visibility_with_permission_enforcement(self):
+    def test_evidence_model_scopes_visibility_based_permission_enforcement(self):
         model = self.registry["evidence_model"]
         self.assertIn("NOT_VISIBLE", model["tool_surface_isolation"])
-        self.assertIn("no se convierte", model["permission_deny_enforcement"])
+        self.assertIn("effective tool surface", model["permission_deny_enforcement"])
+        self.assertIn("verified Kilo host semantics", model["permission_deny_enforcement"])
         observed = self.registry["observed_runtime"]["new_specialists"]
         self.assertEqual(len(observed), 4)
         for item in observed:
@@ -107,7 +108,7 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         self.assertEqual(remaining["leader_routing_contract"], "PASS")
         self.assertEqual(remaining["permission_deny_enforcement"], "0/6 PROVEN")
 
-    def test_full_team_runtime_contracts_are_closed_but_permission_gate_is_partial(self):
+    def test_full_team_runtime_contracts_and_permissions_are_closed(self):
         full = self.registry["observed_runtime"]["full_team"]
         self.assertEqual(full["role_contracts"], "10/10 PASS")
         self.assertEqual(full["delegation"], "10/10 PASS")
@@ -115,7 +116,9 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         self.assertEqual(full["research_docs_mcp"], "5/5 EXECUTED")
         self.assertEqual(full["architect_docs_mcp"], "5/5 EXECUTED")
         self.assertEqual(full["leader_routing_contract"], "PASS")
-        self.assertEqual(full["permission_enforcement_status"], "PARTIAL_7_OF_10")
+        self.assertEqual(full["permission_enforcement_status"], "PASS_10_OF_10")
+        self.assertEqual(full["final_status"], "PASS_OPERATOR_RUNTIME")
+        self.assertTrue(full["ready_to_record_runtime_baseline"])
 
     def test_host_permission_semantics_are_pinned_and_scoped(self):
         semantics = self.registry["permission_enforcement_semantics"]
@@ -132,29 +135,31 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         for specialist in ALL_SPECIALISTS - {"vx-dev-research", "vx-dev-architect"}:
             self.assertNotIn("required_mcp_tools", by_specialist[specialist])
 
-    def test_permission_enforcement_is_exactly_seven_of_ten(self):
+    def test_permission_enforcement_is_ten_of_ten(self):
         perm = self.registry["observed_runtime"]["permission_enforcement"]
-        self.assertEqual(perm["status"], "PARTIAL")
-        self.assertEqual(perm["total"], "7/10 PASS")
+        self.assertEqual(perm["status"], "PASS")
+        self.assertEqual(perm["total"], "10/10 PASS")
+        self.assertEqual(set(perm["specialists"]), ALL_SPECIALISTS)
+        self.assertEqual(set(perm["specialists"].values()), {"PASS"})
+        self.assertEqual(perm["installed_permission_config"], "10/10 MATCH")
+        self.assertEqual(perm["result"], "PASS")
+
+    def test_final_certification_closes_all_runtime_gates(self):
+        final = self.registry["final_certification"]
+        self.assertEqual(final["status"], "PASS_OPERATOR_RUNTIME")
+        self.assertEqual(final["overall"], "PASS")
+        self.assertEqual(final["source_runtime_match"], "11/11")
+        self.assertEqual(final["delegation"], "10/10 PASS")
+        self.assertEqual(final["role_contracts"], "10/10 PASS")
+        self.assertEqual(final["permission_enforcement"], "10/10 PASS")
+        self.assertEqual(final["research_docs_mcp"], "5/5 PASS")
+        self.assertEqual(final["architect_docs_mcp"], "5/5 PASS")
+        self.assertEqual(final["leader_routing"], "PASS")
+        self.assertEqual(final["runtime_mutations"], "NO")
         self.assertEqual(
-            {name for name, state in perm["specialists"].items() if state == "PASS"},
-            {
-                "vx-dev-backend",
-                "vx-dev-data",
-                "vx-dev-platform",
-                "vx-dev-reviewer",
-                "vx-dev-explorer",
-                "vx-dev-frontend",
-                "vx-dev-research",
-            },
+            final["certified_agent_source_head"],
+            "a7efb25a9bdf978d9c03de6cb5d7ba5dd79318df",
         )
-        self.assertEqual(
-            {name for name, state in perm["specialists"].items() if state == "PARTIAL"},
-            {"vx-dev-quality", "vx-dev-security", "vx-dev-architect"},
-        )
-        self.assertIn("vx-dev-quality", perm["partial_reasons"])
-        self.assertIn("vx-dev-security", perm["partial_reasons"])
-        self.assertIn("vx-dev-architect", perm["partial_reasons"])
 
     def test_runtime_contract_keeps_mutation_and_child_delegation_forbidden(self):
         runtime = self.registry["runtime_contract"]
