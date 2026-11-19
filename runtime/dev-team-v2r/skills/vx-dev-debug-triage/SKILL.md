@@ -24,3 +24,8 @@ metadata:
 `REPRODUCED`, `NOT_REPRODUCED`, `ROOT_CAUSE_SUPPORTED`, `HYPOTHESIS`, `UNKNOWN`.
 
 No repetir parches sin nueva evidencia ni declarar causa raíz desde un stacktrace parcial.
+
+## Integración de evidencia/MCP
+- Elegir la fuente por hipótesis: source→Serena/Codebase Memory, cambios→GitHub, runtime→Sentry, UI real→Playwright/Chrome DevTools.
+- No consultar todas las fuentes a la vez; cada llamada debe falsar o sostener una hipótesis concreta.
+- Tras obtener evidencia, producir reuse keys y handoff compacto.
