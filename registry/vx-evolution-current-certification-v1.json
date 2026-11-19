@@ -22,5 +22,22 @@
   "integration_smokes": [
     "tests/Test-VX-Meeting-Current-Smoke.ps1"
   ],
-  "historical_evidence": []
+  "historical_evidence": [
+    {
+      "retired_test": "test_vx_meeting_v45.py",
+      "replacement": [
+        "test_vx_meeting_current_contract.py"
+      ],
+      "pass_evidence": "registry/vx-historical-test-pass-evidence-run-457.json",
+      "status": "RETIRED_AFTER_REPLACEMENT_PASS"
+    },
+    {
+      "retired_test": "test_vx_joint_meeting_v451.py",
+      "replacement": [
+        "test_vx_meeting_current_contract.py"
+      ],
+      "pass_evidence": "registry/vx-historical-test-pass-evidence-run-457.json",
+      "status": "RETIRED_AFTER_REPLACEMENT_PASS"
+    }
+  ]
 }
