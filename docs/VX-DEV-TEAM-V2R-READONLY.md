@@ -253,7 +253,7 @@ Evidencia:
 
 Severidad permitida: `CRITICAL / HIGH / MEDIUM / LOW / INFO`, siempre separada de `CONFIDENCE`.
 
-Security no ejecuta scanners/exploits, no lee/revela secretos y no sustituye Quality ni al futuro Reviewer.
+Security no ejecuta scanners/exploits, no lee/revela secretos y no sustituye Quality ni Reviewer.
 
 ## Contrato especializado: vx-dev-platform
 
@@ -358,14 +358,14 @@ Esto no es un fallo de ACL. En Kilo actual, la tool `lsp` se registra únicament
 - `lsp` es una capacidad opcional;
 - no se activa ninguna bandera experimental global automáticamente.
 
-### Estado runtime tras el split
+### Estado runtime de la baseline source 2.3.0
 
 Los cambios en GitHub **no modifican Kilo Desktop por sí solos**. Hasta ejecutar explícitamente el instalador/sincronización y recargar Kilo Desktop:
 
-- la baseline source puede tener 8 especialistas;
-- el runtime instalado puede seguir usando la definición anterior;
-- `vx-dev-backend` y `vx-dev-data` deben considerarse `RUNTIME_NOT_VERIFIED`;
-- no se hereda el PASS histórico de `vx-dev-backend-data`.
+- la baseline source contiene 10 especialistas;
+- el runtime instalado puede seguir usando una definición anterior;
+- `vx-dev-backend`, `vx-dev-data`, `vx-dev-platform` y `vx-dev-reviewer` deben considerarse `RUNTIME_NOT_VERIFIED`;
+- no se transfiere automáticamente la certificación histórica V2-R.2 a identidades nuevas o divididas.
 
 ## Instalación
 
@@ -379,7 +379,7 @@ pwsh -NoProfile -File $script -Modo Aplicar
 pwsh -NoProfile -File $script -Modo Verificar
 ```
 
-La semántica de “Only” es: **Dev Team es el único modo personalizado visible aprobado**. Los ocho especialistas son internos y `hidden: true`.
+La semántica de “Only” es: **Dev Team es el único modo personalizado visible aprobado**. Los diez especialistas source son internos y `hidden: true`.
 
 ## Seguridad
 
@@ -410,14 +410,15 @@ Las WAVE de recertificación quedan pausadas mientras se pule el diseño operati
 
 Prioridad actual:
 
-1. consolidar `vx-dev-team` como coordinador único y mejorar routing por incertidumbre;
-2. pulir los especialistas existentes uno por uno;
-3. `vx-dev-backend` y `vx-dev-data` ya están separados en el source y requieren despliegue/smoke runtime antes de considerarse certificados;
-4. diseñar `vx-dev-platform` para runtime/build/CI/CD/configuración;
-5. diseñar `vx-dev-reviewer` como revisor independiente de cambios;
-6. mantener una sola profundidad y deny-by-default.
+1. mantener `vx-dev-team` como coordinador único con routing por incertidumbre;
+2. conservar los 10 especialistas con responsabilidades no solapadas;
+3. mantener Backend/Data separados;
+4. mantener Platform como análisis de runtime/entrega sin capacidad de despliegue;
+5. mantener Reviewer como revisión independiente sin autoridad de merge;
+6. preservar una sola profundidad y deny-by-default;
+7. no desplegar/sincronizar la baseline 2.3.0 al runtime hasta autorización explícita del operador.
 
-Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `task` hasta que existan, se revisen sus permisos y pasen sus pruebas.
+Los diez especialistas ya forman parte de la baseline source y de la ACL `task` del líder. Su presencia en GitHub **no equivale** a certificación runtime.
 
 ## Próxima fase
 
@@ -427,6 +428,7 @@ Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `tas
 - `vx-dev-frontend` ya usa `UI_FLOW / COMPONENT_MODEL / STATE_MODEL / INTERACTION_STATES / ACCESSIBILITY_RESPONSIVE / API_TOUCHPOINTS`;
 - `vx-dev-quality` ya usa `INVARIANTS / TEST_MATRIX / TEST_ORACLES / REGRESSION_SURFACE / ACCEPTANCE_GAPS / VERIFICATION_PLAN`;
 - `vx-dev-security` ya usa `ASSETS / TRUST_BOUNDARIES / ATTACK_SURFACE / ACCESS_CONTROL / DATA_EXPOSURE / ABUSE_CASES / THREAT_FINDINGS`;
-- continuar con los especialistas nuevos planificados (`vx-dev-platform` y `vx-dev-reviewer`);
-- mantener el runtime actual estable mientras se diseña cada agente;
-- no ampliar la ACL del líder por adelantado.
+- `vx-dev-platform` ya usa `RUNTIME_MAP / BUILD_AND_RELEASE_FLOW / CONFIG_SURFACE / ENVIRONMENT_DIFFS / DEPLOYMENT_RISKS / OBSERVABILITY`;
+- `vx-dev-reviewer` ya usa `CHANGE_SUMMARY / CONTRACT_REGRESSIONS / REGRESSION_RISKS / COMPLEXITY_RISKS / SCOPE_CONTROL / REVIEW_FINDINGS / REVIEW_VERDICT`;
+- revisar ahora coherencia global de routing, contratos y documentación del equipo;
+- mantener el runtime actual estable hasta una autorización explícita de sync/deploy.
