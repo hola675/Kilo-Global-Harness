@@ -595,6 +595,7 @@
         "SCOPE_CONTROL",
         "REVIEW_FINDINGS",
         "REVIEW_VERDICT",
+        "FINDINGS",
         "EVIDENCE",
         "RISKS",
         "RECOMMENDATION",
