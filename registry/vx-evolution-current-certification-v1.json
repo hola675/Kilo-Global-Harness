@@ -22,24 +22,5 @@
   "integration_smokes": [
     "tests/Test-VX-Meeting-Current-Smoke.ps1"
   ],
-  "historical_evidence": [
-    {
-      "retired_test": "test_vx_meeting_v45.py",
-      "replacement": [
-        "test_vx_meeting_current_contract.py",
-        "tests/Test-VX-Meeting-Current-Smoke.ps1"
-      ],
-      "pass_evidence": "registry/vx-historical-test-pass-evidence-meeting-run-463.json",
-      "status": "RETIRED_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS"
-    },
-    {
-      "retired_test": "test_vx_joint_meeting_v451.py",
-      "replacement": [
-        "test_vx_meeting_current_contract.py",
-        "tests/Test-VX-Meeting-Current-Smoke.ps1"
-      ],
-      "pass_evidence": "registry/vx-historical-test-pass-evidence-meeting-run-463.json",
-      "status": "RETIRED_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS"
-    }
-  ]
+  "historical_evidence": []
 }
