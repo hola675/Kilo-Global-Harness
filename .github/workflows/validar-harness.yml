@@ -304,7 +304,7 @@ jobs:
           }
           Write-Host 'V4 RESTORE: MANIFIESTO EXTERNO BLOQUEADO Y EDICIONES PRESERVADAS PASS'
 
-      - name: VX Task DAG V0.1 - contratos de equipo sin tareas efectivas
+      - name: VX Task DAG - contratos actuales sin ejecución de agentes
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -312,9 +312,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Pruebas de DAG de tareas VX fallaron.' }
           python -m compileall -q scripts/vx_task_dag.py tests/test_vx_task_dag_v01.py
           if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis task DAG VX.' }
-          Write-Host 'VX TASK DAG: GATES Y DEPENDENCIAS SIN AGENTES EJECUTADOS PASS'
+          Write-Host 'VX TASK DAG CURRENT: GATES Y DEPENDENCIAS SIN AGENTES EJECUTADOS PASS'
 
-      - name: VX Skills V0.2 - 31 skills, DAG aciclico y selector sin efectos
+      - name: VX Skill Router - 31 skills, DAG acíclico y selector sin efectos
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -326,7 +326,7 @@ jobs:
           if ($LASTEXITCODE -ne 0 -or $check.status -ne 'PASS' -or $check.skills -ne 31) {
             throw 'Skill pack incompleto o dependencias no válidas.'
           }
-          Write-Host 'VX SKILLS V0.2: 31 SKILLS, DAG Y PERMISOS INTACTOS PASS'
+          Write-Host 'VX SKILL ROUTER CURRENT: 31 SKILLS, DAG Y PERMISOS INTACTOS PASS'
 
       - name: VX Evidence Revalidation - comando global read-only
         shell: pwsh
