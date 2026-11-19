@@ -274,7 +274,9 @@ Recomienda otro especialista solo si queda una pregunta diferente:
 - ubicación/flujo de código → `vx-dev-explorer`;
 - diseño/contrato/tradeoff → `vx-dev-architect`;
 - UI → `vx-dev-frontend`;
-- API/datos → `vx-dev-backend-data`;
+- API/servicios → `vx-dev-backend`;
+- schema/persistencia → `vx-dev-data`;
+- runtime/build/configuración → `vx-dev-platform`;
 - verificación/regresión → `vx-dev-quality`;
 - auth/trust boundary → `vx-dev-security`;
 - ninguna → `NONE`.
