@@ -1,0 +1,111 @@
+{
+  "schema": "dev-team-ux-ui-pro-evals/1",
+  "version": "1.0.0-proposal",
+  "status": "DESIGNED_NOT_EXECUTED",
+  "policy": {
+    "minimum_should_trigger": 2,
+    "minimum_should_not_trigger": 2,
+    "focus": "routing and overlap between UX/UI skills"
+  },
+  "skills": [
+    {
+      "skill": "vx-dev-ux-ui-pro-review",
+      "should_trigger": [
+        "Haz una revisión UX/UI completa de este dashboard: jerarquía, estados, responsive, accesibilidad, microcopy y consistencia visual.",
+        "Esta pantalla se siente amateur y confusa; audítala de punta a punta y prioriza los problemas por impacto."
+      ],
+      "should_not_trigger": [
+        "Revisa únicamente el texto del mensaje de error del campo email.",
+        "Analiza solo si nuestros design tokens tienen drift entre light y dark."
+      ]
+    },
+    {
+      "skill": "vx-dev-design-system-governance",
+      "should_trigger": [
+        "Audita nuestros tokens, componentes, variantes y themes para detectar hardcodes y drift.",
+        "Tenemos tres botones casi iguales y valores de spacing duplicados: revisa si el design system está proliferando."
+      ],
+      "should_not_trigger": [
+        "Esta landing se ve plana: critica la jerarquía visual y composición.",
+        "Revisa cómo funciona el formulario de registro y sus errores."
+      ]
+    },
+    {
+      "skill": "vx-dev-responsive-resilience",
+      "should_trigger": [
+        "Revisa esta UI para 320px, zoom, textos largos, dark mode y traducciones extensas.",
+        "La pantalla funciona en desktop pero rompe con teclado móvil, datos densos y red lenta: analiza resiliencia."
+      ],
+      "should_not_trigger": [
+        "Define la escala tipográfica y jerarquía visual del hero.",
+        "Evalúa el copy de los estados vacíos."
+      ]
+    },
+    {
+      "skill": "vx-dev-forms-ux",
+      "should_trigger": [
+        "Audita este formulario por labels, validación, mensajes de error, submit pending y recovery.",
+        "Tenemos un wizard de alta con errores server-side: revisa fricción, foco y estados del formulario."
+      ],
+      "should_not_trigger": [
+        "Organiza la navegación global de la aplicación.",
+        "Revisa un gráfico de ventas con doble eje."
+      ]
+    },
+    {
+      "skill": "vx-dev-ux-writing-content",
+      "should_trigger": [
+        "Mejora labels, errores, empty states y confirmaciones para que sean claros y accionables.",
+        "Este onboarding usa jargon y urgencia falsa; revisa el contenido de interfaz y confianza."
+      ],
+      "should_not_trigger": [
+        "Reestructura el menú lateral y la búsqueda.",
+        "Audita spacing, tipografía y sombras del dashboard."
+      ]
+    },
+    {
+      "skill": "vx-dev-information-architecture",
+      "should_trigger": [
+        "Los usuarios no encuentran reportes: revisa navegación, etiquetas, profundidad, búsqueda y filtros.",
+        "Tenemos demasiadas secciones duplicadas; propón una estructura de información basada en tareas."
+      ],
+      "should_not_trigger": [
+        "Revisa la arquitectura de microservicios.",
+        "Mejora el texto de un solo mensaje de error."
+      ]
+    },
+    {
+      "skill": "vx-dev-interaction-motion",
+      "should_trigger": [
+        "Revisa feedback de press, transiciones, reduced motion y continuidad del modal.",
+        "El drag funciona pero no comunica estado ni tiene alternativa; analiza interacción y motion."
+      ],
+      "should_not_trigger": [
+        "El API tarda 2 segundos: diseña un benchmark de latencia.",
+        "Revisa el contraste de texto y labels del formulario."
+      ]
+    },
+    {
+      "skill": "vx-dev-data-visualization",
+      "should_trigger": [
+        "Audita este dashboard: chart choice, escalas, densidad, color y accesibilidad.",
+        "¿Este gráfico de composición y tendencia comunica bien o está induciendo a error con sus ejes?"
+      ],
+      "should_not_trigger": [
+        "Optimiza la query SQL que alimenta el dashboard.",
+        "Revisa la navegación principal y breadcrumbs."
+      ]
+    },
+    {
+      "skill": "vx-dev-visual-craft",
+      "should_trigger": [
+        "La UI funciona pero parece un template genérico: revisa jerarquía, tipografía, composición, color y distintividad.",
+        "Audita el craft visual de esta pantalla sin cambiar su UX ni design system."
+      ],
+      "should_not_trigger": [
+        "Revisa específicamente loading, empty, error y retry states.",
+        "Audita teclado, foco y aria-labels contra WCAG."
+      ]
+    }
+  ]
+}
