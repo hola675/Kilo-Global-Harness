@@ -1,0 +1,32 @@
+{
+  "schema": "vx-evolution-current-certification/1",
+  "version": "1.0.0",
+  "status": "CURRENT_SOURCE_CERTIFICATION",
+  "current_contracts": [
+    "test_vx_evolution_core.py",
+    "test_vx_observer_light.py",
+    "test_vx_meeting_current_contract.py",
+    "test_vx_capability_audit_v460.py",
+    "test_vx_competency_matrix_v461.py",
+    "test_vx_competency_trials_v462.py",
+    "test_vx_organizational_audit_v463.py",
+    "test_vx_publish_preview_v470.py",
+    "test_vx_approval_contract_v471.py",
+    "test_vx_approval_security_v472.py"
+  ],
+  "historical_candidates": [
+    {
+      "test": "test_vx_meeting_v45.py",
+      "status": "REMOVE_AFTER_CURRENT_MEETING_PASS"
+    },
+    {
+      "test": "test_vx_joint_meeting_v451.py",
+      "status": "REMOVE_AFTER_CURRENT_MEETING_PASS"
+    }
+  ],
+  "rules": {
+    "source_contracts_run_once": true,
+    "windows_integration_smokes_must_not_repeat_source_unit_suites": true,
+    "historical_tests_not_added_to_current_contracts": true
+  }
+}
