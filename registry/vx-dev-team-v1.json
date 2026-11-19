@@ -14,9 +14,9 @@
     ],
     "writes": true,
     "max_writers_per_worktree": 1,
-    "displayName": "👥 Dev Team",
+    "displayName": "vx-dev-team",
     "color": "#8B5CF6",
-    "visual_strategy": "emoji-displayName-plus-color",
+    "visual_strategy": "displayName-plus-color",
     "custom_icon_field_supported": false
   },
   "phases": [
