@@ -602,6 +602,16 @@ jobs:
           Write-Host 'V4.4 E2E SYNTHETIC EVENT + PRIVACY + OFF: PASS'
 
 
+      - name: VX Reunion - contrato vigente de sesion conjunta manual
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m unittest discover -s tests -p 'test_vx_meeting_current_contract.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato vigente de reuniones VX fallo.' }
+          python -I -m unittest discover -s tests -p 'test_vx_meeting_current_certification_manifest.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Manifest de reemplazo de reuniones invalido.' }
+          Write-Host 'VX REUNION CURRENT CONTRACT: PASS'
+
       - name: V4.5 - calendario, reuniones manuales y migración sin scheduler
         shell: pwsh
         run: |
