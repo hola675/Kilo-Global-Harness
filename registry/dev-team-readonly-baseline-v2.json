@@ -1,7 +1,7 @@
 {
   "schema": "kilo-dev-team-v2r/1",
   "version": "2.3.0-reviewer-specialist",
-  "status": "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING",
+  "status": "ACTIVE_SOURCE_BASELINE_RUNTIME_CERTIFIED",
   "primary": {
     "id": "vx-dev-team",
     "displayName": "vx-dev-team",
@@ -264,8 +264,8 @@
       }
     }
   },
-  "next_phase": "merge-source-baseline-then-explicit-runtime-sync-and-certification-when-authorized",
-  "runtime_note": "Current GitHub source baseline contains 10 hidden specialists, including vx-dev-platform and vx-dev-reviewer. GitHub source changes do not alter Kilo Desktop runtime until explicit install/sync and reload. LSP remains optional; glob/grep remain minimum local capabilities.",
+  "next_phase": "maintain-certified-runtime-baseline-and-recertify-on-agent-permission-or-host-semantics-change",
+  "runtime_note": "Dev Team 2.3.0 is runtime-certified on Kilo Desktop Windows against agent source head a7efb25a9bdf978d9c03de6cb5d7ba5dd79318df. The 10 hidden specialists passed delegation, role contracts and permission enforcement; Research/Architect passed their 5-tool docs MCP allowlists; leader routing passed. LSP remains optional and was not exposed by the host.",
   "certification": {
     "historical_v2r2": {
       "contract": "registry/dev-team-v2r2-specialist-certification-v1.json",
@@ -276,14 +276,26 @@
     },
     "current_source": {
       "specialists": 10,
-      "deployed_runtime": "NOT_VERIFIED_AFTER_REVIEWER_ADD",
-      "pending_runtime": [
-        "vx-dev-backend",
-        "vx-dev-data",
-        "vx-dev-platform",
-        "vx-dev-reviewer"
-      ],
-      "note": "Historical V2-R.2 certification is preserved and is not transferred to new/split specialist identities."
+      "contract": "registry/dev-team-v230-runtime-certification-v1.json",
+      "guide": "docs/VX-DEV-TEAM-230-RUNTIME-CERTIFICATION.md",
+      "status": "PASS_OPERATOR_RUNTIME",
+      "result": "10/10",
+      "certified_agent_source_head": "a7efb25a9bdf978d9c03de6cb5d7ba5dd79318df",
+      "deployed_runtime": "VERIFIED_KILO_DESKTOP_WINDOWS",
+      "pending_runtime": [],
+      "gates": {
+        "disk_sync": "PASS",
+        "fresh_restart": "PASS",
+        "source_runtime_files": "11/11 MATCH",
+        "role_contracts": "10/10 PASS",
+        "permission_enforcement": "10/10 PASS",
+        "research_docs_mcp": "5/5 PASS",
+        "architect_docs_mcp": "5/5 PASS",
+        "leader_routing": "PASS",
+        "config_integrity": "PASS",
+        "runtime_mutations": "NO"
+      },
+      "note": "Historical V2-R.2 certification remains historical only. Current 2.3.0 certification was executed against the active split/specialist identities and does not inherit legacy PASS."
     }
   },
   "mcp_design": {
