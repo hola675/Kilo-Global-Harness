@@ -183,13 +183,15 @@ No lo uses para decidir comportamiento de APIs o reglas de negocio.
 Usa cuando necesites responder:
 
 - ¿Cómo demostramos que esto funciona?
-- ¿Qué puede romperse?
-- ¿Qué casos límite faltan?
-- ¿Cuáles son los criterios de aceptación verificables?
+- ¿Qué invariantes deben preservarse?
+- ¿Qué regresiones son plausibles?
+- ¿Qué casos positivos/negativos aportan evidencia?
+- ¿Cuál es el oráculo verificable?
+- ¿Qué criterios de aceptación están incompletos?
 
-Responsabilidad: estrategia de pruebas, regresiones, invariantes, edge cases, aceptación y cobertura conceptual.
+Responsabilidad: criterios verificables, matriz de pruebas, invariantes, regresiones, oráculos y plan de verificación.
 
-No lo uses como code reviewer genérico.
+No ejecuta tests, no declara PASS sin evidencia real y no sustituye una revisión independiente del código.
 
 ### vx-dev-security
 
