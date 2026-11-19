@@ -1,5 +1,7 @@
 # Dev Team V2-R.2 — certificación de los cinco especialistas pendientes
 
+> **Nota histórica:** esta certificación conserva la evidencia runtime V2-R.2 de 7/7 especialistas, incluido `vx-dev-backend-data`. La baseline source actual 2.1.0 lo sustituye por `vx-dev-backend` y `vx-dev-data`; esta evidencia no se transfiere automáticamente a los dos IDs nuevos.
+
 **Estado:** PASS_OPERATOR_RUNTIME · 7/7 especialistas certificados  
 **Baseline:** `2.0.2-runtime-adaptive`  
 **Objetivo:** certificar Architect, Frontend, Backend/Data, Quality y Research sin habilitar MCP, shell, escritura, skills ni delegación hija.
