@@ -91,13 +91,13 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertEqual(legacy["total"], 31)
         self.assertEqual(legacy["status"], "REFERENCE_ONLY_NOT_RUNTIME_PACK")
 
-    def test_v1_pack_keeps_exact_18_declared_skills_even_with_source_extensions(self):
+    def test_pack_contains_exactly_18_original_dev_team_skills(self):
         declared = self.proposal["dev_team_pack"]["skills"]
         declared_ids = {item["id"] for item in declared}
         actual_ids = {path.parent.name for path in PACK_SKILLS_DIR.glob("*/SKILL.md")}
         self.assertEqual(self.proposal["dev_team_pack"]["total_skills"], 18)
         self.assertEqual(len(declared_ids), 18)
-        self.assertTrue(declared_ids.issubset(actual_ids))
+        self.assertEqual(actual_ids, declared_ids)
         self.assertTrue(all(skill.startswith("vx-dev-") for skill in declared_ids))
 
     def test_each_pack_skill_is_valid_small_and_non_executable(self):
@@ -169,7 +169,16 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
             )
             self.assertIsNotNone(match)
             body = match.group("body")
-            self.assertRegex(body, r'(?m)^\s{4}"\*":\s*deny\s*
+            self.assertRegex(body, r'(?m)^\s{4}"\*":\s*deny\s*$')
+            allowed = set(
+                re.findall(r'(?m)^\s{4}"(vx-dev-[^"]+)":\s*allow\s*$', body)
+            )
+            self.assertEqual(
+                allowed,
+                EXPECTED_PERMISSIONS[agent],
+                f"{agent} must expose only its exact approved skill allowlist",
+            )
+
     def test_skill_pack_never_grants_non_skill_permissions(self):
         invariants = "\n".join(self.proposal["permission_matrix"]["invariants"])
         self.assertIn(
