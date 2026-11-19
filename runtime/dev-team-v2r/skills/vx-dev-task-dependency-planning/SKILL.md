@@ -22,3 +22,8 @@ metadata:
 
 ## Salida
 `WORK_BREAKDOWN`, `DEPENDENCY_GRAPH`, `PARALLEL_SAFE`, `BLOCKERS`, `OWNERS`, `GATES`, `INTEGRATION_ORDER`.
+
+## Integración de evidencia/MCP
+- MCP se usa para resolver dependencias desconocidas, no como sustituto del plan.
+- Si una tarea depende de evidencia externa, registrar qué rol/tool debe producirla y qué reuse key entregará.
+- No asignar a varios roles la misma consulta salvo necesidad de verificación independiente.
