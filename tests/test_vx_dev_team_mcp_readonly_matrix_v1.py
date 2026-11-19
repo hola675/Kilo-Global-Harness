@@ -113,33 +113,50 @@ class DevTeamMcpReadonlyMatrixV1Tests(unittest.TestCase):
             "DENY_ALL_IN_V1",
         )
 
-    def test_current_agents_still_have_no_mcp_permissions(self):
-        proposal_permissions = WAVE1_TOOLS | {
+    def test_only_research_and_architect_have_wave1_documentation_permissions(self):
+        unrelated_permissions = {
             "serena_get_symbols_overview",
             "serena_find_symbol",
             "codebase-memory_search_graph",
             "cloudflare-api_docs",
         }
 
-        for path in [LEADER, *sorted(CHILD_DIR.glob("vx-dev-*.md"))]:
+        leader_front = frontmatter(LEADER)
+        for permission in WAVE1_TOOLS | unrelated_permissions:
+            self.assertNotIn(permission + ":", leader_front)
+
+        allowed_agents = {"vx-dev-research", "vx-dev-architect"}
+        for path in sorted(CHILD_DIR.glob("vx-dev-*.md")):
             with self.subTest(agent=path.name):
                 front = frontmatter(path)
-                for permission in proposal_permissions:
+                if path.stem in allowed_agents:
+                    for permission in WAVE1_TOOLS:
+                        self.assertRegex(
+                            front,
+                            rf"(?m)^  {re.escape(permission)}:\s*allow\s*$",
+                        )
+                else:
+                    for permission in WAVE1_TOOLS:
+                        self.assertNotIn(permission + ":", front)
+                for permission in unrelated_permissions:
                     self.assertNotIn(permission + ":", front)
+                self.assertRegex(front, r"(?m)^  read:\s*deny\s*$")
 
-        for path in sorted(CHILD_DIR.glob("vx-dev-*.md")):
-            front = frontmatter(path)
-            self.assertRegex(front, r"(?m)^  read:\s*deny\s*$")
-
-    def test_baseline_references_design_without_marking_it_active(self):
+    def test_baseline_records_wave1_as_source_aligned_but_deny_by_default(self):
         design = self.baseline["mcp_design"]
         self.assertEqual(
             design["proposal"],
             "registry/dev-team-mcp-readonly-matrix-v1.proposal.json",
         )
-        self.assertFalse(design["active"])
-        self.assertEqual(design["current_child_mcp"], "DENY")
-        self.assertEqual(design["first_candidate_wave"], "WAVE-1-DOCS")
+        self.assertEqual(design["active"], "wave1-docs-source-aligned")
+        self.assertEqual(
+            design["current_child_mcp"],
+            "DENY_BY_DEFAULT_WITH_RESEARCH_AND_ARCHITECT_DOCS_ALLOWLIST",
+        )
+        self.assertEqual(
+            design["first_candidate_wave"],
+            "WAVE-1-DOCS-CERTIFIED_AND_SOURCE_ALIGNED",
+        )
 
 
 if __name__ == "__main__":
