@@ -1,0 +1,27 @@
+{
+  "schema": "dev-team-current-certification/1",
+  "version": "1.0.0",
+  "status": "CURRENT_SOURCE_CERTIFICATION",
+  "baseline": "2.3.0-reviewer-specialist",
+  "active_tests": [
+    "test_vx_dev_team_agent_parser.py",
+    "test_vx_dev_team_v1.py",
+    "test_vx_dev_team_v210_split.py",
+    "test_vx_dev_team_v230_runtime_certification.py",
+    "test_vx_dev_team_skills_matrix_v1.py",
+    "test_vx_dev_team_living_certification_policy_v1.py"
+  ],
+  "historical_evidence": [
+    {
+      "superseded_test": "test_vx_dev_team_v2r2_specialists.py",
+      "evidence_registry": "registry/dev-team-v2r2-specialist-certification-v1.json",
+      "reason": "V2-R.2 topology superseded by current 2.3.0 specialist split and runtime certification."
+    }
+  ],
+  "rules": {
+    "active_tests_validate_current_baseline_only": true,
+    "historical_tests_must_not_be_active": true,
+    "replacement_must_pass_before_removal": true,
+    "workflow_must_call_manifest_runner": true
+  }
+}
