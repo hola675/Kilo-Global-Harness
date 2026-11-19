@@ -690,8 +690,8 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $fixture = Join-Path $env:RUNNER_TEMP ('vx461-' + [guid]::NewGuid().ToString('N'))
           $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          # El script PowerShell lanza excepción al fallar; no usar LASTEXITCODE heredado.
           & $installer -Modo Aplicar -RaizUsuario $fixture
-          if ($LASTEXITCODE -ne 0) { throw 'Instalacion V4.6.1 fallo' }
           $matrix = Join-Path $fixture '.config/kilo/harness/scripts/vx_competency_matrix.py'
           $audit = Join-Path $fixture '.config/kilo/harness/scripts/vx_capability_audit.py'
           $command = Join-Path $fixture '.config/kilo/commands/vx-matriz.md'
@@ -732,8 +732,8 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $fixture = Join-Path $env:RUNNER_TEMP ('vx462-' + [guid]::NewGuid().ToString('N'))
           $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          # El script PowerShell lanza excepción al fallar; no usar LASTEXITCODE heredado.
           & $installer -Modo Aplicar -RaizUsuario $fixture
-          if ($LASTEXITCODE -ne 0) { throw 'Instalacion del fixture V4.6.2 fallo' }
           $trial = Join-Path $fixture '.config/kilo/harness/scripts/vx_competency_trials.py'
           $matrix = Join-Path $fixture '.config/kilo/harness/scripts/vx_competency_matrix.py'
           $command = Join-Path $fixture '.config/kilo/commands/vx-ensayos.md'
@@ -897,8 +897,8 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $fixture = Join-Path $env:RUNNER_TEMP ('vx463-' + [guid]::NewGuid().ToString('N'))
           $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
+          # El script PowerShell lanza excepción al fallar; no usar LASTEXITCODE heredado.
           & $installer -Modo Aplicar -RaizUsuario $fixture
-          if ($LASTEXITCODE -ne 0) { throw 'Fallo instalador V4.6.3' }
           $org = Join-Path $fixture '.config/kilo/harness/scripts/vx_organizational_audit.py'
           $audit = Join-Path $fixture '.config/kilo/harness/scripts/vx_capability_audit.py'
           $cmd = Join-Path $fixture '.config/kilo/commands/vx-organizacion.md'
@@ -936,12 +936,11 @@ jobs:
             throw 'V4.6.3 modifico registro o SQLite'
           }
           & $installer -Modo Verificar -RaizUsuario $fixture
-          if ($LASTEXITCODE -ne 0) { throw 'Verificacion V4.6.3 fallo' }
           $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
             Sort-Object Name -Descending | Select-Object -First 1
           if (!$backup) { throw 'No existe backup de rollback V4.6.3' }
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
-          if ($LASTEXITCODE -ne 0 -or (Test-Path $org)) {
+          if (Test-Path $org) {
             throw 'Rollback V4.6.3 incompleto'
           }
           Write-Host 'VX V4.6.3: 26 UNIT TESTS + HOME ISOLADO + ROLLBACK WINDOWS PASS'
