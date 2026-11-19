@@ -22,3 +22,8 @@ metadata:
 
 ## Salida
 `QUERY_SHAPE`, `PLAN_FINDINGS`, `INDEX_FINDINGS`, `LOCKING_AND_WAITS`, `APP_ACCESS_PATTERN`, `HYPOTHESES`, `MEASUREMENT_REQUIRED`.
+
+## Integración de evidencia/MCP
+- Preferir planes/query evidence disponibles localmente; Codebase Memory/Serena sirven para localizar el patrón de acceso en aplicación si están autorizados.
+- Sentry puede aportar trazas/latencia agregada, nunca sustituye el plan/query observado.
+- No enviar datos de producción o valores sensibles innecesarios a servicios externos.
