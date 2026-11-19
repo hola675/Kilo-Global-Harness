@@ -42,10 +42,10 @@
       "reason": "Canonical current Pack VX certification manifest/runner."
     },
     {
-      "name": "VX Pack 0.3 - doctor, MCP pasivos y 13 agentes 31 skills",
+      "name": "VX Pack 0.3 - smoke Windows, MCP pasivos y rollback",
       "class": "CURRENT",
       "kind": "pack",
-      "reason": "Matches current pack version 0.3.0."
+      "reason": "Windows-only apply/verify/restore smoke; unit doctor coverage belongs to current Pack certification manifest."
     },
     {
       "name": "VX Pack DPAPI V0.2 - bootstrap seguro en Windows aislado",
