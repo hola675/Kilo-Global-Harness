@@ -1,4 +1,4 @@
-"""Contrato estructural de la baseline source 2.1.0 con Backend/Data separados."""
+"""Contrato estructural de la baseline source actual con especialistas separados."""
 from pathlib import Path
 import json
 import re
@@ -17,6 +17,7 @@ EXPECTED_SPECIALISTS = {
     "vx-dev-backend",
     "vx-dev-data",
     "vx-dev-platform",
+    "vx-dev-reviewer",
     "vx-dev-quality",
     "vx-dev-security",
 }
@@ -32,8 +33,8 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         self.baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
         self.leader = LEADER.read_text(encoding="utf-8")
 
-    def test_active_source_baseline_has_nine_specialists(self):
-        self.assertEqual(self.baseline["version"], "2.2.0-platform-specialist")
+    def test_active_source_baseline_has_ten_specialists(self):
+        self.assertEqual(self.baseline["version"], "2.3.0-reviewer-specialist")
         self.assertEqual(self.baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING")
         ids = {item["id"] for item in self.baseline["subagents"]}
         self.assertEqual(ids, EXPECTED_SPECIALISTS)
@@ -148,6 +149,33 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         for tool in DENIED:
             self.assertRegex(platform, rf"(?m)^\s{{2}}{re.escape(tool)}: deny\s*$")
 
+    def test_reviewer_contract_is_independent_and_non_mutating(self):
+        contract = self.baseline["specialist_contracts"]["vx-dev-reviewer"]
+        sections = contract["required_sections"]
+        for required in (
+            "CHANGE_SUMMARY",
+            "CONTRACT_REGRESSIONS",
+            "REGRESSION_RISKS",
+            "COMPLEXITY_RISKS",
+            "SCOPE_CONTROL",
+            "REVIEW_FINDINGS",
+            "REVIEW_VERDICT",
+        ):
+            self.assertIn(required, sections)
+        self.assertEqual(
+            contract["review_verdicts"],
+            [
+                "NO_BLOCKING_FINDINGS",
+                "CHANGES_REQUIRED",
+                "BLOCKED",
+                "INSUFFICIENT_EVIDENCE",
+            ],
+        )
+        reviewer = (AGENT_DIR / "vx-dev-reviewer.md").read_text(encoding="utf-8")
+        for tool in DENIED:
+            self.assertRegex(reviewer, rf"(?m)^\s{{2}}{re.escape(tool)}: deny\s*$")
+        self.assertIn("no debe decidir el merge", reviewer.lower())
+
     def test_runtime_certification_is_not_inherited_from_legacy_identity(self):
         certification = self.baseline["certification"]
         self.assertEqual(certification["historical_v2r2"]["result"], "7/7")
@@ -157,11 +185,11 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         )
         self.assertEqual(
             certification["current_source"]["pending_runtime"],
-            ["vx-dev-backend", "vx-dev-data", "vx-dev-platform"],
+            ["vx-dev-backend", "vx-dev-data", "vx-dev-platform", "vx-dev-reviewer"],
         )
         self.assertEqual(
             certification["current_source"]["deployed_runtime"],
-            "NOT_VERIFIED_AFTER_PLATFORM_ADD",
+            "NOT_VERIFIED_AFTER_REVIEWER_ADD",
         )
 
 
