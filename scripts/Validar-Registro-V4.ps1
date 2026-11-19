@@ -119,7 +119,7 @@ foreach ($p in $profiles) {
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
 
-# Dev Team source actual: único primario visible + ocho subagentes ocultos read-only.
+# Dev Team source actual: único primario visible + diez subagentes ocultos read-only.
 if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
     $data.execution.dev_team_display_name -ne 'vx-dev-team' -or
     $data.execution.dev_team_runtime -ne 'active-v1') {
@@ -150,7 +150,8 @@ foreach ($required in @(
 }
 $childIds = @(
   'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
-  'vx-dev-data','vx-dev-quality','vx-dev-security','vx-dev-research'
+  'vx-dev-data','vx-dev-platform','vx-dev-quality','vx-dev-security',
+  'vx-dev-reviewer','vx-dev-research'
 )
 foreach ($child in $childIds) {
   $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
