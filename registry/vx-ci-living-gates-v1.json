@@ -48,10 +48,10 @@
       "reason": "Windows-only apply/verify/restore smoke; unit doctor coverage belongs to current Pack certification manifest."
     },
     {
-      "name": "VX Pack DPAPI V0.2 - bootstrap seguro en Windows aislado",
-      "class": "REVIEW",
+      "name": "VX Pack DPAPI - sintaxis y soporte Windows del bootstrap actual",
+      "class": "CURRENT",
       "kind": "pack",
-      "reason": "Bootstrap implementation is still used, but label/version is historical; consolidate into current Pack certification."
+      "reason": "Windows-specific DPAPI/bootstrap host invariant; Python unit coverage moved to current Pack certification."
     },
     {
       "name": "MCP Pack V1 - registro reproducible de 13 servidores",
