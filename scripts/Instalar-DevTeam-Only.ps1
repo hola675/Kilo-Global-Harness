@@ -186,7 +186,8 @@ function Assert-AgentSources {
     '(?m)^displayName:\s*"vx-dev-team"\s*$',
     '(?m)^mode:\s*primary\s*$',
     '(?m)^color:\s*"#8B5CF6"\s*$',
-    '(?m)^\s{2}skill:\s*,
+    '(?m)^\s{2}skill:\s*$',
+    '(?m)^\s{4}"\*":\s*deny\s*$',
     '(?m)^\s{2}task:\s*$',
     '(?m)^\s{2}agent_manager:\s*deny\s*$'
   )) {
@@ -208,7 +209,8 @@ function Assert-AgentSources {
       '(?m)^mode:\s*subagent\s*$',
       '(?m)^hidden:\s*true\s*$',
       '(?m)^\s{2}read:\s*deny\s*$',
-      '(?m)^\s{2}skill:\s*
+      '(?m)^\s{2}skill:\s*$',
+      '(?m)^\s{4}"\*":\s*deny\s*$',
       '(?m)^\s{2}task:\s*deny\s*$',
       '(?m)^\s{2}edit:\s*deny\s*$',
       '(?m)^\s{2}write:\s*deny\s*$',
@@ -220,7 +222,33 @@ function Assert-AgentSources {
     )) {
       if ($text -notmatch $required) { throw "Subagente $name no es read-only/oculto: $required" }
     }
-    if ($text -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*
+    if ($text -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $name contiene permisos MCP automaticos."
+    }
+  }
+
+  $agentSkillMatrix = @{
+    'vx-dev-team.md'      = @('vx-dev-project-policy','vx-dev-team-handoff')
+    'vx-dev-explorer.md'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
+    'vx-dev-research.md'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
+    'vx-dev-architect.md' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
+    'vx-dev-frontend.md'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
+    'vx-dev-backend.md'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
+    'vx-dev-data.md'      = @('vx-dev-data-migration')
+    'vx-dev-platform.md'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
+    'vx-dev-quality.md'   = @('vx-dev-test-strategy','vx-dev-accessibility')
+    'vx-dev-security.md'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
+    'vx-dev-reviewer.md'  = @('vx-dev-independent-review','vx-dev-project-policy')
+  }
+  foreach ($name in $agentSkillMatrix.Keys) {
+    $text = Get-Content -LiteralPath $approvedAgents[$name] -Raw -Encoding UTF8
+    foreach ($skill in $agentSkillMatrix[$name]) {
+      $pattern = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
+      if ($text -notmatch $pattern) { throw "Agente $name no permite skill aprobada: $skill" }
+    }
+  }
+}
+
 function Show-State {
   $legacy = @(Get-LegacyItems)
   $installed = @()
