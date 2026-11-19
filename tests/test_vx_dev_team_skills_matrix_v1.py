@@ -120,6 +120,28 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertTrue(self.proposal["wave_s1"]["content_safety"]["mcp_permission_changes"] == "NONE")
         self.assertTrue(self.proposal["wave_s1"]["content_safety"]["task_permission_changes"] == "NONE")
 
+    def test_installer_strategy_is_explicit_and_pinned(self):
+        strategy = self.proposal["installer_strategy"]
+        self.assertEqual(strategy["managed_runtime_root"], "~/.kilo/skills")
+        self.assertEqual(
+            strategy["source_strategy"],
+            "Before activation, copy the four approved SKILL.md sources into runtime/dev-team-v2r/skills/<skill-id>/SKILL.md so Dev Team certification is pinned to its own source and not coupled to later legacy Pack VX edits.",
+        )
+        self.assertTrue(strategy["no_silent_install"])
+        self.assertIn("explicit -Modo Aplicar", strategy["install_requires"])
+        self.assertTrue(self.proposal["activation_policy"]["kilo_jsonc_unchanged"])
+        self.assertEqual(
+            self.proposal["activation_policy"]["install_mode"],
+            "installer-managed-on-explicit-apply",
+        )
+
+    def test_current_installer_still_treats_vx_skills_as_legacy_before_activation(self):
+        installer = (ROOT / "scripts" / "Instalar-DevTeam-Only.ps1").read_text(encoding="utf-8")
+        self.assertIn(".kilo/skills", installer)
+        self.assertIn(".agents/skills", installer)
+        self.assertIn(".kilocode/skills", installer)
+        self.assertIn("-Filter 'vx-*'", installer)
+
     def test_backend_and_reviewer_are_not_forced_into_s1(self):
         self.assertNotIn("vx-dev-backend", EXPECTED_S1)
         self.assertNotIn("vx-dev-reviewer", EXPECTED_S1)
