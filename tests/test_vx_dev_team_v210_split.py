@@ -206,6 +206,15 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         self.assertIn("Quality sigue siendo responsable", self.leader)
         self.assertIn("Security de amenazas", self.leader)
 
+    def test_leader_routes_by_minimum_independent_uncertainties(self):
+        self.assertIn("## Algoritmo de selección", self.leader)
+        self.assertIn("## Composiciones de routing", self.leader)
+        self.assertIn("mínimo conjunto de especialistas", self.leader)
+        self.assertIn("Backend + Security", self.leader)
+        self.assertIn("Backend + Data", self.leader)
+        self.assertIn("Platform como owner principal", self.leader)
+        self.assertIn("Research normalmente es suficiente", self.leader)
+
     def test_runtime_certification_is_not_inherited_from_legacy_identity(self):
         certification = self.baseline["certification"]
         self.assertEqual(certification["historical_v2r2"]["result"], "7/7")
