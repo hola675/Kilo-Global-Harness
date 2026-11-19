@@ -5,6 +5,8 @@ import json
 import re
 import unittest
 
+from dev_team_agent_parser_support import load_agent
+
 ROOT = Path(__file__).resolve().parents[1]
 PROPOSAL = ROOT / "registry" / "dev-team-skills-matrix-v1.proposal.json"
 EVALS = ROOT / "registry" / "dev-team-skill-evals-v1.proposal.json"
@@ -161,20 +163,10 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         )
         self.assertEqual(set(sources), ALL_AGENTS)
         for agent, path in sources.items():
-            content = path.read_text(encoding="utf-8")
-            self.assertRegex(content, r"(?m)^\s{2}skill:\s*$")
-            match = re.search(
-                r"(?ms)^\s{2}skill:\s*\n(?P<body>.*?)(?=^\s{2}[a-zA-Z_][a-zA-Z0-9_]*:|\Z)",
-                content,
-            )
-            self.assertIsNotNone(match)
-            body = match.group("body")
-            self.assertRegex(body, r'(?m)^\s{4}"\*":\s*deny\s*$')
-            allowed = set(
-                re.findall(r'(?m)^\s{4}"(vx-dev-[^"]+)":\s*allow\s*$', body)
-            )
+            perms = load_agent(path).permissions
+            self.assertEqual(perms.fallback("skill"), "deny")
             self.assertEqual(
-                allowed,
+                perms.allowlist("skill"),
                 EXPECTED_PERMISSIONS[agent],
                 f"{agent} must expose only its exact approved skill allowlist",
             )
