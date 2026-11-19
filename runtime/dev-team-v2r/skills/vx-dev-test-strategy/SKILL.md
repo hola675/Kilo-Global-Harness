@@ -19,6 +19,11 @@ metadata:
 6. Mantener fixtures sintéticos y deterministas.
 7. Para bugs, incluir caso que capture la regresión.
 8. Distinguir test existente, test propuesto y test ejecutado.
+9. Diseñar para la verdad actual, no para conservar topologías/versiones supersedidas.
+10. Antes de añadir un test, comprobar si debe actualizar o reemplazar uno existente.
+11. Si el nuevo test reemplaza completamente el oráculo anterior, marcar el viejo como supersedido y retirarlo del CI tras PASS del reemplazo.
+12. Mantener un regression guard solo si el riesgo sigue siendo plausible y distinto.
+13. No convertir historia de certificación en una suite activa permanente; la historia vive en Git/evidencia.
 
 ## Estados de evidencia
 `PASS`/`FAIL` solo con ejecución real identificada. En otro caso `NO_EJECUTADO` o `NO_VERIFICADO`.
