@@ -1,0 +1,100 @@
+{
+  "schema": "dev-team-mcp-operations-evals/1",
+  "version": "1.0.0-proposal",
+  "status": "DESIGNED_NOT_EXECUTED",
+  "policy": {
+    "minimum_should_trigger": 2,
+    "minimum_should_not_trigger": 2,
+    "goal": "Correct routing and safe MCP behavior without unnecessary calls."
+  },
+  "skills": [
+    {
+      "skill": "vx-dev-mcp-capability-routing",
+      "should_trigger": [
+        "Tengo GitHub, Serena, Context7 y Codebase Memory visibles. ¿Cuál debo usar para encontrar quién llama este símbolo y por qué?",
+        "Necesito verificar una API externa y luego revisar su uso local. Decide qué MCP usar y en qué orden."
+      ],
+      "should_not_trigger": [
+        "Ya tengo el archivo y la función exacta abiertos; analiza este código.",
+        "Solo redacta un mensaje de commit."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-server-playbook",
+      "should_trigger": [
+        "¿Para qué sirve cada MCP de nuestra biblioteca y cuándo elegir Sentry vs GitHub vs Serena?",
+        "Necesito saber qué servidor usar para documentación, browser, seguridad, API y reverse engineering."
+      ],
+      "should_not_trigger": [
+        "Ejecuta esta tool exacta con estos parámetros ya aprobados.",
+        "Resume el resultado MCP que ya te pasé."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-context-budget",
+      "should_trigger": [
+        "Tenemos más de cien tools visibles y el contexto se está llenando. Reduce el loadout y evita llamadas repetidas.",
+        "Este flujo encadena varias tools y devuelve blobs enormes; diseña una estrategia de contexto mínima."
+      ],
+      "should_not_trigger": [
+        "Solo hay una tool relevante y una consulta corta.",
+        "Audita scopes OAuth de un MCP nuevo."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-tool-contract",
+      "should_trigger": [
+        "Esta tool se llama get_data pero puede aceptar write=true. Revisa su contrato antes de usarla.",
+        "Cambió el schema de una tool MCP: clasifica side effects, auth y datos que cruza."
+      ],
+      "should_not_trigger": [
+        "Ya validamos el contrato y solo necesitamos resumir el resultado.",
+        "El problema es elegir entre dos fuentes documentales ya conocidas."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-evidence-ledger",
+      "should_trigger": [
+        "Research y Architect consultaron dos MCP distintos. Consolida la evidencia con procedencia y contradicciones.",
+        "Necesito pasar al reviewer qué tool, SHA y fuente respaldan cada hallazgo."
+      ],
+      "should_not_trigger": [
+        "No se ha ejecutado ninguna tool ni existe evidencia externa.",
+        "Decide qué MCP debe usarse primero."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-handoff",
+      "should_trigger": [
+        "Explorer ya obtuvo símbolos y referencias por MCP; empaqueta lo necesario para Backend sin repetir consultas.",
+        "Research encontró la versión oficial y debe pasarla al líder con IDs reutilizables."
+      ],
+      "should_not_trigger": [
+        "Todavía no tenemos resultados que transferir.",
+        "Necesito revisar el schema de la tool antes de llamarla."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-failure-recovery",
+      "should_trigger": [
+        "La tool MCP devolvió 429 y luego timeout. Decide retry, fallback o bloqueo sin entrar en loop.",
+        "El servidor dice tool not found después de una actualización. Define recuperación segura."
+      ],
+      "should_not_trigger": [
+        "La llamada terminó correctamente y la evidencia es suficiente.",
+        "Quiero saber qué MCP es mejor para consultar logs de producción."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-sensitive-data",
+      "should_trigger": [
+        "Voy a consultar Sentry con logs de producción y código privado. Define qué enviar, redactar y conservar.",
+        "Playwright está sobre una sesión autenticada; analiza qué datos no deben salir en screenshots o handoffs."
+      ],
+      "should_not_trigger": [
+        "Consulta documentación pública de una librería sin datos privados.",
+        "Decide entre dos tools locales que no salen del host."
+      ]
+    }
+  ]
+}
