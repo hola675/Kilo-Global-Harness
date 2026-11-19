@@ -501,8 +501,6 @@ jobs:
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_observer_light.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Falló V4.4 observer tests.' }
-          python -I -m unittest discover -s tests -p 'test_vx_evolution_core.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Regresión en V4.3.' }
           python -m compileall -q scripts/vx_evolution_core.py tests/test_vx_observer_light.py
           if ($LASTEXITCODE -ne 0) { throw 'Error compilación Python.' }
           node --check 'plugins/vx-observer-light.js'
@@ -625,10 +623,6 @@ jobs:
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_meeting_v45.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas de reunion V4.5' }
-          python -I -m unittest discover -s tests -p 'test_vx_observer_light.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.4' }
-          python -I -m unittest discover -s tests -p 'test_vx_evolution_core.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.3' }
           python -m compileall -q scripts/vx_evolution_core.py tests/test_vx_meeting_v45.py
           if ($LASTEXITCODE -ne 0) { throw 'Compileall V4.5 fallo' }
           $fixture = Join-Path $env:RUNNER_TEMP ('vx45-inst-' + [guid]::NewGuid().ToString('N'))
@@ -666,12 +660,6 @@ jobs:
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_joint_meeting_v451.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Pruebas reunion conjunta fallaron' }
-          python -I -m unittest discover -s tests -p 'test_vx_meeting_v45.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.5' }
-          python -I -m unittest discover -s tests -p 'test_vx_observer_light.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.4' }
-          python -I -m unittest discover -s tests -p 'test_vx_evolution_core.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Regresion V4.3' }
           $policy = Get-Content 'config/vx-reunion-policy.v1.json' -Raw -Encoding UTF8 | ConvertFrom-Json
           if ($policy.weekly.local_time -ne '09:00' -or
               $policy.monthly.local_time -ne '09:00' -or
