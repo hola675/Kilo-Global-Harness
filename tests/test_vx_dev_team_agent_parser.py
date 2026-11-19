@@ -2,11 +2,12 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from tools.dev_team_agent_parser import (
+from dev_team_agent_parser_support import (
     extract_frontmatter,
     get_skill_allowlist,
     get_task_allowlist,
     load_agent,
+    parse_permission_block,
 )
 
 
@@ -49,7 +50,6 @@ class DevTeamAgentParserTests(unittest.TestCase):
     def test_invalid_permission_decision_is_rejected(self):
         bad = SAMPLE.replace("glob: allow", "glob: maybe")
         front = extract_frontmatter(bad)
-        from tools.dev_team_agent_parser import parse_permission_block
         with self.assertRaises(ValueError):
             parse_permission_block(front)
 
