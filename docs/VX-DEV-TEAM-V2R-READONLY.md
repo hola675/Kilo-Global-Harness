@@ -1,8 +1,8 @@
-# Dev Team V2-R.2 — líder único + especialistas ocultos con capacidades adaptativas
+# vx-dev-team V2-R.2 — líder único + especialistas ocultos con capacidades adaptativas
 
 **Fecha:** 2026-11-17  
 **Estado:** ACTIVE APPROVED BASELINE · V2-R.2  
-**Primario visible:** `👥 Dev Team`  
+**Primario visible:** `vx-dev-team`  
 **Especialistas ocultos:** 7  
 **Mutaciones de subagentes:** DENY  
 **MCP de subagentes:** NO EXPUESTO en esta fase
@@ -11,7 +11,7 @@
 
 V2-R introduce la primera capa multiagente aprobada del Harness sin volver a llenar el selector principal.
 
-El operador interactúa únicamente con `👥 Dev Team`. El líder puede delegar análisis concretos a especialistas ocultos mediante `task`. Los hijos son no interactivos y trabajan en contexto aislado.
+El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar análisis concretos a especialistas ocultos mediante `task`. Los hijos son no interactivos y trabajan en contexto aislado.
 
 ## Equipo V2-R
 
@@ -34,7 +34,7 @@ Los especialistas se definen en `runtime/dev-team-v2r/agents/` para mantenerlos 
 Usuario
   │
   ▼
-👥 Dev Team
+vx-dev-team
   │
   ├── simple  → 0-1 especialista
   ├── media   → 1-2 especialistas
@@ -44,7 +44,7 @@ Usuario
           resultados estructurados
                   │
                   ▼
-             👥 Dev Team
+             vx-dev-team
                   │
              síntesis/decisión
 ```
@@ -56,7 +56,7 @@ No existe comunicación lateral entre hijos. No hay Swarm, Board ni Agent Manage
 Solo una profundidad:
 
 ```text
-Usuario → Dev Team → Subagente
+Usuario → vx-dev-team → Subagente
 ```
 
 Los hijos tienen `task: deny`.
@@ -171,7 +171,7 @@ El instalador:
 
 Antes de permitir cualquier subagente escritor:
 
-1. Kilo debe mostrar solo `👥 Dev Team` en el selector;
+1. Kilo debe mostrar solo `vx-dev-team` en el selector;
 2. el líder debe delegar exitosamente a al menos Explorer y Architect;
 3. un hijo debe ser incapaz de editar y ejecutar shell;
 4. el padre debe recibir solo el resultado estructurado;
@@ -179,12 +179,24 @@ Antes de permitir cualquier subagente escritor:
 6. una tarea compleja debe mantener máximo 2-4 especialistas salvo excepción explícita;
 7. no debe cambiar `kilo.jsonc` ni la lista de MCP.
 
+## Dirección actual de evolución
+
+Las WAVE de recertificación quedan pausadas mientras se pule el diseño operativo del equipo.
+
+Prioridad actual:
+
+1. consolidar `vx-dev-team` como coordinador único y mejorar routing por incertidumbre;
+2. pulir los especialistas existentes uno por uno;
+3. dividir `vx-dev-backend-data` en `vx-dev-backend` y `vx-dev-data` solo después de definir y certificar ambos;
+4. diseñar `vx-dev-platform` para runtime/build/CI/CD/configuración;
+5. diseñar `vx-dev-reviewer` como revisor independiente de cambios;
+6. mantener una sola profundidad y deny-by-default.
+
+Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `task` hasta que existan, se revisen sus permisos y pasen sus pruebas.
+
 ## Próxima fase
 
-Después del smoke real V2-R.2:
-
-- medir routing del líder;
-- ajustar descripciones/prompts;
-- conectar MCP read-only tool-by-tool donde aporte valor;
-- mantener mutaciones denegadas;
-- solo después evaluar builders aislados/worktrees como V2-W.
+- pulir `vx-dev-explorer` y su contrato `CODE_MAP / IMPACT_SURFACE`;
+- continuar después con Research, Architect y especialistas de dominio;
+- mantener el runtime actual estable mientras se diseña cada agente;
+- no ampliar la ACL del líder por adelantado.
