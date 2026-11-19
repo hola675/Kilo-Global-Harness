@@ -198,7 +198,7 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             self.assertIn("## Salida obligatoria", text, path.name)
             for section in common:
-                self.assertRegex(text, rf"(?m)^{re.escape(section)}\\s*$", path.name)
+                self.assertRegex(text, rf"(?m)^{re.escape(section)}\s*$", path.name)
 
     def test_independent_review_is_routed_to_reviewer(self):
         self.assertIn("**INDEPENDENT_REVIEW**", self.leader)
