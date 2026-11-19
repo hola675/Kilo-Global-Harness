@@ -25,3 +25,8 @@ metadata:
 `{component,source,version,pin,permissions,hooks,license,known_risks,evidence,recommendation}`.
 
 Inspiración: SLSA, GitHub Actions security, OWASP supply-chain guidance.
+
+## Integración de evidencia/MCP
+- GitHub y Snyk pueden aportar commits, dependencias, advisories o scans cuando estén autorizados.
+- Registrar versión, lockfile/SHA y procedencia; no mezclar advisory de otra versión.
+- Si un scan implica procesamiento externo de source, aplicar `vx-dev-mcp-sensitive-data`.
