@@ -28,3 +28,8 @@ Coordinar por incertidumbres independientes, no por ritual. Un especialista entr
 
 ## Límites
 Los hijos no delegan. La skill no habilita task, Board, Agent Manager ni worktrees.
+
+## Integración de evidencia/MCP
+- Si el trabajo incluye resultados MCP, usar el formato de `vx-dev-mcp-handoff`: pregunta, tool exacta, evidencia, relevancia, gaps y reuse keys.
+- El líder debe reutilizar el handoff antes de volver a consultar la misma fuente.
+- Un subagente nunca usa MCP para delegar; entrega evidencia al líder respetando depth=1.
