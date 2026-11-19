@@ -24,7 +24,7 @@ class DevTeamV2R2SpecialistCertificationTests(unittest.TestCase):
     def test_registry_is_bound_to_historical_v2r2_baseline(self):
         self.assertEqual(self.registry["status"], "PASS_OPERATOR_RUNTIME")
         self.assertEqual(self.registry["baseline"], "2.0.2-runtime-adaptive")
-        self.assertEqual(self.baseline["version"], "2.1.0-specialist-split")
+        self.assertEqual(self.baseline["version"], "2.2.0-specialist-expansion")
         migration = self.baseline["legacy"]["specialist_migrations"]["vx-dev-backend-data"]
         self.assertEqual(migration["status"], "SUPERSEDED_IN_SOURCE")
         self.assertEqual(migration["replaced_by"], ["vx-dev-backend", "vx-dev-data"])
