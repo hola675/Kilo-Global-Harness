@@ -149,6 +149,16 @@ jobs:
           if ($restored -ne $before) { throw 'Rollback altero configuracion privada.' }
           Write-Host 'V4 GLOBAL-ONLY, SEGURIDAD, ROUTING Y ROLLBACK: PASS'
 
+      - name: VX Pack - certificacion viva del contrato actual
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python tools/run_vx_pack_current_certification.py
+          if ($LASTEXITCODE -ne 0) { throw 'Certificacion viva Pack VX actual fallo.' }
+          python -I -m unittest discover -s tests -p 'test_vx_pack_current_certification_manifest.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Manifest Pack VX actual invalido.' }
+          Write-Host 'VX PACK CURRENT CERTIFICATION: PASS'
+
       - name: VX Pack 0.3 - doctor, MCP pasivos y 13 agentes 31 skills
         shell: pwsh
         run: |
