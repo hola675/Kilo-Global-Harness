@@ -48,8 +48,14 @@ class P2ModeGateTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             home = Path(tmp)
             _, assets = vx.load_pack(ROOT, home)
-            self.assertEqual(len(assets), 92)
-            self.assertTrue(any(a.target == home / ".config/kilo/commands/vx-p2.md" for a in assets))
+            targets = [a.target for a in assets]
+            self.assertEqual(len(targets), len(set(targets)))
+            self.assertTrue(
+                any(a.target == home / ".config/kilo/commands/vx-p2.md" for a in assets)
+            )
+            self.assertTrue(
+                any(a.target == home / ".config/kilo/agents/vx-docs-builder.md" for a in assets)
+            )
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,4 @@
-"""Regression tests for VX runtime evidence gates; all use synthetic data."""
+"""Contrato vigente de evidencia runtime VX; todos los datos son sintéticos."""
 import importlib.util
 import json
 from pathlib import Path
@@ -14,7 +14,7 @@ smoke = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(smoke)
 
 
-class SmokeTests(unittest.TestCase):
+class RuntimeEvidenceCurrentTests(unittest.TestCase):
     def test_blank_template_not_certified(self):
         report = smoke.analyze(smoke.template())
         self.assertEqual(report["verified_claims"], 0)

@@ -127,6 +127,26 @@ Incluye cuando corresponda:
 
 No infles la matriz con combinaciones sin riesgo diferencial.
 
+### Política de certificación viva
+
+Antes de proponer un test nuevo:
+
+1. identifica la invariante actual que protege;
+2. busca si ya existe un test activo para esa invariante;
+3. decide `UPDATE`, `REPLACE` o `ADD`;
+4. usa `ADD` solo cuando el riesgo sea realmente distinto;
+5. si `REPLACE`, exige primero PASS del reemplazo y luego recomienda retirar el test supersedido del CI;
+6. no conserves pruebas activas solo para preservar historia.
+
+Clasifica cada prueba propuesta como:
+
+- `CURRENT_CONTRACT`
+- `CHANGE_FOCUSED`
+- `REGRESSION_GUARD`
+- `SUPERSEDED_REMOVE_AFTER_PASS`
+
+La historia de versiones/certificaciones pertenece a Git, registries y evidencia, no a suites activas acumulativas.
+
 ### 4. TEST_ORACLES
 
 Define qué señal demuestra el resultado.

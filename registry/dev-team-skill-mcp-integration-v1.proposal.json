@@ -1,0 +1,74 @@
+{
+  "schema": "dev-team-skill-mcp-integration/1",
+  "version": "1.0.0-proposal",
+  "status": "SOURCE_READY_RUNTIME_INACTIVE",
+  "created": "2026-11-19",
+  "scope": {
+    "total_non_mcp_skills": 34,
+    "rule": "Every non-MCP skill gets a domain-specific MCP/evidence integration block without granting permissions."
+  },
+  "invariants": [
+    "Native/local evidence remains preferred when sufficient.",
+    "MCP availability never implies authorization.",
+    "Exact tool selection and role ACL remain authoritative.",
+    "Reuse existing evidence/handoffs before repeating calls.",
+    "Sensitive data is minimized before external processing.",
+    "Runtime claims must distinguish observed vs inferred.",
+    "No skill may add allowed-tools, scripts, shell commands, or mutate kilo.jsonc."
+  ],
+  "categories": {
+    "coordination": [
+      "vx-dev-project-policy",
+      "vx-dev-team-handoff",
+      "vx-dev-task-dependency-planning"
+    ],
+    "research_architecture": [
+      "vx-dev-source-reconciliation",
+      "vx-dev-architecture-decision",
+      "vx-dev-doc-traceability"
+    ],
+    "code_backend_data": [
+      "vx-dev-codebase-investigation",
+      "vx-dev-backend-contracts",
+      "vx-dev-data-migration",
+      "vx-dev-sql-performance"
+    ],
+    "platform_runtime": [
+      "vx-dev-platform-delivery",
+      "vx-dev-debug-triage",
+      "vx-dev-observability-privacy",
+      "vx-dev-performance-analysis",
+      "vx-dev-incident-analysis",
+      "vx-dev-release-readiness"
+    ],
+    "frontend_ux": [
+      "vx-dev-frontend-ux",
+      "vx-dev-accessibility",
+      "vx-dev-ui-state-system",
+      "vx-dev-ux-ui-pro-review",
+      "vx-dev-design-system-governance",
+      "vx-dev-responsive-resilience",
+      "vx-dev-forms-ux",
+      "vx-dev-ux-writing-content",
+      "vx-dev-information-architecture",
+      "vx-dev-interaction-motion",
+      "vx-dev-data-visualization",
+      "vx-dev-visual-craft"
+    ],
+    "quality_security_review": [
+      "vx-dev-test-strategy",
+      "vx-dev-security-threat-review",
+      "vx-dev-supply-chain-review",
+      "vx-dev-independent-review",
+      "vx-dev-regression-analysis",
+      "vx-dev-requirements-acceptance"
+    ]
+  },
+  "activation": {
+    "runtime_changes": "NONE",
+    "acl_changes": "NONE",
+    "mcp_permission_changes": "NONE",
+    "installer_changes": "NONE",
+    "requires_operator_approval": true
+  }
+}

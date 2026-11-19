@@ -22,3 +22,8 @@ metadata:
 
 ## Salida
 `DATA_MODEL`, `DATA_INVARIANTS`, `QUERY_IMPACT`, `CONSISTENCY_RISKS`, `MIGRATION_IMPACT`.
+
+## Integración de evidencia/MCP
+- Preferir schema/migrations/source locales; usar Codebase Memory/Serena solo para localizar consumidores o dependencias cuando esté autorizado.
+- GitHub MCP puede aportar historial/PR/commit relevante sin sustituir verificación del source actual.
+- Registrar versión del esquema y SHA para evitar mezclar estados.

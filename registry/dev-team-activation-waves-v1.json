@@ -1,0 +1,93 @@
+{
+  "schema": "dev-team-activation-waves/1",
+  "version": "1.0.0-proposal",
+  "status": "PLANNED_NOT_RUNTIME_AUTHORIZED",
+  "created": "2026-11-19",
+  "invariants": [
+    "No wave is activated only because source CI passes.",
+    "Runtime snapshot and eval evidence are mandatory when declared by the wave.",
+    "kilo.jsonc must remain byte-identical unless a separately reviewed change explicitly targets it.",
+    "Every skill ACL remains exact-name deny-by-default.",
+    "MCP activation uses exact runtime-observed tool IDs only.",
+    "A failed wave rolls back before the next wave."
+  ],
+  "waves": [
+    {
+      "id": "W1-CORE-18",
+      "type": "skills",
+      "source_registry": "registry/dev-team-skills-matrix-v1.proposal.json",
+      "selection": "all 18 V1 core skills",
+      "target_roles": "11 Dev Team roles",
+      "prerequisites": [
+        "source_ci_pass",
+        "runtime_agent_hash_match",
+        "skill_source_hash_18_of_18",
+        "operator_approval"
+      ],
+      "runtime_effect": [
+        "install 18 skills under ~/.kilo/skills",
+        "apply exact permission.skill maps to 11 agents"
+      ],
+      "status": "BLOCKED_SOURCE_CI_AND_OPERATOR"
+    },
+    {
+      "id": "W2-GAP-FILL",
+      "type": "skills",
+      "source_registry": "registry/dev-team-skills-gap-v2.proposal.json",
+      "selection": "only skills with complete trigger evals and no material overlap",
+      "prerequisites": [
+        "W1_runtime_pass",
+        "skill_eval_report_complete",
+        "overlap_review",
+        "operator_approval"
+      ],
+      "status": "BLOCKED_EVALS"
+    },
+    {
+      "id": "W3-UX-UI-PRO",
+      "type": "skills",
+      "source_registry": "registry/dev-team-ux-ui-pro-v1.proposal.json",
+      "selection": "router + specialists that pass overlap evals against frontend-ux/accessibility/ui-state-system",
+      "prerequisites": [
+        "W2_or_explicit_skip",
+        "skill_eval_report_complete",
+        "browser_tool_inventory",
+        "operator_approval"
+      ],
+      "status": "BLOCKED_EVALS_AND_BROWSER_INVENTORY"
+    },
+    {
+      "id": "W4-MCP-OPERATIONS",
+      "type": "skills",
+      "source_registry": "registry/dev-team-mcp-operations-v1.proposal.json",
+      "selection": "MCP operating skills assigned only to roles with an approved MCP surface",
+      "prerequisites": [
+        "skill_eval_report_complete",
+        "mcp_exact_inventory_runtime_complete",
+        "role_assignment_review",
+        "operator_approval"
+      ],
+      "status": "BLOCKED_MCP_RUNTIME_INVENTORY"
+    },
+    {
+      "id": "W5-TOOL-ACL",
+      "type": "permissions",
+      "source_registry": "registry/dev-team-capability-matrix-v1.json",
+      "exact_inventory": "registry/dev-team-mcp-exact-inventory-v1.json",
+      "selection": "exact tools only; no server wildcard",
+      "prerequisites": [
+        "runtime_visible_snapshot_11_of_11",
+        "tool_plan_review",
+        "negative_visibility_tests",
+        "per_tool_smokes",
+        "operator_approval"
+      ],
+      "status": "BLOCKED_RUNTIME_EVIDENCE"
+    }
+  ],
+  "rollback": {
+    "required": true,
+    "scope": "wave-local backup and manifest",
+    "rule": "Do not proceed to the next wave after FAIL/PARTIAL without explicit resolution."
+  }
+}

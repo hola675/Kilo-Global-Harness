@@ -4,6 +4,8 @@ import json
 import re
 import unittest
 
+from dev_team_agent_parser_support import get_skill_allowlist
+
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "registry" / "dev-team-readonly-baseline-v2.json"
 LEADER = ROOT / "agents" / "vx-dev-team.md"
@@ -33,21 +35,6 @@ EXPECTED_SKILLS = {
     "vx-dev-platform": {"vx-dev-platform-delivery", "vx-dev-debug-triage"},
     "vx-dev-reviewer": {"vx-dev-independent-review", "vx-dev-project-policy"},
 }
-
-
-def skill_allowlist(text: str) -> set[str]:
-    match = re.search(
-        r"(?ms)^  skill:\s*\n(?P<body>.*?)(?=^  [a-zA-Z_][a-zA-Z0-9_]*:|\Z)",
-        text,
-    )
-    if not match:
-        raise AssertionError("Bloque permission.skill ausente")
-    body = match.group("body")
-    if not re.search(r'(?m)^    "\*":\s*deny\s*$', body):
-        raise AssertionError("permission.skill sin fallback deny")
-    return set(
-        re.findall(r'(?m)^    "(vx-dev-[^"]+)":\s*allow\s*$', body)
-    )
 
 
 class DevTeamSpecialistSplitTests(unittest.TestCase):
@@ -81,7 +68,7 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
             self.assertRegex(text, r"(?m)^\s{2}lsp: allow\s*$")
             for tool in DENIED:
                 self.assertRegex(text, rf"(?m)^\s{{2}}{re.escape(tool)}: deny\s*$")
-            self.assertEqual(skill_allowlist(text), EXPECTED_SKILLS[agent_id])
+            self.assertEqual(get_skill_allowlist(AGENT_DIR / f"{agent_id}.md"), EXPECTED_SKILLS[agent_id])
 
     def test_specialized_outputs_are_distinct(self):
         contracts = self.baseline["specialist_contracts"]
@@ -172,7 +159,7 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         for tool in DENIED:
             self.assertRegex(platform, rf"(?m)^\s{{2}}{re.escape(tool)}: deny\s*$")
         self.assertEqual(
-            skill_allowlist(platform),
+            get_skill_allowlist(AGENT_DIR / "vx-dev-platform.md"),
             EXPECTED_SKILLS["vx-dev-platform"],
         )
 
@@ -202,7 +189,7 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         for tool in DENIED:
             self.assertRegex(reviewer, rf"(?m)^\s{{2}}{re.escape(tool)}: deny\s*$")
         self.assertEqual(
-            skill_allowlist(reviewer),
+            get_skill_allowlist(AGENT_DIR / "vx-dev-reviewer.md"),
             EXPECTED_SKILLS["vx-dev-reviewer"],
         )
         self.assertIn("no debe decidir el merge", reviewer.lower())

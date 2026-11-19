@@ -27,3 +27,8 @@ Solo para decisiones que cambian estructura, contratos duraderos, dependencias o
 `OPTIONS`, `TRADEOFFS`, `CONTRACTS`, `DECISIONS_REQUIRED`, riesgos y recomendación.
 
 No convertir propuesta en implementación ni inventar requisitos.
+
+## Integración de evidencia/MCP
+- Usar documentación oficial para restricciones externas y Serena/Codebase Memory para límites reales del código, solo si están autorizados.
+- Separar evidencia de docs, evidencia de source e inferencia arquitectónica.
+- Reutilizar handoffs de Research/Explorer antes de nuevas llamadas.

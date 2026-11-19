@@ -5,6 +5,8 @@ import json
 import re
 import unittest
 
+from dev_team_agent_parser_support import load_agent
+
 ROOT = Path(__file__).resolve().parents[1]
 PROPOSAL = ROOT / "registry" / "dev-team-skills-matrix-v1.proposal.json"
 EVALS = ROOT / "registry" / "dev-team-skill-evals-v1.proposal.json"
@@ -91,13 +93,16 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertEqual(legacy["total"], 31)
         self.assertEqual(legacy["status"], "REFERENCE_ONLY_NOT_RUNTIME_PACK")
 
-    def test_pack_contains_exactly_18_original_dev_team_skills(self):
+    def test_v1_declares_18_original_skills_and_all_still_exist(self):
         declared = self.proposal["dev_team_pack"]["skills"]
         declared_ids = {item["id"] for item in declared}
         actual_ids = {path.parent.name for path in PACK_SKILLS_DIR.glob("*/SKILL.md")}
         self.assertEqual(self.proposal["dev_team_pack"]["total_skills"], 18)
         self.assertEqual(len(declared_ids), 18)
-        self.assertEqual(actual_ids, declared_ids)
+        self.assertTrue(
+            declared_ids <= actual_ids,
+            "Las 18 skills V1 deben seguir presentes aunque existan capas source posteriores.",
+        )
         self.assertTrue(all(skill.startswith("vx-dev-") for skill in declared_ids))
 
     def test_each_pack_skill_is_valid_small_and_non_executable(self):
@@ -161,20 +166,10 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         )
         self.assertEqual(set(sources), ALL_AGENTS)
         for agent, path in sources.items():
-            content = path.read_text(encoding="utf-8")
-            self.assertRegex(content, r"(?m)^\s{2}skill:\s*$")
-            match = re.search(
-                r"(?ms)^\s{2}skill:\s*\n(?P<body>.*?)(?=^\s{2}[a-zA-Z_][a-zA-Z0-9_]*:|\Z)",
-                content,
-            )
-            self.assertIsNotNone(match)
-            body = match.group("body")
-            self.assertRegex(body, r'(?m)^\s{4}"\*":\s*deny\s*$')
-            allowed = set(
-                re.findall(r'(?m)^\s{4}"(vx-dev-[^"]+)":\s*allow\s*$', body)
-            )
+            perms = load_agent(path).permissions
+            self.assertEqual(perms.fallback("skill"), "deny")
             self.assertEqual(
-                allowed,
+                perms.allowlist("skill"),
                 EXPECTED_PERMISSIONS[agent],
                 f"{agent} must expose only its exact approved skill allowlist",
             )

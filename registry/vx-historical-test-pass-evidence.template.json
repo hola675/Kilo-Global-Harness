@@ -1,0 +1,7 @@
+{
+  "schema": "vx-historical-test-pass-evidence/1",
+  "source": "CI",
+  "workflow_run": null,
+  "commit_sha": null,
+  "passed_tests": []
+}

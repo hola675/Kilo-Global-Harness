@@ -1,0 +1,111 @@
+{
+  "schema": "dev-team-skill-evals/2",
+  "version": "2.0.0-proposal",
+  "status": "DESIGNED_NOT_EXECUTED",
+  "policy": {
+    "minimum_should_trigger": 2,
+    "minimum_should_not_trigger": 2,
+    "goal": "Measure triggering quality before runtime activation."
+  },
+  "skills": [
+    {
+      "skill": "vx-dev-requirements-acceptance",
+      "should_trigger": [
+        "Convierte esta solicitud ambigua en requisitos verificables, supuestos y criterios de aceptación.",
+        "Antes de implementar, separa MUST/SHOULD y qué queda fuera de alcance."
+      ],
+      "should_not_trigger": [
+        "Diseña la matriz completa de unit/integration/E2E para este cambio.",
+        "Revisa por qué el build de producción falla."
+      ]
+    },
+    {
+      "skill": "vx-dev-release-readiness",
+      "should_trigger": [
+        "Tenemos CI verde: evalúa si realmente estamos listos para release incluyendo rollback y riesgo residual.",
+        "Antes del merge final, construye el gate de release con evidencia y blockers."
+      ],
+      "should_not_trigger": [
+        "Mapea cómo funciona actualmente el pipeline staging→prod.",
+        "Analiza la causa raíz de un 500 intermitente."
+      ]
+    },
+    {
+      "skill": "vx-dev-observability-privacy",
+      "should_trigger": [
+        "Revisa si nuestros logs y traces permiten diagnosticar este flujo sin exponer PII ni tokens.",
+        "Tenemos métricas pero no sabemos si son suficientes ni qué retención implica riesgo."
+      ],
+      "should_not_trigger": [
+        "Haz threat modeling del endpoint de pagos completo.",
+        "Define la arquitectura del nuevo servicio de métricas."
+      ]
+    },
+    {
+      "skill": "vx-dev-performance-analysis",
+      "should_trigger": [
+        "Diseña cómo demostrar si este cambio empeoró p95, CPU o throughput sin ejecutar el benchmark.",
+        "Tenemos dos mediciones distintas: define baseline, variables controladas y criterio de regresión."
+      ],
+      "should_not_trigger": [
+        "Optimiza esta query SQL concreta usando su EXPLAIN.",
+        "Revisa la jerarquía visual de la pantalla."
+      ]
+    },
+    {
+      "skill": "vx-dev-sql-performance",
+      "should_trigger": [
+        "Esta consulta pasó de 30 ms a 2 s. Analiza plan, índices, waits y cardinalidad.",
+        "Detectamos N+1 y scans: revisa el patrón de acceso y qué medir antes de cambiar índices."
+      ],
+      "should_not_trigger": [
+        "Diseña el backfill para convertir una columna a NOT NULL.",
+        "Define un benchmark general de throughput HTTP."
+      ]
+    },
+    {
+      "skill": "vx-dev-doc-traceability",
+      "should_trigger": [
+        "Vincula este requisito con ADR, archivos, tests y documentación y marca huecos.",
+        "El changelog dice una cosa y el código otra: construye la cadena de trazabilidad del cambio."
+      ],
+      "should_not_trigger": [
+        "Determina cuál de dos documentos contradictorios es la fuente correcta.",
+        "Revisa si el PR introduce complejidad accidental."
+      ]
+    },
+    {
+      "skill": "vx-dev-regression-analysis",
+      "should_trigger": [
+        "Este refactor toca autenticación: identifica contratos previos que podrían romperse y pruebas focalizadas.",
+        "Después de actualizar la dependencia cambió el orden de resultados; analiza la superficie de regresión."
+      ],
+      "should_not_trigger": [
+        "Diseña toda la estrategia de pruebas para una feature nueva.",
+        "Haz triage inicial de un bug sin cambio asociado conocido."
+      ]
+    },
+    {
+      "skill": "vx-dev-task-dependency-planning",
+      "should_trigger": [
+        "La tarea toca datos, backend y frontend: descompón dependencias, owners y orden de integración.",
+        "Tenemos cinco subtareas; identifica cuáles pueden ir en paralelo sin compartir estado mutable."
+      ],
+      "should_not_trigger": [
+        "Haz un handoff entre Research y Architect con hallazgos ya producidos.",
+        "Decide entre modular monolith y microservicios."
+      ]
+    },
+    {
+      "skill": "vx-dev-incident-analysis",
+      "should_trigger": [
+        "Producción se degradó tras varios cambios: construye timeline, impacto, blast radius y estado de causa raíz.",
+        "Haz análisis postmortem del incidente distinguiendo mitigación, causa y gaps de detección."
+      ],
+      "should_not_trigger": [
+        "Un unit test falla localmente: formula hipótesis técnicas para el bug.",
+        "Evalúa si el release candidato tiene rollback suficiente antes de desplegar."
+      ]
+    }
+  ]
+}

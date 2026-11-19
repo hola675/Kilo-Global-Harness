@@ -1,0 +1,304 @@
+{
+  "schema": "dev-team-capability-matrix/1",
+  "version": "1.0.0-proposal",
+  "status": "CANONICAL_SOURCE_RUNTIME_UNCHANGED",
+  "created": "2026-11-19",
+  "source_baseline": "2.3.0-reviewer-specialist",
+  "authority": {
+    "role_skill_allowlists": "canonical_for_source_candidate",
+    "native_target_routing": "canonical_recommendation_not_acl",
+    "mcp_family_routing": "canonical_recommendation_not_acl",
+    "current_exact_mcp_allowlists": "descriptive_of_certified_source_only",
+    "runtime_authority": "installed agent ACL + host visibility remain authoritative"
+  },
+  "aliases": {
+    "playwright": "kilo-playwright"
+  },
+  "invariants": [
+    "Availability never grants authorization.",
+    "Current exact MCP allowlists and target MCP families are separate fields.",
+    "No wildcard MCP allow is represented.",
+    "Skills are advisory-only and cannot grant tools.",
+    "Runtime changes require a separately approved activation wave."
+  ],
+  "roles": {
+    "vx-dev-team": {
+      "skills": [
+        "vx-dev-project-policy",
+        "vx-dev-team-handoff"
+      ],
+      "native_primary": [
+        "read",
+        "glob",
+        "grep",
+        "lsp",
+        "skill",
+        "task",
+        "plan",
+        "todowrite",
+        "todoread"
+      ],
+      "native_conditional": [
+        "websearch",
+        "webfetch",
+        "agent_manager"
+      ],
+      "mcp_primary": [
+        "github"
+      ],
+      "mcp_conditional": [
+        "kilo-platform",
+        "context7",
+        "microsoft-learn"
+      ],
+      "current_mcp_exact": []
+    },
+    "vx-dev-explorer": {
+      "skills": [
+        "vx-dev-codebase-investigation",
+        "vx-dev-debug-triage"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [],
+      "mcp_primary": [
+        "serena",
+        "codebase-memory"
+      ],
+      "mcp_conditional": [
+        "github"
+      ],
+      "current_mcp_exact": []
+    },
+    "vx-dev-research": {
+      "skills": [
+        "vx-dev-source-reconciliation",
+        "vx-dev-mcp-readonly"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [
+        "websearch",
+        "webfetch"
+      ],
+      "mcp_primary": [
+        "context7",
+        "microsoft-learn"
+      ],
+      "mcp_conditional": [
+        "github",
+        "cloudflare-api"
+      ],
+      "current_mcp_exact": [
+        "context7_resolve-library-id",
+        "context7_query-docs",
+        "microsoft-learn_microsoft_docs_search",
+        "microsoft-learn_microsoft_docs_fetch",
+        "microsoft-learn_microsoft_code_sample_search"
+      ]
+    },
+    "vx-dev-architect": {
+      "skills": [
+        "vx-dev-architecture-decision",
+        "vx-dev-mcp-readonly",
+        "vx-dev-project-policy"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [],
+      "mcp_primary": [
+        "context7",
+        "microsoft-learn",
+        "serena",
+        "codebase-memory"
+      ],
+      "mcp_conditional": [
+        "github",
+        "cloudflare-api"
+      ],
+      "current_mcp_exact": [
+        "context7_resolve-library-id",
+        "context7_query-docs",
+        "microsoft-learn_microsoft_docs_search",
+        "microsoft-learn_microsoft_docs_fetch",
+        "microsoft-learn_microsoft_code_sample_search"
+      ]
+    },
+    "vx-dev-frontend": {
+      "skills": [
+        "vx-dev-frontend-ux",
+        "vx-dev-accessibility",
+        "vx-dev-ui-state-system",
+        "vx-dev-debug-triage"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [
+        "browser_open"
+      ],
+      "mcp_primary": [
+        "kilo-playwright"
+      ],
+      "mcp_conditional": [
+        "chrome-devtools",
+        "github",
+        "imagegen"
+      ],
+      "current_mcp_exact": []
+    },
+    "vx-dev-backend": {
+      "skills": [
+        "vx-dev-backend-contracts",
+        "vx-dev-debug-triage"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [],
+      "mcp_primary": [
+        "serena",
+        "codebase-memory",
+        "postman"
+      ],
+      "mcp_conditional": [
+        "github",
+        "sentry"
+      ],
+      "current_mcp_exact": []
+    },
+    "vx-dev-data": {
+      "skills": [
+        "vx-dev-data-migration"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [],
+      "mcp_primary": [
+        "serena",
+        "codebase-memory"
+      ],
+      "mcp_conditional": [
+        "github"
+      ],
+      "current_mcp_exact": []
+    },
+    "vx-dev-platform": {
+      "skills": [
+        "vx-dev-platform-delivery",
+        "vx-dev-debug-triage"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [],
+      "mcp_primary": [
+        "github",
+        "sentry",
+        "cloudflare-api"
+      ],
+      "mcp_conditional": [
+        "chrome-devtools",
+        "codebase-memory"
+      ],
+      "current_mcp_exact": []
+    },
+    "vx-dev-quality": {
+      "skills": [
+        "vx-dev-test-strategy",
+        "vx-dev-accessibility"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [
+        "browser_open"
+      ],
+      "mcp_primary": [
+        "kilo-playwright",
+        "github"
+      ],
+      "mcp_conditional": [
+        "chrome-devtools",
+        "sentry",
+        "codebase-memory"
+      ],
+      "current_mcp_exact": []
+    },
+    "vx-dev-security": {
+      "skills": [
+        "vx-dev-security-threat-review",
+        "vx-dev-supply-chain-review",
+        "vx-dev-mcp-security"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [],
+      "mcp_primary": [
+        "snyk",
+        "github"
+      ],
+      "mcp_conditional": [
+        "sentry",
+        "cloudflare-api",
+        "postman"
+      ],
+      "current_mcp_exact": []
+    },
+    "vx-dev-reviewer": {
+      "skills": [
+        "vx-dev-independent-review",
+        "vx-dev-project-policy"
+      ],
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [],
+      "mcp_primary": [
+        "github"
+      ],
+      "mcp_conditional": [
+        "codebase-memory",
+        "serena",
+        "kilo-playwright",
+        "sentry"
+      ],
+      "current_mcp_exact": []
+    }
+  }
+}

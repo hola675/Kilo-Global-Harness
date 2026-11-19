@@ -13,6 +13,28 @@
 7. **GIT CLOSE** — usar ramas `work/*` para tareas no triviales. Partir de `main` sincronizada sin perder cambios locales. PR y CI si el repo lo exige; merge solo tras validación. Verificar `main` remota antes de eliminar únicamente la rama creada por la tarea.
 8. **REPORT** — resultado, pruebas, commits/PR, riesgos, siguiente paso y rollback.
 
+## Certificación viva y deuda de tests
+
+Regla global para todos los agentes VX y Dev Team:
+
+1. Antes de crear un test, identificar la **invariante actual** que debe demostrar.
+2. Buscar si ya existe un test activo para esa misma invariante.
+3. Elegir explícitamente una acción:
+   - `UPDATE` — el test existente sigue siendo el oráculo correcto y debe actualizarse;
+   - `REPLACE` — el test nuevo sustituye completamente al anterior;
+   - `ADD` — solo cuando existe un riesgo/oráculo realmente distinto.
+4. Un test nuevo no se conserva junto al anterior por historia o por versión.
+5. Si `REPLACE`, ejecutar primero el reemplazo. Solo después de PASS real se retira el test/gate supersedido.
+6. La historia se conserva en Git, PR, changelog, registry y evidencia de certificación, no en suites activas acumulativas.
+7. Los tests deben ser focalizados al cambio. Ampliar cobertura únicamente si cambió una invariante transversal.
+8. CI source, smoke Windows y certificación runtime son evidencias distintas; no repetir una suite completa en varios gates.
+9. Cada suite directa `test_*.py` debe tener un único gate propietario o pertenecer a un manifest canónico.
+10. Nunca declarar PASS de una prueba no ejecutada ni conservar un test sin una invariante vigente asociada.
+
+Al cerrar una tarea, el coordinador debe poder responder:
+`invariante → test vigente → acción UPDATE/REPLACE/ADD → evidencia → test supersedido retirado o justificación para conservarlo`.
+
+
 ## MCP y memoria
 
 - `codebase-memory-mcp`: comprobar servidor, proyecto, frescura y cobertura; validar hallazgos contra el código. Nunca tratar un grafo obsoleto como verdad.

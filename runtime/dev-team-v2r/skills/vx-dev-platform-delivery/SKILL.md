@@ -22,3 +22,8 @@ metadata:
 
 ## Salida
 `RUNTIME_MAP`, `BUILD_AND_RELEASE_FLOW`, `CONFIG_SURFACE`, `ENVIRONMENT_DIFFS`, `FAILURE_MODES`, `DEPLOYMENT_RISKS`, `OBSERVABILITY`.
+
+## Integración de evidencia/MCP
+- GitHub MCP es la fuente preferente para PR/Actions/artefactos remotos; Sentry para señales runtime; Cloudflare para docs/API de plataforma cuando estén autorizados.
+- Antes de una tool ambigua o mutable, aplicar `vx-dev-mcp-tool-contract`.
+- No usar browser tooling para datos que GitHub/API ya expongan de forma más directa.

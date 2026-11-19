@@ -1,0 +1,19 @@
+{
+  "schema": "vx-historical-test-pass-evidence/1",
+  "source": "GitHub Actions",
+  "workflow_run": 44597421210,
+  "commit_sha": "d94137ea1a8e90460683b64246e316364141dab0",
+  "passed_tests": [
+    "test_vx_dev_team_capability_matrix_v1.py",
+    "test_vx_dev_team_mcp_exact_inventory_v1.py",
+    "test_vx_dev_team_mcp_current_contract.py",
+    "test_vx_meeting_current_contract.py"
+  ],
+  "passed_gates": [
+    "Dev Team - certificacion viva del contrato actual",
+    "VX Reunion - contrato vigente de sesion conjunta manual",
+    "V4.5 - calendario, reuniones manuales y migración sin scheduler",
+    "V4.5.1 - reunion conjunta sin duplicación ni programador"
+  ],
+  "note": "Run 457 passed current Dev Team certification and current meeting contract before failing later at Competency Matrix."
+}

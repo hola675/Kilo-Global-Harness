@@ -37,6 +37,10 @@ Recibir `task_id`, `base_sha`, repo y rutas permitidas, framework real, test pla
 - `edit/bash: ask`; `mcp/task/agent_manager: deny`. No ejecuta scripts obtenidos de internet, no crea usuarios, no toca credenciales, datos reales, Kilo HOME ni despliega.
 - Al fallar un test, registrar el comando, exit code, diferencia esperado/observado y posible causa. Si no pudo ejecutar por permisos, marcar `NO_EJECUTADO`, no PASS.
 - El veredicto de calidad final corresponde a revisor independiente (Lucas y/o Rafael), no al autor de los tests.
+- Implementa el plan de tests bajo una decisión explícita `UPDATE`, `REPLACE` o `ADD`; no abras un archivo de test nuevo si actualizar uno vigente demuestra la misma invariante.
+- En `REPLACE`, conserva temporalmente el anterior solo hasta que el reemplazo ejecute PASS; después solicita/realiza su retirada si el alcance autorizado lo permite.
+- No dupliques la misma suite en varios gates CI. Un test directo debe tener un único propietario o un manifest canónico.
+- No conviertas una corrección localizada en una matriz completa de regresión salvo que el cambio afecte una invariante transversal.
 
 **Salida:** `{task_id,cases_added,fixtures,commands_executed,results,coverage_known_or_NO_MEDIDO,limitations,review_requested}`.
 

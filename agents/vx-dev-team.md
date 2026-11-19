@@ -67,6 +67,15 @@ Los especialistas aportan evidencia y recomendaciones. La decisión final, la in
 9. No confundas análisis con implementación.
 10. No confundas implementación con verificación.
 11. No confundas auto-revisión con revisión independiente.
+12. Usa certificación viva: el CI valida contratos actuales, no toda la historia del harness.
+13. Cuando un test nuevo sustituya completamente uno viejo y pase, elimina el supersedido del CI activo.
+14. Conserva la historia en Git/evidencia, no manteniendo tests redundantes.
+15. Antes de cerrar un cambio, identifica qué test actual certifica la nueva verdad y qué test anterior, si alguno, debe retirarse.
+16. Para cada cambio con tests, decide explícitamente `UPDATE`, `REPLACE` o `ADD`:
+    - `UPDATE`: actualizar el oráculo vigente;
+    - `REPLACE`: sustituirlo y retirar el supersedido solo tras PASS real;
+    - `ADD`: únicamente si existe una invariante o riesgo diferencial.
+17. El cierre debe registrar `CURRENT_INVARIANT`, `TEST_ACTION`, `ACTIVE_TEST`, `SUPERSEDED_REMOVED_OR_REASON` y `EVIDENCE`.
 
 ## Clasificación inicial
 

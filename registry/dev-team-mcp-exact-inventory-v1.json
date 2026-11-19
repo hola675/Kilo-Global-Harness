@@ -1,0 +1,228 @@
+{
+  "schema": "dev-team-mcp-exact-inventory/1",
+  "version": "1.0.0-proposal",
+  "status": "SOURCE_RECONCILED_RUNTIME_PARTIAL",
+  "created": "2026-11-19",
+  "source": "registry/dev-team-mcp-readonly-matrix-v1.proposal.json",
+  "classes": [
+    "READ_SAFE",
+    "READ_SENSITIVE",
+    "READ_EXTERNAL_PROCESSING",
+    "MUTABLE",
+    "DESTRUCTIVE_ADMIN",
+    "MIXED",
+    "UNKNOWN"
+  ],
+  "policy": {
+    "runtime_exact_ids_required_before_allow": true,
+    "unknown_default": "DENY",
+    "wildcard": "DENY",
+    "source_candidate_is_not_runtime_visibility": true,
+    "candidate_default": "DENY",
+    "disallowed_classes": [
+      "UNKNOWN",
+      "MIXED",
+      "MUTABLE",
+      "DESTRUCTIVE_ADMIN"
+    ],
+    "candidate_tools_are_not_authorized": true
+  },
+  "servers": {
+    "context7": {
+      "runtime_verified_exact": [
+        "context7_resolve-library-id",
+        "context7_query-docs"
+      ],
+      "candidate_exact": [
+        "context7_query-code"
+      ],
+      "status": "PARTIAL_RUNTIME_VERIFIED"
+    },
+    "microsoft-learn": {
+      "runtime_verified_exact": [
+        "microsoft-learn_microsoft_docs_search",
+        "microsoft-learn_microsoft_docs_fetch",
+        "microsoft-learn_microsoft_code_sample_search"
+      ],
+      "candidate_exact": [],
+      "status": "RUNTIME_VERIFIED"
+    },
+    "serena": {
+      "runtime_verified_exact": [],
+      "candidate_exact": [
+        "serena_get_symbols_overview",
+        "serena_find_symbol",
+        "serena_find_referencing_symbols",
+        "serena_find_declaration",
+        "serena_find_implementations",
+        "serena_search_for_pattern",
+        "serena_read_file",
+        "serena_list_dir",
+        "serena_find_file",
+        "serena_read_memory",
+        "serena_list_memories",
+        "serena_write_memory",
+        "serena_delete_memory",
+        "serena_rename_memory",
+        "serena_edit_memory",
+        "serena_create_text_file",
+        "serena_replace_content",
+        "serena_replace_in_files",
+        "serena_delete_lines",
+        "serena_replace_lines",
+        "serena_insert_at_line"
+      ],
+      "status": "SOURCE_CANDIDATES_RUNTIME_UNVERIFIED"
+    },
+    "codebase-memory": {
+      "runtime_verified_exact": [],
+      "candidate_exact": [
+        "codebase-memory_search_graph",
+        "codebase-memory_trace_path",
+        "codebase-memory_get_code_snippet",
+        "codebase-memory_get_file_outline",
+        "codebase-memory_get_graph_schema",
+        "codebase-memory_compare_graphs",
+        "codebase-memory_get_architecture",
+        "codebase-memory_search_code",
+        "codebase-memory_list_projects",
+        "codebase-memory_index_status",
+        "codebase-memory_check_index_coverage",
+        "codebase-memory_detect_changes",
+        "codebase-memory_query_graph",
+        "codebase-memory_index_repository",
+        "codebase-memory_delete_project",
+        "codebase-memory_manage_adr",
+        "codebase-memory_ingest_traces"
+      ],
+      "status": "SOURCE_CANDIDATES_RUNTIME_UNVERIFIED"
+    },
+    "cloudflare-api": {
+      "runtime_verified_exact": [],
+      "candidate_exact": [
+        "cloudflare-api_docs",
+        "cloudflare-api_search",
+        "cloudflare-api_whoami",
+        "cloudflare-api_execute"
+      ],
+      "status": "SOURCE_CANDIDATES_RUNTIME_UNVERIFIED"
+    },
+    "ida": {
+      "runtime_verified_exact": [],
+      "candidate_exact": [
+        "ida_reference",
+        "ida_list_databases",
+        "ida_open_database",
+        "ida_execute_python",
+        "ida_save_database",
+        "ida_close_database"
+      ],
+      "status": "SOURCE_CANDIDATES_RUNTIME_UNVERIFIED"
+    },
+    "github": {
+      "runtime_verified_exact": [],
+      "candidate_tool_names": [
+        "get_file_contents",
+        "search_code",
+        "get_file_blame",
+        "get_repository_tree",
+        "list_branches",
+        "list_tags",
+        "list_commits",
+        "get_commit",
+        "search_commits",
+        "get_tag",
+        "issue_read",
+        "pull_request_read",
+        "actions_list",
+        "actions_get",
+        "get_job_logs"
+      ],
+      "status": "DYNAMIC_OR_PREFIX_UNVERIFIED"
+    },
+    "kilo-playwright": {
+      "runtime_verified_exact": [],
+      "candidate_tool_names": [
+        "browser_console_messages",
+        "browser_network_request",
+        "browser_network_requests",
+        "browser_snapshot"
+      ],
+      "status": "BUILTIN_RUNTIME_SNAPSHOT_REQUIRED"
+    },
+    "chrome-devtools": {
+      "runtime_verified_exact": [],
+      "candidate_tool_names": [
+        "list_pages",
+        "take_snapshot",
+        "list_console_messages",
+        "get_console_message",
+        "list_network_requests",
+        "get_css_styles",
+        "get_network_request",
+        "take_screenshot",
+        "lighthouse_audit"
+      ],
+      "status": "RUNTIME_SNAPSHOT_REQUIRED"
+    },
+    "sentry": {
+      "runtime_verified_exact": [],
+      "candidate_tool_names": [
+        "find_organizations",
+        "find_projects",
+        "search_errors",
+        "search_logs",
+        "search_traces",
+        "search_metrics",
+        "search_profiles",
+        "search_replays",
+        "search_issues",
+        "get_sentry_resource",
+        "search_sentry_tools",
+        "analyze_issue_with_seer",
+        "update_issue",
+        "execute_sentry_tool"
+      ],
+      "status": "GATEWAY_RUNTIME_SNAPSHOT_REQUIRED"
+    },
+    "snyk": {
+      "runtime_verified_exact": [],
+      "candidate_tool_names": [
+        "snyk_version",
+        "snyk_auth_status",
+        "snyk_package_health_check",
+        "snyk_sca_scan",
+        "snyk_code_scan",
+        "snyk_iac_scan",
+        "snyk_container_scan",
+        "snyk_sbom_scan",
+        "snyk_secret_scan",
+        "snyk_aibom",
+        "snyk_trust",
+        "snyk_auth",
+        "snyk_logout"
+      ],
+      "status": "VERSION_DEPENDENT_RUNTIME_SNAPSHOT_REQUIRED"
+    },
+    "postman": {
+      "runtime_verified_exact": [],
+      "candidate_tool_names": [
+        "getEnabledTools",
+        "getWorkspaces",
+        "searchPostmanElements"
+      ],
+      "status": "DYNAMIC_RUNTIME_SNAPSHOT_REQUIRED"
+    },
+    "imagegen": {
+      "runtime_verified_exact": [],
+      "candidate_tool_names": [
+        "generate_image",
+        "edit_image",
+        "remove_background",
+        "auth_status",
+        "sign_in"
+      ],
+      "status": "RUNTIME_SNAPSHOT_REQUIRED"
+    }
+  }
+}

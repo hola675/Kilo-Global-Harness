@@ -35,3 +35,8 @@ Para cada acción o componente definir:
 
 ## Salida
 `STATE_MODEL`, transiciones, gaps, recovery path y riesgos.
+
+## Integración de evidencia/MCP
+- Para confirmar estados reales, usar browser/runtime MCP solo si el rol tiene autorización.
+- Reutilizar capturas/observaciones existentes antes de navegar otra vez.
+- Distinguir estados definidos en código de estados realmente observados.

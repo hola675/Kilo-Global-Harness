@@ -4,6 +4,8 @@ import json
 import re
 import unittest
 
+from dev_team_agent_parser_support import load_agent
+
 ROOT = Path(__file__).resolve().parents[1]
 LEADER = ROOT / "agents" / "vx-dev-team.md"
 RUNTIME_DIR = ROOT / "runtime" / "dev-team-v2r" / "agents"
@@ -26,21 +28,7 @@ CHILDREN = (
 
 
 def frontmatter(path: Path) -> str:
-    text = path.read_text(encoding="utf-8")
-    match = re.match(r"\A---\r?\n([\s\S]*?)\r?\n---\r?\n", text)
-    if not match:
-        raise AssertionError(f"Frontmatter inválido: {path}")
-    return match.group(1)
-
-
-def nested_permission_block(front: str, name: str) -> str:
-    match = re.search(
-        rf"(?ms)^  {re.escape(name)}:\s*\n(?P<body>.*?)(?=^  [a-zA-Z_][a-zA-Z0-9_]*:|\Z)",
-        front,
-    )
-    if not match:
-        raise AssertionError(f"Bloque permission.{name} ausente")
-    return match.group("body")
+    return load_agent(path).frontmatter
 
 
 class DevTeamV2RTests(unittest.TestCase):
@@ -52,24 +40,21 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertNotRegex(front, r"(?m)^hidden:\s*true\s*$")
         self.assertRegex(front, r"(?m)^  edit:\s*ask\s*$")
         self.assertRegex(front, r"(?m)^  bash:\s*ask\s*$")
-        skill_body = nested_permission_block(front, "skill")
-        self.assertRegex(skill_body, r'(?m)^    "\*":\s*deny\s*$')
-        self.assertRegex(skill_body, r'(?m)^    "vx-dev-project-policy":\s*allow\s*$')
-        self.assertRegex(skill_body, r'(?m)^    "vx-dev-team-handoff":\s*allow\s*$')
+        perms = load_agent(LEADER).permissions
+        self.assertEqual(perms.fallback("skill"), "deny")
+        self.assertEqual(
+            perms.allowlist("skill"),
+            {"vx-dev-project-policy", "vx-dev-team-handoff"},
+        )
         self.assertRegex(front, r"(?m)^  agent_manager:\s*deny\s*$")
         self.assertRegex(front, r"(?m)^  board_read:\s*deny\s*$")
         self.assertRegex(front, r"(?m)^  board_post:\s*deny\s*$")
 
     def test_leader_allowlists_exactly_ten_children(self):
         front = frontmatter(LEADER)
-        task_body = nested_permission_block(front, "task")
-        self.assertRegex(task_body, r'(?m)^    "\*":\s*deny\s*$')
-        for child in CHILDREN:
-            self.assertRegex(task_body, rf'(?m)^    "{re.escape(child)}":\s*allow\s*$')
-        allows = set(
-            re.findall(r'(?m)^    "(vx-dev-[^"]+)":\s*allow\s*$', task_body)
-        )
-        self.assertEqual(allows, set(CHILDREN))
+        perms = load_agent(LEADER).permissions
+        self.assertEqual(perms.fallback("task"), "deny")
+        self.assertEqual(perms.allowlist("task"), set(CHILDREN))
 
     def test_children_are_hidden_and_cannot_mutate_or_delegate(self):
         files = sorted(RUNTIME_DIR.glob("vx-dev-*.md"))
@@ -88,8 +73,10 @@ class DevTeamV2RTests(unittest.TestCase):
                     "agent_manager", "external_directory", "board_read", "board_post",
                 ):
                     self.assertRegex(front, rf"(?m)^  {re.escape(tool)}:\s*deny\s*$")
-                skill_body = nested_permission_block(front, "skill")
-                self.assertRegex(skill_body, r'(?m)^    "\*":\s*deny\s*$')
+                self.assertEqual(
+                    load_agent(file).permissions.fallback("skill"),
+                    "deny",
+                )
                 self.assertNotRegex(front, r'(?m)^  "[a-z0-9-]+_\*":\s*(allow|ask)\s*$')
 
     def test_baseline_declares_one_visible_leader_and_readonly_children(self):
