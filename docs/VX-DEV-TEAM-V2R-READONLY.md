@@ -20,7 +20,7 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 | `vx-dev-team` | Team Lead / Technical Lead | sí | ask | ask | allowlist | ninguno automático |
 | `vx-dev-explorer` | codebase exploration | no | deny | deny | deny | deny |
 | `vx-dev-architect` | architecture decisions/contracts | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
-| `vx-dev-frontend` | frontend analysis | no | deny | deny | deny | deny |
+| `vx-dev-frontend` | frontend interaction analysis | no | deny | deny | deny | deny |
 | `vx-dev-backend` | backend application analysis | no | deny | deny | deny | deny |
 | `vx-dev-data` | data/persistence analysis | no | deny | deny | deny | deny |
 | `vx-dev-quality` | quality/test planning | no | deny | deny | deny | deny |
@@ -189,6 +189,28 @@ Su frontera termina antes de decidir comportamiento de APIs o reglas de negocio.
 
 El antiguo `vx-dev-backend-data` queda supersedido en el source. Su certificación V2-R.2 se conserva únicamente como evidencia histórica y no certifica los dos agentes nuevos.
 
+## Contrato especializado: vx-dev-frontend
+
+`vx-dev-frontend` analiza comportamiento de interfaz, no preferencias visuales generales.
+
+Su salida específica añade:
+
+- `UI_FLOW` — entrada, acción, estados intermedios, resultado y recuperación;
+- `COMPONENT_MODEL` — componentes relevantes, responsabilidades y ownership de estado;
+- `STATE_MODEL` — estados cliente necesarios para explicar comportamiento;
+- `INTERACTION_STATES` — submit, loading, retry, navegación, optimistic/stale y otros riesgos de interacción;
+- `ACCESSIBILITY_RESPONSIVE` — evidencia y riesgos de accesibilidad/responsive sin declarar conformidad completa;
+- `API_TOUCHPOINTS` — contratos consumidos por la UI como `CONFIRMED`, `ASSUMED` o `MISSING`.
+
+Fronteras:
+
+- Frontend no diseña endpoints ni lógica de servidor;
+- Backend posee APIs/servicios/auth de aplicación;
+- Data posee garantías persistentes;
+- Architect posee decisiones transversales;
+- Quality posee estrategia de verificación;
+- Security posee trust boundaries y riesgo de seguridad.
+
 ## Permisos de hijos
 
 Requeridos:
@@ -310,6 +332,7 @@ Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `tas
 - `vx-dev-explorer` ya usa el contrato `CODE_MAP / IMPACT_SURFACE`;
 - `vx-dev-research` ya usa `SOURCE_LEDGER / CONTRADICTIONS` y su allowlist documental;
 - `vx-dev-architect` ya usa `OPTIONS / TRADEOFFS / CONTRACTS / DECISIONS_REQUIRED` y su allowlist documental;
-- continuar con los especialistas de dominio;
+- `vx-dev-frontend` ya usa `UI_FLOW / COMPONENT_MODEL / STATE_MODEL / INTERACTION_STATES / ACCESSIBILITY_RESPONSIVE / API_TOUCHPOINTS`;
+- continuar con Quality, Security y los especialistas nuevos planificados;
 - mantener el runtime actual estable mientras se diseña cada agente;
 - no ampliar la ACL del líder por adelantado.

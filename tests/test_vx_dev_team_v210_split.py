@@ -70,6 +70,25 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         self.assertIn("MIGRATION_IMPACT", data)
         self.assertNotEqual(backend, data)
 
+    def test_frontend_contract_is_behavior_focused(self):
+        contract = self.baseline["specialist_contracts"]["vx-dev-frontend"]
+        sections = contract["required_sections"]
+        for required in (
+            "UI_FLOW",
+            "COMPONENT_MODEL",
+            "STATE_MODEL",
+            "INTERACTION_STATES",
+            "ACCESSIBILITY_RESPONSIVE",
+            "API_TOUCHPOINTS",
+        ):
+            self.assertIn(required, sections)
+        self.assertEqual(
+            contract["api_touchpoint_states"],
+            ["CONFIRMED", "ASSUMED", "MISSING"],
+        )
+        self.assertIn("vx-dev-backend", contract["boundary"])
+        self.assertIn("vx-dev-data", contract["boundary"])
+
     def test_runtime_certification_is_not_inherited_from_legacy_identity(self):
         certification = self.baseline["certification"]
         self.assertEqual(certification["historical_v2r2"]["result"], "7/7")

@@ -48,10 +48,18 @@
     },
     {
       "id": "vx-dev-frontend",
-      "role": "frontend-analysis",
+      "role": "frontend-interaction-analysis",
       "mode": "subagent",
       "hidden": true,
-      "read_only": true
+      "read_only": true,
+      "special_output": [
+        "UI_FLOW",
+        "COMPONENT_MODEL",
+        "STATE_MODEL",
+        "INTERACTION_STATES",
+        "ACCESSIBILITY_RESPONSIVE",
+        "API_TOUCHPOINTS"
+      ]
     },
     {
       "id": "vx-dev-backend",
@@ -379,6 +387,38 @@
         "UNKNOWN"
       ],
       "boundary": "API/service/domain behavior belongs to vx-dev-backend"
+    },
+    "vx-dev-frontend": {
+      "mission": "analyze UI flows, component responsibilities, client state, interaction states, accessibility, responsive behavior and API touchpoints without designing backend or visual preferences",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "UI_FLOW",
+        "COMPONENT_MODEL",
+        "STATE_MODEL",
+        "INTERACTION_STATES",
+        "ACCESSIBILITY_RESPONSIVE",
+        "API_TOUCHPOINTS",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "OBSERVED",
+        "INFERRED",
+        "RISK",
+        "UNKNOWN"
+      ],
+      "api_touchpoint_states": [
+        "CONFIRMED",
+        "ASSUMED",
+        "MISSING"
+      ],
+      "boundary": "backend contracts belong to vx-dev-backend; persistence guarantees belong to vx-dev-data"
     }
   },
   "mcp_allowlists": {

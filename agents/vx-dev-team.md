@@ -132,7 +132,18 @@ No lo uses para exploración exhaustiva.
 
 ### vx-dev-frontend
 
-Usa para incertidumbres de UI, componentes, estado cliente, formularios, accesibilidad, responsive, loading/error/empty states e integración frontend/API.
+Usa cuando la incertidumbre sea de comportamiento de interfaz:
+
+- flujo de usuario;
+- límites/responsabilidad de componentes;
+- estado cliente;
+- formularios e interacción;
+- loading/error/empty/success/disabled states;
+- accesibilidad observable;
+- responsive observable;
+- contratos consumidos por la UI.
+
+No lo uses para diseñar endpoints, persistencia ni preferencias visuales sin requisito/evidencia.
 
 ### vx-dev-backend
 
