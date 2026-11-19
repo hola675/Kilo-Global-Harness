@@ -78,12 +78,6 @@
       "reason": "Canonical current Dev Team certification."
     },
     {
-      "name": "Dev Team MCP Read-Only Matrix V1 - propuesta inactiva y deny-by-default",
-      "class": "HISTORICAL_CANDIDATE",
-      "kind": "dev-team",
-      "reason": "Superseded by canonical Dev Team capability matrix + exact MCP inventory; remove after replacement PASS."
-    },
-    {
       "name": "Dev Team 2.3.0 - instalar 10 especialistas, preservar MCP/terceros y restaurar",
       "class": "CURRENT",
       "kind": "dev-team",
