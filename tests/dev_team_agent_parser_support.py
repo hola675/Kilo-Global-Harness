@@ -1,6 +1,7 @@
 """Carga el parser canónico desde tools/ bajo unittest -I."""
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 PARSER = ROOT / "tools" / "dev_team_agent_parser.py"
@@ -8,6 +9,7 @@ spec = spec_from_file_location("vx_dev_team_agent_parser", PARSER)
 if spec is None or spec.loader is None:
     raise ImportError(f"No se pudo cargar {PARSER}")
 module = module_from_spec(spec)
+sys.modules[spec.name] = module
 spec.loader.exec_module(module)
 
 AgentDocument = module.AgentDocument
