@@ -20,7 +20,7 @@
     "all_builder_writes_require_Kilo_ask": true,
     "approval_unavailable_in_noninteractive_task": "BLOCK_AND_RETURN_PLAN",
     "dev_team_primary": "vx-dev-team",
-    "dev_team_display_name": "👥 Dev Team",
+    "dev_team_display_name": "vx-dev-team",
     "dev_team_runtime": "active-v1"
   },
   "agents": [
@@ -40,10 +40,10 @@
         "git-close"
       ],
       "visual": {
-        "displayName": "👥 Dev Team",
+        "displayName": "vx-dev-team",
         "color": "#8B5CF6",
         "custom_icon_field_supported": false,
-        "visual_fallback": "emoji-displayName-plus-color"
+        "visual_fallback": "displayName-plus-color"
       },
       "mcp_policy": "minimum-privilege-v1"
     },
