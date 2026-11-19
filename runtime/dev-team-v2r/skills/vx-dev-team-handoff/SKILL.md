@@ -22,6 +22,9 @@ Coordinar por incertidumbres independientes, no por ritual. Un especialista entr
 6. Si dos hallazgos se contradicen, resolver por evidencia, no por votación.
 7. Reviewer/Quality/Security conservan fronteras distintas.
 8. El líder registra qué evidencia utilizó y qué descartó.
+9. Si el handoff incluye tests, declarar `test_action: UPDATE|REPLACE|ADD` y la invariante protegida.
+10. Para `REPLACE`, incluir `supersedes` y evidencia de PASS antes de retirar el test anterior.
+11. No transferir suites históricas como requisito activo cuando ya existe un contrato vigente equivalente.
 
 ## Handoff mínimo
 `{task_id,owner,scope,evidence,contracts,tests_executed,tests_not_executed,risks,unknowns,next_owner}`.
