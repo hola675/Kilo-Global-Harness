@@ -299,10 +299,14 @@
       "bundled_executables": "NONE_REQUIRED",
       "mutation_permission_changes": "NONE",
       "mcp_permission_changes": "NONE",
-      "task_permission_changes": "NONE"
+      "task_permission_changes": "NONE",
+      "approved_runtime_skills": 4,
+      "source_pin": "runtime/dev-team-v2r/skills/<skill-id>/SKILL.md"
     },
     "runtime_gate": [
       "Source CI PASS.",
+      "Fuentes S1 congeladas bajo runtime/dev-team-v2r/skills y hashes registrables.",
+      "Instalador simula exactamente 4 skills aprobadas y continúa retirando el resto de vx-* legacy.",
       "Simulación del instalador/patch sin tocar kilo.jsonc.",
       "Sync solo de los 4 agentes afectados.",
       "Reload completo de Kilo Desktop.",
@@ -363,7 +367,24 @@
     "modifies_runtime_acl": true,
     "invalidates_full_baseline": false,
     "recertification_scope": "affected-agents-only unless shared host semantics or installer behavior changes",
-    "no_auto_install": true,
-    "no_kilo_jsonc_change": true
+    "no_auto_install": false,
+    "install_mode": "installer-managed-on-explicit-apply",
+    "no_silent_install": true,
+    "kilo_jsonc_unchanged": true
+  },
+  "installer_strategy": {
+    "current_behavior": "Instalar-DevTeam-Only.ps1 removes all vx-* skill directories from ~/.kilo/skills, ~/.agents/skills and ~/.kilocode/skills.",
+    "activation_design": "Wave S1 will explicitly manage exactly four approved Dev Team skills under ~/.kilo/skills and continue treating every other vx-* skill in all three roots as legacy.",
+    "source_strategy": "Before activation, copy the four approved SKILL.md sources into runtime/dev-team-v2r/skills/<skill-id>/SKILL.md so Dev Team certification is pinned to its own source and not coupled to later legacy Pack VX edits.",
+    "managed_runtime_root": "~/.kilo/skills",
+    "compatibility_roots": [
+      "~/.agents/skills",
+      "~/.kilocode/skills"
+    ],
+    "compatibility_policy": "No approved Dev Team skill is installed in compatibility roots; vx-* entries there remain legacy and removable by the Dev Team-only installer.",
+    "backup_restore": "Approved skill targets and removed legacy skill directories must be included in the same manifest-backed backup/rollback as agents.",
+    "config_preservation": "kilo.jsonc must remain byte-identical.",
+    "no_silent_install": true,
+    "install_requires": "explicit -Modo Aplicar after source CI + simulation + operator approval"
   }
 }
