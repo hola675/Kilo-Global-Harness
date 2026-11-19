@@ -21,10 +21,13 @@ class DevTeamV2R2SpecialistCertificationTests(unittest.TestCase):
         self.registry = json.loads(REGISTRY.read_text(encoding="utf-8"))
         self.baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
 
-    def test_registry_is_bound_to_active_baseline(self):
+    def test_registry_is_bound_to_historical_v2r2_baseline(self):
         self.assertEqual(self.registry["status"], "PASS_OPERATOR_RUNTIME")
-        self.assertEqual(self.registry["baseline"], self.baseline["version"])
-        self.assertEqual(self.baseline["version"], "2.0.2-runtime-adaptive")
+        self.assertEqual(self.registry["baseline"], "2.0.2-runtime-adaptive")
+        self.assertEqual(self.baseline["version"], "2.1.0-specialist-split")
+        migration = self.baseline["legacy"]["specialist_migrations"]["vx-dev-backend-data"]
+        self.assertEqual(migration["status"], "SUPERSEDED_IN_SOURCE")
+        self.assertEqual(migration["replaced_by"], ["vx-dev-backend", "vx-dev-data"])
 
     def test_exactly_five_pending_specialists_are_defined_once(self):
         scenarios = self.registry["scenarios"]

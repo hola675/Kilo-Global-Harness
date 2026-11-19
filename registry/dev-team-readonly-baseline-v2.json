@@ -1,7 +1,7 @@
 {
   "schema": "kilo-dev-team-v2r/1",
-  "version": "2.0.2-runtime-adaptive",
-  "status": "ACTIVE_APPROVED_BASELINE",
+  "version": "2.1.0-specialist-split",
+  "status": "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING",
   "primary": {
     "id": "vx-dev-team",
     "displayName": "vx-dev-team",
@@ -54,11 +54,31 @@
       "read_only": true
     },
     {
-      "id": "vx-dev-backend-data",
-      "role": "backend-data-analysis",
+      "id": "vx-dev-backend",
+      "role": "backend-application-analysis",
       "mode": "subagent",
       "hidden": true,
-      "read_only": true
+      "read_only": true,
+      "special_output": [
+        "SERVICE_FLOW",
+        "API_CONTRACTS",
+        "DOMAIN_RULES",
+        "FAILURE_MODES"
+      ]
+    },
+    {
+      "id": "vx-dev-data",
+      "role": "data-persistence-analysis",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true,
+      "special_output": [
+        "DATA_MODEL",
+        "DATA_INVARIANTS",
+        "QUERY_IMPACT",
+        "CONSISTENCY_RISKS",
+        "MIGRATION_IMPACT"
+      ]
     },
     {
       "id": "vx-dev-quality",
@@ -148,11 +168,14 @@
     ],
     "output": [
       "STATUS",
+      "SCOPE_ANALYZED",
       "FINDINGS",
       "EVIDENCE",
       "RISKS",
       "RECOMMENDATION",
-      "UNKNOWNS"
+      "CONFIDENCE",
+      "UNKNOWNS",
+      "HANDOFF"
     ]
   },
   "preserved_not_managed": {
@@ -170,25 +193,38 @@
   "legacy": {
     "v1_baseline": "registry/dev-team-only-baseline-v1.json",
     "old_vx_agents": "versioned-for-history-not-installed",
-    "old_vx_skills": "versioned-for-history-not-installed"
+    "old_vx_skills": "versioned-for-history-not-installed",
+    "v2r2_certification": "registry/dev-team-v2r2-specialist-certification-v1.json",
+    "specialist_migrations": {
+      "vx-dev-backend-data": {
+        "status": "SUPERSEDED_IN_SOURCE",
+        "replaced_by": [
+          "vx-dev-backend",
+          "vx-dev-data"
+        ],
+        "runtime_evidence": "historical V2-R.2 only; does not certify replacement agents"
+      }
+    }
   },
-  "next_phase": "review-mcp-readonly-matrix-v1-and-capture-runtime-tool-ids",
-  "runtime_note": "Kilo expone la tool lsp solo cuando el host habilita KILO_EXPERIMENTAL_LSP_TOOL. V2-R.2 permite lsp pero no la exige; glob y grep son las capacidades mínimas requeridas. read permanece denegado para ocultar recursos MCP genéricos.",
+  "next_phase": "deploy-and-runtime-certify-backend-data-split-then-continue-specialist-polish",
+  "runtime_note": "Current GitHub source baseline contains 8 hidden specialists. vx-dev-backend-data is superseded by vx-dev-backend + vx-dev-data. GitHub changes do not alter Kilo Desktop runtime until explicit install/sync and reload. LSP remains optional; glob/grep remain minimum local capabilities.",
   "certification": {
-    "contract": "registry/dev-team-v2r2-specialist-certification-v1.json",
-    "guide": "docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md",
-    "completed_runtime": [
-      "vx-dev-explorer",
-      "vx-dev-security",
-      "vx-dev-architect",
-      "vx-dev-frontend",
-      "vx-dev-backend-data",
-      "vx-dev-quality",
-      "vx-dev-research"
-    ],
-    "pending_runtime": [],
-    "status": "PASS_OPERATOR_RUNTIME",
-    "result": "7/7"
+    "historical_v2r2": {
+      "contract": "registry/dev-team-v2r2-specialist-certification-v1.json",
+      "guide": "docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md",
+      "status": "PASS_OPERATOR_RUNTIME",
+      "result": "7/7",
+      "includes_superseded_specialist": "vx-dev-backend-data"
+    },
+    "current_source": {
+      "specialists": 8,
+      "deployed_runtime": "NOT_VERIFIED_AFTER_SOURCE_SPLIT",
+      "pending_runtime": [
+        "vx-dev-backend",
+        "vx-dev-data"
+      ],
+      "note": "Historical certification is preserved and is not transferred to the two replacement identities."
+    }
   },
   "mcp_design": {
     "proposal": "registry/dev-team-mcp-readonly-matrix-v1.proposal.json",
@@ -228,7 +264,7 @@
       "routing_boundary": {
         "research": "documentation, ADR, standards or authorized external sources",
         "architect": "architecture, contracts and tradeoffs",
-        "domain_specialists": "frontend/backend-data/quality/security behavior analysis"
+        "domain_specialists": "frontend/backend/data/quality/security behavior analysis"
       }
     },
     "vx-dev-research": {
@@ -292,6 +328,57 @@
         "NEW",
         "DEPRECATED"
       ]
+    },
+    "vx-dev-backend": {
+      "mission": "analyze APIs, services, domain rules, application auth, integrations and backend failure behavior without designing physical persistence",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "SERVICE_FLOW",
+        "API_CONTRACTS",
+        "DOMAIN_RULES",
+        "FAILURE_MODES",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "OBSERVED",
+        "INFERRED",
+        "PROPOSED",
+        "UNKNOWN"
+      ],
+      "boundary": "schema/SQL/indexes/migrations belong to vx-dev-data"
+    },
+    "vx-dev-data": {
+      "mission": "analyze persistent models, schemas, queries, constraints, indexes, migrations and consistency without owning application behavior",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "DATA_MODEL",
+        "DATA_INVARIANTS",
+        "QUERY_IMPACT",
+        "CONSISTENCY_RISKS",
+        "MIGRATION_IMPACT",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "OBSERVED",
+        "INFERRED",
+        "PROPOSED",
+        "UNKNOWN"
+      ],
+      "boundary": "API/service/domain behavior belongs to vx-dev-backend"
     }
   },
   "mcp_allowlists": {

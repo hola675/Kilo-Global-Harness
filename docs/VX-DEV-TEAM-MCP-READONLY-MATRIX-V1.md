@@ -1,5 +1,7 @@
 # Dev Team MCP Read-Only Matrix V1 — propuesta de mínimo privilegio
 
+> **Nota de topología:** esta matriz fue diseñada contra la baseline histórica `2.0.2-runtime-adaptive` de siete especialistas. La baseline source `2.1.0-specialist-split` contiene ocho tras sustituir `vx-dev-backend-data` por `vx-dev-backend` + `vx-dev-data`. La matriz no concede MCP automáticamente a los dos agentes nuevos.
+
 **Fecha:** 2026-11-17  
 **Estado:** PROPOSAL_ONLY_NOT_ACTIVE  
 **Baseline objetivo:** Dev Team V2-R.2  
@@ -9,7 +11,7 @@
 
 ## Objetivo
 
-Diseñar la futura integración MCP de Dev Team sin romper el aislamiento ya certificado de los siete subagentes.
+Preservar el aislamiento certificado históricamente y servir como referencia para integración MCP tool-by-tool; la topología source actual se valida por separado.
 
 La unidad de autorización es la **tool exacta**, no el servidor completo.
 

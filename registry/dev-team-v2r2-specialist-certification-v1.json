@@ -198,5 +198,8 @@
     ],
     "count": "7/7",
     "result": "PASS"
-  }
+  },
+  "historical": true,
+  "superseded_by_source_baseline": "2.1.0-specialist-split",
+  "supersession_note": "This registry preserves V2-R.2 runtime evidence, including vx-dev-backend-data. It does not certify vx-dev-backend or vx-dev-data."
 }

@@ -119,9 +119,9 @@ foreach ($p in $profiles) {
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
 
-# Dev Team V2-R: único primario visible + siete subagentes ocultos read-only.
+# Dev Team source actual: único primario visible + ocho subagentes ocultos read-only.
 if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
-    $data.execution.dev_team_display_name -ne '👥 Dev Team' -or
+    $data.execution.dev_team_display_name -ne 'vx-dev-team' -or
     $data.execution.dev_team_runtime -ne 'active-v1') {
   throw 'Registro Dev Team primario incompleto.'
 }
@@ -137,7 +137,7 @@ $devFrontMatch = [regex]::Match($devRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
 if (!$devFrontMatch.Success) { throw 'Frontmatter Dev Team invalido.' }
 $devFront = $devFrontMatch.Groups[1].Value
 foreach ($required in @(
-  '(?m)^displayName:\s*"👥 Dev Team"\s*$',
+  '(?m)^displayName:\s*"vx-dev-team"\s*$',
   '(?m)^color:\s*"#8B5CF6"\s*$',
   '(?m)^\s{2}skill:\s*deny\s*$',
   '(?m)^\s{2}task:\s*$',
@@ -149,8 +149,8 @@ foreach ($required in @(
   if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
 }
 $childIds = @(
-  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend-data',
-  'vx-dev-quality','vx-dev-security','vx-dev-research'
+  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
+  'vx-dev-data','vx-dev-quality','vx-dev-security','vx-dev-research'
 )
 foreach ($child in $childIds) {
   $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'

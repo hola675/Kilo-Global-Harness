@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  Instala Dev Team V2-R: un lider visible y siete subagentes ocultos read-only.
+  Instala Dev Team V2-R: un lider visible y ocho subagentes ocultos read-only.
 .DESCRIPTION
   Retira runtime VX legacy, instala unicamente el runtime aprobado V2-R y crea
   backup reversible. NO modifica kilo.jsonc, MCP, modelos, AutoApprove, agentes
@@ -41,7 +41,8 @@ $approvedAgents = [ordered]@{
   'vx-dev-explorer.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-explorer.md')
   'vx-dev-architect.md'    = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-architect.md')
   'vx-dev-frontend.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-frontend.md')
-  'vx-dev-backend-data.md' = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-backend-data.md')
+  'vx-dev-backend.md'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-backend.md')
+  'vx-dev-data.md'         = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-data.md')
   'vx-dev-quality.md'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-quality.md')
   'vx-dev-security.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-security.md')
   'vx-dev-research.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-research.md')
@@ -146,7 +147,7 @@ function Assert-AgentSources {
 
   $leader = Get-Content -LiteralPath $approvedAgents['vx-dev-team.md'] -Raw -Encoding UTF8
   foreach ($required in @(
-    '(?m)^displayName:\s*"👥 Dev Team"\s*$',
+    '(?m)^displayName:\s*"vx-dev-team"\s*$',
     '(?m)^mode:\s*primary\s*$',
     '(?m)^color:\s*"#8B5CF6"\s*$',
     '(?m)^\s{2}skill:\s*deny\s*$',
@@ -154,6 +155,15 @@ function Assert-AgentSources {
     '(?m)^\s{2}agent_manager:\s*deny\s*$'
   )) {
     if ($leader -notmatch $required) { throw "Dev Team V2-R invalido: $required" }
+  }
+
+  foreach ($name in $approvedAgents.Keys | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $childId = [IO.Path]::GetFileNameWithoutExtension($name)
+    $pattern = '(?m)^\s{4}"' + [regex]::Escape($childId) + '":\s*allow\s*$'
+    if ($leader -notmatch $pattern) { throw "Dev Team no permite delegar al subagente aprobado: $childId" }
+  }
+  if ($leader -match '(?m)^\s{4}"vx-dev-backend-data":\s*allow\s*$') {
+    throw 'Dev Team conserva ACL del subagente supersedido vx-dev-backend-data.'
   }
 
   foreach ($name in $approvedAgents.Keys | Where-Object { $_ -ne 'vx-dev-team.md' }) {
@@ -188,7 +198,7 @@ function Show-State {
   }
   Write-Host "=== DEV TEAM V2-R | $Modo ===" -ForegroundColor Cyan
   Write-Host "HOME: $homeRoot"
-  Write-Host "Agentes aprobados instalados detectados: $($installed.Count)/8"
+  Write-Host "Agentes aprobados instalados detectados: $($installed.Count)/$($approvedAgents.Count)"
   Write-Host "Recursos VX legacy detectados para retirar: $($legacy.Count)"
   Write-Host "kilo.jsonc: $(if(Test-Path -LiteralPath $configFile){'PRESERVADO'}else{'NO EXISTE'})"
   Write-Host 'MCP: fuera del alcance de este instalador; no se modifican.'
@@ -310,7 +320,7 @@ if ($Modo -eq 'Verificar') {
   }
 
   Write-Host '[PASS] Dev Team es el unico primario VX aprobado.' -ForegroundColor Green
-  Write-Host '[PASS] Siete subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
+  Write-Host '[PASS] Ocho subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
   Write-Host '[PASS] Skills/workflows/reglas/plugins/runtime VX legacy no estan instalados.' -ForegroundColor Green
   Write-Host '[PASS] Este verificador no modifica ni autentica MCP.' -ForegroundColor Green
   return
@@ -375,7 +385,7 @@ try {
   throw
 }
 
-Write-Host '[PASS] Baseline aplicado: Dev Team + 7 subagentes ocultos read-only.' -ForegroundColor Green
+Write-Host '[PASS] Baseline aplicado: Dev Team + 8 subagentes ocultos read-only.' -ForegroundColor Green
 Write-Host '[PASS] kilo.jsonc y configuracion MCP preservados.' -ForegroundColor Green
 Write-Host "BACKUP: $backupDir" -ForegroundColor Yellow
 Write-Host 'Ejecuta este mismo script con -Modo Verificar y luego /reload en Kilo.' -ForegroundColor Cyan

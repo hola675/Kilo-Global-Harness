@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
-> **BASELINE APROBADO ACTUAL — Dev Team V2-R.2 (2026-11-17):** **`vx-dev-team`** es el único agente personalizado visible. Puede delegar mediante `task` a **7 subagentes ocultos de análisis no mutable**. Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan ni usan Board/Agent Manager. `read: deny` mantiene ocultos los helpers MCP genéricos; MCP sigue deny-by-default y `vx-dev-research` dispone únicamente de cinco tools documentales explícitas de Context7/Microsoft Learn. `glob` y `grep` son capacidades mínimas y `lsp: allow` queda como capacidad opcional si el host la expone. `kilo.jsonc` y el resto del pack MCP se preservan como infraestructura separada.
+> **BASELINE SOURCE ACTUAL — Dev Team 2.1.0 specialist-split:** **`vx-dev-team`** es el único agente personalizado visible. Puede delegar mediante `task` a **8 subagentes ocultos de análisis no mutable**. Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan ni usan Board/Agent Manager. `read: deny` mantiene ocultos los helpers MCP genéricos; MCP sigue deny-by-default y `vx-dev-research` dispone únicamente de cinco tools documentales explícitas de Context7/Microsoft Learn. `glob` y `grep` son capacidades mínimas y `lsp: allow` queda como capacidad opcional si el host la expone. `kilo.jsonc` y el resto del pack MCP se preservan como infraestructura separada.
 
 > **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `vx-dev-team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 
@@ -35,21 +35,24 @@ El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su
 
 El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`.
 
-Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`:
+Detrás del líder existen ocho especialistas `mode: subagent` y `hidden: true`:
 
 - `vx-dev-explorer` — cartografía del codebase con `CODE_MAP` e `IMPACT_SURFACE`
 - `vx-dev-architect` — decisiones estructurales con `OPTIONS`, `TRADEOFFS`, `CONTRACTS` y `DECISIONS_REQUIRED`
 - `vx-dev-frontend`
-- `vx-dev-backend-data`
+- `vx-dev-backend` — APIs, servicios, dominio, auth de aplicación e integraciones
+- `vx-dev-data` — schemas, persistencia, queries, constraints, índices y migraciones
 - `vx-dev-quality`
 - `vx-dev-security`
 - `vx-dev-research` — investigación técnica con `SOURCE_LEDGER`, `CONTRADICTIONS` y allowlist documental Context7/Microsoft Learn
 
 Todos los hijos requieren `glob` y `grep`; `lsp` queda permitida pero es opcional porque Kilo solo registra esa tool cuando el host habilita `KILO_EXPERIMENTAL_LSP_TOOL`. Tienen `read/edit/write/apply_patch/bash/task/skill/agent_manager/board: deny`. El `read: deny` mantiene ocultas las herramientas genéricas de recursos MCP.
 
-El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los siete por defecto y la profundidad máxima es una sola: **Usuario → vx-dev-team → Subagente**.
+El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los ocho por defecto y la profundidad máxima es una sola: **Usuario → vx-dev-team → Subagente**.
 
-La evolución del equipo se hará por responsabilidades estables, no por cantidad de agentes. El diseño aprobado para el pulido actual prevé separar Backend/Data en `vx-dev-backend` y `vx-dev-data`, y diseñar `vx-dev-platform` y `vx-dev-reviewer`. Estos IDs todavía no forman parte de la ACL activa de `task`; se incorporarán únicamente después de definir, revisar y certificar cada agente.
+La evolución del equipo se hace por responsabilidades estables, no por cantidad de agentes. `vx-dev-backend` y `vx-dev-data` ya sustituyen al antiguo `vx-dev-backend-data` en el source y en la ACL del líder. `vx-dev-platform` y `vx-dev-reviewer` siguen como diseño futuro y todavía no forman parte de la ACL activa de `task`.
+
+GitHub no despliega automáticamente estas definiciones al runtime de Kilo Desktop; una actualización del source requiere instalación/sincronización explícita y reload antes de validar el comportamiento efectivo.
 
 Los MCP globales siguen siendo infraestructura independiente y deny-by-default para el equipo. `vx-dev-research` y `vx-dev-architect` tienen únicamente cinco tools documentales explícitas de Context7/Microsoft Learn cada uno; cualquier otra tool MCP requiere allowlist específica y certificación separada.
 
@@ -63,7 +66,7 @@ Los MCP globales siguen siendo infraestructura independiente y deny-by-default p
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Los **7/7 subagentes V2-R.2** tienen evidencia runtime aportada por el operador. La Wave 1 documental fue certificada en runtime para Research/Architect y el source actual ya incorpora las dos allowlists documentales exactas.
+**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al ya supersedido `vx-dev-backend-data`. La baseline source 2.1.0 contiene 8 especialistas; `vx-dev-backend` y `vx-dev-data` requieren despliegue/sync y smoke runtime antes de heredar cualquier estado operativo. La Wave 1 documental de Research/Architect conserva sus allowlists exactas.
 
 
 ## Principios
@@ -145,7 +148,8 @@ Por defecto, si un archivo administrado fue modificado **después de aplicar**, 
 | `runtime/dev-team-v2r/agents/vx-dev-explorer.md` | `~/.config/kilo/agents/` | subagente oculto no mutable |
 | `runtime/dev-team-v2r/agents/vx-dev-architect.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-frontend.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
-| `runtime/dev-team-v2r/agents/vx-dev-backend-data.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-backend.md` | `~/.config/kilo/agents/` | subagente oculto backend read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-data.md` | `~/.config/kilo/agents/` | subagente oculto data read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-quality.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-security.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-research.md` | `~/.config/kilo/agents/` | subagente oculto read-only |

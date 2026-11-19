@@ -11,7 +11,8 @@ V2R_CHILDREN = (
     "vx-dev-explorer",
     "vx-dev-architect",
     "vx-dev-frontend",
-    "vx-dev-backend-data",
+    "vx-dev-backend",
+    "vx-dev-data",
     "vx-dev-quality",
     "vx-dev-security",
     "vx-dev-research",
@@ -36,7 +37,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
 
     def test_dev_team_allowlists_only_v2r_children(self):
         front = (AGENT_DIR / "vx-dev-team.md").read_text(encoding="utf-8").split("---", 2)[1]
-        self.assertRegex(front, r'(?m)^displayName:\s*"👥 Dev Team"\s*$')
+        self.assertRegex(front, r'(?m)^displayName:\s*"vx-dev-team"\s*$')
         self.assertRegex(front, r'(?m)^mode:\s*primary\s*$')
         self.assertRegex(front, r'(?m)^color:\s*"#8B5CF6"\s*$')
         self.assertRegex(front, r"(?m)^  skill: deny\s*$")
@@ -53,7 +54,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
 
     def test_v2r_children_are_hidden_strict_read_only(self):
         files = sorted(V2R_DIR.glob("vx-dev-*.md"))
-        self.assertEqual(len(files), 7)
+        self.assertEqual(len(files), 8)
         self.assertEqual({p.stem for p in files}, set(V2R_CHILDREN))
         for file in files:
             with self.subTest(child=file.name):

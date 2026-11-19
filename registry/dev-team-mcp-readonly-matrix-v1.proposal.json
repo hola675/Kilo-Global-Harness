@@ -681,5 +681,8 @@
       "Run positive documentation-only smoke.",
       "Human approve before merge/activation."
     ]
-  }
+  },
+  "historical_baseline": true,
+  "current_source_baseline": "2.1.0-specialist-split",
+  "topology_note": "Matrix originated on the 7-specialist V2-R.2 topology. It does not grant MCP to vx-dev-backend or vx-dev-data unless a future explicit allowlist is added and certified."
 }

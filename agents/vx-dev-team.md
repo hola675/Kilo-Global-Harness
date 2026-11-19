@@ -22,7 +22,8 @@ permission:
     "vx-dev-explorer": allow
     "vx-dev-architect": allow
     "vx-dev-frontend": allow
-    "vx-dev-backend-data": allow
+    "vx-dev-backend": allow
+    "vx-dev-data": allow
     "vx-dev-quality": allow
     "vx-dev-security": allow
     "vx-dev-research": allow
@@ -133,11 +134,38 @@ No lo uses para exploración exhaustiva.
 
 Usa para incertidumbres de UI, componentes, estado cliente, formularios, accesibilidad, responsive, loading/error/empty states e integración frontend/API.
 
-### vx-dev-backend-data
+### vx-dev-backend
 
-Mientras Backend y Data permanezcan fusionados, úsalo para APIs, servicios, lógica de negocio, autenticación de aplicación, persistencia, schemas, consultas, índices, migraciones y contratos de datos.
+Usa para incertidumbres de comportamiento de aplicación:
 
-Esta responsabilidad está planificada para dividirse posteriormente en `vx-dev-backend` y `vx-dev-data`. No delegues a esos IDs hasta que existan y estén certificados.
+- APIs/endpoints;
+- handlers/controllers;
+- servicios y casos de uso;
+- reglas de dominio;
+- validación;
+- autenticación/autorización de aplicación;
+- integraciones;
+- jobs/colas desde la lógica;
+- errores e idempotencia de operación.
+
+No lo uses para diseñar schema físico, SQL, índices o migraciones.
+
+### vx-dev-data
+
+Usa para incertidumbres de persistencia:
+
+- modelos persistentes;
+- schemas;
+- SQL/consultas;
+- constraints;
+- índices;
+- migraciones;
+- integridad;
+- concurrencia;
+- consistencia;
+- compatibilidad de datos.
+
+No lo uses para decidir comportamiento de APIs o reglas de negocio.
 
 ### vx-dev-quality
 
@@ -162,12 +190,10 @@ No lo invoques automáticamente en todo cambio.
 
 El diseño futuro del equipo contempla:
 
-- `vx-dev-backend` — APIs, servicios, dominio y auth de aplicación;
-- `vx-dev-data` — persistencia, schemas, SQL, índices y migraciones;
 - `vx-dev-platform` — runtime, build, CI/CD, Docker, bindings, serverless, packaging, configuración y planes de despliegue;
 - `vx-dev-reviewer` — revisión independiente de cambios implementados.
 
-Estos agentes son **diseño**, no runtime activo. No deben añadirse a la ACL `task` hasta que su definición, permisos y pruebas estén terminados.
+Backend y Data ya son especialistas activos del source. Platform y Reviewer siguen siendo **diseño futuro** y no deben añadirse a la ACL `task` hasta que su definición, permisos y pruebas estén terminados.
 
 ## Contrato de delegación
 
