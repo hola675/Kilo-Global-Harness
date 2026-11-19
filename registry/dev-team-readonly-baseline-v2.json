@@ -63,10 +63,21 @@
     },
     {
       "id": "vx-dev-research",
-      "role": "local-research",
+      "role": "technical-research",
       "mode": "subagent",
       "hidden": true,
-      "read_only": true
+      "read_only": true,
+      "special_output": [
+        "SOURCE_LEDGER",
+        "CONTRADICTIONS"
+      ],
+      "mcp_allowlist": [
+        "context7_resolve-library-id",
+        "context7_query-docs",
+        "microsoft-learn_microsoft_docs_search",
+        "microsoft-learn_microsoft_docs_fetch",
+        "microsoft-learn_microsoft_code_sample_search"
+      ]
     }
   ],
   "orchestration": {
@@ -100,7 +111,7 @@
       "board_read",
       "board_post"
     ],
-    "mcp": "not-exposed-by-read-deny-and-no-namespaced-allows",
+    "mcp": "deny-by-default-with-per-agent-namespaced-allows",
     "required": [
       "glob",
       "grep"
@@ -169,10 +180,10 @@
   "mcp_design": {
     "proposal": "registry/dev-team-mcp-readonly-matrix-v1.proposal.json",
     "guide": "docs/VX-DEV-TEAM-MCP-READONLY-MATRIX-V1.md",
-    "active": false,
-    "current_child_mcp": "DENY",
-    "first_candidate_wave": "WAVE-1-DOCS",
-    "activation_requires": "runtime exact-tool inventory + isolated smoke + human approval"
+    "active": "partial-per-agent",
+    "current_child_mcp": "DENY_BY_DEFAULT_WITH_RESEARCH_DOCS_ALLOWLIST",
+    "first_candidate_wave": "WAVE-1-DOCS-CERTIFIED_FOR_RESEARCH_AND_ARCHITECT_RUNTIME",
+    "activation_requires": "explicit source allowlist + runtime reload + isolated smoke"
   },
   "specialist_contracts": {
     "vx-dev-explorer": {
@@ -206,6 +217,47 @@
         "architect": "architecture, contracts and tradeoffs",
         "domain_specialists": "frontend/backend-data/quality/security behavior analysis"
       }
+    },
+    "vx-dev-research": {
+      "mission": "establish authoritative project and external documentation evidence without mapping code or designing the solution",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "SOURCE_LEDGER",
+        "CONTRADICTIONS",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "DOCUMENTED",
+        "CORROBORATED",
+        "INFERRED",
+        "UNKNOWN"
+      ],
+      "source_priority": [
+        "executed-evidence-from-leader",
+        "current-code-or-config-evidence",
+        "current-project-docs",
+        "accepted-ADR",
+        "version-specific-official-docs",
+        "generic-official-docs",
+        "historical-comments",
+        "inference"
+      ]
     }
+  },
+  "mcp_allowlists": {
+    "vx-dev-research": [
+      "context7_resolve-library-id",
+      "context7_query-docs",
+      "microsoft-learn_microsoft_docs_search",
+      "microsoft-learn_microsoft_docs_fetch",
+      "microsoft-learn_microsoft_code_sample_search"
+    ]
   }
 }
