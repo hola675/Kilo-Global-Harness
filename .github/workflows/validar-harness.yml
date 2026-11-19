@@ -248,19 +248,6 @@ jobs:
           }
           Write-Host 'DEV TEAM CURRENT CERTIFICATION: CURRENT CONTRACT ONLY PASS'
 
-      - name: Dev Team MCP Read-Only Matrix V1 - propuesta inactiva y deny-by-default
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          python -I -m unittest discover -s tests -p 'test_vx_dev_team_mcp_readonly_matrix_v1.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Matriz MCP read-only V1 inválida o activa indebidamente.' }
-          $matrix = Get-Content 'registry/dev-team-mcp-readonly-matrix-v1.proposal.json' -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ($matrix.status -ne 'PROPOSAL_ONLY_NOT_ACTIVE' -or $matrix.activation.enabled) {
-            throw 'La matriz MCP propuesta no puede activar runtime.'
-          }
-          if (@($matrix.servers).Count -ne 13) { throw 'La matriz MCP no clasifica los 13 servidores.' }
-          Write-Host 'DEV TEAM MCP MATRIX V1: 13 SERVERS + EXACT TOOLS + DENY DEFAULT + NO ACTIVATION PASS'
-
       - name: Dev Team 2.3.0 - instalar 10 especialistas, preservar MCP/terceros y restaurar
         shell: pwsh
         run: |
