@@ -169,7 +169,16 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
             )
             self.assertIsNotNone(match)
             body = match.group("body")
-            self.assertRegex(body, r'(?m)^\s{4}"\*":\s*deny\s*
+            self.assertRegex(body, r'(?m)^\s{4}"\*":\s*deny\s*$')
+            allowed = set(
+                re.findall(r'(?m)^\s{4}"(vx-dev-[^"]+)":\s*allow\s*$', body)
+            )
+            self.assertEqual(
+                allowed,
+                EXPECTED_PERMISSIONS[agent],
+                f"{agent} must expose only its exact approved skill allowlist",
+            )
+
     def test_skill_pack_never_grants_non_skill_permissions(self):
         invariants = "\n".join(self.proposal["permission_matrix"]["invariants"])
         self.assertIn(
