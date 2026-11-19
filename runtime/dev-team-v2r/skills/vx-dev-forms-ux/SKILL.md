@@ -23,3 +23,8 @@ metadata:
 
 ## Salida
 `FORM_GOAL`, `FIELD_FRICTION`, `VALIDATION_MODEL`, `ERROR_RECOVERY`, `SUBMIT_STATES`, `ACCESSIBILITY_GAPS`, `BACKEND_DEPENDENCIES`.
+
+## Integración de evidencia/MCP
+- Browser MCP puede confirmar foco, validation states, pending y recovery; Postman puede aportar contrato API si está autorizado.
+- No inferir idempotencia backend desde el comportamiento visual.
+- En sesiones autenticadas, minimizar datos de formulario y aplicar protección sensible.
