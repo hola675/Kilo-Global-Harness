@@ -1,7 +1,7 @@
 # vx-dev-team — baseline source 2.3.0 con especialistas ocultos
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE SOURCE BASELINE · runtime pendiente de despliegue tras split Backend/Data y altas de Platform/Reviewer  
+**Estado:** ACTIVE SOURCE BASELINE · runtime sincronizado/cargado · certificación 2.3.0 PARTIAL  
 **Primario visible:** `vx-dev-team`  
 **Especialistas ocultos:** 10  
 **Mutaciones de subagentes:** DENY  
@@ -393,12 +393,16 @@ Esto no es un fallo de ACL. En Kilo actual, la tool `lsp` se registra únicament
 
 ### Estado runtime de la baseline source 2.3.0
 
-Los cambios en GitHub **no modifican Kilo Desktop por sí solos**. Hasta ejecutar explícitamente el instalador/sincronización y recargar Kilo Desktop:
+Los cambios en GitHub **no modifican Kilo Desktop por sí solos**. Para la baseline 2.3.0 el operador ya completó:
 
-- la baseline source contiene 10 especialistas;
-- el runtime instalado puede seguir usando una definición anterior;
-- `vx-dev-backend`, `vx-dev-data`, `vx-dev-platform` y `vx-dev-reviewer` deben considerarse `RUNTIME_NOT_VERIFIED`;
-- no se transfiere automáticamente la certificación histórica V2-R.2 a identidades nuevas o divididas.
+- sync source/runtime 11/11;
+- backup reversible y retiro de `vx-dev-backend-data`;
+- preservación de `kilo.jsonc`;
+- reinicio fresco de Kilo Desktop;
+- delegación 4/4 para Backend/Data/Platform/Reviewer;
+- `glob` y `grep` ejecutados 4/4.
+
+La certificación sigue `PARTIAL`: la ausencia de tools negativas se registró como aislamiento de superficie, no como prueba de enforcement interno, y los contratos de rol deben repetirse contra fixtures reales del pack 2.3.0.
 
 ## Instalación
 
@@ -439,7 +443,7 @@ Antes de permitir cualquier subagente escritor:
 
 ## Dirección actual de evolución
 
-Las WAVE de recertificación quedan pausadas mientras se pule el diseño operativo del equipo.
+La recertificación runtime 2.3.0 está activa mediante el pack reproducible `registry/dev-team-v230-runtime-certification-v1.json`.
 
 Prioridad actual:
 
@@ -449,7 +453,7 @@ Prioridad actual:
 4. mantener Platform como análisis de runtime/entrega sin capacidad de despliegue;
 5. mantener Reviewer como revisión independiente sin autoridad de merge;
 6. preservar una sola profundidad y deny-by-default;
-7. no desplegar/sincronizar la baseline 2.3.0 al runtime hasta autorización explícita del operador.
+7. cerrar contratos runtime contra fixtures reales y mantener enforcement de permisos como dimensión separada hasta disponer de evidencia explícita.
 
 Los diez especialistas ya forman parte de la baseline source y de la ACL `task` del líder. Su presencia en GitHub **no equivale** a certificación runtime.
 
@@ -463,5 +467,6 @@ Los diez especialistas ya forman parte de la baseline source y de la ACL `task` 
 - `vx-dev-security` ya usa `ASSETS / TRUST_BOUNDARIES / ATTACK_SURFACE / ACCESS_CONTROL / DATA_EXPOSURE / ABUSE_CASES / THREAT_FINDINGS`;
 - `vx-dev-platform` ya usa `RUNTIME_MAP / BUILD_AND_RELEASE_FLOW / CONFIG_SURFACE / ENVIRONMENT_DIFFS / DEPLOYMENT_RISKS / OBSERVABILITY`;
 - `vx-dev-reviewer` ya usa `CHANGE_SUMMARY / CONTRACT_REGRESSIONS / REGRESSION_RISKS / COMPLEXITY_RISKS / SCOPE_CONTROL / REVIEW_FINDINGS / REVIEW_VERDICT`;
-- revisar ahora coherencia global de routing, contratos y documentación del equipo;
-- mantener el runtime actual estable hasta una autorización explícita de sync/deploy.
+- repetir Backend/Data/Platform/Reviewer contra `tests/fixtures/dev-team-v230/`;
+- después certificar los seis especialistas restantes, MCP 5/5 de Research/Architect y routing del líder;
+- no promover la baseline a runtime-certified hasta cerrar toda la matriz.
