@@ -63,10 +63,12 @@ foreach ($agent in $agents) {
     throw "Declaracion mcp:deny no protege herramientas namespaced: $id."
   }
   if ($id -eq 'vx-dev-team') {
-    if ($front -notmatch '(?m)^  skill:\s*deny\s*$' -or
-        $front -notmatch '(?m)^  task:\s*$' -or
-        $front -notmatch '(?m)^    "\*":\s*deny\s*$') {
-      throw 'Dev Team V2-R requiere skills bloqueadas y delegacion allowlist.'
+    if ($front -notmatch '(?m)^  skill:\s*$' -or
+        $front -notmatch '(?m)^    "\*":\s*deny\s*$' -or
+        $front -notmatch '(?m)^    "vx-dev-project-policy":\s*allow\s*$' -or
+        $front -notmatch '(?m)^    "vx-dev-team-handoff":\s*allow\s*$' -or
+        $front -notmatch '(?m)^  task:\s*$') {
+      throw 'Dev Team V2-R requiere skills deny-by-default con allowlist exacta y delegacion allowlist.'
     }
   } elseif ($front -notmatch '(?m)^  skill:\s*allow\s*$') {
     throw "Agente sin carga controlada de skills: $id."
@@ -119,7 +121,7 @@ foreach ($p in $profiles) {
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
 
-# Dev Team source actual: único primario visible + ocho subagentes ocultos read-only.
+# Dev Team source actual: único primario visible + diez subagentes ocultos read-only.
 if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
     $data.execution.dev_team_display_name -ne 'vx-dev-team' -or
     $data.execution.dev_team_runtime -ne 'active-v1') {
@@ -139,7 +141,10 @@ $devFront = $devFrontMatch.Groups[1].Value
 foreach ($required in @(
   '(?m)^displayName:\s*"vx-dev-team"\s*$',
   '(?m)^color:\s*"#8B5CF6"\s*$',
-  '(?m)^\s{2}skill:\s*deny\s*$',
+  '(?m)^\s{2}skill:\s*$',
+  '(?m)^\s{4}"\*":\s*deny\s*$',
+  '(?m)^\s{4}"vx-dev-project-policy":\s*allow\s*$',
+  '(?m)^\s{4}"vx-dev-team-handoff":\s*allow\s*$',
   '(?m)^\s{2}task:\s*$',
   '(?m)^\s{4}"\*":\s*deny\s*$',
   '(?m)^\s{2}agent_manager:\s*deny\s*$',
@@ -150,8 +155,21 @@ foreach ($required in @(
 }
 $childIds = @(
   'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
-  'vx-dev-data','vx-dev-quality','vx-dev-security','vx-dev-research'
+  'vx-dev-data','vx-dev-platform','vx-dev-reviewer','vx-dev-quality',
+  'vx-dev-security','vx-dev-research'
 )
+$childSkillMatrix = @{
+  'vx-dev-explorer'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
+  'vx-dev-research'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
+  'vx-dev-architect' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
+  'vx-dev-frontend'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
+  'vx-dev-backend'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
+  'vx-dev-data'      = @('vx-dev-data-migration')
+  'vx-dev-platform'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
+  'vx-dev-quality'   = @('vx-dev-test-strategy','vx-dev-accessibility')
+  'vx-dev-security'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
+  'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
+}
 foreach ($child in $childIds) {
   $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
   if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
@@ -187,7 +205,8 @@ if ($validateChildren) {
       '(?m)^mode:\s*subagent\s*$',
       '(?m)^hidden:\s*true\s*$',
       '(?m)^\s{2}read:\s*deny\s*$',
-      '(?m)^\s{2}skill:\s*deny\s*$',
+      '(?m)^\s{2}skill:\s*$',
+      '(?m)^\s{4}"\*":\s*deny\s*$',
       '(?m)^\s{2}task:\s*deny\s*$',
       '(?m)^\s{2}edit:\s*deny\s*$',
       '(?m)^\s{2}write:\s*deny\s*$',
@@ -201,6 +220,10 @@ if ($validateChildren) {
     }
     if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
       throw "Subagente $child contiene permisos MCP automaticos."
+    }
+    foreach ($skill in $childSkillMatrix[$child]) {
+      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
+      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
     }
   }
 }
