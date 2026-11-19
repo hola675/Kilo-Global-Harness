@@ -156,18 +156,6 @@
       "reason": "Installed-core integration smoke for joint calendar, SQLite v4, scheduler-off and rollback; source behavior belongs to Evolution current manifest."
     },
     {
-      "name": "V4.5 - calendario, reuniones manuales y migración sin scheduler",
-      "class": "HISTORICAL_CANDIDATE",
-      "kind": "evolution",
-      "reason": "Superseded candidate; current meeting contract replacement added and must pass before removal."
-    },
-    {
-      "name": "V4.5.1 - reunion conjunta sin duplicación ni programador",
-      "class": "HISTORICAL_CANDIDATE",
-      "kind": "evolution",
-      "reason": "Superseded candidate; current meeting contract replacement added and must pass before removal."
-    },
-    {
       "name": "VX Evolution Docs - coherencia actual y automatización desactivada",
       "class": "CURRENT",
       "kind": "evolution",
