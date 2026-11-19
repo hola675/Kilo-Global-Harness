@@ -13,8 +13,18 @@ class HistoricalRetirementPlanTests(unittest.TestCase):
         plan=module.build_plan({"passed_tests":[]})
         self.assertTrue(all(x["status"]=="BLOCKED" for x in plan["candidates"]))
 
-    def test_exact_replacement_pass_unlocks_only_matching_candidate(self):
+    def test_meeting_source_pass_alone_does_not_unlock_historical_removal(self):
         plan=module.build_plan({"passed_tests":["test_vx_meeting_current_contract.py"]})
+        ready={x["historical_test"] for x in plan["candidates"] if x["status"]=="READY_TO_REMOVE"}
+        self.assertEqual(ready,set())
+
+    def test_meeting_source_and_installed_smoke_unlock_both_historical_tests(self):
+        plan=module.build_plan({
+            "passed_tests":[
+                "test_vx_meeting_current_contract.py",
+                "tests/Test-VX-Meeting-Current-Smoke.ps1",
+            ]
+        })
         ready={x["historical_test"] for x in plan["candidates"] if x["status"]=="READY_TO_REMOVE"}
         self.assertEqual(
             ready,
