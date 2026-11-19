@@ -23,3 +23,8 @@ metadata:
 
 ## Salida
 `VIEWPORT_RISKS`, `CONTENT_STRESS`, `LOCALE_RISKS`, `THEME_RISKS`, `INPUT_AND_OVERLAY_RISKS`, `NETWORK_STATE_RISKS`, `RESILIENCE_CHECKS`.
+
+## Integración de evidencia/MCP
+- Playwright/Chrome DevTools son útiles para viewports, theme, overflow y comportamiento real cuando estén autorizados.
+- Reutilizar capturas por viewport/theme; no repetir navegación si el estado no cambió.
+- Si no hay runtime visual, marcar checks de resiliencia como planificados/no observados.
