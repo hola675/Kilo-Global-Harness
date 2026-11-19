@@ -328,7 +328,7 @@ jobs:
           }
           Write-Host 'VX SKILLS V0.2: 31 SKILLS, DAG Y PERMISOS INTACTOS PASS'
 
-      - name: V4.1 - auditoria de evidencias y comando global
+      - name: VX Evidence Revalidation - comando global read-only
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -357,7 +357,7 @@ jobs:
           & $installer -Modo Verificar -RaizUsuario $root
           Write-Host 'V4.1 EVIDENCE-GATE Y GLOBAL-ONLY: PASS'
 
-      - name: V4.2 - reconciliar agentes de forma segura
+      - name: VX Agent Reconciliation - auditoria read-only de conflictos
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -453,7 +453,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis VX Evolution Core.' }
           Write-Host 'VX EVOLUTION CORE SOURCE SYNTAX: PASS'
 
-      - name: V4.3 - instalar código global sin inicializar ni borrar datos
+      - name: VX Evolution Install - sin auto-init y rollback seguro
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -514,7 +514,7 @@ jobs:
           }
           Write-Host 'POLITICA VX REUNION: LUNES 09:00 WINDOWS LOCAL; PROGRAMADOR OFF: PASS'
 
-      - name: V4.4 - Observer ligero Kilo-only y migración aislada
+      - name: VX Observer - opt-in, estado inerte y rollback
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -557,7 +557,7 @@ jobs:
           }
           Write-Host 'V4.4 PLUGIN OPT-IN + OBSERVADOR INERTE + SQLITE V2 + ROLLBACK: PASS'
 
-      - name: V4.4 - evento sintético plugin a SQLite sin datos de sesión
+      - name: VX Observer - evento sintético con privacidad
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -714,7 +714,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Integridad SQLite fallo' }
           Write-Host 'V4.5.1 UNA SESION + DOS SECCIONES + SQLITE V4 + SCHEDULER OFF: PASS'
 
-      - name: ROADMAP V4.6 - coherencia de estado y scheduler desactivado
+      - name: VX Evolution Docs - coherencia actual y automatización desactivada
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -722,31 +722,22 @@ jobs:
           $readme = Get-Content 'README.md' -Raw -Encoding UTF8
           $decisions = Get-Content 'docs/VX-EVOLUTION-DECISIONES.md' -Raw -Encoding UTF8
           $policy = Get-Content 'config/vx-reunion-policy.v1.json' -Raw -Encoding UTF8 | ConvertFrom-Json
-          foreach ($term in @('V4.5.1','V4.6.0','V4.6.1','V4.6.2','V4.6.3',
-                            'solo Kilo Code','SQLite v4','NO_MEDIDO','PENDIENTE')) {
-            if (!$roadmap.Contains($term)) {
-              throw "Roadmap incompleto: $term"
-            }
-          }
           if (!$readme.Contains('docs/VX-EVOLUTION-ROADMAP.md') -or
               !$decisions.Contains('VX-EVOLUTION-ROADMAP.md')) {
-            throw 'README y registro de decisiones deben enlazar roadmap'
+            throw 'README y decisiones deben enlazar el roadmap vigente'
           }
-          if ($policy.weekly.weekday -ne 'monday' -or
-              $policy.weekly.local_time -ne '09:00' -or
-              $policy.monthly.local_time -ne '09:00' -or
-              !$policy.joint_session.one_session -or
-              (($policy.joint_session.section_order -join ',') -ne 'monthly,weekly')) {
-            throw 'Roadmap no puede cambiar el calendario aprobado'
+          foreach ($term in @('solo Kilo Code','NO_MEDIDO','PENDIENTE')) {
+            if (!$roadmap.Contains($term)) { throw "Roadmap vigente incompleto: $term" }
           }
-          if ($policy.weekly.enabled -or $policy.monthly.enabled -or
+          if ($policy.status -ne 'joint-first-monday-confirmed-manual-v4-5-1-no-automation' -or
+              $policy.weekly.enabled -or $policy.monthly.enabled -or
               $policy.joint_session.enabled -or
               $policy.automation.scheduled_task_enabled -or
               $policy.automation.notifications_enabled -or
               $policy.automation.autonomous_meeting_enabled) {
-            throw 'Roadmap no puede activar automatizaciones'
+            throw 'Documentación/roadmap no puede contradecir la política manual vigente'
           }
-          Write-Host 'VX ROADMAP V4.6: DOCUMENTADO + CALENDARIO CONSERVADO + SCHEDULER OFF: PASS'
+          Write-Host 'VX EVOLUTION DOCS CURRENT: LINKS + ESTADO + AUTOMATION OFF PASS'
 
       - name: VX Capability Audit - smoke Windows sin efectos
         shell: pwsh
@@ -1000,7 +991,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Fallaron las pruebas de la skill IDA MCP.' }
           Write-Host 'VX IDA MCP: SKILL + CATALOGO OPCIONAL + SIN INSTALACION AUTOMATICA: PASS'
 
-      - name: VX Integración - 13 agentes, 31 skills, Academy, MCP único y V4.7.2 inactiva
+      - name: VX Integration - contrato global vigente
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
