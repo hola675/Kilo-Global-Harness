@@ -28,10 +28,23 @@
     },
     {
       "id": "vx-dev-architect",
-      "role": "architecture",
+      "role": "architecture-decisions-contracts",
       "mode": "subagent",
       "hidden": true,
-      "read_only": true
+      "read_only": true,
+      "special_output": [
+        "OPTIONS",
+        "TRADEOFFS",
+        "CONTRACTS",
+        "DECISIONS_REQUIRED"
+      ],
+      "mcp_allowlist": [
+        "context7_resolve-library-id",
+        "context7_query-docs",
+        "microsoft-learn_microsoft_docs_search",
+        "microsoft-learn_microsoft_docs_fetch",
+        "microsoft-learn_microsoft_code_sample_search"
+      ]
     },
     {
       "id": "vx-dev-frontend",
@@ -180,9 +193,9 @@
   "mcp_design": {
     "proposal": "registry/dev-team-mcp-readonly-matrix-v1.proposal.json",
     "guide": "docs/VX-DEV-TEAM-MCP-READONLY-MATRIX-V1.md",
-    "active": "partial-per-agent",
-    "current_child_mcp": "DENY_BY_DEFAULT_WITH_RESEARCH_DOCS_ALLOWLIST",
-    "first_candidate_wave": "WAVE-1-DOCS-CERTIFIED_FOR_RESEARCH_AND_ARCHITECT_RUNTIME",
+    "active": "wave1-docs-source-aligned",
+    "current_child_mcp": "DENY_BY_DEFAULT_WITH_RESEARCH_AND_ARCHITECT_DOCS_ALLOWLIST",
+    "first_candidate_wave": "WAVE-1-DOCS-CERTIFIED_AND_SOURCE_ALIGNED",
     "activation_requires": "explicit source allowlist + runtime reload + isolated smoke"
   },
   "specialist_contracts": {
@@ -249,10 +262,47 @@
         "historical-comments",
         "inference"
       ]
+    },
+    "vx-dev-architect": {
+      "mission": "turn verified evidence and requirements into options, tradeoffs, contracts and an implementable architecture decision",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "OPTIONS",
+        "TRADEOFFS",
+        "CONTRACTS",
+        "DECISIONS_REQUIRED",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "VERIFIED",
+        "ASSUMPTION",
+        "PROPOSAL",
+        "UNKNOWN"
+      ],
+      "contract_states": [
+        "EXISTING",
+        "CHANGE",
+        "NEW",
+        "DEPRECATED"
+      ]
     }
   },
   "mcp_allowlists": {
     "vx-dev-research": [
+      "context7_resolve-library-id",
+      "context7_query-docs",
+      "microsoft-learn_microsoft_docs_search",
+      "microsoft-learn_microsoft_docs_fetch",
+      "microsoft-learn_microsoft_code_sample_search"
+    ],
+    "vx-dev-architect": [
       "context7_resolve-library-id",
       "context7_query-docs",
       "microsoft-learn_microsoft_docs_search",
