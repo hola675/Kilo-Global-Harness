@@ -385,7 +385,7 @@ try {
   throw
 }
 
-Write-Host '[PASS] Baseline aplicado: Dev Team + 7 subagentes ocultos read-only.' -ForegroundColor Green
+Write-Host '[PASS] Baseline aplicado: Dev Team + 8 subagentes ocultos read-only.' -ForegroundColor Green
 Write-Host '[PASS] kilo.jsonc y configuracion MCP preservados.' -ForegroundColor Green
 Write-Host "BACKUP: $backupDir" -ForegroundColor Yellow
 Write-Host 'Ejecuta este mismo script con -Modo Verificar y luego /reload en Kilo.' -ForegroundColor Cyan
