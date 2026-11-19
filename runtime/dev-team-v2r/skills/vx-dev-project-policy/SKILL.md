@@ -23,9 +23,13 @@ Mantener cambios pequeños, trazables, reversibles y verificables sin confundir 
 7. Si cambia un contrato, permiso, MCP, agente o skill, identificar explícitamente qué certificación queda invalidada.
 8. Mantener rollback o reversión proporcional al riesgo.
 9. Aplicar certificación viva: cada cambio mantiene solo las pruebas que validan la verdad actual.
-10. Si una prueba nueva cubre completamente la misma invariante que una prueba antigua y pasa, retirar la prueba supersedida del CI activo.
-11. Conservar historia en Git, changelog, registries y evidencia; no mediante suites históricas activas.
-12. Un cambio localizado requiere la prueba mínima eficaz; ampliar cobertura solo si cambió una invariante transversal.
+10. Para cambios con pruebas, registrar una decisión `UPDATE`, `REPLACE` o `ADD`:
+    - `UPDATE`: mantener y actualizar el test vigente;
+    - `REPLACE`: sustituir el test y retirar el supersedido solo tras PASS;
+    - `ADD`: únicamente para una invariante o riesgo diferencial.
+11. Si una prueba nueva cubre completamente la misma invariante que una prueba antigua y pasa, retirar la prueba supersedida del CI activo.
+12. Conservar historia en Git, changelog, registries y evidencia; no mediante suites históricas activas.
+13. Un cambio localizado requiere la prueba mínima eficaz; ampliar cobertura solo si cambió una invariante transversal.
 
 ## Límites
 La skill no autoriza merge, deploy, cambios de permisos, publicación ni producción.
