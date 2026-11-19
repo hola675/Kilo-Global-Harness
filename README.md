@@ -1,8 +1,8 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
-> **BASELINE APROBADO ACTUAL — Dev Team V2-R.2 (2026-11-17):** **`👥 Dev Team`** es el único agente personalizado visible. Puede delegar mediante `task` a **7 subagentes ocultos de análisis no mutable** (Explorer, Architect, Frontend, Backend/Data, Quality, Security y Research). Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan, no usan Board/Agent Manager y no reciben permisos MCP. Tras detectar exposición de recursos MCP genéricos en la primera certificación, V2-R.1 estableció `read: deny`; V2-R.2 conserva `glob` y `grep` como capacidades mínimas y mantiene `lsp: allow` solo como capacidad opcional si el host la expone. Los 13 MCP globales y `kilo.jsonc` se preservan como infraestructura separada.
+> **BASELINE APROBADO ACTUAL — Dev Team V2-R.2 (2026-11-17):** **`vx-dev-team`** es el único agente personalizado visible. Puede delegar mediante `task` a **7 subagentes ocultos de análisis no mutable** (Explorer, Architect, Frontend, Backend/Data, Quality, Security y Research). Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan, no usan Board/Agent Manager y no reciben permisos MCP. Tras detectar exposición de recursos MCP genéricos en la primera certificación, V2-R.1 estableció `read: deny`; V2-R.2 conserva `glob` y `grep` como capacidades mínimas y mantiene `lsp: allow` solo como capacidad opcional si el host la expone. Los 13 MCP globales y `kilo.jsonc` se preservan como infraestructura separada.
 
-> **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `👥 Dev Team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
+> **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `vx-dev-team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 
 **Versión del código:** 4.6.3 · **Manifiesto del instalador:** 4.0.0 (restauración compatible con V3/V4) · **Estado:** V4.5.1 integrada y CI Windows PASS; **SQLite v4 y calendario V4.5.1 verificados en el Windows del usuario**. V4.6.0 y V4.6.1 tienen CI Windows PASS y validación local real de sus CLI, con 28 agentes únicos y 40 skills; pendiente prueba interactiva tras /reload. V4.6.2 tiene CI Windows PASS y CLI local validado (5 casos y destinos); después se recibieron 5/5 respuestas coincidentes en chat con fixtures sintéticos públicos. Atribución efectiva a especialistas/skills y competencia real NO_VERIFICADAS. PowerShell dentro de Kilo permanece bloqueado por política. V4.6.3 tiene CI Windows PASS y CLI local validado: 11 solapamientos de agentes, 0 diferencias explícitas comparadas, 19 límites steps elevados y 30 hallazgos de revisión; ninguna colisión de runtime ni competencia verificada. Ninguna reunión automática está habilitada.
 
@@ -31,9 +31,9 @@ Este pack es **independiente del instalador general del Harness**. `scripts/Inst
 
 El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su token desde el keyring de `gh` únicamente en memoria del proceso. “Connected” acredita handshake MCP; las capacidades funcionales se documentan separadamente según las pruebas realmente realizadas.
 
-## 👥 Dev Team V2-R.2 — líder único + especialistas ocultos
+## vx-dev-team V2-R.2 — líder único + especialistas ocultos
 
-El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`👥 Dev Team`** con color `#8B5CF6`.
+El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`.
 
 Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`:
 
@@ -47,7 +47,9 @@ Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`
 
 Todos los hijos requieren `glob` y `grep`; `lsp` queda permitida pero es opcional porque Kilo solo registra esa tool cuando el host habilita `KILO_EXPERIMENTAL_LSP_TOOL`. Tienen `read/edit/write/apply_patch/bash/task/skill/agent_manager/board: deny`. El `read: deny` mantiene ocultas las herramientas genéricas de recursos MCP.
 
-El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los siete por defecto y la profundidad máxima es una sola: **Usuario → Dev Team → Subagente**.
+El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los siete por defecto y la profundidad máxima es una sola: **Usuario → vx-dev-team → Subagente**.
+
+La evolución del equipo se hará por responsabilidades estables, no por cantidad de agentes. El diseño aprobado para el pulido actual prevé separar Backend/Data en `vx-dev-backend` y `vx-dev-data`, y diseñar `vx-dev-platform` y `vx-dev-reviewer`. Estos IDs todavía no forman parte de la ACL activa de `task`; se incorporarán únicamente después de definir, revisar y certificar cada agente.
 
 Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R no les concede acceso automático al líder ni a los hijos. La integración MCP se hará posteriormente tool-by-tool.
 
@@ -123,7 +125,7 @@ pwsh -NoProfile -File $script -Modo Verificar
 
 El reset crea un respaldo privado reversible en `~/.config/kilo-devteam-backups/AAAAmmdd-HHMMSS-fff-sufijo`. No modifica `kilo.jsonc`, MCP ni recursos ajenos al namespace VX.
 
-Finalmente, en Kilo ejecuta `/reload` y confirma visualmente que, además de los modos nativos, el único agente VX visible sea `👥 Dev Team`. No uses comandos `/vx-*` legacy.
+Finalmente, en Kilo ejecuta `/reload` y confirma visualmente que, además de los modos nativos, el único agente VX visible sea `vx-dev-team`. No uses comandos `/vx-*` legacy.
 
 ## Reversión
 
@@ -139,7 +141,7 @@ Por defecto, si un archivo administrado fue modificado **después de aplicar**, 
 
 | Origen | Destino global | Estado |
 | --- | --- | --- |
-| `agents/vx-dev-team.md` | `~/.config/kilo/agents/vx-dev-team.md` | primario visible `👥 Dev Team` |
+| `agents/vx-dev-team.md` | `~/.config/kilo/agents/vx-dev-team.md` | primario visible `vx-dev-team` |
 | `runtime/dev-team-v2r/agents/vx-dev-explorer.md` | `~/.config/kilo/agents/` | subagente oculto no mutable |
 | `runtime/dev-team-v2r/agents/vx-dev-architect.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-frontend.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
@@ -342,7 +344,7 @@ Se confirma **una sesión cada primer lunes a las 09:00 hora local de Windows**,
 
 - **V2-R.2 certificación · 2026-11-17:** 7/7 especialistas runtime certificados mediante evidencia del operador; glob/grep disponibles, LSP opcional, read/mutación/shell/task/skill/MCP ausentes. Próxima fase: diseño MCP read-only tool-by-tool, sin activación todavía.
 
-- **Dev Team V1 · 2026-11-17:** nuevo agente primario `vx-dev-team` visible como `👥 Dev Team`, color propio, 13 agentes VX/31 skills, delegación a especialistas y política MCP conservadora (`Context7`/`Microsoft Learn` allow; resto ask). No modifica `kilo.jsonc` ni los 13 MCP; smoke visual en Desktop pendiente tras instalación/reload.
+- **Dev Team V1 · 2026-11-17:** nuevo agente primario `vx-dev-team` visible como `vx-dev-team`, color propio, 13 agentes VX/31 skills, delegación a especialistas y política MCP conservadora (`Context7`/`Microsoft Learn` allow; resto ask). No modifica `kilo.jsonc` ni los 13 MCP; smoke visual en Desktop pendiente tras instalación/reload.
 
 - **Validación Desktop · 2026-11-14:** inventario global VX y delegación de tarea confirmados con limitaciones, sin certificar carga de skill. Próxima fase V4.7: diseño de publicación segura, pruebas aisladas y aprobación explícita; ningún cambio activo.
 
