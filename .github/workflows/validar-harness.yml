@@ -23,7 +23,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Inventario vivo de gates CI invalido.' }
           python -I -m unittest discover -s tests -p 'test_vx_ci_no_duplicate_test_invocations.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Una suite directa tiene mas de un gate propietario.' }
-          Write-Host 'CI LIVING POLICY: PASS'
+          python -I -m unittest discover -s tests -p 'test_vx_living_certification_agent_policy_v1.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'La politica de certificacion viva no esta propagada a los agentes requeridos.' }
+          Write-Host 'CI LIVING POLICY: GATES + TEST OWNERSHIP + AGENT BEHAVIOR PASS'
 
       - name: Analisis estatico y smoke test aislado
         shell: pwsh
