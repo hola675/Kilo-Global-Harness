@@ -1,9 +1,9 @@
-# vx-dev-team V2-R.2 — líder único + especialistas ocultos con capacidades adaptativas
+# vx-dev-team — baseline source 2.1.0 con especialistas ocultos
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE APPROVED BASELINE · V2-R.2  
+**Estado:** ACTIVE SOURCE BASELINE · runtime pendiente de despliegue tras split Backend/Data  
 **Primario visible:** `vx-dev-team`  
-**Especialistas ocultos:** 7  
+**Especialistas ocultos:** 8  
 **Mutaciones de subagentes:** DENY  
 **MCP de subagentes:** deny-by-default; `vx-dev-research` y `vx-dev-architect` tienen 5 tools documentales allowlistadas cada uno
 
@@ -21,7 +21,8 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 | `vx-dev-explorer` | codebase exploration | no | deny | deny | deny | deny |
 | `vx-dev-architect` | architecture decisions/contracts | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
 | `vx-dev-frontend` | frontend analysis | no | deny | deny | deny | deny |
-| `vx-dev-backend-data` | backend/data analysis | no | deny | deny | deny | deny |
+| `vx-dev-backend` | backend application analysis | no | deny | deny | deny | deny |
+| `vx-dev-data` | data/persistence analysis | no | deny | deny | deny | deny |
 | `vx-dev-quality` | quality/test planning | no | deny | deny | deny | deny |
 | `vx-dev-security` | security analysis | no | deny | deny | deny | deny |
 | `vx-dev-research` | technical research | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
@@ -165,6 +166,29 @@ Comparte la misma allowlist documental de Research:
 
 Architect usa esas tools únicamente para validar restricciones externas concretas; no para investigación abierta.
 
+## Contratos especializados: Backend y Data
+
+`vx-dev-backend` analiza comportamiento de aplicación y devuelve:
+
+- `SERVICE_FLOW`
+- `API_CONTRACTS`
+- `DOMAIN_RULES`
+- `FAILURE_MODES`
+
+Su frontera termina antes del diseño físico de persistencia.
+
+`vx-dev-data` analiza persistencia y devuelve:
+
+- `DATA_MODEL`
+- `DATA_INVARIANTS`
+- `QUERY_IMPACT`
+- `CONSISTENCY_RISKS`
+- `MIGRATION_IMPACT`
+
+Su frontera termina antes de decidir comportamiento de APIs o reglas de negocio.
+
+El antiguo `vx-dev-backend-data` queda supersedido en el source. Su certificación V2-R.2 se conserva únicamente como evidencia histórica y no certifica los dos agentes nuevos.
+
 ## Permisos de hijos
 
 Requeridos:
@@ -220,6 +244,15 @@ Esto no es un fallo de ACL. En Kilo actual, la tool `lsp` se registra únicament
 - `lsp` es una capacidad opcional;
 - no se activa ninguna bandera experimental global automáticamente.
 
+### Estado runtime tras el split
+
+Los cambios en GitHub **no modifican Kilo Desktop por sí solos**. Hasta ejecutar explícitamente el instalador/sincronización y recargar Kilo Desktop:
+
+- la baseline source puede tener 8 especialistas;
+- el runtime instalado puede seguir usando la definición anterior;
+- `vx-dev-backend` y `vx-dev-data` deben considerarse `RUNTIME_NOT_VERIFIED`;
+- no se hereda el PASS histórico de `vx-dev-backend-data`.
+
 ## Instalación
 
 El instalador canónico continúa siendo:
@@ -232,7 +265,7 @@ pwsh -NoProfile -File $script -Modo Aplicar
 pwsh -NoProfile -File $script -Modo Verificar
 ```
 
-La semántica de “Only” es: **Dev Team es el único modo personalizado visible aprobado**. Los siete especialistas son internos y `hidden: true`.
+La semántica de “Only” es: **Dev Team es el único modo personalizado visible aprobado**. Los ocho especialistas son internos y `hidden: true`.
 
 ## Seguridad
 
@@ -265,7 +298,7 @@ Prioridad actual:
 
 1. consolidar `vx-dev-team` como coordinador único y mejorar routing por incertidumbre;
 2. pulir los especialistas existentes uno por uno;
-3. dividir `vx-dev-backend-data` en `vx-dev-backend` y `vx-dev-data` solo después de definir y certificar ambos;
+3. `vx-dev-backend` y `vx-dev-data` ya están separados en el source y requieren despliegue/smoke runtime antes de considerarse certificados;
 4. diseñar `vx-dev-platform` para runtime/build/CI/CD/configuración;
 5. diseñar `vx-dev-reviewer` como revisor independiente de cambios;
 6. mantener una sola profundidad y deny-by-default.
