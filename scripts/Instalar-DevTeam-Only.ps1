@@ -147,7 +147,7 @@ function Assert-AgentSources {
 
   $leader = Get-Content -LiteralPath $approvedAgents['vx-dev-team.md'] -Raw -Encoding UTF8
   foreach ($required in @(
-    '(?m)^displayName:\s*"vx-dev-team"\s*
+    '(?m)^displayName:\s*"vx-dev-team"\s*$',
     '(?m)^mode:\s*primary\s*$',
     '(?m)^color:\s*"#8B5CF6"\s*$',
     '(?m)^\s{2}skill:\s*deny\s*$',
@@ -155,6 +155,15 @@ function Assert-AgentSources {
     '(?m)^\s{2}agent_manager:\s*deny\s*$'
   )) {
     if ($leader -notmatch $required) { throw "Dev Team V2-R invalido: $required" }
+  }
+
+  foreach ($name in $approvedAgents.Keys | Where-Object { $_ -ne 'vx-dev-team.md' }) {
+    $childId = [IO.Path]::GetFileNameWithoutExtension($name)
+    $pattern = '(?m)^\s{4}"' + [regex]::Escape($childId) + '":\s*allow\s*$'
+    if ($leader -notmatch $pattern) { throw "Dev Team no permite delegar al subagente aprobado: $childId" }
+  }
+  if ($leader -match '(?m)^\s{4}"vx-dev-backend-data":\s*allow\s*$') {
+    throw 'Dev Team conserva ACL del subagente supersedido vx-dev-backend-data.'
   }
 
   foreach ($name in $approvedAgents.Keys | Where-Object { $_ -ne 'vx-dev-team.md' }) {
@@ -190,239 +199,6 @@ function Show-State {
   Write-Host "=== DEV TEAM V2-R | $Modo ===" -ForegroundColor Cyan
   Write-Host "HOME: $homeRoot"
   Write-Host "Agentes aprobados instalados detectados: $($installed.Count)/$($approvedAgents.Count)"
-  Write-Host "Recursos VX legacy detectados para retirar: $($legacy.Count)"
-  Write-Host "kilo.jsonc: $(if(Test-Path -LiteralPath $configFile){'PRESERVADO'}else{'NO EXISTE'})"
-  Write-Host 'MCP: fuera del alcance de este instalador; no se modifican.'
-}
-
-function Save-Manifest([string]$Dir,$Manifest) {
-  New-Item -ItemType Directory -Path $Dir -Force | Out-Null
-  [IO.File]::WriteAllText(
-    (Join-Path $Dir 'manifest.json'),
-    (($Manifest | ConvertTo-Json -Depth 12) + [Environment]::NewLine),
-    [Text.UTF8Encoding]::new($false)
-  )
-}
-
-function Backup-Target(
-  [string]$Dir,
-  [System.Collections.ArrayList]$Entries,
-  [string]$Path,
-  [string]$Kind,
-  [int]$Index
-) {
-  $exists = Test-Path -LiteralPath $Path
-  $backup = ''
-  if ($exists) {
-    $backup = Join-Path $Dir ("item-{0}" -f $Index)
-    if ($Kind -eq 'dir') {
-      Copy-Item -LiteralPath $Path -Destination $backup -Recurse -Force
-    } else {
-      Copy-Item -LiteralPath $Path -Destination $backup -Force
-    }
-  }
-  [void]$Entries.Add([ordered]@{
-    target=[IO.Path]::GetFullPath($Path)
-    kind=$Kind
-    existed=[bool]$exists
-    backup=$backup
-  })
-}
-
-function Restore-Backup([string]$Dir) {
-  if ([string]::IsNullOrWhiteSpace($Dir) -or ![IO.Path]::IsPathFullyQualified($Dir)) {
-    throw 'Restaurar requiere -BackupFolder absoluto.'
-  }
-  $manifestPath = Join-Path $Dir 'manifest.json'
-  if (!(Test-Path -LiteralPath $manifestPath -PathType Leaf)) { throw "Falta manifiesto: $manifestPath" }
-  $m = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
-  if (@('dev-team-only-backup/1','dev-team-v2r-backup/1') -notcontains [string]$m.schema) {
-    throw 'Backup incompatible.'
-  }
-
-  foreach ($entry in @($m.entries)) {
-    $target = [string]$entry.target
-    if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target -Recurse -Force }
-    if ([bool]$entry.existed) {
-      $parent = Split-Path $target -Parent
-      New-Item -ItemType Directory -Path $parent -Force | Out-Null
-      if ([string]$entry.kind -eq 'dir') {
-        Copy-Item -LiteralPath ([string]$entry.backup) -Destination $target -Recurse -Force
-      } else {
-        Copy-Item -LiteralPath ([string]$entry.backup) -Destination $target -Force
-      }
-    }
-  }
-  Write-Host '[PASS] Estado VX previo restaurado desde backup.' -ForegroundColor Green
-}
-
-Assert-AgentSources
-
-if ($Modo -eq 'Restaurar') {
-  Restore-Backup $BackupFolder
-  return
-}
-
-$legacy = @(Get-LegacyItems)
-
-if ($Modo -eq 'Diagnostico') {
-  Show-State
-  Write-Host 'DIAGNOSTICO: sin cambios.' -ForegroundColor Green
-  return
-}
-
-if ($Modo -eq 'Simular') {
-  Show-State
-  foreach ($item in $legacy) { Write-Host "[RETIRAR] $($item.Path)" }
-  foreach ($name in $approvedAgents.Keys) { Write-Host "[INSTALAR/ACTUALIZAR] $(Join-Path $agentDir $name)" }
-  if (Test-Path -LiteralPath $agentsFile -PathType Leaf) {
-    $raw = Get-Content -LiteralPath $agentsFile -Raw -Encoding UTF8
-    if ($raw.Contains($startMarker)) { Write-Host "[LIMPIAR BLOQUE LEGACY] $agentsFile" }
-  }
-  Write-Host 'SIMULACION: sin cambios.' -ForegroundColor Green
-  return
-}
-
-if ($Modo -eq 'Verificar') {
-  $errors = [System.Collections.Generic.List[string]]::new()
-
-  foreach ($pair in $approvedAgents.GetEnumerator()) {
-    $target = Join-Path $agentDir $pair.Key
-    if (!(Test-Path -LiteralPath $target -PathType Leaf)) {
-      $errors.Add("Falta agente aprobado: $($pair.Key)")
-    } elseif ((Hash-File $target) -ne (Hash-File $pair.Value)) {
-      $errors.Add("Agente instalado difiere de fuente aprobada: $($pair.Key)")
-    }
-  }
-
-  $remaining = @(Get-LegacyItems)
-  if ($remaining.Count -gt 0) { $errors.Add("Quedan $($remaining.Count) recursos VX legacy.") }
-
-  if (Test-Path -LiteralPath $agentsFile -PathType Leaf) {
-    $raw = Get-Content -LiteralPath $agentsFile -Raw -Encoding UTF8
-    if ($raw.Contains($startMarker) -or $raw.Contains($endMarker)) {
-      $errors.Add('AGENTS.md conserva el bloque VX legacy.')
-    }
-  }
-
-  if ($errors.Count -gt 0) {
-    foreach ($e in $errors) { Write-Host "[FAIL] $e" -ForegroundColor Red }
-    throw "Baseline Dev Team V2-R incompleto: $($errors.Count) errores."
-  }
-
-  Write-Host '[PASS] Dev Team es el unico primario VX aprobado.' -ForegroundColor Green
-  Write-Host '[PASS] Ocho subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
-  Write-Host '[PASS] Skills/workflows/reglas/plugins/runtime VX legacy no estan instalados.' -ForegroundColor Green
-  Write-Host '[PASS] Este verificador no modifica ni autentica MCP.' -ForegroundColor Green
-  return
-}
-
-$stamp = (Get-Date -Format 'yyyyMMdd-HHmmss-fff') + '-' + ([guid]::NewGuid().ToString('N').Substring(0,8))
-$backupDir = Join-Path $backupRoot $stamp
-New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
-$entries = [System.Collections.ArrayList]::new()
-$index = 0
-
-foreach ($name in $approvedAgents.Keys) {
-  Backup-Target $backupDir $entries (Join-Path $agentDir $name) 'file' $index
-  $index++
-}
-Backup-Target $backupDir $entries $agentsFile 'file' $index
-$index++
-foreach ($item in $legacy) {
-  Backup-Target $backupDir $entries $item.Path $item.Kind $index
-  $index++
-}
-
-$configHashBefore = Hash-File $configFile
-$manifest = [ordered]@{
-  schema='dev-team-v2r-backup/1'
-  created=$stamp
-  home=$homeRoot
-  config_hash_before=$configHashBefore
-  approved_agents=@($approvedAgents.Keys)
-  entries=@($entries)
-}
-Save-Manifest $backupDir $manifest
-
-try {
-  foreach ($item in $legacy) {
-    if (Test-Path -LiteralPath $item.Path) { Remove-Item -LiteralPath $item.Path -Recurse -Force }
-  }
-
-  if (Test-Path -LiteralPath $agentsFile -PathType Leaf) {
-    $raw = Get-Content -LiteralPath $agentsFile -Raw -Encoding UTF8
-    $clean = Remove-VXManagedBlock $raw
-    if ([string]::IsNullOrWhiteSpace($clean)) {
-      Remove-Item -LiteralPath $agentsFile -Force
-    } elseif ($clean -ne $raw) {
-      Write-Utf8Atomic $agentsFile $clean
-    }
-  }
-
-  New-Item -ItemType Directory -Path $agentDir -Force | Out-Null
-  foreach ($pair in $approvedAgents.GetEnumerator()) {
-    Copy-Item -LiteralPath $pair.Value -Destination (Join-Path $agentDir $pair.Key) -Force
-  }
-
-  $configHashAfter = Hash-File $configFile
-  if ($configHashBefore -ne $configHashAfter) {
-    throw 'kilo.jsonc cambio durante la operacion; rollback obligatorio.'
-  }
-} catch {
-  $message = $_.Exception.Message
-  Write-Warning "Aplicacion interrumpida: $message"
-  Restore-Backup $backupDir
-  throw
-}
-
-Write-Host '[PASS] Baseline aplicado: Dev Team + 7 subagentes ocultos read-only.' -ForegroundColor Green
-Write-Host '[PASS] kilo.jsonc y configuracion MCP preservados.' -ForegroundColor Green
-Write-Host "BACKUP: $backupDir" -ForegroundColor Yellow
-Write-Host 'Ejecuta este mismo script con -Modo Verificar y luego /reload en Kilo.' -ForegroundColor Cyan
-,
-    '(?m)^mode:\s*primary\s*$',
-    '(?m)^color:\s*"#8B5CF6"\s*$',
-    '(?m)^\s{2}skill:\s*deny\s*$',
-    '(?m)^\s{2}task:\s*$',
-    '(?m)^\s{2}agent_manager:\s*deny\s*$'
-  )) {
-    if ($leader -notmatch $required) { throw "Dev Team V2-R invalido: $required" }
-  }
-
-  foreach ($name in $approvedAgents.Keys | Where-Object { $_ -ne 'vx-dev-team.md' }) {
-    $text = Get-Content -LiteralPath $approvedAgents[$name] -Raw -Encoding UTF8
-    foreach ($required in @(
-      '(?m)^mode:\s*subagent\s*$',
-      '(?m)^hidden:\s*true\s*$',
-      '(?m)^\s{2}read:\s*deny\s*$',
-      '(?m)^\s{2}skill:\s*deny\s*$',
-      '(?m)^\s{2}task:\s*deny\s*$',
-      '(?m)^\s{2}edit:\s*deny\s*$',
-      '(?m)^\s{2}write:\s*deny\s*$',
-      '(?m)^\s{2}apply_patch:\s*deny\s*$',
-      '(?m)^\s{2}bash:\s*deny\s*$',
-      '(?m)^\s{2}agent_manager:\s*deny\s*$',
-      '(?m)^\s{2}board_read:\s*deny\s*$',
-      '(?m)^\s{2}board_post:\s*deny\s*$'
-    )) {
-      if ($text -notmatch $required) { throw "Subagente $name no es read-only/oculto: $required" }
-    }
-    if ($text -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-      throw "Subagente $name contiene permisos MCP automaticos."
-    }
-  }
-}
-
-function Show-State {
-  $legacy = @(Get-LegacyItems)
-  $installed = @()
-  foreach ($name in $approvedAgents.Keys) {
-    if (Test-Path -LiteralPath (Join-Path $agentDir $name) -PathType Leaf) { $installed += $name }
-  }
-  Write-Host "=== DEV TEAM V2-R | $Modo ===" -ForegroundColor Cyan
-  Write-Host "HOME: $homeRoot"
-  Write-Host "Agentes aprobados instalados detectados: $($installed.Count)/8"
   Write-Host "Recursos VX legacy detectados para retirar: $($legacy.Count)"
   Write-Host "kilo.jsonc: $(if(Test-Path -LiteralPath $configFile){'PRESERVADO'}else{'NO EXISTE'})"
   Write-Host 'MCP: fuera del alcance de este instalador; no se modifican.'
