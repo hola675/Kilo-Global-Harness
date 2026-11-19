@@ -11,7 +11,8 @@
     "test_vx_dev_team_skills_matrix_v1.py",
     "test_vx_dev_team_living_certification_policy_v1.py",
     "test_vx_dev_team_capability_matrix_v1.py",
-    "test_vx_dev_team_mcp_exact_inventory_v1.py"
+    "test_vx_dev_team_mcp_exact_inventory_v1.py",
+    "test_vx_dev_team_mcp_current_contract.py"
   ],
   "historical_evidence": [
     {
