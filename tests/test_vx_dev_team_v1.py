@@ -89,6 +89,13 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertEqual(baseline["child_permissions"]["required"], ["glob", "grep"])
         self.assertEqual(baseline["child_permissions"]["optional"], ["lsp"])
 
+    def test_installer_reports_current_specialist_count(self):
+        source = (ROOT / "scripts" / "Instalar-DevTeam-Only.ps1").read_text(encoding="utf-8")
+        self.assertIn("Diez subagentes ocultos V2-R", source)
+        self.assertIn("Dev Team + 10 subagentes ocultos read-only", source)
+        self.assertNotIn("Ocho subagentes ocultos V2-R", source)
+        self.assertNotIn("Dev Team + 8 subagentes ocultos read-only", source)
+
     def test_installer_preserves_mcp_config_and_manages_eleven_agent_files(self):
         source = INSTALLER.read_text(encoding="utf-8")
         self.assertIn("Dev Team V2-R", source)
