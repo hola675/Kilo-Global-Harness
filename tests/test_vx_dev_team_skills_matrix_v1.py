@@ -1,4 +1,4 @@
-"""Contrato estático de la propuesta Dev Team Skills Matrix V1."""
+"""Contrato estático del Dev Team Skills Pack V1 (propuesta inactiva)."""
 
 from pathlib import Path
 import json
@@ -7,17 +7,13 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 PROPOSAL = ROOT / "registry" / "dev-team-skills-matrix-v1.proposal.json"
+EVALS = ROOT / "registry" / "dev-team-skill-evals-v1.proposal.json"
 BASELINE = ROOT / "registry" / "dev-team-readonly-baseline-v2.json"
-SKILLS_DIR = ROOT / "skills"
+LEGACY_SKILLS_DIR = ROOT / "skills"
+PACK_SKILLS_DIR = ROOT / "runtime" / "dev-team-v2r" / "skills"
 LEADER = ROOT / "agents" / "vx-dev-team.md"
 SUBAGENT_DIR = ROOT / "runtime" / "dev-team-v2r" / "agents"
-
-EXPECTED_S1 = {
-    "vx-dev-explorer": ["vx-codebase-investigation"],
-    "vx-dev-architect": ["vx-architecture-decisions"],
-    "vx-dev-data": ["vx-data-contracts"],
-    "vx-dev-security": ["vx-security-review"],
-}
+INSTALLER = ROOT / "scripts" / "Instalar-DevTeam-Only.ps1"
 
 ALL_AGENTS = {
     "vx-dev-team",
@@ -33,76 +29,129 @@ ALL_AGENTS = {
     "vx-dev-reviewer",
 }
 
+EXPECTED_PERMISSIONS = {
+    "vx-dev-team": {"vx-dev-project-policy", "vx-dev-team-handoff"},
+    "vx-dev-explorer": {"vx-dev-codebase-investigation", "vx-dev-debug-triage"},
+    "vx-dev-research": {"vx-dev-source-reconciliation", "vx-dev-mcp-readonly"},
+    "vx-dev-architect": {
+        "vx-dev-architecture-decision",
+        "vx-dev-mcp-readonly",
+        "vx-dev-project-policy",
+    },
+    "vx-dev-frontend": {
+        "vx-dev-frontend-ux",
+        "vx-dev-accessibility",
+        "vx-dev-ui-state-system",
+        "vx-dev-debug-triage",
+    },
+    "vx-dev-backend": {"vx-dev-backend-contracts", "vx-dev-debug-triage"},
+    "vx-dev-data": {"vx-dev-data-migration"},
+    "vx-dev-platform": {"vx-dev-platform-delivery", "vx-dev-debug-triage"},
+    "vx-dev-quality": {"vx-dev-test-strategy", "vx-dev-accessibility"},
+    "vx-dev-security": {
+        "vx-dev-security-threat-review",
+        "vx-dev-supply-chain-review",
+        "vx-dev-mcp-security",
+    },
+    "vx-dev-reviewer": {"vx-dev-independent-review", "vx-dev-project-policy"},
+}
+
 
 class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
     def setUp(self):
         self.proposal = json.loads(PROPOSAL.read_text(encoding="utf-8"))
+        self.evals = json.loads(EVALS.read_text(encoding="utf-8"))
         self.baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
 
-    def test_proposal_is_inactive_and_preserves_certified_baseline(self):
+    def test_proposal_is_inactive_and_certified_runtime_remains_unchanged(self):
         self.assertEqual(self.proposal["status"], "PROPOSAL_INACTIVE")
-        self.assertEqual(self.proposal["wave_s1"]["status"], "PROPOSAL_INACTIVE")
-        self.assertTrue(self.proposal["activation_policy"]["requires_explicit_operator_approval"])
-        self.assertTrue(self.proposal["activation_policy"]["modifies_runtime_acl"])
-        self.assertEqual(self.baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_CERTIFIED")
+        self.assertEqual(
+            self.proposal["dev_team_pack"]["status"],
+            "SOURCE_READY_RUNTIME_INACTIVE",
+        )
+        self.assertEqual(
+            self.proposal["activation_policy"]["current_runtime_changes"],
+            "NONE",
+        )
+        self.assertTrue(
+            self.proposal["activation_policy"]["requires_explicit_operator_approval"]
+        )
+        self.assertTrue(
+            self.proposal["activation_policy"]["full_runtime_recertification_required"]
+        )
+        self.assertEqual(
+            self.baseline["status"],
+            "ACTIVE_SOURCE_BASELINE_RUNTIME_CERTIFIED",
+        )
 
-    def test_inventory_covers_exactly_all_repo_skills(self):
-        actual = {
-            path.parent.name
-            for path in SKILLS_DIR.glob("*/SKILL.md")
-        }
-        declared = {item["id"] for item in self.proposal["inventory"]["skills"]}
+    def test_legacy_31_skill_inventory_remains_reference_only(self):
+        actual = {path.parent.name for path in LEGACY_SKILLS_DIR.glob("*/SKILL.md")}
+        legacy = self.proposal["legacy_skill_inventory"]
         self.assertEqual(len(actual), 31)
-        self.assertEqual(declared, actual)
-        self.assertEqual(self.proposal["inventory"]["total_skills"], 31)
+        self.assertEqual(legacy["total"], 31)
+        self.assertEqual(legacy["status"], "REFERENCE_ONLY_NOT_RUNTIME_PACK")
 
-    def test_classification_counts_match_declared_inventory(self):
-        items = self.proposal["inventory"]["skills"]
-        actual = {
-            state: sum(item["classification"] == state for item in items)
-            for state in ("DIRECT", "ADAPT", "EXCLUDE_BASELINE")
+    def test_pack_contains_exactly_18_original_dev_team_skills(self):
+        declared = self.proposal["dev_team_pack"]["skills"]
+        declared_ids = {item["id"] for item in declared}
+        actual_ids = {path.parent.name for path in PACK_SKILLS_DIR.glob("*/SKILL.md")}
+        self.assertEqual(self.proposal["dev_team_pack"]["total_skills"], 18)
+        self.assertEqual(len(declared_ids), 18)
+        self.assertEqual(actual_ids, declared_ids)
+        self.assertTrue(all(skill.startswith("vx-dev-") for skill in declared_ids))
+
+    def test_each_pack_skill_is_valid_small_and_non_executable(self):
+        declared = {
+            item["id"]: item
+            for item in self.proposal["dev_team_pack"]["skills"]
         }
-        self.assertEqual(
-            actual,
-            self.proposal["inventory"]["classification_counts"],
-        )
-        self.assertEqual(sum(actual.values()), 31)
-
-    def test_wave_s1_is_exactly_four_direct_bindings(self):
-        bindings = self.proposal["wave_s1"]["bindings"]
-        self.assertEqual(bindings, EXPECTED_S1)
-        self.assertEqual(set(self.proposal["wave_s1"]["modified_agents"]), set(EXPECTED_S1))
-        self.assertEqual(
-            set(self.proposal["wave_s1"]["unchanged_agents"]),
-            ALL_AGENTS - set(EXPECTED_S1),
-        )
-        classification = {
-            item["id"]: item["classification"]
-            for item in self.proposal["inventory"]["skills"]
-        }
-        for skills in bindings.values():
-            for skill in skills:
-                self.assertEqual(classification[skill], "DIRECT")
-
-    def test_wave_s1_skills_exist_match_names_and_have_no_embedded_shell(self):
-        for agent, skills in EXPECTED_S1.items():
-            for skill in skills:
-                path = SKILLS_DIR / skill / "SKILL.md"
-                self.assertTrue(path.is_file(), f"{agent}: {skill}")
+        for skill, meta in declared.items():
+            with self.subTest(skill=skill):
+                path = ROOT / meta["source"]
+                self.assertTrue(path.is_file())
+                self.assertEqual(path.parent.name, skill)
                 content = path.read_text(encoding="utf-8")
+                self.assertLessEqual(len(content.splitlines()), 500)
                 self.assertRegex(content, rf"(?m)^name:\s*{re.escape(skill)}\s*$")
+                self.assertRegex(content, r"(?m)^description:\s*\".+\"\s*$")
+                self.assertRegex(content, r"(?m)^compatibility:\s*\".+\"\s*$")
+                self.assertNotIn("allowed-tools:", content)
                 self.assertIsNone(
                     re.search(r"!\x60[^\x60]+\x60", content),
-                    f"Embedded shell injection forbidden in S1: {skill}",
+                    f"embedded shell forbidden: {skill}",
                 )
+                self.assertFalse((path.parent / "scripts").exists())
 
-    def test_current_runtime_agents_still_deny_skill_tool(self):
+    def test_permission_matrix_is_exact_for_all_11_agents(self):
+        matrix = {
+            agent: set(skills)
+            for agent, skills in self.proposal["permission_matrix"]["agents"].items()
+        }
+        self.assertEqual(set(matrix), ALL_AGENTS)
+        self.assertEqual(matrix, EXPECTED_PERMISSIONS)
+        all_declared = {
+            item["id"] for item in self.proposal["dev_team_pack"]["skills"]
+        }
+        all_bound = set().union(*matrix.values())
+        self.assertEqual(all_bound, all_declared)
+        self.assertEqual(
+            self.proposal["permission_matrix"]["yaml_shape"],
+            {"*": "deny", "<exact-skill-id>": "allow"},
+        )
+
+    def test_declared_skill_targets_match_permission_matrix(self):
+        reverse = {}
+        for agent, skills in EXPECTED_PERMISSIONS.items():
+            for skill in skills:
+                reverse.setdefault(skill, set()).add(agent)
+
+        for item in self.proposal["dev_team_pack"]["skills"]:
+            self.assertEqual(set(item["agents"]), reverse[item["id"]])
+
+    def test_current_runtime_agents_still_have_scalar_skill_deny(self):
         sources = {"vx-dev-team": LEADER}
         sources.update(
-            {
-                path.stem: path
-                for path in SUBAGENT_DIR.glob("vx-dev-*.md")
-            }
+            {path.stem: path for path in SUBAGENT_DIR.glob("vx-dev-*.md")}
         )
         self.assertEqual(set(sources), ALL_AGENTS)
         for agent, path in sources.items():
@@ -113,41 +162,70 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
                 f"{agent} must remain skill: deny while proposal is inactive",
             )
 
-    def test_activation_does_not_change_other_permissions_by_design(self):
-        invariants = "\n".join(self.proposal["invariants"])
-        self.assertIn("edit/write/apply_patch/bash/task/MCP", invariants)
-        self.assertTrue(self.proposal["wave_s1"]["content_safety"]["mutation_permission_changes"] == "NONE")
-        self.assertTrue(self.proposal["wave_s1"]["content_safety"]["mcp_permission_changes"] == "NONE")
-        self.assertTrue(self.proposal["wave_s1"]["content_safety"]["task_permission_changes"] == "NONE")
+    def test_skill_pack_never_grants_non_skill_permissions(self):
+        invariants = "\n".join(self.proposal["permission_matrix"]["invariants"])
+        self.assertIn(
+            "A skill cannot grant read/edit/write/bash/task/MCP permissions.",
+            invariants,
+        )
+        self.assertIn(
+            "Research/Architect keep their existing five documentation MCP tools",
+            invariants,
+        )
+        self.assertIn("Children remain depth=1", invariants)
 
-    def test_installer_strategy_is_explicit_and_pinned(self):
+    def test_trigger_evals_cover_every_skill_with_positive_and_negative_cases(self):
+        self.assertEqual(self.evals["status"], "DESIGNED_NOT_EXECUTED")
+        evals_by_skill = {item["skill"]: item for item in self.evals["skills"]}
+        declared = {
+            item["id"] for item in self.proposal["dev_team_pack"]["skills"]
+        }
+        self.assertEqual(set(evals_by_skill), declared)
+        for skill, item in evals_by_skill.items():
+            with self.subTest(skill=skill):
+                self.assertGreaterEqual(len(item["should_trigger"]), 2)
+                self.assertGreaterEqual(len(item["should_not_trigger"]), 2)
+                self.assertTrue(all(text.strip() for text in item["should_trigger"]))
+                self.assertTrue(all(text.strip() for text in item["should_not_trigger"]))
+
+    def test_activation_requires_full_runtime_recertification(self):
+        phase = self.proposal["activation_plan"]["phase_1"]
+        self.assertEqual(phase["status"], "PENDING_EXPLICIT_APPROVAL")
+        self.assertEqual(phase["certification_scope"], "FULL_DEV_TEAM_RUNTIME")
+        self.assertIn(
+            "shared pool",
+            phase["reason_for_full_recertification"],
+        )
+        gates = "\n".join(phase["gates"])
+        self.assertIn("18/18 source-runtime skill hashes", gates)
+        self.assertIn("Role contracts 10/10 remain PASS", gates)
+        self.assertIn("Permission enforcement 10/10 remains PASS", gates)
+        self.assertIn("Research/Architect MCP 5/5 surfaces unchanged", gates)
+
+    def test_installer_strategy_is_explicit_but_not_implemented_yet(self):
         strategy = self.proposal["installer_strategy"]
         self.assertEqual(strategy["managed_runtime_root"], "~/.kilo/skills")
-        self.assertEqual(
-            strategy["source_strategy"],
-            "Before activation, copy the four approved SKILL.md sources into runtime/dev-team-v2r/skills/<skill-id>/SKILL.md so Dev Team certification is pinned to its own source and not coupled to later legacy Pack VX edits.",
-        )
-        self.assertTrue(strategy["no_silent_install"])
+        self.assertEqual(strategy["source_root"], "runtime/dev-team-v2r/skills")
+        self.assertIn("exactly the 18 Dev Team skills", strategy["target_behavior"])
         self.assertIn("explicit -Modo Aplicar", strategy["install_requires"])
-        self.assertTrue(self.proposal["activation_policy"]["kilo_jsonc_unchanged"])
-        self.assertEqual(
-            self.proposal["activation_policy"]["install_mode"],
-            "installer-managed-on-explicit-apply",
-        )
 
-    def test_current_installer_still_treats_vx_skills_as_legacy_before_activation(self):
-        installer = (ROOT / "scripts" / "Instalar-DevTeam-Only.ps1").read_text(encoding="utf-8")
+        installer = INSTALLER.read_text(encoding="utf-8")
         self.assertIn(".kilo/skills", installer)
         self.assertIn(".agents/skills", installer)
         self.assertIn(".kilocode/skills", installer)
         self.assertIn("-Filter 'vx-*'", installer)
 
-    def test_backend_and_reviewer_are_not_forced_into_s1(self):
-        self.assertNotIn("vx-dev-backend", EXPECTED_S1)
-        self.assertNotIn("vx-dev-reviewer", EXPECTED_S1)
-        adaptations = "\n".join(self.proposal["wave_s3"]["adaptations"])
-        self.assertIn("Backend", adaptations)
-        self.assertIn("Reviewer", adaptations)
+        # Phase 0 safety: installer still has the certified pre-skills behavior.
+        self.assertRegex(installer, r"(?m)^\s*'\(\?m\)\^\\s\{2\}skill:\\s\*deny")
+        self.assertNotIn("runtime/dev-team-v2r/skills", installer)
+
+    def test_research_basis_contains_primary_sources_and_originality_rule(self):
+        research = self.proposal["research_basis"]
+        self.assertEqual(research["status"], "COMPLETED_SOURCE_SYNTHESIS")
+        self.assertGreaterEqual(len(research["primary_sources"]), 10)
+        design = self.proposal["dev_team_pack"]["design"]
+        self.assertIn("Original VX Dev skills", design)
+        self.assertIn("no copied external skill bodies", design)
 
 
 if __name__ == "__main__":
