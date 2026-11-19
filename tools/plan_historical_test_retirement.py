@@ -29,13 +29,6 @@ CANDIDATES={
         "replacement":["test_vx_meeting_current_contract.py"],
         "gate":"V4.5.1 - reunion conjunta sin duplicación ni programador",
     },
-    "test_vx_pack_release_v022.py":{
-        "replacement":[
-            "test_vx_pack_current_contract.py",
-            "test_vx_pack_bootstrap_v1.py",
-        ],
-        "gate":"VX Pack 0.2.2 - rutas seguras, marcadores y DPAPI aislado",
-    },
 }
 
 def build_plan(evidence: dict) -> dict:
