@@ -108,16 +108,16 @@
       "reason": "Legacy 31-skill pack still referenced by global pack; review against current capability/skill model."
     },
     {
-      "name": "V4.1 - auditoria de evidencias y comando global",
-      "class": "REVIEW",
+      "name": "VX Evidence Revalidation - comando global read-only",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Potentially current invariant but old milestone-labelled gate."
+      "reason": "Current invariant; historical milestone label removed under living certification policy."
     },
     {
-      "name": "V4.2 - reconciliar agentes de forma segura",
-      "class": "REVIEW",
+      "name": "VX Agent Reconciliation - auditoria read-only de conflictos",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Potentially current behavior; must map to active invariant."
+      "reason": "Current invariant; historical milestone label removed under living certification policy."
     },
     {
       "name": "VX Evolution - certificacion viva de contratos source",
@@ -132,10 +132,10 @@
       "reason": "Syntax-only source guard; behavioral tests owned by Evolution current manifest."
     },
     {
-      "name": "V4.3 - instalar código global sin inicializar ni borrar datos",
-      "class": "REVIEW",
+      "name": "VX Evolution Install - sin auto-init y rollback seguro",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Install safety invariant likely current; rename/consolidate."
+      "reason": "Current invariant; historical milestone label removed under living certification policy."
     },
     {
       "name": "VX Reunion - política confirmada sin scheduler activo",
@@ -144,16 +144,16 @@
       "reason": "Current explicit scheduler-disabled policy."
     },
     {
-      "name": "V4.4 - Observer ligero Kilo-only y migración aislada",
-      "class": "REVIEW",
+      "name": "VX Observer - opt-in, estado inerte y rollback",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Current component possible; review overlap with later observer/evolution gates."
+      "reason": "Current invariant; historical milestone label removed under living certification policy."
     },
     {
-      "name": "V4.4 - evento sintético plugin a SQLite sin datos de sesión",
-      "class": "REVIEW",
+      "name": "VX Observer - evento sintético con privacidad",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Synthetic privacy invariant; review against current observer contract."
+      "reason": "Current invariant; historical milestone label removed under living certification policy."
     },
     {
       "name": "VX Reunion - contrato vigente de sesion conjunta manual",
@@ -174,10 +174,10 @@
       "reason": "Superseded candidate; current meeting contract replacement added and must pass before removal."
     },
     {
-      "name": "ROADMAP V4.6 - coherencia de estado y scheduler desactivado",
-      "class": "REVIEW",
+      "name": "VX Evolution Docs - coherencia actual y automatización desactivada",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Roadmap validation should not duplicate current behavioral tests."
+      "reason": "Current invariant; historical milestone label removed under living certification policy."
     },
     {
       "name": "VX Capability Audit - smoke Windows sin efectos",
@@ -240,10 +240,10 @@
       "reason": "Distinct optional reverse-engineering capability contract."
     },
     {
-      "name": "VX Integración - 13 agentes, 31 skills, Academy, MCP único y V4.7.2 inactiva",
-      "class": "REVIEW",
+      "name": "VX Integration - contrato global vigente",
+      "class": "CURRENT",
       "kind": "integration",
-      "reason": "Integration meta-test risks duplicating lower-level invariants; review after current manifests stabilize."
+      "reason": "Current invariant; historical milestone label removed under living certification policy."
     },
     {
       "name": "VX Approval Security - diseño aislado sin aprobación",
