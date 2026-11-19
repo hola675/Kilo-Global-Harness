@@ -15,7 +15,8 @@ CHILDREN = (
     "vx-dev-explorer",
     "vx-dev-architect",
     "vx-dev-frontend",
-    "vx-dev-backend-data",
+    "vx-dev-backend",
+    "vx-dev-data",
     "vx-dev-quality",
     "vx-dev-security",
     "vx-dev-research",
@@ -33,7 +34,75 @@ def frontmatter(path: Path) -> str:
 class DevTeamV2RTests(unittest.TestCase):
     def test_primary_agent_is_the_only_visible_custom_leader(self):
         front = frontmatter(LEADER)
-        self.assertRegex(front, r'(?m)^displayName:\s*"👥 Dev Team"\s*$')
+        self.assertRegex(front, r'(?m)^displayName:\s*"vx-dev-team"\s*)
+        self.assertRegex(front, r'(?m)^mode:\s*primary\s*$')
+        self.assertRegex(front, r'(?m)^color:\s*"#8B5CF6"\s*$')
+        self.assertNotRegex(front, r"(?m)^hidden:\s*true\s*$")
+        self.assertRegex(front, r"(?m)^  edit:\s*ask\s*$")
+        self.assertRegex(front, r"(?m)^  bash:\s*ask\s*$")
+        self.assertRegex(front, r"(?m)^  skill:\s*deny\s*$")
+        self.assertRegex(front, r"(?m)^  agent_manager:\s*deny\s*$")
+        self.assertRegex(front, r"(?m)^  board_read:\s*deny\s*$")
+        self.assertRegex(front, r"(?m)^  board_post:\s*deny\s*$")
+
+    def test_leader_allowlists_exactly_eight_children(self):
+        front = frontmatter(LEADER)
+        self.assertRegex(front, r"(?m)^  task:\s*$")
+        self.assertRegex(front, r'(?m)^    "\*":\s*deny\s*$')
+        for child in CHILDREN:
+            self.assertRegex(front, rf'(?m)^    "{re.escape(child)}":\s*allow\s*$')
+        allows = set(re.findall(r'(?m)^    "(vx-dev-[^"]+)":\s*allow\s*$', front))
+        self.assertEqual(allows, set(CHILDREN))
+
+    def test_children_are_hidden_and_cannot_mutate_or_delegate(self):
+        files = sorted(RUNTIME_DIR.glob("vx-dev-*.md"))
+        self.assertEqual({p.stem for p in files}, set(CHILDREN))
+        for file in files:
+            with self.subTest(child=file.name):
+                front = frontmatter(file)
+                self.assertRegex(front, r"(?m)^mode:\s*subagent\s*$")
+                self.assertRegex(front, r"(?m)^hidden:\s*true\s*$")
+                self.assertRegex(front, r'(?m)^  "\*":\s*deny\s*$')
+                self.assertRegex(front, r"(?m)^  glob:\s*allow\s*$")
+                self.assertRegex(front, r"(?m)^  grep:\s*allow\s*$")
+                self.assertRegex(front, r"(?m)^  lsp:\s*allow\s*$")
+                for tool in (
+                    "read", "skill", "task", "edit", "write", "apply_patch", "bash",
+                    "agent_manager", "external_directory", "board_read", "board_post",
+                ):
+                    self.assertRegex(front, rf"(?m)^  {re.escape(tool)}:\s*deny\s*$")
+                self.assertNotRegex(front, r'(?m)^  "[a-z0-9-]+_\*":\s*(allow|ask)\s*$')
+
+    def test_baseline_declares_one_visible_leader_and_readonly_children(self):
+        baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
+        self.assertEqual(baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING")
+        self.assertEqual(baseline["primary"]["id"], "vx-dev-team")
+        self.assertTrue(baseline["primary"]["visible"])
+        self.assertEqual(len(baseline["subagents"]), 8)
+        self.assertTrue(all(x["hidden"] for x in baseline["subagents"]))
+        self.assertTrue(all(x["read_only"] for x in baseline["subagents"]))
+        self.assertEqual(baseline["orchestration"]["depth"], 1)
+        self.assertFalse(baseline["orchestration"]["invoke_all_by_default"])
+        self.assertEqual(baseline["child_permissions"]["mcp"], "deny-by-default-with-per-agent-namespaced-allows")
+        self.assertEqual(baseline["child_permissions"]["required"], ["glob", "grep"])
+        self.assertEqual(baseline["child_permissions"]["optional"], ["lsp"])
+
+    def test_installer_preserves_mcp_config_and_manages_nine_agent_files(self):
+        source = INSTALLER.read_text(encoding="utf-8")
+        self.assertIn("Dev Team V2-R", source)
+        self.assertIn("approvedAgents", source)
+        self.assertIn("vx-dev-explorer.md", source)
+        self.assertIn("vx-dev-backend.md", source)
+        self.assertIn("vx-dev-data.md", source)
+        self.assertNotIn("'vx-dev-backend-data.md' =", source)
+        self.assertIn("vx-dev-research.md", source)
+        self.assertIn("kilo.jsonc y configuracion MCP preservados", source)
+        self.assertTrue(RUNTIME_DOC.is_file())
+
+
+if __name__ == "__main__":
+    unittest.main()
+)
         self.assertRegex(front, r'(?m)^mode:\s*primary\s*$')
         self.assertRegex(front, r'(?m)^color:\s*"#8B5CF6"\s*$')
         self.assertNotRegex(front, r"(?m)^hidden:\s*true\s*$")
