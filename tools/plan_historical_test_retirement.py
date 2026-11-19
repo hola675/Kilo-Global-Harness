@@ -15,7 +15,7 @@ ROOT=Path(__file__).resolve().parents[1]
 
 CANDIDATES={
     "test_vx_meeting_v45.py":{
-        "replacement":["test_vx_meeting_current_contract.py"],
+        "replacement":["test_vx_meeting_current_contract.py","tests/Test-VX-Meeting-Current-Smoke.ps1"],
         "gate":"V4.5 - calendario, reuniones manuales y migración sin scheduler",
     },
     "test_vx_joint_meeting_v451.py":{
