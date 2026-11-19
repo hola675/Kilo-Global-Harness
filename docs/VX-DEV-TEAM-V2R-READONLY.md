@@ -321,6 +321,21 @@ El routing activo debe respetar estas fronteras:
 
 El ID supersedido `vx-dev-backend-data` no puede aparecer en handoffs de agentes activos. Solo puede existir en documentación/evidencia histórica explícitamente marcada como legacy.
 
+## Composiciones recomendadas
+
+| Tipo de tarea | Núcleo recomendado | Condicionales |
+|---|---|---|
+| Bug localizado | especialista de dominio | Explorer si ubicación/impacto es incierto; Reviewer si el cambio no es trivial |
+| UI + API | Frontend + Backend | Data si hay persistencia; Quality si faltan criterios/oráculos |
+| API + persistencia | Backend + Data | Architect si cambia boundary; Quality para invariantes |
+| Migración | Data + Backend | Architect por contrato/ownership; Quality por regresión; Security si datos sensibles |
+| Auth/autorización | Backend + Security | Frontend/Data según flujo; Quality; Reviewer después de implementar |
+| Build/runtime | Platform | dominio si comportamiento; Quality para gates; Security si secretos/permisos |
+| Refactor | dominio + Reviewer al final | Explorer/Architect/Quality solo según incertidumbre real |
+| Docs/versión | Research | otro especialista solo si la fuente cambia una decisión concreta |
+
+Estas composiciones no son fan-out automático. El líder selecciona el mínimo conjunto necesario y conserva los presupuestos de complejidad.
+
 ## Permisos de hijos
 
 Requeridos:
