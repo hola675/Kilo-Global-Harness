@@ -87,6 +87,30 @@ Los hijos devuelven:
 
 No se devuelve el transcript completo como contrato normal.
 
+## Contrato especializado: vx-dev-explorer
+
+`vx-dev-explorer` es el cartógrafo del codebase. Su función es localizar y conectar evidencia, no diseñar la solución.
+
+Debe producir además del envelope común:
+
+- `CODE_MAP` — entry points, nodos centrales, consumidores, dependencias, tests, configuración y boundaries relevantes;
+- `IMPACT_SURFACE` — impacto `DIRECT`, `INDIRECT`, `POSSIBLE` y `OUT_OF_SCOPE`.
+
+Clasifica evidencia como:
+
+- `OBSERVED` — observada directamente;
+- `INFERRED` — inferida a partir de varias evidencias;
+- `UNKNOWN` — no verificable con el alcance o herramientas actuales.
+
+Fronteras:
+
+- Explorer encuentra y conecta;
+- Research confirma documentación/conocimiento;
+- Architect diseña;
+- los especialistas de dominio analizan comportamiento específico.
+
+No debe convertir exploración en arquitectura, revisión general o propuesta de refactor.
+
 ## Permisos de hijos
 
 Requeridos:
@@ -196,7 +220,7 @@ Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `tas
 
 ## Próxima fase
 
-- pulir `vx-dev-explorer` y su contrato `CODE_MAP / IMPACT_SURFACE`;
-- continuar después con Research, Architect y especialistas de dominio;
+- `vx-dev-explorer` ya usa el contrato `CODE_MAP / IMPACT_SURFACE`;
+- continuar con `vx-dev-research`, después Architect y especialistas de dominio;
 - mantener el runtime actual estable mientras se diseña cada agente;
 - no ampliar la ACL del líder por adelantado.
