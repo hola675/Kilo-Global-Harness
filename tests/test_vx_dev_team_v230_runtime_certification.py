@@ -132,6 +132,30 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         for specialist in ALL_SPECIALISTS - {"vx-dev-research", "vx-dev-architect"}:
             self.assertNotIn("required_mcp_tools", by_specialist[specialist])
 
+    def test_permission_enforcement_is_exactly_seven_of_ten(self):
+        perm = self.registry["observed_runtime"]["permission_enforcement"]
+        self.assertEqual(perm["status"], "PARTIAL")
+        self.assertEqual(perm["total"], "7/10 PASS")
+        self.assertEqual(
+            {name for name, state in perm["specialists"].items() if state == "PASS"},
+            {
+                "vx-dev-backend",
+                "vx-dev-data",
+                "vx-dev-platform",
+                "vx-dev-reviewer",
+                "vx-dev-explorer",
+                "vx-dev-frontend",
+                "vx-dev-research",
+            },
+        )
+        self.assertEqual(
+            {name for name, state in perm["specialists"].items() if state == "PARTIAL"},
+            {"vx-dev-quality", "vx-dev-security", "vx-dev-architect"},
+        )
+        self.assertIn("vx-dev-quality", perm["partial_reasons"])
+        self.assertIn("vx-dev-security", perm["partial_reasons"])
+        self.assertIn("vx-dev-architect", perm["partial_reasons"])
+
     def test_runtime_contract_keeps_mutation_and_child_delegation_forbidden(self):
         runtime = self.registry["runtime_contract"]
         self.assertEqual(runtime["required_tools"], ["glob", "grep"])
