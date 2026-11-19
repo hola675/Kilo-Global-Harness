@@ -3,6 +3,8 @@ from pathlib import Path
 import re
 import unittest
 
+from dev_team_agent_parser_support import load_agent
+
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_DIR = ROOT / "agents"
 V2R_DIR = ROOT / "runtime" / "dev-team-v2r" / "agents"
@@ -48,19 +50,13 @@ EXPECTED_SKILLS = {
 }
 
 
-def assert_skill_allowlist(testcase, front, agent):
-    testcase.assertRegex(front, r"(?m)^  skill:\s*$")
-    match = re.search(
-        r"(?ms)^  skill:\s*\n(?P<body>.*?)(?=^  [a-zA-Z_][a-zA-Z0-9_]*:)",
-        front,
+def assert_skill_allowlist(testcase, path, agent):
+    doc = load_agent(path)
+    testcase.assertEqual(doc.permissions.fallback("skill"), "deny")
+    testcase.assertEqual(
+        doc.permissions.allowlist("skill"),
+        EXPECTED_SKILLS[agent],
     )
-    testcase.assertIsNotNone(match)
-    body = match.group("body")
-    testcase.assertRegex(body, r'(?m)^    "\*": deny\s*$')
-    allowed = set(
-        re.findall(r'(?m)^    "(vx-dev-[^"]+)": allow\s*$', body)
-    )
-    testcase.assertEqual(allowed, EXPECTED_SKILLS[agent])
 
 
 class VXAgentPermissionsTests(unittest.TestCase):
@@ -73,7 +69,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
                 self.assertRegex(front, r'(?m)^  "\*": deny\s*$')
                 self.assertLess(front.index('  "*": deny'), front.index("  read:"))
                 if file.name == "vx-dev-team.md":
-                    assert_skill_allowlist(self, front, "vx-dev-team")
+                    assert_skill_allowlist(self, file, "vx-dev-team")
                     self.assertRegex(front, r"(?m)^  task:\s*$")
                 else:
                     self.assertRegex(front, r"(?m)^  skill: allow\s*$")
@@ -86,7 +82,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
         self.assertRegex(front, r'(?m)^displayName:\s*"vx-dev-team"\s*$')
         self.assertRegex(front, r"(?m)^mode:\s*primary\s*$")
         self.assertRegex(front, r'(?m)^color:\s*"#8B5CF6"\s*$')
-        assert_skill_allowlist(self, front, "vx-dev-team")
+        assert_skill_allowlist(self, AGENT_DIR / "vx-dev-team.md", "vx-dev-team")
         self.assertRegex(front, r"(?m)^  task:\s*$")
         self.assertRegex(front, r'(?m)^    "\*": deny\s*$')
         for child in V2R_CHILDREN:
@@ -134,7 +130,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
                         front,
                         rf"(?m)^  {re.escape(tool)}: deny\s*$",
                     )
-                assert_skill_allowlist(self, front, file.stem)
+                assert_skill_allowlist(self, file, file.stem)
                 self.assertNotRegex(
                     front,
                     r'(?m)^  "[a-z0-9-]+_\*":\s*(allow|ask)\s*$',
