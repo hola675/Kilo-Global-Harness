@@ -24,7 +24,7 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 | `vx-dev-backend` | backend application analysis | no | deny | deny | deny | deny |
 | `vx-dev-data` | data/persistence analysis | no | deny | deny | deny | deny |
 | `vx-dev-quality` | quality verification analysis | no | deny | deny | deny | deny |
-| `vx-dev-security` | security analysis | no | deny | deny | deny | deny |
+| `vx-dev-security` | security trust/abuse analysis | no | deny | deny | deny | deny |
 | `vx-dev-research` | technical research | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
 
 Los especialistas se definen en `runtime/dev-team-v2r/agents/` para mantenerlos separados del árbol legacy de agentes VX.
@@ -227,6 +227,32 @@ Su salida específica añade:
 
 No puede producir PASS por diseñar un test ni usar ausencia de tests como prueba de bug.
 
+## Contrato especializado: vx-dev-security
+
+`vx-dev-security` analiza riesgo de seguridad con trazabilidad explícita entre activo, boundary, input/control y camino de abuso.
+
+Su salida específica añade:
+
+- `ASSETS` — activos relevantes al alcance;
+- `TRUST_BOUNDARIES` — origen, destino, dato/acción y control observado;
+- `ATTACK_SURFACE` — entry points realmente relevantes;
+- `ACCESS_CONTROL` — `ENFORCED`, `PARTIAL`, `MISSING` o `UNKNOWN`;
+- `DATA_EXPOSURE` — flujo de datos sensibles sin revelar valores;
+- `ABUSE_CASES` — actor, precondición, acción, control y resultado;
+- `THREAT_FINDINGS` — attack path, evidencia, impacto, severidad, confianza y validación necesaria.
+
+Evidencia:
+
+- `OBSERVED`
+- `CORROBORATED`
+- `HYPOTHESIS`
+- `DISMISSED`
+- `UNKNOWN`
+
+Severidad permitida: `CRITICAL / HIGH / MEDIUM / LOW / INFO`, siempre separada de `CONFIDENCE`.
+
+Security no ejecuta scanners/exploits, no lee/revela secretos y no sustituye Quality ni al futuro Reviewer.
+
 ## Permisos de hijos
 
 Requeridos:
@@ -350,6 +376,7 @@ Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `tas
 - `vx-dev-architect` ya usa `OPTIONS / TRADEOFFS / CONTRACTS / DECISIONS_REQUIRED` y su allowlist documental;
 - `vx-dev-frontend` ya usa `UI_FLOW / COMPONENT_MODEL / STATE_MODEL / INTERACTION_STATES / ACCESSIBILITY_RESPONSIVE / API_TOUCHPOINTS`;
 - `vx-dev-quality` ya usa `INVARIANTS / TEST_MATRIX / TEST_ORACLES / REGRESSION_SURFACE / ACCEPTANCE_GAPS / VERIFICATION_PLAN`;
-- continuar con `vx-dev-security` y los especialistas nuevos planificados;
+- `vx-dev-security` ya usa `ASSETS / TRUST_BOUNDARIES / ATTACK_SURFACE / ACCESS_CONTROL / DATA_EXPOSURE / ABUSE_CASES / THREAT_FINDINGS`;
+- continuar con los especialistas nuevos planificados (`vx-dev-platform` y `vx-dev-reviewer`);
 - mantener el runtime actual estable mientras se diseña cada agente;
 - no ampliar la ACL del líder por adelantado.

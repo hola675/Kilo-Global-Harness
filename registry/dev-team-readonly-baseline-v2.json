@@ -106,10 +106,19 @@
     },
     {
       "id": "vx-dev-security",
-      "role": "security-analysis",
+      "role": "security-trust-analysis",
       "mode": "subagent",
       "hidden": true,
-      "read_only": true
+      "read_only": true,
+      "special_output": [
+        "ASSETS",
+        "TRUST_BOUNDARIES",
+        "ATTACK_SURFACE",
+        "ACCESS_CONTROL",
+        "DATA_EXPOSURE",
+        "ABUSE_CASES",
+        "THREAT_FINDINGS"
+      ]
     },
     {
       "id": "vx-dev-research",
@@ -470,6 +479,48 @@
         "OTHER"
       ],
       "boundary": "does not execute tests and does not replace independent code review or security review"
+    },
+    "vx-dev-security": {
+      "mission": "map security assets, trust boundaries, untrusted inputs, access-control decisions, abuse paths and evidence-backed findings without scanning, exploitation or generic code review",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "ASSETS",
+        "TRUST_BOUNDARIES",
+        "ATTACK_SURFACE",
+        "ACCESS_CONTROL",
+        "DATA_EXPOSURE",
+        "ABUSE_CASES",
+        "THREAT_FINDINGS",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "OBSERVED",
+        "CORROBORATED",
+        "HYPOTHESIS",
+        "DISMISSED",
+        "UNKNOWN"
+      ],
+      "access_control_states": [
+        "ENFORCED",
+        "PARTIAL",
+        "MISSING",
+        "UNKNOWN"
+      ],
+      "severity": [
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "INFO"
+      ],
+      "boundary": "does not execute scanners/exploits and does not replace generic code review or quality verification"
     }
   },
   "mcp_allowlists": {

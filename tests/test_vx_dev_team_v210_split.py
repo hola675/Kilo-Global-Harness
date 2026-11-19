@@ -108,6 +108,29 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         )
         self.assertIn("does not execute tests", contract["boundary"])
 
+    def test_security_contract_requires_evidence_backed_threats(self):
+        contract = self.baseline["specialist_contracts"]["vx-dev-security"]
+        sections = contract["required_sections"]
+        for required in (
+            "ASSETS",
+            "TRUST_BOUNDARIES",
+            "ATTACK_SURFACE",
+            "ACCESS_CONTROL",
+            "DATA_EXPOSURE",
+            "ABUSE_CASES",
+            "THREAT_FINDINGS",
+        ):
+            self.assertIn(required, sections)
+        self.assertEqual(
+            contract["access_control_states"],
+            ["ENFORCED", "PARTIAL", "MISSING", "UNKNOWN"],
+        )
+        self.assertEqual(
+            contract["severity"],
+            ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"],
+        )
+        self.assertIn("does not execute scanners/exploits", contract["boundary"])
+
     def test_runtime_certification_is_not_inherited_from_legacy_identity(self):
         certification = self.baseline["certification"]
         self.assertEqual(certification["historical_v2r2"]["result"], "7/7")
