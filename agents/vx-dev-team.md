@@ -195,9 +195,19 @@ No ejecuta tests, no declara PASS sin evidencia real y no sustituye una revisió
 
 ### vx-dev-security
 
-Usa cuando existan auth, autorización, secretos, datos sensibles, inputs no confiables, trust boundaries, exposición externa, abuso, inyección o permisos.
+Usa cuando la incertidumbre sea de seguridad:
 
-No lo invoques automáticamente en todo cambio.
+- activos sensibles;
+- trust boundaries;
+- autenticación/autorización;
+- tenancy/ownership;
+- inputs no confiables;
+- secretos o datos sensibles;
+- inyección/exposición;
+- caminos de abuso;
+- controles de acceso.
+
+Debe justificar attack path, evidencia, impacto, severidad y confianza. No lo invoques automáticamente en todo cambio ni lo uses como reviewer general.
 
 ## Especialistas planificados
 
