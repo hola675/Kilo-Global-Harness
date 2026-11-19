@@ -30,3 +30,8 @@ La skill no autoriza merge, deploy, cambios de permisos, publicación ni producc
 `{scope,base_sha,policy_gates,decision_records,ci_evidence,review_state,rollback,unknowns}`.
 
 Referencias de diseño: Google Engineering Practices, GitHub protected branches, AWS ADR guidance.
+
+## Integración de evidencia/MCP
+- Para gates de merge/release, reutilizar estado remoto ya obtenido por GitHub MCP si el rol lo tiene autorizado.
+- Si una decisión depende de documentación externa o estado de CI, enrutar primero con `vx-dev-mcp-capability-routing`.
+- Registrar SHAs, PRs, runs o fuentes en `vx-dev-mcp-evidence-ledger`; no repetir consultas ya resueltas por otro especialista.
