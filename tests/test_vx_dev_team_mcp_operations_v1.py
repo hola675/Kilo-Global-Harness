@@ -7,12 +7,14 @@ REG=ROOT/"registry"/"dev-team-mcp-operations-v1.proposal.json"
 EVALS=ROOT/"registry"/"dev-team-mcp-operations-evals-v1.proposal.json"
 ROLES=ROOT/"registry"/"dev-team-mcp-role-playbook-v1.proposal.json"
 SKILLS=ROOT/"runtime"/"dev-team-v2r"/"skills"
+CAPS=ROOT/"registry"/"dev-team-capability-matrix-v1.json"
 
 class MCPOperationsV1Tests(unittest.TestCase):
     def setUp(self):
         self.reg=json.loads(REG.read_text(encoding="utf-8"))
         self.evals=json.loads(EVALS.read_text(encoding="utf-8"))
         self.roles=json.loads(ROLES.read_text(encoding="utf-8"))
+        self.caps=json.loads(CAPS.read_text(encoding="utf-8"))
 
     def test_source_only(self):
         a=self.reg["activation"]
@@ -49,11 +51,16 @@ class MCPOperationsV1Tests(unittest.TestCase):
             self.assertGreaterEqual(len(item["should_trigger"]),2)
             self.assertGreaterEqual(len(item["should_not_trigger"]),2)
 
-    def test_role_playbook_covers_all_11_roles(self):
+    def test_role_playbook_uses_canonical_capability_matrix(self):
         self.assertEqual(self.roles["status"],"ROUTING_ONLY_NOT_ACL")
-        self.assertEqual(len(self.roles["roles"]),11)
-        self.assertIn("vx-dev-team",self.roles["roles"])
-        self.assertIn("vx-dev-reviewer",self.roles["roles"])
+        self.assertEqual(
+            self.roles["canonical_capability_matrix"],
+            "registry/dev-team-capability-matrix-v1.json",
+        )
+        self.assertNotIn("roles",self.roles)
+        self.assertEqual(len(self.caps["roles"]),11)
+        self.assertIn("vx-dev-team",self.caps["roles"])
+        self.assertIn("vx-dev-reviewer",self.caps["roles"])
 
     def test_permission_invariant(self):
         joined="\n".join(self.reg["principles"])
