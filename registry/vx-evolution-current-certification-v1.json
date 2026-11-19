@@ -17,16 +17,27 @@
   "historical_candidates": [
     {
       "test": "test_vx_meeting_v45.py",
-      "status": "REMOVE_AFTER_CURRENT_MEETING_PASS"
+      "status": "REMOVE_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS",
+      "replacement": [
+        "test_vx_meeting_current_contract.py",
+        "tests/Test-VX-Meeting-Current-Smoke.ps1"
+      ]
     },
     {
       "test": "test_vx_joint_meeting_v451.py",
-      "status": "REMOVE_AFTER_CURRENT_MEETING_PASS"
+      "status": "REMOVE_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS",
+      "replacement": [
+        "test_vx_meeting_current_contract.py",
+        "tests/Test-VX-Meeting-Current-Smoke.ps1"
+      ]
     }
   ],
   "rules": {
     "source_contracts_run_once": true,
     "windows_integration_smokes_must_not_repeat_source_unit_suites": true,
     "historical_tests_not_added_to_current_contracts": true
-  }
+  },
+  "integration_smokes": [
+    "tests/Test-VX-Meeting-Current-Smoke.ps1"
+  ]
 }
