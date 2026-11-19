@@ -23,7 +23,7 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 | `vx-dev-frontend` | frontend interaction analysis | no | deny | deny | deny | deny |
 | `vx-dev-backend` | backend application analysis | no | deny | deny | deny | deny |
 | `vx-dev-data` | data/persistence analysis | no | deny | deny | deny | deny |
-| `vx-dev-quality` | quality/test planning | no | deny | deny | deny | deny |
+| `vx-dev-quality` | quality verification analysis | no | deny | deny | deny | deny |
 | `vx-dev-security` | security analysis | no | deny | deny | deny | deny |
 | `vx-dev-research` | technical research | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
 
@@ -211,6 +211,22 @@ Fronteras:
 - Quality posee estrategia de verificación;
 - Security posee trust boundaries y riesgo de seguridad.
 
+## Contrato especializado: vx-dev-quality
+
+`vx-dev-quality` diseña la evidencia necesaria para demostrar comportamiento; no ejecuta tests ni reemplaza revisión independiente.
+
+Su salida específica añade:
+
+- `INVARIANTS` — propiedades que deben preservarse;
+- `TEST_MATRIX` — casos con nivel, escenario, precondición, esperado, oráculo y evidencia;
+- `TEST_ORACLES` — señales concretas que demuestran resultado;
+- `REGRESSION_SURFACE` — riesgo `DIRECT`, `ADJACENT`, `HISTORICAL` o `POSSIBLE`;
+- `ACCEPTANCE_GAPS` — ambigüedades que impiden afirmar corrección;
+- `VERIFICATION_PLAN` — secuencia mínima de verificación;
+- `EXECUTION_EVIDENCE` — solo `PASS`, `FAIL`, `NO_EJECUTADO` o `NO_VERIFICADO` según evidencia real recibida.
+
+No puede producir PASS por diseñar un test ni usar ausencia de tests como prueba de bug.
+
 ## Permisos de hijos
 
 Requeridos:
@@ -333,6 +349,7 @@ Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `tas
 - `vx-dev-research` ya usa `SOURCE_LEDGER / CONTRADICTIONS` y su allowlist documental;
 - `vx-dev-architect` ya usa `OPTIONS / TRADEOFFS / CONTRACTS / DECISIONS_REQUIRED` y su allowlist documental;
 - `vx-dev-frontend` ya usa `UI_FLOW / COMPONENT_MODEL / STATE_MODEL / INTERACTION_STATES / ACCESSIBILITY_RESPONSIVE / API_TOUCHPOINTS`;
-- continuar con Quality, Security y los especialistas nuevos planificados;
+- `vx-dev-quality` ya usa `INVARIANTS / TEST_MATRIX / TEST_ORACLES / REGRESSION_SURFACE / ACCEPTANCE_GAPS / VERIFICATION_PLAN`;
+- continuar con `vx-dev-security` y los especialistas nuevos planificados;
 - mantener el runtime actual estable mientras se diseña cada agente;
 - no ampliar la ACL del líder por adelantado.

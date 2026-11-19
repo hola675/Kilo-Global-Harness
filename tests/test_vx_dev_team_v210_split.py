@@ -89,6 +89,25 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         self.assertIn("vx-dev-backend", contract["boundary"])
         self.assertIn("vx-dev-data", contract["boundary"])
 
+    def test_quality_contract_requires_verifiable_evidence(self):
+        contract = self.baseline["specialist_contracts"]["vx-dev-quality"]
+        sections = contract["required_sections"]
+        for required in (
+            "INVARIANTS",
+            "TEST_MATRIX",
+            "TEST_ORACLES",
+            "REGRESSION_SURFACE",
+            "ACCEPTANCE_GAPS",
+            "VERIFICATION_PLAN",
+            "EXECUTION_EVIDENCE",
+        ):
+            self.assertIn(required, sections)
+        self.assertEqual(
+            contract["execution_states"],
+            ["PASS", "FAIL", "NO_EJECUTADO", "NO_VERIFICADO"],
+        )
+        self.assertIn("does not execute tests", contract["boundary"])
+
     def test_runtime_certification_is_not_inherited_from_legacy_identity(self):
         certification = self.baseline["certification"]
         self.assertEqual(certification["historical_v2r2"]["result"], "7/7")

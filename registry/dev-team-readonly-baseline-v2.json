@@ -90,10 +90,19 @@
     },
     {
       "id": "vx-dev-quality",
-      "role": "quality-analysis",
+      "role": "quality-verification-analysis",
       "mode": "subagent",
       "hidden": true,
-      "read_only": true
+      "read_only": true,
+      "special_output": [
+        "INVARIANTS",
+        "TEST_MATRIX",
+        "TEST_ORACLES",
+        "REGRESSION_SURFACE",
+        "ACCEPTANCE_GAPS",
+        "VERIFICATION_PLAN",
+        "EXECUTION_EVIDENCE"
+      ]
     },
     {
       "id": "vx-dev-security",
@@ -419,6 +428,48 @@
         "MISSING"
       ],
       "boundary": "backend contracts belong to vx-dev-backend; persistence guarantees belong to vx-dev-data"
+    },
+    "vx-dev-quality": {
+      "mission": "derive verifiable acceptance criteria, invariants, test cases, regression risks, oracles and a minimal verification plan without executing tests or acting as generic reviewer",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "INVARIANTS",
+        "TEST_MATRIX",
+        "TEST_ORACLES",
+        "REGRESSION_SURFACE",
+        "ACCEPTANCE_GAPS",
+        "VERIFICATION_PLAN",
+        "EXECUTION_EVIDENCE",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "OBSERVED",
+        "DERIVED",
+        "RISK",
+        "UNKNOWN"
+      ],
+      "execution_states": [
+        "PASS",
+        "FAIL",
+        "NO_EJECUTADO",
+        "NO_VERIFICADO"
+      ],
+      "test_levels": [
+        "STATIC",
+        "UNIT",
+        "INTEGRATION",
+        "E2E",
+        "MANUAL",
+        "OTHER"
+      ],
+      "boundary": "does not execute tests and does not replace independent code review or security review"
     }
   },
   "mcp_allowlists": {
