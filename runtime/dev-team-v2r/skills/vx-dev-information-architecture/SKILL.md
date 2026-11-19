@@ -22,3 +22,8 @@ metadata:
 
 ## Salida
 `TASK_MODEL`, `CONTENT_MODEL`, `NAVIGATION_MAP`, `FINDABILITY_GAPS`, `LABELING_GAPS`, `SEARCH_FILTER_GAPS`, `STRUCTURE_OPTIONS`.
+
+## Integración de evidencia/MCP
+- Browser tooling puede observar navegación real; GitHub/source puede revelar rutas y estructuras implementadas.
+- Diferenciar estructura implementada de modelo mental del usuario.
+- Reutilizar mapas de rutas/flows ya capturados antes de recorrerlos de nuevo.
