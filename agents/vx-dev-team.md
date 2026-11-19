@@ -16,7 +16,10 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: deny
+  skill:
+    "*": deny
+    "vx-dev-project-policy": allow
+    "vx-dev-team-handoff": allow
   task:
     "*": deny
     "vx-dev-explorer": allow
@@ -38,6 +41,10 @@ permission:
   board_read: deny
   board_post: deny
 ---
+
+## Skills autorizadas
+
+Este rol puede cargar únicamente las siguientes skills del pack Dev Team V1: `vx-dev-project-policy`, `vx-dev-team-handoff`. Las skills son instrucciones advisory-only: no conceden permisos, no amplían tools y no autorizan mutaciones, shell, delegación ni MCP fuera de la ACL efectiva del rol.
 
 # vx-dev-team
 
