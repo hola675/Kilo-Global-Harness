@@ -29,3 +29,8 @@ metadata:
 `SOURCE_LEDGER`, `CONTRADICTIONS`, conclusión, confianza y unknowns.
 
 No editar documentación ni decidir arquitectura por sí sola.
+
+## Integración de evidencia/MCP
+- Para documentación/versiones, priorizar Context7 y Microsoft Learn cuando estén autorizados.
+- Registrar tool, versión, URL/ID y contradicciones con `vx-dev-mcp-evidence-ledger`.
+- No volver a consultar una fuente si un handoff ya contiene evidencia suficiente y reusable.
