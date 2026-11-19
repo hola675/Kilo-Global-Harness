@@ -18,6 +18,7 @@ El operador confirmó:
 - reinicio fresco de Kilo Desktop: demostrado;
 - `vx-dev-backend`, `vx-dev-data`, `vx-dev-platform` y `vx-dev-reviewer`: delegación fresca 4/4 PASS;
 - `glob` y `grep`: 4/4 ejecutados;
+- contratos de rol de Backend/Data/Platform/Reviewer contra fixtures reales: 4/4 PASS;
 - LSP: no disponible en el host y no bloqueante;
 - mutaciones runtime durante probes: ninguna observada.
 
@@ -46,9 +47,9 @@ No se convierte `NOT_VISIBLE` en `DENY_EXECUTED`.
 
 ## Contratos funcionales
 
-Los primeros probes usaron escenarios sintéticos sin archivos de implementación. Los cuatro contratos quedaron `PARTIAL`.
+Los primeros probes usaron escenarios sintéticos y quedaron `PARTIAL`. Después se repitieron contra fixtures versionados reales y los cuatro contratos quedaron **4/4 PASS**.
 
-Para cerrarlos se crearon fixtures reales:
+Fixtures ya cerrados:
 
 - Backend: `tests/fixtures/dev-team-v230/backend/`
 - Data: `tests/fixtures/dev-team-v230/data/`
@@ -115,16 +116,36 @@ La ausencia de LSP no bloquea.
 
 El enforcement interno de permisos se reporta en una dimensión separada y no se inventa.
 
+## Segunda tanda de certificación
+
+Pendientes de cerrar en runtime:
+
+- `vx-dev-explorer` → `tests/fixtures/dev-team-v230/explorer/`
+- `vx-dev-frontend` → `tests/fixtures/dev-team-v2r2/frontend/`
+- `vx-dev-quality` → `tests/fixtures/dev-team-v2r2/quality/`
+- `vx-dev-security` → `tests/fixtures/dev-team-v230/security/`
+- `vx-dev-research` → `tests/fixtures/dev-team-v2r2/research/`
+- `vx-dev-architect` → `tests/fixtures/dev-team-v2r2/architect/`
+
+Research y Architect deben demostrar además exactamente cinco MCP documentales:
+
+- `context7_resolve-library-id`
+- `context7_query-docs`
+- `microsoft-learn_microsoft_docs_search`
+- `microsoft-learn_microsoft_docs_fetch`
+- `microsoft-learn_microsoft_code_sample_search`
+
+La certificación global sigue `PARTIAL` hasta cerrar estos seis y el routing final del líder.
+
 ## Estado de certificación completa
 
 La baseline 2.3.0 **no** se considera runtime-certified todavía.
 
 Pendiente:
 
-1. cerrar contratos fixture de Backend/Data/Platform/Reviewer;
-2. certificar Explorer/Frontend/Quality/Security en runtime fresco;
-3. certificar Research y Architect con sus 5 MCP documentales;
-4. validar routing mínimo del líder;
-5. confirmar repo/config sin cambios después de toda la campaña.
+1. certificar Explorer/Frontend/Quality/Security en runtime fresco;
+2. certificar Research y Architect con sus 5 MCP documentales;
+3. validar routing mínimo del líder;
+4. confirmar repo/config sin cambios después de toda la campaña.
 
 Solo entonces puede promoverse la baseline de `ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING` a estado runtime certificado.
