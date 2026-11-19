@@ -22,3 +22,8 @@ metadata:
 
 ## Salida
 `PERFORMANCE_QUESTION`, `BASELINE`, `METRICS`, `CONTROLLED_VARIABLES`, `REGRESSION_CRITERIA`, `MEASUREMENT_PLAN`, `UNKNOWN_CONFOUNDERS`.
+
+## Integración de evidencia/MCP
+- Chrome DevTools, Playwright, Sentry o plataforma pueden aportar métricas observadas si están autorizados.
+- Registrar entorno, ventana temporal, versión y método de medición.
+- No comparar cifras de fuentes/entornos distintos como si fueran un mismo baseline.
