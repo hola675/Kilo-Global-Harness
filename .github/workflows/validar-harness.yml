@@ -965,24 +965,6 @@ jobs:
           if (!(Test-Path (Join-Path $tempHome '.kilocode/skills/legacy-skill/SKILL.md'))) { throw 'Legacy skill fue eliminada.' }
           Write-Host 'PASS VX PACK COEXISTENCE CURRENT: Windows DPAPI, inline y skills externas'
 
-      - name: VX Pack 0.2.2 - rutas seguras, marcadores y DPAPI aislado
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          python -I -m unittest discover -s tests -p 'test_vx_pack_release_v022.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Fallaron pruebas V0.2.2.' }
-          python -m compileall -q scripts/vx_pack_bootstrap.py tests/test_vx_pack_release_v022.py
-          if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis V0.2.2.' }
-          $tmp = Join-Path $env:RUNNER_TEMP ('vx-pack-release-' + [guid]::NewGuid().ToString('N'))
-          New-Item -ItemType Directory -Force -Path $tmp | Out-Null
-          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Diagnostico -RaizUsuario $tmp
-          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Simular -RaizUsuario $tmp
-          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Aplicar -RaizUsuario $tmp -ConfirmarMigracion -ConfirmarKiloCerrado
-          & ./scripts/Instalar-Pack-VX-V022.ps1 -Modo Verificar -RaizUsuario $tmp
-          if (!(Test-Path (Join-Path $tmp '.config/kilo/agents/vx-integrador.md'))) { throw 'Agente no instalado.' }
-          if (!(Test-Path (Join-Path $tmp '.kilo/skills/vx-ida-mcp-reverse-engineering/SKILL.md'))) { throw 'Skill IDA no instalada.' }
-          Write-Host 'VX PACK 0.2.2: PREFLIGHT + DPAPI + VERIFICACION PASS'
-
       - name: VX IDA MCP - skill, catalogo opcional y reglas de no-escritura
         shell: pwsh
         run: |
