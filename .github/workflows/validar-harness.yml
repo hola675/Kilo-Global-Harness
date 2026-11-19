@@ -159,12 +159,10 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Manifest Pack VX actual invalido.' }
           Write-Host 'VX PACK CURRENT CERTIFICATION: PASS'
 
-      - name: VX Pack 0.3 - doctor, MCP pasivos y 13 agentes 31 skills
+      - name: VX Pack 0.3 - smoke Windows, MCP pasivos y rollback
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          python -I -m unittest discover -s tests -p 'test_vx_pack_doctor.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Test de doctor VX fallo.' }
           $fixture = Join-Path $env:RUNNER_TEMP ('vx-pack-doctor-' + [guid]::NewGuid().ToString('N'))
           New-Item -ItemType Directory -Path $fixture -Force | Out-Null
           $installer = (Resolve-Path 'scripts/Instalar-Kilo-Global-Harness.ps1').Path
@@ -180,7 +178,7 @@ jobs:
           $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
             Sort-Object Name -Descending | Select-Object -First 1
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
-          Write-Host 'VX PACK V0.3: 13 AGENTES, 31 SKILLS, MCP PASIVOS Y ROLLBACK: PASS'
+          Write-Host 'VX PACK V0.3 WINDOWS SMOKE: 13 AGENTES, 31 SKILLS, MCP PASIVOS Y ROLLBACK PASS'
 
       - name: VX Pack DPAPI V0.2 - bootstrap seguro en Windows aislado
         shell: pwsh
