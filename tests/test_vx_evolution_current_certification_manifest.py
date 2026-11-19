@@ -23,7 +23,11 @@ class VXEvolutionCurrentManifestTests(unittest.TestCase):
                 item["status"],
                 "RETIRED_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS",
             )
-            self.assertTrue((ROOT/item["pass_evidence"]).is_file())
+            evidence_path=ROOT/item["pass_evidence"]
+            self.assertTrue(evidence_path.is_file())
+            evidence=json.loads(evidence_path.read_text(encoding="utf-8"))
+            self.assertIn("test_vx_meeting_current_contract.py",evidence["passed_tests"])
+            self.assertIn("tests/Test-VX-Meeting-Current-Smoke.ps1",evidence["passed_tests"])
             self.assertFalse((ROOT/"tests"/item["retired_test"]).exists())
 
     def test_current_meeting_replacement_is_present(self):
