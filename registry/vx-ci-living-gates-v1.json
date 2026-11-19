@@ -204,16 +204,16 @@
       "reason": "Current manual approval/no elevation invariant."
     },
     {
-      "name": "VX 0.2.4 - evidencia runtime sin elevación ni autoverificación",
+      "name": "VX Runtime Evidence - sin elevación ni autocertificación",
       "class": "CURRENT",
       "kind": "runtime-evidence",
-      "reason": "Protects current declared-vs-independent certification semantics."
+      "reason": "Canonical current runtime-evidence contract; historical test file replaced."
     },
     {
-      "name": "VX Pack 0.2.3 - convivencia con inline y skills externas sin borrado",
-      "class": "REVIEW",
+      "name": "VX Pack Coexistence - inline y skills externas sin borrado",
+      "class": "CURRENT",
       "kind": "pack",
-      "reason": "Distinct coexistence behavior; retain until semantic replacement exists."
+      "reason": "Canonical current coexistence behavior; old version-labelled test replaced."
     },
     {
       "name": "VX Pack 0.2.2 - rutas seguras, marcadores y DPAPI aislado",
