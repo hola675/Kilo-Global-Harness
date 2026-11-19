@@ -1,0 +1,33 @@
+{
+  "schema": "vx-pack-current-certification/1",
+  "version": "1.0.0",
+  "status": "CURRENT_SOURCE_CERTIFICATION",
+  "current_pack": "0.3.0",
+  "active_tests": [
+    "test_vx_pack_current_contract.py",
+    "test_vx_pack_bootstrap_v1.py",
+    "test_vx_pack_doctor.py"
+  ],
+  "historical_candidates": [
+    {
+      "test": "test_vx_pack_release_v022.py",
+      "replacement": "test_vx_pack_current_contract.py + test_vx_pack_bootstrap_v1.py",
+      "status": "REMOVE_AFTER_REPLACEMENT_PASS"
+    },
+    {
+      "test": "test_vx_pack_coexist_v023.py",
+      "status": "KEEP_PENDING_SEMANTIC_REVIEW",
+      "reason": "Coexistence installer has distinct behavior from strict bootstrap."
+    },
+    {
+      "test": "test_vx_runtime_smoke_v1.py",
+      "status": "KEEP_PENDING_RUNTIME_EVIDENCE_REVIEW",
+      "reason": "Protects declared-vs-independent runtime certification semantics."
+    }
+  ],
+  "rules": {
+    "old_version_number_alone_is_not_reason_to_keep_active_test": true,
+    "remove_only_after_replacement_pass": true,
+    "preserve_history_in_git": true
+  }
+}
