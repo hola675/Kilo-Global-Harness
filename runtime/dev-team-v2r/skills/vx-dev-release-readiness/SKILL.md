@@ -25,3 +25,8 @@ Complementa `vx-dev-platform-delivery`: Platform Delivery mapea el flujo técnic
 
 ## Salida
 `RELEASE_SCOPE`, `GATES`, `BLOCKERS`, `ROLLBACK`, `OBSERVABILITY_GATE`, `RESIDUAL_RISK`, `READINESS_STATUS`.
+
+## Integración de evidencia/MCP
+- Reutilizar GitHub Actions/PR, Sentry y evidencia de plataforma ya recopilada por los especialistas.
+- Cada gate debe apuntar a una evidencia concreta con SHA/run/ID.
+- Si falta evidencia, marcar blocker/unknown; no abrir nuevas herramientas salvo gap específico.
