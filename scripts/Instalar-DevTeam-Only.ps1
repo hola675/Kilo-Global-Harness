@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  Instala Dev Team V2-R: un lider visible y ocho subagentes ocultos read-only.
+  Instala Dev Team: un lider visible y diez subagentes ocultos read-only.
 .DESCRIPTION
   Retira runtime VX legacy, instala unicamente el runtime aprobado V2-R y crea
   backup reversible. NO modifica kilo.jsonc, MCP, modelos, AutoApprove, agentes
@@ -43,8 +43,10 @@ $approvedAgents = [ordered]@{
   'vx-dev-frontend.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-frontend.md')
   'vx-dev-backend.md'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-backend.md')
   'vx-dev-data.md'         = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-data.md')
+  'vx-dev-platform.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-platform.md')
   'vx-dev-quality.md'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-quality.md')
   'vx-dev-security.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-security.md')
+  'vx-dev-reviewer.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-reviewer.md')
   'vx-dev-research.md'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/agents/vx-dev-research.md')
 }
 $approvedNames = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
@@ -320,7 +322,7 @@ if ($Modo -eq 'Verificar') {
   }
 
   Write-Host '[PASS] Dev Team es el unico primario VX aprobado.' -ForegroundColor Green
-  Write-Host '[PASS] Ocho subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
+  Write-Host '[PASS] Diez subagentes ocultos instalados y coinciden con sus fuentes.' -ForegroundColor Green
   Write-Host '[PASS] Skills/workflows/reglas/plugins/runtime VX legacy no estan instalados.' -ForegroundColor Green
   Write-Host '[PASS] Este verificador no modifica ni autentica MCP.' -ForegroundColor Green
   return
@@ -385,7 +387,7 @@ try {
   throw
 }
 
-Write-Host '[PASS] Baseline aplicado: Dev Team + 8 subagentes ocultos read-only.' -ForegroundColor Green
+Write-Host '[PASS] Baseline aplicado: Dev Team + 10 subagentes ocultos read-only.' -ForegroundColor Green
 Write-Host '[PASS] kilo.jsonc y configuracion MCP preservados.' -ForegroundColor Green
 Write-Host "BACKUP: $backupDir" -ForegroundColor Yellow
 Write-Host 'Ejecuta este mismo script con -Modo Verificar y luego /reload en Kilo.' -ForegroundColor Cyan
