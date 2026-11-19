@@ -23,3 +23,8 @@ metadata:
 
 ## Salida
 `CONTENT_GOALS`, `AMBIGUITIES`, `MICROCOPY_FIXES`, `ERROR_COPY`, `EMPTY_STATE_COPY`, `TRUST_RISKS`, `LOCALIZATION_NOTES`.
+
+## Integración de evidencia/MCP
+- Usar MCP solo para recuperar contexto real del producto o estados observados; no externalizar copy sensible sin necesidad.
+- Browser evidence puede confirmar dónde aparece el mensaje, pero no demuestra comprensión del usuario.
+- No usar una fuente externa para inventar políticas, precios o garantías.
