@@ -20,6 +20,9 @@ metadata:
 7. Descartar falsos positivos explícitamente.
 8. Priorizar hallazgos BLOCKER/HIGH/MEDIUM/LOW/INFO.
 9. Emitir veredicto limitado al review.
+10. Si el diff toca tests/CI, verificar política de certificación viva: `UPDATE`, `REPLACE` o `ADD`.
+11. Detectar tests/gates sin invariante vigente o con oráculo duplicado.
+12. No recomendar retirar un test supersedido hasta existir PASS real del reemplazo.
 
 ## Veredictos
 `NO_BLOCKING_FINDINGS`, `CHANGES_REQUIRED`, `BLOCKED`, `INSUFFICIENT_EVIDENCE`.
