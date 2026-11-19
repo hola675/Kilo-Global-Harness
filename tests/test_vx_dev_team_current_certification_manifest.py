@@ -18,6 +18,10 @@ class CurrentCertificationManifestTests(unittest.TestCase):
             "test_vx_dev_team_v2r2_specialists.py",
             {x["superseded_test"] for x in data["historical_evidence"]},
         )
+        self.assertFalse(
+            (ROOT/"tests"/"test_vx_dev_team_v2r2_specialists.py").exists(),
+            "A superseded historical certification test must not remain active.",
+        )
 
     def test_active_tests_are_unique_and_current(self):
         data=module.load_manifest()
