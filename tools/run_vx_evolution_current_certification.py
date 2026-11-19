@@ -13,7 +13,11 @@ def main() -> int:
     tests=data["current_contracts"]
     if len(tests)!=len(set(tests)):
         raise ValueError("current_contracts contiene duplicados")
-    historical={x["test"] for x in data["historical_candidates"]}
+    historical={
+        x["retired_test"]
+        for x in data.get("historical_evidence",[])
+        if x.get("retired_test")
+    }
     overlap=set(tests)&historical
     if overlap:
         raise ValueError(f"tests históricos activos: {sorted(overlap)}")
