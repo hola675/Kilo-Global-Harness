@@ -42,6 +42,21 @@ class VXPackCurrentContractTests(unittest.TestCase):
         targets = [str(item.target).casefold() for item in assets]
         self.assertEqual(len(targets), len(set(targets)))
 
+    def test_bootstrap_distributes_global_living_policy_rule(self):
+        _, assets = vx.load_pack(ROOT, self.home)
+        pairs = {
+            (item.source.relative_to(ROOT).as_posix(),
+             item.target.relative_to(self.home).as_posix())
+            for item in assets
+        }
+        self.assertIn(
+            (
+                "rules/vx-global-harness-v3.md",
+                ".config/kilo/rules/vx-global-harness-v3.md",
+            ),
+            pairs,
+        )
+
     def test_bootstrap_never_auto_installs_mcp_or_leaks_secret_config(self):
         config = self.home / ".config" / "kilo" / "kilo.jsonc"
         config.write_text(
