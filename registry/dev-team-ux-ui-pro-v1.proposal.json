@@ -1,0 +1,119 @@
+{
+  "schema": "dev-team-ux-ui-pro/1",
+  "version": "1.0.0-proposal",
+  "status": "SOURCE_READY_RUNTIME_INACTIVE",
+  "created": "2026-11-19",
+  "base_branch": "work/dev-team-skills-v2-gap-fill",
+  "objective": "Añadir una capa UX/UI Pro original, con un router integral y especialistas estrechos, inspirada en patrones públicos de alta calidad sin copiar contenido.",
+  "research_patterns": [
+    "Router integral + especialistas estrechos para evitar una mega-skill monolítica.",
+    "Evidence-first: screenshot/código/Figma/estado observado deben limitar las afirmaciones.",
+    "Design system como fuente de verdad antes de inventar estilos.",
+    "Estados reales, responsive, localización y datos extremos forman parte del diseño.",
+    "Accesibilidad y task completion tienen prioridad sobre polish.",
+    "Visual craft debe evitar UI genérica sin imponer una estética universal.",
+    "Evals positivos y negativos para routing entre skills vecinas.",
+    "No usar scores de precisión falsa sin evidencia suficiente."
+  ],
+  "public_references": [
+    "https://github.com/plugin87/ux-ui-agent-skills",
+    "https://github.com/owl-listener/designer-skills",
+    "https://github.com/RealTask/MAX-DESIGN",
+    "https://github.com/rschuft/ai-frontend-skill-packs",
+    "https://github.com/harun-yardimci/interface-craft",
+    "https://github.com/ulises-jeremias/agent-toolkit"
+  ],
+  "originality": "Solo se adaptan patrones de arquitectura y criterios públicos; instrucciones y nombres vx-dev son originales.",
+  "skills": [
+    {
+      "id": "vx-dev-ux-ui-pro-review",
+      "role": "router",
+      "agents": [
+        "vx-dev-frontend",
+        "vx-dev-reviewer"
+      ],
+      "boundary": "Auditoría integral multi-dimensional; deriva a especialistas para pedidos estrechos."
+    },
+    {
+      "id": "vx-dev-design-system-governance",
+      "role": "specialist",
+      "agents": [
+        "vx-dev-frontend",
+        "vx-dev-architect"
+      ],
+      "boundary": "Tokens/componentes/themes/drift; no visual critique general."
+    },
+    {
+      "id": "vx-dev-responsive-resilience",
+      "role": "specialist",
+      "agents": [
+        "vx-dev-frontend",
+        "vx-dev-quality"
+      ],
+      "boundary": "Viewports/zoom/text/localización/themes/input/network."
+    },
+    {
+      "id": "vx-dev-forms-ux",
+      "role": "specialist",
+      "agents": [
+        "vx-dev-frontend",
+        "vx-dev-quality"
+      ],
+      "boundary": "Campos/validación/submit/recovery; no backend guarantees."
+    },
+    {
+      "id": "vx-dev-ux-writing-content",
+      "role": "specialist",
+      "agents": [
+        "vx-dev-frontend"
+      ],
+      "boundary": "Microcopy y contenido funcional; no estructura IA completa."
+    },
+    {
+      "id": "vx-dev-information-architecture",
+      "role": "specialist",
+      "agents": [
+        "vx-dev-frontend",
+        "vx-dev-architect"
+      ],
+      "boundary": "Navigation/findability/content structure; no software architecture."
+    },
+    {
+      "id": "vx-dev-interaction-motion",
+      "role": "specialist",
+      "agents": [
+        "vx-dev-frontend"
+      ],
+      "boundary": "Feedback/transitions/gestures/reduced motion; no performance benchmark."
+    },
+    {
+      "id": "vx-dev-data-visualization",
+      "role": "specialist",
+      "agents": [
+        "vx-dev-frontend",
+        "vx-dev-quality"
+      ],
+      "boundary": "Charts/dashboards/scales/accessibility; no data correctness inference."
+    },
+    {
+      "id": "vx-dev-visual-craft",
+      "role": "specialist",
+      "agents": [
+        "vx-dev-frontend",
+        "vx-dev-reviewer"
+      ],
+      "boundary": "Hierarchy/typography/color/composition/distinctiveness; aesthetics never override accessibility."
+    }
+  ],
+  "proposed_total_after_v1_v2_ux": 36,
+  "activation": {
+    "status": "NOT_AUTHORIZED",
+    "runtime_changes": "NONE",
+    "modifies_acl": false,
+    "modifies_installer": false,
+    "requires_operator_approval": true,
+    "requires_trigger_evals": true,
+    "requires_overlap_eval": true,
+    "requires_runtime_recertification": true
+  }
+}
