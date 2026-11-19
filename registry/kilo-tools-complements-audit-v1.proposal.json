@@ -1,0 +1,405 @@
+{
+  "schema": "kilo-tools-complements-audit/1",
+  "version": "1.0.0-proposal",
+  "status": "SOURCE_READY_RUNTIME_INACTIVE",
+  "created": "2026-11-19",
+  "objective": "Optimizar Kilo Code y el Dev Team priorizando herramientas nativas, eliminando duplicaciones MCP y definiendo complementos/plugins por oleadas sin cambiar runtime.",
+  "official_capabilities": {
+    "native_tools": [
+      "read",
+      "glob",
+      "grep",
+      "edit",
+      "write",
+      "apply_patch",
+      "bash",
+      "websearch",
+      "webfetch",
+      "question",
+      "task",
+      "todowrite",
+      "todoread",
+      "plan",
+      "skill",
+      "open_plan",
+      "agent_manager",
+      "board_post",
+      "board_read",
+      "lsp",
+      "browser_open"
+    ],
+    "builtin_browser_mcp": "kilo-playwright",
+    "marketplace_types": [
+      "agent",
+      "skill",
+      "mcp",
+      "plugin"
+    ],
+    "plugin_hooks": [
+      "tool.execute.before",
+      "tool.execute.after",
+      "tool.definition",
+      "event",
+      "permission.ask",
+      "chat.message",
+      "experimental.text.complete",
+      "experimental.compaction.autocontinue"
+    ],
+    "kilo_platform_mcp": [
+      "search",
+      "call"
+    ]
+  },
+  "recommendations": {
+    "adopt_now": [
+      {
+        "item": "native-websearch-webfetch",
+        "roles": [
+          "vx-dev-team",
+          "vx-dev-research"
+        ],
+        "mode": "ASK_OR_EXACT_ALLOW_AFTER_SMOKE",
+        "rationale": "Broad current web research without another MCP server; websearch uses Kilo/Exa or Parallel."
+      },
+      {
+        "item": "native-lsp",
+        "roles": [
+          "vx-dev-explorer",
+          "vx-dev-architect",
+          "vx-dev-frontend",
+          "vx-dev-backend",
+          "vx-dev-data",
+          "vx-dev-quality",
+          "vx-dev-reviewer"
+        ],
+        "mode": "KEEP_ALLOW_WHERE_CERTIFIED",
+        "rationale": "Cheap semantic evidence before MCP code-intelligence escalation."
+      },
+      {
+        "item": "native-plan-todo",
+        "roles": [
+          "vx-dev-team"
+        ],
+        "mode": "CANDIDATE_ALLOW",
+        "rationale": "Session planning and resumability without child-agent overhead."
+      },
+      {
+        "item": "browser_open",
+        "roles": [
+          "vx-dev-frontend",
+          "vx-dev-quality"
+        ],
+        "mode": "CANDIDATE_ASK",
+        "rationale": "Localhost-only preview and diagnostics for local UI work."
+      }
+    ],
+    "consolidate": [
+      {
+        "replace": "standalone-playwright-mcp",
+        "with": "kilo-playwright",
+        "condition": "If built-in Browser Automation exposes the required tested tools and permission IDs.",
+        "benefit": "One less MCP config, fewer duplicate browser tool definitions."
+      },
+      {
+        "replace": "generic-web-search-mcp",
+        "with": "native-websearch-webfetch",
+        "condition": "For general public-web research; keep specialist doc MCPs.",
+        "benefit": "Lower MCP/tool catalog size while preserving Context7/Microsoft Learn for authoritative docs."
+      }
+    ],
+    "optional_wave2": [
+      {
+        "item": "agent-manager",
+        "roles": [
+          "vx-dev-team"
+        ],
+        "mode": "ASK",
+        "rationale": "Independent worktree-isolated top-level sessions; not a replacement for task children."
+      },
+      {
+        "item": "kilo-swarm-board",
+        "roles": [
+          "vx-dev-team",
+          "approved-task-children"
+        ],
+        "mode": "DENY_UNTIL_BACKGROUND_TASK_EVALS",
+        "rationale": "Useful only when parallel/background task communication materially helps."
+      },
+      {
+        "item": "kilo-platform-mcp",
+        "roles": [
+          "vx-dev-team"
+        ],
+        "mode": "SEARCH_ALLOW_CALL_ASK_OR_DENY",
+        "rationale": "Platform usage, profiles and cloud-agent lifecycle; call is mixed and can mutate."
+      }
+    ],
+    "build_internally": [
+      {
+        "item": "vx-harness-guard-plugin",
+        "target": "Kilo plugin",
+        "purpose": [
+          "local audit of tool/permission/session events",
+          "post-tool redaction of obvious secrets before reusable logs",
+          "compaction preservation of evidence ledger IDs",
+          "optional block of policy invariants not expressible with permission patterns"
+        ],
+        "prohibitions": [
+          "no silent auto-allow",
+          "no provider header mutation",
+          "no credential collection",
+          "no network telemetry by default",
+          "no edit/write/bash bypass"
+        ],
+        "status": "DESIGN_ONLY"
+      }
+    ],
+    "keep_specialized_mcp": [
+      "context7",
+      "microsoft-learn",
+      "serena",
+      "codebase-memory",
+      "github",
+      "sentry",
+      "snyk",
+      "postman",
+      "cloudflare-api",
+      "ida",
+      "imagegen"
+    ],
+    "review_for_redundancy": [
+      "playwright",
+      "chrome-devtools"
+    ],
+    "do_not_install_blindly": [
+      "third-party Kilo plugins",
+      "generic mega-skill bundles that overlap Dev Team",
+      "duplicate browser MCP servers",
+      "MCP servers with broad wildcard auto-approval"
+    ]
+  },
+  "role_tooling": {
+    "vx-dev-team": {
+      "native_primary": [
+        "read",
+        "glob",
+        "grep",
+        "lsp",
+        "skill",
+        "task",
+        "plan",
+        "todowrite",
+        "todoread"
+      ],
+      "native_conditional": [
+        "websearch",
+        "webfetch",
+        "agent_manager"
+      ],
+      "mcp_primary": [
+        "github"
+      ],
+      "mcp_conditional": [
+        "kilo-platform",
+        "context7",
+        "microsoft-learn"
+      ],
+      "prohibited_by_default": [
+        "board_post",
+        "board_read",
+        "wildcard-mcp-allow"
+      ]
+    },
+    "vx-dev-explorer": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "mcp_primary": [
+        "serena",
+        "codebase-memory"
+      ],
+      "mcp_conditional": [
+        "github"
+      ]
+    },
+    "vx-dev-research": {
+      "native_primary": [
+        "websearch",
+        "webfetch",
+        "skill"
+      ],
+      "mcp_primary": [
+        "context7",
+        "microsoft-learn"
+      ],
+      "mcp_conditional": [
+        "github",
+        "cloudflare-api"
+      ]
+    },
+    "vx-dev-architect": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "mcp_primary": [
+        "context7",
+        "microsoft-learn",
+        "serena",
+        "codebase-memory"
+      ]
+    },
+    "vx-dev-frontend": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [
+        "browser_open"
+      ],
+      "mcp_primary": [
+        "kilo-playwright"
+      ],
+      "mcp_conditional": [
+        "chrome-devtools",
+        "github",
+        "imagegen"
+      ]
+    },
+    "vx-dev-backend": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "mcp_primary": [
+        "serena",
+        "codebase-memory",
+        "postman"
+      ],
+      "mcp_conditional": [
+        "github",
+        "sentry"
+      ]
+    },
+    "vx-dev-data": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "mcp_primary": [
+        "serena",
+        "codebase-memory"
+      ],
+      "mcp_conditional": [
+        "github"
+      ]
+    },
+    "vx-dev-platform": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "mcp_primary": [
+        "github",
+        "sentry",
+        "cloudflare-api"
+      ],
+      "mcp_conditional": [
+        "chrome-devtools"
+      ]
+    },
+    "vx-dev-quality": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "native_conditional": [
+        "browser_open"
+      ],
+      "mcp_primary": [
+        "kilo-playwright",
+        "github"
+      ],
+      "mcp_conditional": [
+        "chrome-devtools",
+        "sentry"
+      ]
+    },
+    "vx-dev-security": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "mcp_primary": [
+        "snyk",
+        "github"
+      ],
+      "mcp_conditional": [
+        "sentry",
+        "cloudflare-api",
+        "postman"
+      ]
+    },
+    "vx-dev-reviewer": {
+      "native_primary": [
+        "glob",
+        "grep",
+        "lsp",
+        "skill"
+      ],
+      "mcp_primary": [
+        "github"
+      ],
+      "mcp_conditional": [
+        "serena",
+        "codebase-memory",
+        "kilo-playwright",
+        "sentry"
+      ]
+    }
+  },
+  "vscode_complements": {
+    "agent_value_high": [
+      "language servers and diagnostics that feed LSP",
+      "ESLint/TypeScript diagnostics for JS/TS projects",
+      "Pyright/Pylance or compatible Python language server",
+      "rust-analyzer for Rust",
+      "YAML/JSON schema validation",
+      "Docker language/tooling when Docker projects are in scope"
+    ],
+    "human_value_only_or_low_agent_value": [
+      "GitLens-style history UI when GitHub/git tools already cover agent needs",
+      "Error Lens display enhancement",
+      "theme/icon extensions",
+      "duplicate REST clients when Postman MCP is already used"
+    ],
+    "principle": "Install editor extensions primarily when they improve diagnostics/LSP or human review, not merely because they expose another UI."
+  },
+  "activation": {
+    "runtime_changes": "NONE",
+    "kilo_jsonc_changes": "NONE",
+    "plugin_installation": "NONE",
+    "mcp_changes": "NONE",
+    "agent_acl_changes": "NONE",
+    "requires_runtime_inventory": true,
+    "requires_duplicate_tool_diff": true,
+    "requires_operator_approval": true
+  }
+}
