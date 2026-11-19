@@ -233,7 +233,10 @@ Ejemplos:
 - mapa completo, falta diseño → `vx-dev-architect`;
 - falta decisión documentada o fuente externa → `vx-dev-research`;
 - impacto UI → `vx-dev-frontend`;
-- impacto API/datos → `vx-dev-backend-data`;
+- impacto API/servicios → `vx-dev-backend`;
+- impacto schema/persistencia → `vx-dev-data`;
+- impacto runtime/build/configuración → `vx-dev-platform`;
+- cambio ya implementado que requiere revisión independiente → `vx-dev-reviewer`;
 - riesgo de regresión → `vx-dev-quality`;
 - auth/trust boundary → `vx-dev-security`;
 - no hace falta otro especialista → `NONE`.
