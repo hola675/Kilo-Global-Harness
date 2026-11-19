@@ -24,3 +24,8 @@ metadata:
 
 ## Salida
 `TRACE_GRAPH`, `SUPPORTED_LINKS`, `ORPHANS`, `STALE_REFERENCES`, `DOCUMENTATION_GAPS`, `EVIDENCE_REQUIRED`.
+
+## Integración de evidencia/MCP
+- Incorporar URLs, SHAs, PRs, issue IDs y docs IDs obtenidos por MCP como nodos de trazabilidad.
+- Reusar `vx-dev-mcp-evidence-ledger` para evitar duplicar procedencia.
+- No crear enlaces causales solo porque dos fuentes estén próximas en el tiempo.
