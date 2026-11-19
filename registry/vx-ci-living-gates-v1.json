@@ -228,12 +228,6 @@
       "reason": "Canonical current coexistence behavior; old version-labelled test replaced."
     },
     {
-      "name": "VX Pack 0.2.2 - rutas seguras, marcadores y DPAPI aislado",
-      "class": "HISTORICAL_CANDIDATE",
-      "kind": "pack",
-      "reason": "Superseded by current Pack contract + bootstrap safety suite; remove only after replacement PASS."
-    },
-    {
       "name": "VX IDA MCP - skill, catalogo opcional y reglas de no-escritura",
       "class": "CURRENT",
       "kind": "specialized",
