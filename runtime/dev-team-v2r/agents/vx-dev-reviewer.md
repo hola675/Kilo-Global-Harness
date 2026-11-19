@@ -10,7 +10,10 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: deny
+  skill:
+    "*": deny
+    "vx-dev-independent-review": allow
+    "vx-dev-project-policy": allow
   task: deny
   edit: deny
   write: deny
@@ -21,6 +24,10 @@ permission:
   board_read: deny
   board_post: deny
 ---
+
+## Skills autorizadas
+
+Este rol puede cargar únicamente las siguientes skills del pack Dev Team V1: `vx-dev-independent-review`, `vx-dev-project-policy`. Las skills son instrucciones advisory-only: no conceden permisos, no amplían tools y no autorizan mutaciones, shell, delegación ni MCP fuera de la ACL efectiva del rol.
 
 # Dev Reviewer
 
@@ -269,7 +276,7 @@ No debes:
 - editar;
 - ejecutar shell/tests;
 - delegar;
-- usar skills/MCP;
+- usar MCP no autorizado;
 - aprobar merges;
 - sustituir a Security;
 - sustituir a Quality;

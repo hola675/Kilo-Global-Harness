@@ -26,6 +26,7 @@ $homeRoot = if ($RaizUsuario) {
 
 $kiloDir = Join-Path $homeRoot '.config/kilo'
 $agentDir = Join-Path $kiloDir 'agents'
+$skillDir = Join-Path $homeRoot '.kilo/skills'
 $commandDir = Join-Path $kiloDir 'commands'
 $ruleDir = Join-Path $kiloDir 'rules'
 $pluginDir = Join-Path $kiloDir 'plugin'
@@ -51,6 +52,29 @@ $approvedAgents = [ordered]@{
 }
 $approvedNames = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 foreach ($name in $approvedAgents.Keys) { [void]$approvedNames.Add($name) }
+
+$approvedSkills = [ordered]@{
+  'vx-dev-project-policy'          = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-project-policy')
+  'vx-dev-team-handoff'           = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-team-handoff')
+  'vx-dev-mcp-readonly'           = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-mcp-readonly')
+  'vx-dev-mcp-security'           = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-mcp-security')
+  'vx-dev-codebase-investigation' = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-codebase-investigation')
+  'vx-dev-source-reconciliation'  = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-source-reconciliation')
+  'vx-dev-architecture-decision'  = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-architecture-decision')
+  'vx-dev-backend-contracts'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-backend-contracts')
+  'vx-dev-data-migration'         = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-data-migration')
+  'vx-dev-platform-delivery'      = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-platform-delivery')
+  'vx-dev-debug-triage'           = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-debug-triage')
+  'vx-dev-frontend-ux'            = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-frontend-ux')
+  'vx-dev-accessibility'          = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-accessibility')
+  'vx-dev-ui-state-system'        = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-ui-state-system')
+  'vx-dev-test-strategy'          = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-test-strategy')
+  'vx-dev-security-threat-review' = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-security-threat-review')
+  'vx-dev-supply-chain-review'    = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-supply-chain-review')
+  'vx-dev-independent-review'     = (Join-Path $repoRoot 'runtime/dev-team-v2r/skills/vx-dev-independent-review')
+}
+$approvedSkillNames = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($name in $approvedSkills.Keys) { [void]$approvedSkillNames.Add($name) }
 
 function Hash-File([string]$Path) {
   if (!(Test-Path -LiteralPath $Path -PathType Leaf)) { return $null }
@@ -120,12 +144,13 @@ function Get-LegacyItems {
   if (Test-Path -LiteralPath $observer -PathType Leaf) { Add-UniqueItem $items $seen $observer 'file' }
 
   foreach ($skillRoot in @(
-    (Join-Path $homeRoot '.kilo/skills'),
+    $skillDir,
     (Join-Path $homeRoot '.agents/skills'),
     (Join-Path $homeRoot '.kilocode/skills')
   )) {
     if (Test-Path -LiteralPath $skillRoot) {
       foreach ($d in @(Get-ChildItem -LiteralPath $skillRoot -Filter 'vx-*' -Directory -ErrorAction SilentlyContinue)) {
+        if (($skillRoot -eq $skillDir) -and $approvedSkillNames.Contains($d.Name)) { continue }
         Add-UniqueItem $items $seen $d.FullName 'dir'
       }
     }
@@ -142,6 +167,15 @@ function Get-LegacyItems {
   return @($items)
 }
 
+function Assert-SkillSources {
+  foreach ($pair in $approvedSkills.GetEnumerator()) {
+    $skillFile = Join-Path $pair.Value 'SKILL.md'
+    if (!(Test-Path -LiteralPath $skillFile -PathType Leaf)) { throw "Falta skill aprobada: $skillFile" }
+    $text = Get-Content -LiteralPath $skillFile -Raw -Encoding UTF8
+    if ($text -match '!\x60[^\x60]+\x60') { throw "Skill $($pair.Key) contiene shell injection embebido." }
+  }
+}
+
 function Assert-AgentSources {
   foreach ($pair in $approvedAgents.GetEnumerator()) {
     if (!(Test-Path -LiteralPath $pair.Value -PathType Leaf)) { throw "Falta fuente aprobada: $($pair.Value)" }
@@ -152,7 +186,8 @@ function Assert-AgentSources {
     '(?m)^displayName:\s*"vx-dev-team"\s*$',
     '(?m)^mode:\s*primary\s*$',
     '(?m)^color:\s*"#8B5CF6"\s*$',
-    '(?m)^\s{2}skill:\s*deny\s*$',
+    '(?m)^\s{2}skill:\s*$',
+    '(?m)^\s{4}"\*":\s*deny\s*$',
     '(?m)^\s{2}task:\s*$',
     '(?m)^\s{2}agent_manager:\s*deny\s*$'
   )) {
@@ -174,7 +209,8 @@ function Assert-AgentSources {
       '(?m)^mode:\s*subagent\s*$',
       '(?m)^hidden:\s*true\s*$',
       '(?m)^\s{2}read:\s*deny\s*$',
-      '(?m)^\s{2}skill:\s*deny\s*$',
+      '(?m)^\s{2}skill:\s*$',
+      '(?m)^\s{4}"\*":\s*deny\s*$',
       '(?m)^\s{2}task:\s*deny\s*$',
       '(?m)^\s{2}edit:\s*deny\s*$',
       '(?m)^\s{2}write:\s*deny\s*$',
@@ -190,6 +226,27 @@ function Assert-AgentSources {
       throw "Subagente $name contiene permisos MCP automaticos."
     }
   }
+
+  $agentSkillMatrix = @{
+    'vx-dev-team.md'      = @('vx-dev-project-policy','vx-dev-team-handoff')
+    'vx-dev-explorer.md'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
+    'vx-dev-research.md'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
+    'vx-dev-architect.md' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
+    'vx-dev-frontend.md'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
+    'vx-dev-backend.md'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
+    'vx-dev-data.md'      = @('vx-dev-data-migration')
+    'vx-dev-platform.md'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
+    'vx-dev-quality.md'   = @('vx-dev-test-strategy','vx-dev-accessibility')
+    'vx-dev-security.md'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
+    'vx-dev-reviewer.md'  = @('vx-dev-independent-review','vx-dev-project-policy')
+  }
+  foreach ($name in $agentSkillMatrix.Keys) {
+    $text = Get-Content -LiteralPath $approvedAgents[$name] -Raw -Encoding UTF8
+    foreach ($skill in $agentSkillMatrix[$name]) {
+      $pattern = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
+      if ($text -notmatch $pattern) { throw "Agente $name no permite skill aprobada: $skill" }
+    }
+  }
 }
 
 function Show-State {
@@ -201,6 +258,8 @@ function Show-State {
   Write-Host "=== DEV TEAM V2-R | $Modo ===" -ForegroundColor Cyan
   Write-Host "HOME: $homeRoot"
   Write-Host "Agentes aprobados instalados detectados: $($installed.Count)/$($approvedAgents.Count)"
+  $installedSkills = @($approvedSkills.Keys | Where-Object { Test-Path -LiteralPath (Join-Path $skillDir $_) -PathType Container })
+  Write-Host "Skills Dev Team instaladas detectadas: $($installedSkills.Count)/$($approvedSkills.Count)"
   Write-Host "Recursos VX legacy detectados para retirar: $($legacy.Count)"
   Write-Host "kilo.jsonc: $(if(Test-Path -LiteralPath $configFile){'PRESERVADO'}else{'NO EXISTE'})"
   Write-Host 'MCP: fuera del alcance de este instalador; no se modifican.'
@@ -267,6 +326,7 @@ function Restore-Backup([string]$Dir) {
   Write-Host '[PASS] Estado VX previo restaurado desde backup.' -ForegroundColor Green
 }
 
+Assert-SkillSources
 Assert-AgentSources
 
 if ($Modo -eq 'Restaurar') {
@@ -286,6 +346,7 @@ if ($Modo -eq 'Simular') {
   Show-State
   foreach ($item in $legacy) { Write-Host "[RETIRAR] $($item.Path)" }
   foreach ($name in $approvedAgents.Keys) { Write-Host "[INSTALAR/ACTUALIZAR] $(Join-Path $agentDir $name)" }
+  foreach ($name in $approvedSkills.Keys) { Write-Host "[INSTALAR/ACTUALIZAR SKILL] $(Join-Path $skillDir $name)" }
   if (Test-Path -LiteralPath $agentsFile -PathType Leaf) {
     $raw = Get-Content -LiteralPath $agentsFile -Raw -Encoding UTF8
     if ($raw.Contains($startMarker)) { Write-Host "[LIMPIAR BLOQUE LEGACY] $agentsFile" }
@@ -306,6 +367,16 @@ if ($Modo -eq 'Verificar') {
     }
   }
 
+  foreach ($pair in $approvedSkills.GetEnumerator()) {
+    $targetSkill = Join-Path (Join-Path $skillDir $pair.Key) 'SKILL.md'
+    $sourceSkill = Join-Path $pair.Value 'SKILL.md'
+    if (!(Test-Path -LiteralPath $targetSkill -PathType Leaf)) {
+      $errors.Add("Falta skill aprobada: $($pair.Key)")
+    } elseif ((Hash-File $targetSkill) -ne (Hash-File $sourceSkill)) {
+      $errors.Add("Skill instalada difiere de fuente aprobada: $($pair.Key)")
+    }
+  }
+
   $remaining = @(Get-LegacyItems)
   if ($remaining.Count -gt 0) { $errors.Add("Quedan $($remaining.Count) recursos VX legacy.") }
 
@@ -323,7 +394,8 @@ if ($Modo -eq 'Verificar') {
 
   Write-Host '[PASS] Dev Team es el unico primario VX aprobado.' -ForegroundColor Green
   Write-Host '[PASS] Diez subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
-  Write-Host '[PASS] Skills/workflows/reglas/plugins/runtime VX legacy no estan instalados.' -ForegroundColor Green
+  Write-Host '[PASS] 18 skills Dev Team instaladas y coinciden con sus fuentes.' -ForegroundColor Green
+  Write-Host '[PASS] Skills VX no aprobadas/workflows/reglas/plugins/runtime legacy no estan instalados.' -ForegroundColor Green
   Write-Host '[PASS] Este verificador no modifica ni autentica MCP.' -ForegroundColor Green
   return
 }
@@ -340,6 +412,10 @@ foreach ($name in $approvedAgents.Keys) {
 }
 Backup-Target $backupDir $entries $agentsFile 'file' $index
 $index++
+foreach ($name in $approvedSkills.Keys) {
+  Backup-Target $backupDir $entries (Join-Path $skillDir $name) 'dir' $index
+  $index++
+}
 foreach ($item in $legacy) {
   Backup-Target $backupDir $entries $item.Path $item.Kind $index
   $index++
@@ -352,6 +428,7 @@ $manifest = [ordered]@{
   home=$homeRoot
   config_hash_before=$configHashBefore
   approved_agents=@($approvedAgents.Keys)
+  approved_skills=@($approvedSkills.Keys)
   entries=@($entries)
 }
 Save-Manifest $backupDir $manifest
@@ -376,6 +453,13 @@ try {
     Copy-Item -LiteralPath $pair.Value -Destination (Join-Path $agentDir $pair.Key) -Force
   }
 
+  New-Item -ItemType Directory -Path $skillDir -Force | Out-Null
+  foreach ($pair in $approvedSkills.GetEnumerator()) {
+    $target = Join-Path $skillDir $pair.Key
+    if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target -Recurse -Force }
+    Copy-Item -LiteralPath $pair.Value -Destination $target -Recurse -Force
+  }
+
   $configHashAfter = Hash-File $configFile
   if ($configHashBefore -ne $configHashAfter) {
     throw 'kilo.jsonc cambio durante la operacion; rollback obligatorio.'
@@ -387,7 +471,7 @@ try {
   throw
 }
 
-Write-Host '[PASS] Baseline aplicado: Dev Team + 10 subagentes ocultos read-only.' -ForegroundColor Green
+Write-Host '[PASS] Baseline aplicado: Dev Team + 10 subagentes ocultos read-only + 18 skills allowlistadas.' -ForegroundColor Green
 Write-Host '[PASS] kilo.jsonc y configuracion MCP preservados.' -ForegroundColor Green
 Write-Host "BACKUP: $backupDir" -ForegroundColor Yellow
 Write-Host 'Ejecuta este mismo script con -Modo Verificar y luego /reload en Kilo.' -ForegroundColor Cyan

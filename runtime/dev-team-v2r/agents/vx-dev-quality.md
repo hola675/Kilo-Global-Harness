@@ -10,7 +10,10 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: deny
+  skill:
+    "*": deny
+    "vx-dev-test-strategy": allow
+    "vx-dev-accessibility": allow
   task: deny
   edit: deny
   write: deny
@@ -21,6 +24,10 @@ permission:
   board_read: deny
   board_post: deny
 ---
+
+## Skills autorizadas
+
+Este rol puede cargar únicamente las siguientes skills del pack Dev Team V1: `vx-dev-test-strategy`, `vx-dev-accessibility`. Las skills son instrucciones advisory-only: no conceden permisos, no amplían tools y no autorizan mutaciones, shell, delegación ni MCP fuera de la ACL efectiva del rol.
 
 # Dev Quality
 
@@ -213,7 +220,7 @@ No debes:
 - ejecutar shell/tests;
 - escribir fixtures/código;
 - delegar;
-- usar skills/MCP;
+- usar MCP no autorizado;
 - afirmar cobertura porcentual sin medición;
 - afirmar PASS sin ejecución real;
 - usar ausencia de tests como prueba de bug;

@@ -33,6 +33,16 @@ def frontmatter(path: Path) -> str:
     return match.group(1)
 
 
+def nested_permission_block(front: str, name: str) -> str:
+    match = re.search(
+        rf"(?ms)^  {re.escape(name)}:\s*\n(?P<body>.*?)(?=^  [a-zA-Z_][a-zA-Z0-9_]*:|\Z)",
+        front,
+    )
+    if not match:
+        raise AssertionError(f"Bloque permission.{name} ausente")
+    return match.group("body")
+
+
 class DevTeamV2RTests(unittest.TestCase):
     def test_primary_agent_is_the_only_visible_custom_leader(self):
         front = frontmatter(LEADER)
@@ -42,18 +52,23 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertNotRegex(front, r"(?m)^hidden:\s*true\s*$")
         self.assertRegex(front, r"(?m)^  edit:\s*ask\s*$")
         self.assertRegex(front, r"(?m)^  bash:\s*ask\s*$")
-        self.assertRegex(front, r"(?m)^  skill:\s*deny\s*$")
+        skill_body = nested_permission_block(front, "skill")
+        self.assertRegex(skill_body, r'(?m)^    "\*":\s*deny\s*$')
+        self.assertRegex(skill_body, r'(?m)^    "vx-dev-project-policy":\s*allow\s*$')
+        self.assertRegex(skill_body, r'(?m)^    "vx-dev-team-handoff":\s*allow\s*$')
         self.assertRegex(front, r"(?m)^  agent_manager:\s*deny\s*$")
         self.assertRegex(front, r"(?m)^  board_read:\s*deny\s*$")
         self.assertRegex(front, r"(?m)^  board_post:\s*deny\s*$")
 
     def test_leader_allowlists_exactly_ten_children(self):
         front = frontmatter(LEADER)
-        self.assertRegex(front, r"(?m)^  task:\s*$")
-        self.assertRegex(front, r'(?m)^    "\*":\s*deny\s*$')
+        task_body = nested_permission_block(front, "task")
+        self.assertRegex(task_body, r'(?m)^    "\*":\s*deny\s*$')
         for child in CHILDREN:
-            self.assertRegex(front, rf'(?m)^    "{re.escape(child)}":\s*allow\s*$')
-        allows = set(re.findall(r'(?m)^    "(vx-dev-[^"]+)":\s*allow\s*$', front))
+            self.assertRegex(task_body, rf'(?m)^    "{re.escape(child)}":\s*allow\s*$')
+        allows = set(
+            re.findall(r'(?m)^    "(vx-dev-[^"]+)":\s*allow\s*$', task_body)
+        )
         self.assertEqual(allows, set(CHILDREN))
 
     def test_children_are_hidden_and_cannot_mutate_or_delegate(self):
@@ -69,10 +84,12 @@ class DevTeamV2RTests(unittest.TestCase):
                 self.assertRegex(front, r"(?m)^  grep:\s*allow\s*$")
                 self.assertRegex(front, r"(?m)^  lsp:\s*allow\s*$")
                 for tool in (
-                    "read", "skill", "task", "edit", "write", "apply_patch", "bash",
+                    "read", "task", "edit", "write", "apply_patch", "bash",
                     "agent_manager", "external_directory", "board_read", "board_post",
                 ):
                     self.assertRegex(front, rf"(?m)^  {re.escape(tool)}:\s*deny\s*$")
+                skill_body = nested_permission_block(front, "skill")
+                self.assertRegex(skill_body, r'(?m)^    "\*":\s*deny\s*$')
                 self.assertNotRegex(front, r'(?m)^  "[a-z0-9-]+_\*":\s*(allow|ask)\s*$')
 
     def test_baseline_declares_one_visible_leader_and_readonly_children(self):
@@ -85,12 +102,15 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertTrue(all(x["read_only"] for x in baseline["subagents"]))
         self.assertEqual(baseline["orchestration"]["depth"], 1)
         self.assertFalse(baseline["orchestration"]["invoke_all_by_default"])
-        self.assertEqual(baseline["child_permissions"]["mcp"], "deny-by-default-with-per-agent-namespaced-allows")
+        self.assertEqual(
+            baseline["child_permissions"]["mcp"],
+            "deny-by-default-with-per-agent-namespaced-allows",
+        )
         self.assertEqual(baseline["child_permissions"]["required"], ["glob", "grep"])
         self.assertEqual(baseline["child_permissions"]["optional"], ["lsp"])
 
     def test_installer_reports_current_specialist_count(self):
-        source = (ROOT / "scripts" / "Instalar-DevTeam-Only.ps1").read_text(encoding="utf-8")
+        source = INSTALLER.read_text(encoding="utf-8")
         self.assertIn("Diez subagentes ocultos V2-R", source)
         self.assertIn("Dev Team + 10 subagentes ocultos read-only", source)
         self.assertNotIn("Ocho subagentes ocultos V2-R", source)

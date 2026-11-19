@@ -1,0 +1,46 @@
+{
+  "schema": "dev-team-skill-activation/1",
+  "version": "1.0.0",
+  "status": "SOURCE_CANDIDATE_NOT_RUNTIME_CERTIFIED",
+  "created": "2026-11-19",
+  "base_main": "95d43e2972e2ea61eda6ce16360e75b3237257e4",
+  "protected_runtime_baseline": {
+    "version": "2.3.0",
+    "status": "PASS_OPERATOR_RUNTIME",
+    "source_certified_at": "2646278ff698cb3693da3bb9c256757869377011"
+  },
+  "candidate": {
+    "branch": "work/dev-team-skills-activation-v1",
+    "skills": 18,
+    "agents": 11,
+    "runtime_root": "~/.kilo/skills",
+    "agent_runtime_root": "~/.config/kilo/agents",
+    "compatibility_roots": [
+      "~/.agents/skills",
+      "~/.kilocode/skills"
+    ],
+    "compatibility_roots_receive_pack": false,
+    "kilo_jsonc_change": "NONE",
+    "mcp_acl_change": "NONE",
+    "non_skill_permission_change": "NONE"
+  },
+  "gates": {
+    "source_ci": "PENDING",
+    "installer_diagnostico": "PENDING_OPERATOR",
+    "installer_simular": "PENDING_OPERATOR",
+    "installer_aplicar": "PENDING_OPERATOR",
+    "installer_verificar": "PENDING_OPERATOR",
+    "source_runtime_skill_hashes": "0/18",
+    "source_runtime_agent_hashes": "0/11",
+    "fresh_reload": "PENDING_OPERATOR",
+    "positive_skill_smokes": "0/18",
+    "negative_skill_denies": "0/11",
+    "role_contracts": "PENDING_RECERTIFICATION",
+    "permission_enforcement": "PENDING_RECERTIFICATION",
+    "research_mcp": "PENDING_UNCHANGED_CHECK",
+    "architect_mcp": "PENDING_UNCHANGED_CHECK",
+    "leader_routing": "PENDING_RECERTIFICATION",
+    "runtime_mutations": "NOT_EVALUATED"
+  },
+  "promotion_rule": "No merge/promote to runtime-certified until all operator/runtime gates are PASS."
+}

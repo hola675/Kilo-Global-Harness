@@ -10,7 +10,11 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: deny
+  skill:
+    "*": deny
+    "vx-dev-architecture-decision": allow
+    "vx-dev-mcp-readonly": allow
+    "vx-dev-project-policy": allow
   task: deny
   edit: deny
   write: deny
@@ -26,6 +30,10 @@ permission:
   microsoft-learn_microsoft_docs_fetch: allow
   microsoft-learn_microsoft_code_sample_search: allow
 ---
+
+## Skills autorizadas
+
+Este rol puede cargar únicamente las siguientes skills del pack Dev Team V1: `vx-dev-architecture-decision`, `vx-dev-mcp-readonly`, `vx-dev-project-policy`. Las skills son instrucciones advisory-only: no conceden permisos, no amplían tools y no autorizan mutaciones, shell, delegación ni MCP fuera de la ACL efectiva del rol.
 
 # Dev Architect
 
@@ -266,7 +274,7 @@ No debes:
 - ejecutar shell;
 - ejecutar tests;
 - delegar;
-- usar skills;
+- cargar skills fuera de la allowlist exacta;
 - hacer exploración exhaustiva;
 - actuar como reviewer genérico;
 - inventar capacidad del runtime;

@@ -1,4 +1,4 @@
-"""Contrato estático del Dev Team Skills Pack V1 (propuesta inactiva)."""
+"""Contrato estático del Dev Team Skills Pack V1 y su candidato de activación."""
 
 from pathlib import Path
 import json
@@ -154,7 +154,7 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         for item in self.proposal["dev_team_pack"]["skills"]:
             self.assertEqual(set(item["agents"]), reverse[item["id"]])
 
-    def test_current_runtime_agents_still_have_scalar_skill_deny(self):
+    def test_activation_candidate_agents_match_exact_skill_allowlists(self):
         sources = {"vx-dev-team": LEADER}
         sources.update(
             {path.stem: path for path in SUBAGENT_DIR.glob("vx-dev-*.md")}
@@ -162,10 +162,21 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertEqual(set(sources), ALL_AGENTS)
         for agent, path in sources.items():
             content = path.read_text(encoding="utf-8")
-            self.assertRegex(
+            self.assertRegex(content, r"(?m)^\s{2}skill:\s*$")
+            match = re.search(
+                r"(?ms)^\s{2}skill:\s*\n(?P<body>.*?)(?=^\s{2}[a-zA-Z_][a-zA-Z0-9_]*:|\Z)",
                 content,
-                r"(?m)^\s{2}skill:\s*deny\s*$",
-                f"{agent} must remain skill: deny while proposal is inactive",
+            )
+            self.assertIsNotNone(match)
+            body = match.group("body")
+            self.assertRegex(body, r'(?m)^\s{4}"\*":\s*deny\s*$')
+            allowed = set(
+                re.findall(r'(?m)^\s{4}"(vx-dev-[^"]+)":\s*allow\s*$', body)
+            )
+            self.assertEqual(
+                allowed,
+                EXPECTED_PERMISSIONS[agent],
+                f"{agent} must expose only its exact approved skill allowlist",
             )
 
     def test_skill_pack_never_grants_non_skill_permissions(self):
@@ -208,7 +219,7 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertIn("Permission enforcement 10/10 remains PASS", gates)
         self.assertIn("Research/Architect MCP 5/5 surfaces unchanged", gates)
 
-    def test_installer_strategy_is_explicit_but_not_implemented_yet(self):
+    def test_installer_implements_exact_managed_pack_without_compat_roots(self):
         strategy = self.proposal["installer_strategy"]
         self.assertEqual(strategy["managed_runtime_root"], "~/.kilo/skills")
         self.assertEqual(strategy["source_root"], "runtime/dev-team-v2r/skills")
@@ -221,9 +232,12 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertIn(".kilocode/skills", installer)
         self.assertIn("-Filter 'vx-*'", installer)
 
-        # Phase 0 safety: installer still has the certified pre-skills behavior.
-        self.assertRegex(installer, r"(?m)^\s*'\(\?m\)\^\\s\{2\}skill:\\s\*deny")
-        self.assertNotIn("runtime/dev-team-v2r/skills", installer)
+        self.assertIn("$approvedSkills = [ordered]@{", installer)
+        self.assertIn("runtime/dev-team-v2r/skills", installer)
+        self.assertIn("18 skills Dev Team instaladas", installer)
+        self.assertIn("approved_skills=@($approvedSkills.Keys)", installer)
+        self.assertIn("$skillDir", installer)
+        self.assertIn("Assert-SkillSources", installer)
 
     def test_research_basis_contains_primary_sources_and_originality_rule(self):
         research = self.proposal["research_basis"]
