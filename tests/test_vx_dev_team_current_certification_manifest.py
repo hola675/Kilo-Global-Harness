@@ -16,7 +16,11 @@ class CurrentCertificationManifestTests(unittest.TestCase):
         self.assertNotIn("test_vx_dev_team_v2r2_specialists.py",data["active_tests"])
         self.assertIn(
             "test_vx_dev_team_v2r2_specialists.py",
-            {x["superseded_test"] for x in data["historical_evidence"]},
+            {
+                x["superseded_test"]
+                for x in data["historical_evidence"]
+                if "superseded_test" in x
+            },
         )
         self.assertFalse(
             (ROOT/"tests"/"test_vx_dev_team_v2r2_specialists.py").exists(),
