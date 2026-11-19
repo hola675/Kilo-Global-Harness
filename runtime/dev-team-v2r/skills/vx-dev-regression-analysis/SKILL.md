@@ -25,3 +25,8 @@ metadata:
 
 ## Salida
 `PREVIOUS_BEHAVIOR`, `CHANGE_SURFACE`, `REGRESSION_RISKS`, `FOCUSED_TESTS`, `BEFORE_AFTER_EVIDENCE`, `UNPROTECTED_CONTRACTS`.
+
+## Integración de evidencia/MCP
+- GitHub puede aportar before/after y commits; browser/Sentry pueden aportar conducta observada.
+- Comparar siempre versiones/SHAs equivalentes.
+- Reutilizar evidence ledger y handoffs antes de volver a capturar el mismo estado.
