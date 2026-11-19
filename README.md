@@ -39,7 +39,7 @@ Detrás del líder existen ocho especialistas `mode: subagent` y `hidden: true`:
 
 - `vx-dev-explorer` — cartografía del codebase con `CODE_MAP` e `IMPACT_SURFACE`
 - `vx-dev-architect` — decisiones estructurales con `OPTIONS`, `TRADEOFFS`, `CONTRACTS` y `DECISIONS_REQUIRED`
-- `vx-dev-frontend`
+- `vx-dev-frontend` — UI flows, component/state model, interaction states, accessibility/responsive y API touchpoints
 - `vx-dev-backend` — APIs, servicios, dominio, auth de aplicación e integraciones
 - `vx-dev-data` — schemas, persistencia, queries, constraints, índices y migraciones
 - `vx-dev-quality`
