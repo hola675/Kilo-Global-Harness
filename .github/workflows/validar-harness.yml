@@ -217,15 +217,17 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_dev_team_v1.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato Dev Team V2-R.2 inválido.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato source Dev Team 2.1.0 inválido.' }
           python -I -m unittest discover -s tests -p 'test_vx_dev_team_v2r2_specialists.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato de certificación de especialistas V2-R.2 inválido.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato de certificación histórica V2-R.2 inválido.' }
+          python -I -m unittest discover -s tests -p 'test_vx_dev_team_v210_split.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Contrato source 2.1.0 Backend/Data split inválido.' }
           & ./scripts/Validar-Registro-V4.ps1
           $agent = Get-Content 'agents/vx-dev-team.md' -Raw -Encoding UTF8
-          if ($agent -notmatch '👥 Dev Team' -or $agent -notmatch '#8B5CF6') {
-            throw 'Identidad visual Dev Team ausente.'
+          if ($agent -notmatch 'displayName:\s*"vx-dev-team"' -or $agent -notmatch '#8B5CF6') {
+            throw 'Identidad visual vx-dev-team ausente.'
           }
-          Write-Host 'DEV TEAM V2-R.2: ONE VISIBLE LEADER + MCP ISOLATION + GLOB/GREP REQUIRED + LSP OPTIONAL PASS'
+          Write-Host 'DEV TEAM SOURCE 2.1.0: ONE VISIBLE LEADER + 8 HIDDEN SPECIALISTS + HISTORICAL V2-R.2 EVIDENCE PASS'
 
       - name: Dev Team MCP Read-Only Matrix V1 - propuesta inactiva y deny-by-default
         shell: pwsh
