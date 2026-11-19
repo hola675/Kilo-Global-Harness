@@ -147,7 +147,13 @@ Cerrado:
 
 Pendiente únicamente:
 
-- enforcement efectivo de permisos de las tools negativas.
+- enforcement efectivo de permisos para **Quality, Security y Architect**.
+
+Estado actual:
+
+- permission enforcement: **7/10 PASS**;
+- PASS: Backend, Data, Platform, Reviewer, Explorer, Frontend, Research;
+- PARTIAL: Quality, Security, Architect.
 
 ### Semántica oficial de Kilo para deny
 
