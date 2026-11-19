@@ -22,3 +22,8 @@ metadata:
 
 ## Salida
 `SYSTEM_SOURCES`, `TOKEN_GAPS`, `COMPONENT_GAPS`, `DRIFT`, `THEME_RISKS`, `EXCEPTIONS`, `GOVERNANCE_RECOMMENDATIONS`.
+
+## Integración de evidencia/MCP
+- Si existen fuentes remotas/autorizadas, GitHub puede aportar historial de componentes/tokens y browser tooling puede demostrar drift de theme.
+- No usar ImageGen como fuente de verdad del design system.
+- Registrar source of truth y versión antes de proponer nuevos tokens.
