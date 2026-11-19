@@ -95,14 +95,35 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         self.assertEqual(summary["role_contracts"], "4/4 PASS")
         self.assertEqual(summary["result"], "PARTIAL")
 
-    def test_remaining_six_are_pending_without_overclaim(self):
+    def test_remaining_six_are_closed_without_overclaiming_permissions(self):
         remaining = self.registry["observed_runtime"]["remaining_six"]
-        self.assertEqual(remaining["status"], "PENDING")
+        self.assertEqual(remaining["status"], "PASS")
         self.assertEqual(set(remaining["specialists"]), REMAINING_SPECIALISTS)
-        self.assertEqual(remaining["role_contracts"], "0/6 PASS")
-        self.assertEqual(remaining["research_docs_mcp"], "0/5 EXECUTED")
-        self.assertEqual(remaining["architect_docs_mcp"], "0/5 EXECUTED")
-        self.assertEqual(remaining["leader_routing_contract"], "PENDING")
+        self.assertEqual(remaining["delegation"], "6/6 PASS")
+        self.assertEqual(remaining["positive_tools"], "6/6 PASS")
+        self.assertEqual(remaining["role_contracts"], "6/6 PASS")
+        self.assertEqual(remaining["research_docs_mcp"], "5/5 EXECUTED")
+        self.assertEqual(remaining["architect_docs_mcp"], "5/5 EXECUTED")
+        self.assertEqual(remaining["leader_routing_contract"], "PASS")
+        self.assertEqual(remaining["permission_deny_enforcement"], "0/6 PROVEN")
+
+    def test_full_team_runtime_contracts_are_closed_but_permission_gate_is_partial(self):
+        full = self.registry["observed_runtime"]["full_team"]
+        self.assertEqual(full["role_contracts"], "10/10 PASS")
+        self.assertEqual(full["delegation"], "10/10 PASS")
+        self.assertEqual(full["positive_tools"], "10/10 PASS")
+        self.assertEqual(full["research_docs_mcp"], "5/5 EXECUTED")
+        self.assertEqual(full["architect_docs_mcp"], "5/5 EXECUTED")
+        self.assertEqual(full["leader_routing_contract"], "PASS")
+        self.assertEqual(full["permission_enforcement_status"], "PARTIAL")
+
+    def test_host_permission_semantics_are_pinned_and_scoped(self):
+        semantics = self.registry["permission_enforcement_semantics"]
+        self.assertEqual(semantics["status"], "HOST_SEMANTICS_VERIFIED")
+        self.assertEqual(semantics["checked_against"], "Kilo-Org/kilocode")
+        self.assertTrue(semantics["source_revision"])
+        self.assertIn("Permission.visibleTools", "\n".join(semantics["facts"]))
+        self.assertIn("NOT_VISIBLE", "\n".join(self.registry["pass_criteria"]["permission_enforcement"]))
 
     def test_research_and_architect_keep_exact_docs_mcp_allowlist(self):
         by_specialist = {item["specialist"]: item for item in self.registry["fixtures"]}

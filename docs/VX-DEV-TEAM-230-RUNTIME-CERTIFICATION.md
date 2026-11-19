@@ -1,7 +1,7 @@
 # Dev Team 2.3.0 — certificación runtime
 
 **Baseline source:** `2.3.0-reviewer-specialist`  
-**Estado actual:** PARTIAL OPERATOR RUNTIME  
+**Estado actual:** PARTIAL OPERATOR RUNTIME — functional/runtime contracts 10/10 PASS; permission enforcement pending  
 **Runtime objetivo:** Kilo Desktop en Windows  
 **Líder visible:** `vx-dev-team`  
 **Especialistas:** 10 ocultos/read-only
@@ -118,34 +118,46 @@ El enforcement interno de permisos se reporta en una dimensión separada y no se
 
 ## Segunda tanda de certificación
 
-Pendientes de cerrar en runtime:
+La segunda tanda quedó cerrada por evidencia del operador:
 
-- `vx-dev-explorer` → `tests/fixtures/dev-team-v230/explorer/`
-- `vx-dev-frontend` → `tests/fixtures/dev-team-v2r2/frontend/`
-- `vx-dev-quality` → `tests/fixtures/dev-team-v2r2/quality/`
-- `vx-dev-security` → `tests/fixtures/dev-team-v230/security/`
-- `vx-dev-research` → `tests/fixtures/dev-team-v2r2/research/`
-- `vx-dev-architect` → `tests/fixtures/dev-team-v2r2/architect/`
+- Explorer: PASS
+- Frontend: PASS
+- Quality: PASS
+- Security: PASS
+- Research: PASS + MCP documental 5/5
+- Architect: PASS + MCP documental 5/5
+- routing del líder: PASS
 
-Research y Architect deben demostrar además exactamente cinco MCP documentales:
-
-- `context7_resolve-library-id`
-- `context7_query-docs`
-- `microsoft-learn_microsoft_docs_search`
-- `microsoft-learn_microsoft_docs_fetch`
-- `microsoft-learn_microsoft_code_sample_search`
-
-La certificación global sigue `PARTIAL` hasta cerrar estos seis y el routing final del líder.
+Con esto los contratos funcionales/runtime están **10/10 PASS**. La certificación global sigue `PARTIAL` únicamente por el gate independiente de enforcement de permisos.
 
 ## Estado de certificación completa
 
-La baseline 2.3.0 **no** se considera runtime-certified todavía.
+La baseline 2.3.0 todavía **no** se marca runtime-certified.
 
-Pendiente:
+Cerrado:
 
-1. certificar Explorer/Frontend/Quality/Security en runtime fresco;
-2. certificar Research y Architect con sus 5 MCP documentales;
-3. validar routing mínimo del líder;
-4. confirmar repo/config sin cambios después de toda la campaña.
+- disk sync / restart / config integrity: PASS;
+- delegación: 10/10 PASS;
+- glob/grep: 10/10 PASS;
+- contratos de rol: 10/10 PASS;
+- Research MCP: 5/5;
+- Architect MCP: 5/5;
+- routing del líder: PASS;
+- mutaciones durante probes: NO.
 
-Solo entonces puede promoverse la baseline de `ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING` a estado runtime certificado.
+Pendiente únicamente:
+
+- enforcement efectivo de permisos de las tools negativas.
+
+### Semántica oficial de Kilo para deny
+
+La documentación oficial define `deny` como bloqueo/deshabilitación completa de una tool. La implementación actual de Kilo contiene `Permission.disabled()` y `Permission.visibleTools()`, que eliminan del catálogo visible las tools con regla efectiva escalar `*: deny`. Los tests oficiales de task nesting también verifican que una tool de hijo denegada aparezca como deshabilitada en la superficie del prompt.
+
+Por tanto, `NOT_VISIBLE` puede aceptarse como evidencia de enforcement cuando:
+
+1. se conoce la regla efectiva escalar `deny` del hijo;
+2. la subtarea fue creada realmente con ese agente;
+3. la superficie efectiva del hijo fue observada;
+4. la tool negativa no aparece.
+
+No se promoverán los seis agentes restantes por inferencia: requieren observación de superficie o evidencia de sesión equivalente.
