@@ -93,13 +93,16 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertEqual(legacy["total"], 31)
         self.assertEqual(legacy["status"], "REFERENCE_ONLY_NOT_RUNTIME_PACK")
 
-    def test_pack_contains_exactly_18_original_dev_team_skills(self):
+    def test_v1_declares_18_original_skills_and_all_still_exist(self):
         declared = self.proposal["dev_team_pack"]["skills"]
         declared_ids = {item["id"] for item in declared}
         actual_ids = {path.parent.name for path in PACK_SKILLS_DIR.glob("*/SKILL.md")}
         self.assertEqual(self.proposal["dev_team_pack"]["total_skills"], 18)
         self.assertEqual(len(declared_ids), 18)
-        self.assertEqual(actual_ids, declared_ids)
+        self.assertTrue(
+            declared_ids <= actual_ids,
+            "Las 18 skills V1 deben seguir presentes aunque existan capas source posteriores.",
+        )
         self.assertTrue(all(skill.startswith("vx-dev-") for skill in declared_ids))
 
     def test_each_pack_skill_is_valid_small_and_non_executable(self):
