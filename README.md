@@ -33,7 +33,7 @@ El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su
 
 ## vx-dev-team — source 2.3.0 + evidencia runtime V2-R.2
 
-El diseño mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`. La evidencia runtime aprobada V2-R.2 es histórica; la baseline source 2.3.0 todavía requiere despliegue/sync y validación explícita antes de considerarse certificada en Kilo Desktop.
+El diseño mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`. La evidencia runtime aprobada V2-R.2 es histórica. La baseline 2.3.0 ya fue sincronizada 11/11 y cargada tras reinicio fresco en Kilo Desktop, pero su certificación runtime completa sigue **PARTIAL**.
 
 Detrás del líder existen diez especialistas `mode: subagent` y `hidden: true`:
 
@@ -54,21 +54,23 @@ El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas si
 
 La evolución del equipo se hace por responsabilidades estables, no por cantidad de agentes. `vx-dev-backend` y `vx-dev-data` sustituyen al antiguo `vx-dev-backend-data`; `vx-dev-platform` y `vx-dev-reviewer` ya forman parte del source y de la ACL del líder. Ninguno de los especialistas nuevos hereda automáticamente certificación runtime histórica.
 
-GitHub no despliega automáticamente estas definiciones al runtime de Kilo Desktop; una actualización del source requiere instalación/sincronización explícita y reload antes de validar el comportamiento efectivo.
+GitHub no despliega automáticamente estas definiciones al runtime de Kilo Desktop. Para la baseline 2.3.0 el operador ya completó sync en disco, backup, verificación 11/11 y reinicio fresco; aún faltan cerrar contratos y enforcement efectivo de permisos.
 
 Los MCP globales siguen siendo infraestructura independiente y deny-by-default para el equipo. `vx-dev-research` y `vx-dev-architect` tienen únicamente cinco tools documentales explícitas de Context7/Microsoft Learn cada uno; cualquier otra tool MCP requiere allowlist específica y certificación separada.
 
 - [Diseño operativo V2-R.2](docs/VX-DEV-TEAM-V2R-READONLY.md)
 - [Matriz MCP read-only V1 — propuesta inactiva](docs/VX-DEV-TEAM-MCP-READONLY-MATRIX-V1.md)
 - [Registro estructurado MCP read-only V1](registry/dev-team-mcp-readonly-matrix-v1.proposal.json)
-- [Certificación runtime de los cinco especialistas pendientes](docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md)
-- [Contrato estructurado de certificación](registry/dev-team-v2r2-specialist-certification-v1.json)
+- [Certificación runtime histórica V2-R.2](docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md)
+- [Contrato estructurado histórico V2-R.2](registry/dev-team-v2r2-specialist-certification-v1.json)
+- [Certificación runtime Dev Team 2.3.0](docs/VX-DEV-TEAM-230-RUNTIME-CERTIFICATION.md)
+- [Registro estructurado runtime 2.3.0](registry/dev-team-v230-runtime-certification-v1.json)
 - [Baseline estructurado V2-R](registry/dev-team-readonly-baseline-v2.json)
 - [Baseline V1 supersedido](registry/dev-team-only-baseline-v1.json)
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al ya supersedido `vx-dev-backend-data`. La baseline source **2.3.0** contiene **10 especialistas**; `vx-dev-backend`, `vx-dev-data`, `vx-dev-platform` y `vx-dev-reviewer` requieren despliegue/sync y smoke runtime antes de recibir estado operativo propio. La Wave 1 documental de Research/Architect conserva sus allowlists exactas.
+**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al supersedido `vx-dev-backend-data`. La baseline source **2.3.0** contiene **10 especialistas** y ya fue sincronizada/cargada en Kilo Desktop. Backend/Data/Platform/Reviewer tienen delegación 4/4 y glob/grep 4/4 observados; aislamiento de superficie de tools observado, pero enforcement interno de deny aún `NOT_PROVEN` y contratos de rol aún `PARTIAL`. La Wave 1 documental de Research/Architect conserva sus allowlists exactas.
 
 
 ## Principios
@@ -152,6 +154,8 @@ Por defecto, si un archivo administrado fue modificado **después de aplicar**, 
 | `runtime/dev-team-v2r/agents/vx-dev-frontend.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-backend.md` | `~/.config/kilo/agents/` | subagente oculto backend read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-data.md` | `~/.config/kilo/agents/` | subagente oculto data read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-platform.md` | `~/.config/kilo/agents/` | subagente oculto platform read-only |
+| `runtime/dev-team-v2r/agents/vx-dev-reviewer.md` | `~/.config/kilo/agents/` | subagente oculto reviewer read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-quality.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-security.md` | `~/.config/kilo/agents/` | subagente oculto read-only |
 | `runtime/dev-team-v2r/agents/vx-dev-research.md` | `~/.config/kilo/agents/` | subagente oculto read-only |

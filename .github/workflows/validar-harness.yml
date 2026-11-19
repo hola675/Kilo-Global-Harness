@@ -222,12 +222,14 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Contrato de certificación histórica V2-R.2 inválido.' }
           python -I -m unittest discover -s tests -p 'test_vx_dev_team_v210_split.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Contrato source actual de especialistas inválido.' }
+          python -I -m unittest discover -s tests -p 'test_vx_dev_team_v230_runtime_certification.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Pack de certificación runtime Dev Team 2.3.0 inválido.' }
           & ./scripts/Validar-Registro-V4.ps1
           $agent = Get-Content 'agents/vx-dev-team.md' -Raw -Encoding UTF8
           if ($agent -notmatch 'displayName:\s*"vx-dev-team"' -or $agent -notmatch '#8B5CF6') {
             throw 'Identidad visual vx-dev-team ausente.'
           }
-          Write-Host 'DEV TEAM SOURCE 2.1.0: ONE VISIBLE LEADER + 8 HIDDEN SPECIALISTS + HISTORICAL V2-R.2 EVIDENCE PASS'
+          Write-Host 'DEV TEAM SOURCE 2.3.0: ONE VISIBLE LEADER + 10 HIDDEN SPECIALISTS + HISTORICAL V2-R.2 + RUNTIME CERT PACK PASS'
 
       - name: Dev Team MCP Read-Only Matrix V1 - propuesta inactiva y deny-by-default
         shell: pwsh
