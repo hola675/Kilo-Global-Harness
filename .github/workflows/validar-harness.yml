@@ -212,26 +212,20 @@ jobs:
           & ./scripts/Validar-Registro-V4.ps1
           Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 13 AGENTES PASS'
 
-      - name: Dev Team source 2.3.0 + evidencia histórica V2-R.2
+      - name: Dev Team - certificacion viva del contrato actual
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          python -I -m unittest discover -s tests -p 'test_vx_dev_team_v1.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato source Dev Team 2.3.0 inválido.' }
-          python -I -m unittest discover -s tests -p 'test_vx_dev_team_v2r2_specialists.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato de certificación histórica V2-R.2 inválido.' }
-          python -I -m unittest discover -s tests -p 'test_vx_dev_team_v210_split.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Contrato source actual de especialistas inválido.' }
-          python -I -m unittest discover -s tests -p 'test_vx_dev_team_v230_runtime_certification.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Pack de certificación runtime Dev Team 2.3.0 inválido.' }
-          python -I -m unittest discover -s tests -p 'test_vx_dev_team_skills_matrix_v1.py' -v
-          if ($LASTEXITCODE -ne 0) { throw 'Propuesta Dev Team Skills Matrix V1 inválida.' }
+          python tools/run_dev_team_current_certification.py
+          if ($LASTEXITCODE -ne 0) { throw 'Certificacion viva Dev Team actual fallo.' }
+          python -I -m unittest discover -s tests -p 'test_vx_dev_team_current_certification_manifest.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'Manifest de certificacion actual invalido.' }
           & ./scripts/Validar-Registro-V4.ps1
           $agent = Get-Content 'agents/vx-dev-team.md' -Raw -Encoding UTF8
           if ($agent -notmatch 'displayName:\s*"vx-dev-team"' -or $agent -notmatch '#8B5CF6') {
             throw 'Identidad visual vx-dev-team ausente.'
           }
-          Write-Host 'DEV TEAM SOURCE 2.3.0: RUNTIME CERTIFIED + SKILLS MATRIX V1 INACTIVE PASS'
+          Write-Host 'DEV TEAM CURRENT CERTIFICATION: CURRENT CONTRACT ONLY PASS'
 
       - name: Dev Team MCP Read-Only Matrix V1 - propuesta inactiva y deny-by-default
         shell: pwsh
