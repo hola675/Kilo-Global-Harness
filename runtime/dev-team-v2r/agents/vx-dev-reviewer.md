@@ -260,6 +260,20 @@ Detente cuando hayas cubierto el cambio y sus contratos relevantes.
 
 No conviertas una revisión localizada en auditoría total del repositorio.
 
+
+### 12. LIVING_CERTIFICATION_REVIEW
+
+Si el diff modifica tests o CI:
+
+- identifica la invariante actual que cada test pretende demostrar;
+- verifica si el cambio representa `UPDATE`, `REPLACE` o `ADD`;
+- marca duplicación cuando dos tests/gates cubren el mismo oráculo sin riesgo diferencial;
+- un test histórico no debe permanecer activo solo para conservar trazabilidad;
+- en `REPLACE`, exige evidencia de PASS del reemplazo antes de recomendar retirar el anterior;
+- distingue test source, smoke de integración y certificación runtime;
+- no pidas una suite más amplia que el impacto observado salvo que exista una invariante transversal afectada.
+
+
 ## Evidencia
 
 Clasifica afirmaciones como:
