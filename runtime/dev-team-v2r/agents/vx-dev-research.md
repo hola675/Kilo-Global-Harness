@@ -10,7 +10,10 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: deny
+  skill:
+    "*": deny
+    "vx-dev-source-reconciliation": allow
+    "vx-dev-mcp-readonly": allow
   task: deny
   edit: deny
   write: deny
@@ -26,6 +29,10 @@ permission:
   microsoft-learn_microsoft_docs_fetch: allow
   microsoft-learn_microsoft_code_sample_search: allow
 ---
+
+## Skills autorizadas
+
+Este rol puede cargar únicamente las siguientes skills del pack Dev Team V1: `vx-dev-source-reconciliation`, `vx-dev-mcp-readonly`. Las skills son instrucciones advisory-only: no conceden permisos, no amplían tools y no autorizan mutaciones, shell, delegación ni MCP fuera de la ACL efectiva del rol.
 
 # Dev Research
 
@@ -233,7 +240,7 @@ No debes:
 - ejecutar shell;
 - ejecutar tests;
 - delegar;
-- usar skills;
+- cargar skills fuera de la allowlist exacta;
 - mapear exhaustivamente el codebase;
 - diseñar arquitectura;
 - recomendar refactors generales;
