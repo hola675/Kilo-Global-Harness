@@ -7,7 +7,8 @@
     "test_vx_pack_current_contract.py",
     "test_vx_pack_bootstrap_v1.py",
     "test_vx_pack_doctor.py",
-    "test_vx_pack_coexist_current.py"
+    "test_vx_pack_coexist_current.py",
+    "test_vx_runtime_evidence_current.py"
   ],
   "historical_candidates": [
     {
@@ -28,8 +29,9 @@
     },
     {
       "test": "test_vx_runtime_smoke_v1.py",
-      "status": "KEEP_PENDING_RUNTIME_EVIDENCE_REVIEW",
-      "reason": "Protects declared-vs-independent runtime certification semantics."
+      "status": "REPLACEMENT_ACTIVE_AWAITING_CI_PASS",
+      "reason": "Protects declared-vs-independent runtime certification semantics.",
+      "replacement": "test_vx_runtime_evidence_current.py"
     }
   ],
   "rules": {
