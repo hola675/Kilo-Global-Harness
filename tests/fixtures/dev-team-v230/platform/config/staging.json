@@ -1,0 +1,5 @@
+{
+  "environment": "staging",
+  "apiBase": "https://staging.example.invalid",
+  "logLevel": "debug"
+}
