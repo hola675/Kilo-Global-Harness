@@ -12,8 +12,10 @@ $approved = @(
   'vx-dev-frontend.md',
   'vx-dev-backend.md',
   'vx-dev-data.md',
+  'vx-dev-platform.md',
   'vx-dev-quality.md',
   'vx-dev-security.md',
+  'vx-dev-reviewer.md',
   'vx-dev-research.md'
 )
 
@@ -185,7 +187,7 @@ KEEP-AFTER
     throw 'Restore altero kilo.jsonc.'
   }
 
-  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + 8 HIDDEN NON-MUTATING CHILDREN + BACKEND/DATA SPLIT + RESTORE PASS' -ForegroundColor Green
+  Write-Host 'DEV TEAM V2-R: APPLY + VERIFY + 10 HIDDEN NON-MUTATING CHILDREN + BACKEND/DATA SPLIT + RESTORE PASS' -ForegroundColor Green
 }
 finally {
   if (Test-Path -LiteralPath $tmp) {
