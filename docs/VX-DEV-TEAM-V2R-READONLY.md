@@ -1,9 +1,9 @@
-# vx-dev-team — baseline source 2.1.0 con especialistas ocultos
+# vx-dev-team — baseline source 2.2.0 con diez especialistas ocultos
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE SOURCE BASELINE · runtime pendiente de despliegue tras split Backend/Data  
+**Estado:** ACTIVE SOURCE BASELINE · runtime pendiente de despliegue/revalidación de source 2.2  
 **Primario visible:** `vx-dev-team`  
-**Especialistas ocultos:** 8  
+**Especialistas ocultos:** 10  
 **Mutaciones de subagentes:** DENY  
 **MCP de subagentes:** deny-by-default; `vx-dev-research` y `vx-dev-architect` tienen 5 tools documentales allowlistadas cada uno
 
@@ -23,8 +23,10 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 | `vx-dev-frontend` | frontend interaction analysis | no | deny | deny | deny | deny |
 | `vx-dev-backend` | backend application analysis | no | deny | deny | deny | deny |
 | `vx-dev-data` | data/persistence analysis | no | deny | deny | deny | deny |
+| `vx-dev-platform` | platform/runtime analysis | no | deny | deny | deny | deny |
 | `vx-dev-quality` | quality verification analysis | no | deny | deny | deny | deny |
 | `vx-dev-security` | security trust/abuse analysis | no | deny | deny | deny | deny |
+| `vx-dev-reviewer` | independent change review | no | deny | deny | deny | deny |
 | `vx-dev-research` | technical research | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
 
 Los especialistas se definen en `runtime/dev-team-v2r/agents/` para mantenerlos separados del árbol legacy de agentes VX.
@@ -77,14 +79,17 @@ El líder envía:
 - `output_format`
 - `budget`
 
-Los hijos devuelven:
+Los hijos devuelven como envelope común:
 
 - `STATUS`
+- `SCOPE_ANALYZED`
 - `FINDINGS`
 - `EVIDENCE`
 - `RISKS`
 - `RECOMMENDATION`
+- `CONFIDENCE`
 - `UNKNOWNS`
+- `HANDOFF`
 
 No se devuelve el transcript completo como contrato normal.
 
@@ -253,6 +258,39 @@ Severidad permitida: `CRITICAL / HIGH / MEDIUM / LOW / INFO`, siempre separada d
 
 Security no ejecuta scanners/exploits, no lee/revela secretos y no sustituye Quality ni al futuro Reviewer.
 
+## Contrato especializado: vx-dev-platform
+
+`vx-dev-platform` analiza runtime y entrega sin ejecutar operaciones.
+
+Su salida específica añade:
+
+- `RUNTIME_MAP` — procesos, runtimes, entry points, recursos y lifecycle;
+- `BUILD_RELEASE_PATH` — source → build → package → gates → artefacto/entorno;
+- `CONFIG_BINDINGS` — configuración por nombre/tipo, nunca valores secretos;
+- `ENVIRONMENT_ASSUMPTIONS` — OS/runtime/network/filesystem/permisos documentados o inferidos;
+- `DEPLOYMENT_RISKS` — build/config/compatibility/dependency/availability/observability/rollback;
+- `OBSERVABILITY_GAPS` — señales faltantes para detectar fallos;
+- `VALIDATION_PLAN` — LOCAL/CI/DEV/STAGING/PRODUCTION_GATE sin ejecución;
+- `ROLLBACK_PLAN` — reversión conceptual y condición de aborto.
+
+Platform no ejecuta build/CI/deploy, no administra cloud/DNS/IAM/firewall y no tiene MCP externo.
+
+## Contrato especializado: vx-dev-reviewer
+
+`vx-dev-reviewer` realiza una revisión independiente de un change set concreto. Requiere diff/changed paths o evidencia suficiente para distinguir el cambio.
+
+Su salida específica añade:
+
+- `REVIEW_SCOPE`
+- `REQUIREMENT_CHECK` — ALIGNED/MISMATCH/UNPROVEN/NOT_APPLICABLE;
+- `CONTRACT_CHECK`
+- `REGRESSION_CHECK` — DEMONSTRATED/LIKELY/POSSIBLE/DISMISSED;
+- `REVIEW_FINDINGS` — findings con evidencia, severidad, confianza y validación necesaria;
+- `EVIDENCE_GAPS`
+- `VERDICT` — CLEAN_WITHIN_SCOPE/CHANGES_REQUIRED/BLOCKED_FOR_EVIDENCE/PARTIAL_REVIEW.
+
+El VERDICT del Reviewer **no autoriza merge ni deploy**. Reviewer no sustituye Quality ni Security.
+
 ## Permisos de hijos
 
 Requeridos:
@@ -308,14 +346,15 @@ Esto no es un fallo de ACL. En Kilo actual, la tool `lsp` se registra únicament
 - `lsp` es una capacidad opcional;
 - no se activa ninguna bandera experimental global automáticamente.
 
-### Estado runtime tras el split
+### Estado runtime del source 2.2
 
 Los cambios en GitHub **no modifican Kilo Desktop por sí solos**. Hasta ejecutar explícitamente el instalador/sincronización y recargar Kilo Desktop:
 
-- la baseline source puede tener 8 especialistas;
-- el runtime instalado puede seguir usando la definición anterior;
-- `vx-dev-backend` y `vx-dev-data` deben considerarse `RUNTIME_NOT_VERIFIED`;
-- no se hereda el PASS histórico de `vx-dev-backend-data`.
+- la baseline source tiene 10 especialistas;
+- el runtime instalado puede seguir usando definiciones anteriores hasta sync/install + reload;
+- las definiciones actuales source 2.2 deben considerarse `RUNTIME_NOT_VERIFIED` como conjunto;
+- no se hereda el PASS histórico de `vx-dev-backend-data` a Backend/Data ni a los nuevos Platform/Reviewer;
+- la evidencia Wave 1 de Research/Architect solo acredita las capacidades ejercitadas en aquella sesión, no todo el prompt source actual.
 
 ## Instalación
 
@@ -329,7 +368,7 @@ pwsh -NoProfile -File $script -Modo Aplicar
 pwsh -NoProfile -File $script -Modo Verificar
 ```
 
-La semántica de “Only” es: **Dev Team es el único modo personalizado visible aprobado**. Los ocho especialistas son internos y `hidden: true`.
+La semántica de “Only” es: **Dev Team es el único modo personalizado visible aprobado**. Los diez especialistas son internos y `hidden: true`.
 
 ## Seguridad
 
@@ -360,14 +399,14 @@ Las WAVE de recertificación quedan pausadas mientras se pule el diseño operati
 
 Prioridad actual:
 
-1. consolidar `vx-dev-team` como coordinador único y mejorar routing por incertidumbre;
-2. pulir los especialistas existentes uno por uno;
-3. `vx-dev-backend` y `vx-dev-data` ya están separados en el source y requieren despliegue/smoke runtime antes de considerarse certificados;
-4. diseñar `vx-dev-platform` para runtime/build/CI/CD/configuración;
-5. diseñar `vx-dev-reviewer` como revisor independiente de cambios;
-6. mantener una sola profundidad y deny-by-default.
+1. mantener `vx-dev-team` como coordinador único visible;
+2. conservar diez especialistas read-only, una sola profundidad y deny-by-default;
+3. mantener MCP tool-by-tool únicamente para Research/Architect;
+4. validar en CI la baseline source 2.2;
+5. desplegar/sincronizar explícitamente source → Kilo Desktop solo cuando el operador lo solicite;
+6. ejecutar reload + smoke runtime fresco antes de declarar las definiciones actuales certificadas.
 
-Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `task` hasta que existan, se revisen sus permisos y pasen sus pruebas.
+`vx-dev-platform` y `vx-dev-reviewer` ya existen en el source y forman parte de la ACL del líder; no tienen permisos operacionales adicionales.
 
 ## Próxima fase
 
@@ -377,6 +416,7 @@ Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `tas
 - `vx-dev-frontend` ya usa `UI_FLOW / COMPONENT_MODEL / STATE_MODEL / INTERACTION_STATES / ACCESSIBILITY_RESPONSIVE / API_TOUCHPOINTS`;
 - `vx-dev-quality` ya usa `INVARIANTS / TEST_MATRIX / TEST_ORACLES / REGRESSION_SURFACE / ACCEPTANCE_GAPS / VERIFICATION_PLAN`;
 - `vx-dev-security` ya usa `ASSETS / TRUST_BOUNDARIES / ATTACK_SURFACE / ACCESS_CONTROL / DATA_EXPOSURE / ABUSE_CASES / THREAT_FINDINGS`;
-- continuar con los especialistas nuevos planificados (`vx-dev-platform` y `vx-dev-reviewer`);
-- mantener el runtime actual estable mientras se diseña cada agente;
-- no ampliar la ACL del líder por adelantado.
+- `vx-dev-platform` ya usa `RUNTIME_MAP / BUILD_RELEASE_PATH / CONFIG_BINDINGS / DEPLOYMENT_RISKS / VALIDATION_PLAN / ROLLBACK_PLAN`;
+- `vx-dev-reviewer` ya usa `REVIEW_SCOPE / REQUIREMENT_CHECK / CONTRACT_CHECK / REGRESSION_CHECK / REVIEW_FINDINGS / VERDICT`;
+- mantener el runtime actual estable hasta una sincronización explícita;
+- siguiente gate: CI source 2.2 → sync/reload opcional → smoke runtime fresco.
