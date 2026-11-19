@@ -480,8 +480,55 @@
       "config_integrity": "PASS",
       "git_worktree_clean": "YES",
       "runtime_mutations": "NO",
-      "permission_enforcement_status": "PARTIAL",
-      "note": "Functional/runtime contracts are closed. Permission enforcement remains partial only because explicit tool-surface evidence exists for 4/10 specialists."
+      "permission_enforcement_status": "PARTIAL_7_OF_10",
+      "note": "Functional/runtime contracts are closed. Permission enforcement is 7/10 PASS; only Quality, Security and Architect need final effective tool-surface evidence."
+    },
+    "permission_enforcement": {
+      "status": "PARTIAL",
+      "total": "7/10 PASS",
+      "semantics": "Scalar deny may be proven by runtime absence from effective tool surface under verified Kilo host semantics.",
+      "specialists": {
+        "vx-dev-backend": "PASS",
+        "vx-dev-data": "PASS",
+        "vx-dev-platform": "PASS",
+        "vx-dev-reviewer": "PASS",
+        "vx-dev-explorer": "PASS",
+        "vx-dev-frontend": "PASS",
+        "vx-dev-quality": "PARTIAL",
+        "vx-dev-security": "PARTIAL",
+        "vx-dev-research": "PASS",
+        "vx-dev-architect": "PARTIAL"
+      },
+      "partial_reasons": {
+        "vx-dev-quality": "Surface observed but denied tools remained UNKNOWN; absence not demonstrated.",
+        "vx-dev-security": "Surface observed but denied tools remained UNKNOWN; absence not demonstrated.",
+        "vx-dev-architect": "Effective tool surface could not be observed in the fresh child; docs MCP execution evidence remains 5/5 from prior run."
+      },
+      "passed_surface_summary": {
+        "builtin_scalar_denies": [
+          "read",
+          "bash",
+          "task",
+          "skill",
+          "edit",
+          "write",
+          "apply_patch",
+          "agent_manager",
+          "external_directory",
+          "board_read",
+          "board_post"
+        ],
+        "generic_mcp_denies": [
+          "list_mcp_resources",
+          "list_mcp_resource_templates",
+          "read_mcp_resource"
+        ],
+        "positive_tools": [
+          "glob",
+          "grep"
+        ]
+      },
+      "next_gate": "Observe effective tool surface for vx-dev-quality, vx-dev-security and vx-dev-architect only; no need to rerun role contracts or MCP executions."
     }
   },
   "pass_criteria": {
