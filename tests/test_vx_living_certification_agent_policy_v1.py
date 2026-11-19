@@ -27,6 +27,11 @@ class LivingCertificationAgentPolicyTests(unittest.TestCase):
                     for token in required:
                         self.assertIn(token,text, f"{rel}: falta {token}")
 
+    def test_policy_declares_global_installed_agent_scope(self):
+        scope=self.data["scope"]
+        self.assertIn("all installed VX agents",scope["global_rule_applies_to"])
+        self.assertIn("~/.config/kilo/rules/vx-global-harness-v3.md",scope["global_rule_applies_to"])
+
     def test_policy_covers_both_coordination_stacks(self):
         coordinators=set(self.data["roles"]["coordinators"])
         self.assertEqual(
