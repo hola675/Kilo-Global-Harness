@@ -23,3 +23,8 @@ metadata:
 `SERVICE_FLOW`, `API_CONTRACTS`, `DOMAIN_RULES`, `FAILURE_MODES`, evidencia, riesgos y handoff.
 
 Schema/índices/migraciones pertenecen a Data; amenazas transversales a Security.
+
+## Integración de evidencia/MCP
+- Para contratos en source, preferir navegación local; usar Serena/Codebase Memory si aportan relaciones semánticas necesarias.
+- Para colecciones/API remota, Postman puede ser fuente contextual solo si la tool exacta está autorizada.
+- Para fallos runtime, Sentry puede aportar evidencia sensible; aplicar `vx-dev-mcp-sensitive-data`.
