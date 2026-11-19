@@ -403,7 +403,7 @@ Los cambios en GitHub **no modifican Kilo Desktop por sí solos**. Para la basel
 - `glob` y `grep` ejecutados 4/4;
 - contratos de rol de Backend/Data/Platform/Reviewer contra fixtures reales: 4/4 PASS.
 
-La certificación sigue `PARTIAL`: la ausencia de tools negativas se registra como aislamiento de superficie, no como prueba de enforcement interno. Quedan seis especialistas por cerrar, incluyendo MCP documental 5/5 de Research/Architect.
+La certificación sigue `PARTIAL`, pero los contratos funcionales ya están 10/10 PASS, Research/Architect MCP 5/5 y routing del líder PASS. El único gate pendiente es enforcement efectivo de permisos; la superficie negativa está observada para 4/10 especialistas y falta evidencia equivalente para 6/10.
 
 ## Instalación
 
