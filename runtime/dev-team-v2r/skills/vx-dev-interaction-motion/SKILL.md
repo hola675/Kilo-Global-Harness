@@ -23,3 +23,8 @@ metadata:
 
 ## Salida
 `INTERACTION_MODEL`, `FEEDBACK_GAPS`, `MOTION_PURPOSE`, `GESTURE_RISKS`, `REDUCED_MOTION_GAPS`, `TRANSITION_EDGE_CASES`.
+
+## Integración de evidencia/MCP
+- Motion y feedback requieren observación runtime cuando sea posible; Playwright/Chrome DevTools son condicionales.
+- Registrar viewport, prefers-reduced-motion/theme y estado observado.
+- No atribuir jank a motion sin medición; escalar a performance si hace falta.
