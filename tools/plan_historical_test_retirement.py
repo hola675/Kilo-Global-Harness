@@ -13,16 +13,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 
-CANDIDATES={
-    "test_vx_meeting_v45.py":{
-        "replacement":["test_vx_meeting_current_contract.py","tests/Test-VX-Meeting-Current-Smoke.ps1"],
-        "gate":"V4.5 - calendario, reuniones manuales y migración sin scheduler",
-    },
-    "test_vx_joint_meeting_v451.py":{
-        "replacement":["test_vx_meeting_current_contract.py","tests/Test-VX-Meeting-Current-Smoke.ps1"],
-        "gate":"V4.5.1 - reunion conjunta sin duplicación ni programador",
-    },
-}
+CANDIDATES={}
 
 def build_plan(evidence: dict) -> dict:
     passed=set(evidence.get("passed_tests",[]))
