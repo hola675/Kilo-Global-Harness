@@ -1,0 +1,74 @@
+{
+  "schema": "dev-team-consolidation/1",
+  "version": "1.0.0",
+  "status": "SOURCE_IMPLEMENTED_RUNTIME_PARTIAL",
+  "branch": "work/dev-team-consolidation-v1",
+  "phases": [
+    {
+      "id": 1,
+      "name": "canonical-agent-parser",
+      "source_status": "IMPLEMENTED",
+      "runtime_status": "N/A"
+    },
+    {
+      "id": 2,
+      "name": "migrate-critical-tests",
+      "source_status": "IMPLEMENTED",
+      "runtime_status": "N/A"
+    },
+    {
+      "id": 3,
+      "name": "canonical-capability-matrix",
+      "source_status": "IMPLEMENTED",
+      "runtime_status": "UNCHANGED"
+    },
+    {
+      "id": 4,
+      "name": "canonical-consumers",
+      "source_status": "IMPLEMENTED",
+      "runtime_status": "UNCHANGED"
+    },
+    {
+      "id": 5,
+      "name": "source-ci-stabilization",
+      "source_status": "PENDING_LATEST_CI",
+      "runtime_status": "UNCHANGED"
+    },
+    {
+      "id": 6,
+      "name": "runtime-visible-tool-snapshot",
+      "source_status": "CAPTURE_FLOW_READY",
+      "runtime_status": "PENDING_OPERATOR_RUNTIME"
+    },
+    {
+      "id": 7,
+      "name": "exact-mcp-inventory",
+      "source_status": "IMPLEMENTED_PARTIAL_CONFIDENCE",
+      "runtime_status": "5_IDS_VERIFIED_ONLY"
+    },
+    {
+      "id": 8,
+      "name": "44-skill-eval-runner",
+      "source_status": "IMPLEMENTED",
+      "runtime_status": "PENDING_OBSERVATIONS"
+    },
+    {
+      "id": 9,
+      "name": "activation-waves",
+      "source_status": "IMPLEMENTED",
+      "runtime_status": "NOT_AUTHORIZED"
+    },
+    {
+      "id": 10,
+      "name": "runtime-activation-preflight",
+      "source_status": "IMPLEMENTED_PLAN_ONLY",
+      "runtime_status": "NOT_APPLIED"
+    }
+  ],
+  "invariants": [
+    "No runtime PASS is claimed for the new layers.",
+    "No operator approval is synthesized by scripts.",
+    "No MCP wildcard allow is introduced.",
+    "kilo.jsonc remains out of scope for this consolidation."
+  ]
+}
