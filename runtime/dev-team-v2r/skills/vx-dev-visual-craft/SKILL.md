@@ -23,3 +23,8 @@ metadata:
 
 ## Salida
 `VISUAL_HIERARCHY`, `TYPOGRAPHY`, `COLOR_AND_SURFACES`, `SPACING_AND_GROUPING`, `GENERIC_UI_RISKS`, `DISTINCTIVE_DIRECTION`, `CRAFT_PRIORITIES`.
+
+## Integración de evidencia/MCP
+- La crítica visual debe basarse en screenshot/render real cuando esté disponible; source por sí solo tiene confianza limitada.
+- Browser tooling puede aportar vistas/theme/zoom; ImageGen no es herramienta de auditoría.
+- Mantener separado “observado” de “dirección estética propuesta”.
