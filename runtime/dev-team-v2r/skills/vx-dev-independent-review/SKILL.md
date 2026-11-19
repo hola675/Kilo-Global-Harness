@@ -25,3 +25,8 @@ metadata:
 `NO_BLOCKING_FINDINGS`, `CHANGES_REQUIRED`, `BLOCKED`, `INSUFFICIENT_EVIDENCE`.
 
 No autoriza merge ni sustituye Quality o Security.
+
+## Integración de evidencia/MCP
+- Preferir evidencia independiente ya producida por CI, GitHub, browser o runtime antes de repetir análisis.
+- Usar `vx-dev-mcp-evidence-ledger` para comprobar qué claims están realmente respaldados.
+- Si hace falta nueva consulta, justificar el gap que el handoff existente no cubre.
