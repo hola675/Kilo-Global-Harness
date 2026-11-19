@@ -37,3 +37,8 @@ Si el pedido es estrecho, preferir la skill especializada correspondiente. Usar 
 
 ## Salida
 `SCOPE`, `EVIDENCE_MAP`, `BLOCKERS`, `MAJOR_FINDINGS`, `MINOR_FINDINGS`, `SPECIALIST_HANDOFFS`, `VERIFICATION_GAPS`, `PRIORITIZED_NEXT_ACTIONS`.
+
+## Integración de evidencia/MCP
+- Para una revisión amplia, reutilizar evidencia existente de Frontend/Quality antes de abrir browser tooling otra vez.
+- Playwright/Chrome DevTools sirven para observación runtime; GitHub para cambio/CI; ImageGen solo para creación visual explícitamente autorizada, nunca como prueba.
+- Cada finding debe indicar si proviene de screenshot, runtime, código, Figma/docs o hipótesis.
