@@ -1,6 +1,6 @@
 {
   "schema": "kilo-dev-team-v2r/1",
-  "version": "2.1.0-specialist-split",
+  "version": "2.2.0-specialist-expansion",
   "status": "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING",
   "primary": {
     "id": "vx-dev-team",
@@ -89,6 +89,23 @@
       ]
     },
     {
+      "id": "vx-dev-platform",
+      "role": "platform-runtime-analysis",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true,
+      "special_output": [
+        "RUNTIME_MAP",
+        "BUILD_RELEASE_PATH",
+        "CONFIG_BINDINGS",
+        "ENVIRONMENT_ASSUMPTIONS",
+        "DEPLOYMENT_RISKS",
+        "OBSERVABILITY_GAPS",
+        "VALIDATION_PLAN",
+        "ROLLBACK_PLAN"
+      ]
+    },
+    {
       "id": "vx-dev-quality",
       "role": "quality-verification-analysis",
       "mode": "subagent",
@@ -118,6 +135,22 @@
         "DATA_EXPOSURE",
         "ABUSE_CASES",
         "THREAT_FINDINGS"
+      ]
+    },
+    {
+      "id": "vx-dev-reviewer",
+      "role": "independent-change-review",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true,
+      "special_output": [
+        "REVIEW_SCOPE",
+        "REQUIREMENT_CHECK",
+        "CONTRACT_CHECK",
+        "REGRESSION_CHECK",
+        "REVIEW_FINDINGS",
+        "EVIDENCE_GAPS",
+        "VERDICT"
       ]
     },
     {
@@ -232,8 +265,8 @@
       }
     }
   },
-  "next_phase": "deploy-and-runtime-certify-backend-data-split-then-continue-specialist-polish",
-  "runtime_note": "Current GitHub source baseline contains 8 hidden specialists. vx-dev-backend-data is superseded by vx-dev-backend + vx-dev-data. GitHub changes do not alter Kilo Desktop runtime until explicit install/sync and reload. LSP remains optional; glob/grep remain minimum local capabilities.",
+  "next_phase": "deploy-current-source-baseline-and-runtime-smoke-after-platform-reviewer-source-integration",
+  "runtime_note": "Current GitHub source baseline contains 10 hidden specialists. Historical V2-R.2 and Wave1 evidence remains valid only for the definitions/capabilities actually exercised at that time. Source 2.2.0 requires explicit deployment to Kilo Desktop and fresh smoke before current definitions are runtime-certified.",
   "certification": {
     "historical_v2r2": {
       "contract": "registry/dev-team-v2r2-specialist-certification-v1.json",
@@ -243,13 +276,21 @@
       "includes_superseded_specialist": "vx-dev-backend-data"
     },
     "current_source": {
-      "specialists": 8,
-      "deployed_runtime": "NOT_VERIFIED_AFTER_SOURCE_SPLIT",
+      "specialists": 10,
+      "deployed_runtime": "NOT_VERIFIED_AFTER_SOURCE_EVOLUTION",
       "pending_runtime": [
+        "vx-dev-explorer",
+        "vx-dev-architect",
+        "vx-dev-frontend",
         "vx-dev-backend",
-        "vx-dev-data"
+        "vx-dev-data",
+        "vx-dev-platform",
+        "vx-dev-quality",
+        "vx-dev-security",
+        "vx-dev-reviewer",
+        "vx-dev-research"
       ],
-      "note": "Historical certification is preserved and is not transferred to the two replacement identities."
+      "note": "The current source definitions have evolved beyond historical V2-R.2/Wave1 evidence. GitHub source does not change Kilo Desktop until explicit sync/install + reload + fresh smoke."
     }
   },
   "mcp_design": {
@@ -521,6 +562,102 @@
         "INFO"
       ],
       "boundary": "does not execute scanners/exploits and does not replace generic code review or quality verification"
+    },
+    "vx-dev-platform": {
+      "mission": "analyze runtime topology, build/release paths, environment configuration, bindings, delivery risks, observability and rollback without deploying or administering infrastructure",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "RUNTIME_MAP",
+        "BUILD_RELEASE_PATH",
+        "CONFIG_BINDINGS",
+        "ENVIRONMENT_ASSUMPTIONS",
+        "DEPLOYMENT_RISKS",
+        "OBSERVABILITY_GAPS",
+        "VALIDATION_PLAN",
+        "ROLLBACK_PLAN",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "OBSERVED",
+        "INFERRED",
+        "ASSUMED",
+        "UNKNOWN"
+      ],
+      "config_states": [
+        "REQUIRED",
+        "OPTIONAL",
+        "ENV_SPECIFIC",
+        "UNKNOWN"
+      ],
+      "validation_scopes": [
+        "LOCAL",
+        "CI",
+        "DEV",
+        "STAGING",
+        "PRODUCTION_GATE"
+      ],
+      "boundary": "does not execute build/CI/deploy or administer cloud/DNS/IAM/firewall"
+    },
+    "vx-dev-reviewer": {
+      "mission": "independently review a concrete change set for correctness defects, contract breaks, regressions, accidental complexity and evidence gaps without editing or authorizing integration",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "REVIEW_SCOPE",
+        "REQUIREMENT_CHECK",
+        "CONTRACT_CHECK",
+        "REGRESSION_CHECK",
+        "REVIEW_FINDINGS",
+        "EVIDENCE_GAPS",
+        "VERDICT",
+        "FINDINGS",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "evidence_classes": [
+        "OBSERVED",
+        "CORROBORATED",
+        "INFERRED",
+        "DISMISSED",
+        "UNKNOWN"
+      ],
+      "requirement_states": [
+        "ALIGNED",
+        "MISMATCH",
+        "UNPROVEN",
+        "NOT_APPLICABLE"
+      ],
+      "regression_states": [
+        "DEMONSTRATED",
+        "LIKELY",
+        "POSSIBLE",
+        "DISMISSED"
+      ],
+      "verdicts": [
+        "CLEAN_WITHIN_SCOPE",
+        "CHANGES_REQUIRED",
+        "BLOCKED_FOR_EVIDENCE",
+        "PARTIAL_REVIEW"
+      ],
+      "severity": [
+        "BLOCKER",
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "INFO"
+      ],
+      "boundary": "review verdict is not merge/deploy authorization and does not replace Quality or Security"
     }
   },
   "mcp_allowlists": {
