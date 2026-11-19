@@ -70,7 +70,7 @@ Los MCP globales siguen siendo infraestructura independiente y deny-by-default p
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al supersedido `vx-dev-backend-data`. La baseline source **2.3.0** contiene **10 especialistas** y ya fue sincronizada/cargada en Kilo Desktop. Backend/Data/Platform/Reviewer tienen delegación 4/4 y glob/grep 4/4 observados; aislamiento de superficie de tools observado, pero enforcement interno de deny aún `NOT_PROVEN` y contratos de rol aún `PARTIAL`. La Wave 1 documental de Research/Architect conserva sus allowlists exactas.
+**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al supersedido `vx-dev-backend-data`. La baseline source **2.3.0** contiene **10 especialistas** y ya fue sincronizada/cargada en Kilo Desktop. Backend/Data/Platform/Reviewer tienen delegación 4/4, glob/grep 4/4 y contratos fixture 4/4 PASS. El aislamiento de superficie de tools está observado, pero el enforcement interno de deny sigue `NOT_PROVEN`. Quedan pendientes Explorer/Frontend/Quality/Security y Research/Architect, estos dos últimos además con MCP documental 5/5.
 
 
 ## Principios

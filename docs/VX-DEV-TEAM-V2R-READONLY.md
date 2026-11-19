@@ -400,9 +400,10 @@ Los cambios en GitHub **no modifican Kilo Desktop por sí solos**. Para la basel
 - preservación de `kilo.jsonc`;
 - reinicio fresco de Kilo Desktop;
 - delegación 4/4 para Backend/Data/Platform/Reviewer;
-- `glob` y `grep` ejecutados 4/4.
+- `glob` y `grep` ejecutados 4/4;
+- contratos de rol de Backend/Data/Platform/Reviewer contra fixtures reales: 4/4 PASS.
 
-La certificación sigue `PARTIAL`: la ausencia de tools negativas se registró como aislamiento de superficie, no como prueba de enforcement interno, y los contratos de rol deben repetirse contra fixtures reales del pack 2.3.0.
+La certificación sigue `PARTIAL`: la ausencia de tools negativas se registra como aislamiento de superficie, no como prueba de enforcement interno. Quedan seis especialistas por cerrar, incluyendo MCP documental 5/5 de Research/Architect.
 
 ## Instalación
 
@@ -467,6 +468,7 @@ Los diez especialistas ya forman parte de la baseline source y de la ACL `task` 
 - `vx-dev-security` ya usa `ASSETS / TRUST_BOUNDARIES / ATTACK_SURFACE / ACCESS_CONTROL / DATA_EXPOSURE / ABUSE_CASES / THREAT_FINDINGS`;
 - `vx-dev-platform` ya usa `RUNTIME_MAP / BUILD_AND_RELEASE_FLOW / CONFIG_SURFACE / ENVIRONMENT_DIFFS / DEPLOYMENT_RISKS / OBSERVABILITY`;
 - `vx-dev-reviewer` ya usa `CHANGE_SUMMARY / CONTRACT_REGRESSIONS / REGRESSION_RISKS / COMPLEXITY_RISKS / SCOPE_CONTROL / REVIEW_FINDINGS / REVIEW_VERDICT`;
-- repetir Backend/Data/Platform/Reviewer contra `tests/fixtures/dev-team-v230/`;
-- después certificar los seis especialistas restantes, MCP 5/5 de Research/Architect y routing del líder;
+- certificar Explorer/Frontend/Quality/Security contra fixtures versionados;
+- certificar Research/Architect contra fixtures y MCP documental 5/5;
+- cerrar routing mínimo del líder;
 - no promover la baseline a runtime-certified hasta cerrar toda la matriz.

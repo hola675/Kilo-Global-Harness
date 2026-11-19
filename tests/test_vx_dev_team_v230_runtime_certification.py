@@ -15,6 +15,24 @@ NEW_SPECIALISTS = {
     "vx-dev-reviewer",
 }
 
+REMAINING_SPECIALISTS = {
+    "vx-dev-explorer",
+    "vx-dev-frontend",
+    "vx-dev-quality",
+    "vx-dev-security",
+    "vx-dev-research",
+    "vx-dev-architect",
+}
+
+ALL_SPECIALISTS = NEW_SPECIALISTS | REMAINING_SPECIALISTS
+DOCS_MCP = [
+    "context7_resolve-library-id",
+    "context7_query-docs",
+    "microsoft-learn_microsoft_docs_search",
+    "microsoft-learn_microsoft_docs_fetch",
+    "microsoft-learn_microsoft_code_sample_search",
+]
+
 
 class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
     def setUp(self):
@@ -27,11 +45,11 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         self.assertEqual(self.registry["status"], "PARTIAL_OPERATOR_RUNTIME")
         self.assertNotIn("PASS_OPERATOR_RUNTIME", self.registry["status"])
 
-    def test_exactly_four_new_specialist_fixtures_are_defined(self):
+    def test_all_ten_specialist_fixtures_are_defined(self):
         fixtures = self.registry["fixtures"]
-        self.assertEqual(len(fixtures), 4)
-        self.assertEqual({item["specialist"] for item in fixtures}, NEW_SPECIALISTS)
-        self.assertEqual(len({item["id"] for item in fixtures}), 4)
+        self.assertEqual(len(fixtures), 10)
+        self.assertEqual({item["specialist"] for item in fixtures}, ALL_SPECIALISTS)
+        self.assertEqual(len({item["id"] for item in fixtures}), 10)
 
     def test_every_fixture_and_required_evidence_exists(self):
         for item in self.registry["fixtures"]:
@@ -46,7 +64,7 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
     def test_fixture_required_sections_cover_source_specialist_contracts(self):
         contracts = self.baseline["specialist_contracts"]
         by_specialist = {item["specialist"]: item for item in self.registry["fixtures"]}
-        for specialist in NEW_SPECIALISTS:
+        for specialist in ALL_SPECIALISTS:
             expected = set(contracts[specialist]["required_sections"])
             actual = set(by_specialist[specialist]["required_sections"])
             self.assertEqual(actual, expected, specialist)
@@ -66,7 +84,7 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
                 "OBSERVED_NOT_VISIBLE_FOR_REQUESTED_NEGATIVE_TOOLS",
             )
             self.assertEqual(item["permission_deny_enforcement"], "NOT_PROVEN")
-            self.assertEqual(item["role_contract"], "PARTIAL")
+            self.assertEqual(item["role_contract"], "PASS")
 
     def test_current_operator_evidence_remains_partial(self):
         summary = self.registry["observed_runtime"]["summary"]
@@ -74,8 +92,24 @@ class DevTeamV230RuntimeCertificationTests(unittest.TestCase):
         self.assertEqual(summary["positive_glob"], "4/4 EXECUTED")
         self.assertEqual(summary["positive_grep"], "4/4 EXECUTED")
         self.assertEqual(summary["permission_deny_enforcement"], "0/4 PROVEN")
-        self.assertEqual(summary["role_contracts"], "0/4 PASS")
+        self.assertEqual(summary["role_contracts"], "4/4 PASS")
         self.assertEqual(summary["result"], "PARTIAL")
+
+    def test_remaining_six_are_pending_without_overclaim(self):
+        remaining = self.registry["observed_runtime"]["remaining_six"]
+        self.assertEqual(remaining["status"], "PENDING")
+        self.assertEqual(set(remaining["specialists"]), REMAINING_SPECIALISTS)
+        self.assertEqual(remaining["role_contracts"], "0/6 PASS")
+        self.assertEqual(remaining["research_docs_mcp"], "0/5 EXECUTED")
+        self.assertEqual(remaining["architect_docs_mcp"], "0/5 EXECUTED")
+        self.assertEqual(remaining["leader_routing_contract"], "PENDING")
+
+    def test_research_and_architect_keep_exact_docs_mcp_allowlist(self):
+        by_specialist = {item["specialist"]: item for item in self.registry["fixtures"]}
+        self.assertEqual(by_specialist["vx-dev-research"]["required_mcp_tools"], DOCS_MCP)
+        self.assertEqual(by_specialist["vx-dev-architect"]["required_mcp_tools"], DOCS_MCP)
+        for specialist in ALL_SPECIALISTS - {"vx-dev-research", "vx-dev-architect"}:
+            self.assertNotIn("required_mcp_tools", by_specialist[specialist])
 
     def test_runtime_contract_keeps_mutation_and_child_delegation_forbidden(self):
         runtime = self.registry["runtime_contract"]
