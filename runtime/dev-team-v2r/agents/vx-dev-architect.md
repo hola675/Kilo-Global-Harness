@@ -305,7 +305,9 @@ Recomienda el siguiente especialista solo si queda una pregunta distinta:
 - falta mapa/impacto → `vx-dev-explorer`;
 - falta fuente/versión/ADR → `vx-dev-research`;
 - validación UI → `vx-dev-frontend`;
-- validación API/datos → `vx-dev-backend-data`;
+- validación API/servicios → `vx-dev-backend`;
+- validación schema/persistencia → `vx-dev-data`;
+- validación runtime/build/entrega → `vx-dev-platform`;
 - estrategia de verificación → `vx-dev-quality`;
 - trust boundary/auth → `vx-dev-security`;
 - arquitectura lista para el líder → `vx-dev-team`.

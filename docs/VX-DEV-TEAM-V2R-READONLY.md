@@ -303,6 +303,24 @@ Su salida específica añade:
 
 Reviewer nunca aprueba el merge. La decisión final sigue perteneciendo a `vx-dev-team`.
 
+## Invariantes de routing
+
+El routing activo debe respetar estas fronteras:
+
+- Explorer localiza y conecta evidencia; no diseña.
+- Research confirma fuentes y decisiones documentadas; no mapea el codebase completo.
+- Architect decide estructura y contratos; no sustituye especialistas de dominio.
+- Frontend analiza interacción/UI.
+- Backend analiza APIs, servicios y dominio.
+- Data analiza persistencia, schemas y migraciones.
+- Platform analiza runtime/build/configuración/entrega sin desplegar.
+- Quality diseña evidencia de verificación; no ejecuta tests ni aprueba código.
+- Security analiza trust boundaries y amenazas; no es reviewer general.
+- Reviewer revisa el cambio implementado; no diseña tests, no sustituye Security y no aprueba merges.
+- `vx-dev-team` conserva síntesis, implementación autorizada y decisión de integración.
+
+El ID supersedido `vx-dev-backend-data` no puede aparecer en handoffs de agentes activos. Solo puede existir en documentación/evidencia histórica explícitamente marcada como legacy.
+
 ## Permisos de hijos
 
 Requeridos:

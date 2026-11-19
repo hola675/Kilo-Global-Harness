@@ -176,6 +176,36 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
             self.assertRegex(reviewer, rf"(?m)^\s{{2}}{re.escape(tool)}: deny\s*$")
         self.assertIn("no debe decidir el merge", reviewer.lower())
 
+    def test_active_specialists_do_not_reference_superseded_combined_id(self):
+        for path in sorted(AGENT_DIR.glob("vx-dev-*.md")):
+            text = path.read_text(encoding="utf-8")
+            self.assertNotIn("vx-dev-backend-data", text, path.name)
+        self.assertNotIn('"vx-dev-backend-data": allow', self.leader)
+
+    def test_all_active_specialists_preserve_common_output_envelope(self):
+        common = (
+            "STATUS",
+            "SCOPE_ANALYZED",
+            "FINDINGS",
+            "EVIDENCE",
+            "RISKS",
+            "RECOMMENDATION",
+            "CONFIDENCE",
+            "UNKNOWNS",
+            "HANDOFF",
+        )
+        for path in sorted(AGENT_DIR.glob("vx-dev-*.md")):
+            text = path.read_text(encoding="utf-8")
+            self.assertIn("## Salida obligatoria", text, path.name)
+            for section in common:
+                self.assertRegex(text, rf"(?m)^{re.escape(section)}\s*$", path.name)
+
+    def test_independent_review_is_routed_to_reviewer(self):
+        self.assertIn("**INDEPENDENT_REVIEW**", self.leader)
+        self.assertIn("`vx-dev-reviewer`", self.leader)
+        self.assertIn("Quality sigue siendo responsable", self.leader)
+        self.assertIn("Security de amenazas", self.leader)
+
     def test_runtime_certification_is_not_inherited_from_legacy_identity(self):
         certification = self.baseline["certification"]
         self.assertEqual(certification["historical_v2r2"]["result"], "7/7")

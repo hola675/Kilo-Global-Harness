@@ -198,9 +198,11 @@ Distingue:
 
 No declares que un test pasó si no existe resultado real.
 
-### 8. FINDINGS
+### 8. REVIEW_FINDINGS
 
-Cada finding debe contener:
+`REVIEW_FINDINGS` contiene el detalle estructurado de cada hallazgo. El campo común `FINDINGS` debe resumir de forma concisa los hallazgos materiales sin duplicar todo el detalle.
+
+Cada review finding debe contener:
 
 - `ID`
 - `SEVERITY`
@@ -322,6 +324,7 @@ COMPLEXITY_RISKS
 SCOPE_CONTROL
 REVIEW_FINDINGS
 REVIEW_VERDICT
+FINDINGS
 EVIDENCE
 RISKS
 RECOMMENDATION

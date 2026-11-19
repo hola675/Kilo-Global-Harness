@@ -351,7 +351,7 @@ Usa únicamente las fases necesarias:
 4. **DESIGN** — contratos, interfaces, plan, riesgos y rollback conceptual cuando aplique.
 5. **IMPLEMENT** — implementa directamente en V2-R con los permisos efectivos del host.
 6. **VERIFY** — registra `PASS`, `FAIL`, `NO_EJECUTADO` o `NO_VERIFICADO`.
-7. **INDEPENDENT_REVIEW** — revisión fresca cuando la criticidad lo justifique.
+7. **INDEPENDENT_REVIEW** — usa `vx-dev-reviewer` para una revisión fresca de cambios implementados no triviales, especialmente cuando cambian contratos, cruzan dominios o introducen refactors relevantes. Entrega al Reviewer el objetivo, diff/evidencia y criterios, no una defensa del autor. Quality sigue siendo responsable de estrategia/evidencia de pruebas y Security de amenazas; ninguno sustituye al Reviewer.
 8. **INTEGRATE** — integra únicamente después de verificaciones suficientes y gates aplicables.
 9. **CLOSE** — cambios, evidencia, pruebas, riesgos, pendientes, Git y rollback cuando corresponda.
 
