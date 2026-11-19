@@ -18,6 +18,12 @@
       "reason": "Required Python runtime for active tests."
     },
     {
+      "name": "CI Living Policy - gates clasificados y tests sin duplicados",
+      "class": "CURRENT",
+      "kind": "ci-governance",
+      "reason": "Prevents unclassified gates and duplicate direct unittest ownership."
+    },
+    {
       "name": "Analisis estatico y smoke test aislado",
       "class": "CURRENT",
       "kind": "contract",
