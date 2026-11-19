@@ -4,10 +4,12 @@ import json, unittest
 
 ROOT=Path(__file__).resolve().parents[1]
 REG=ROOT/"registry"/"kilo-tools-complements-audit-v1.proposal.json"
+CAPS=ROOT/"registry"/"dev-team-capability-matrix-v1.json"
 
 class KiloToolsComplementsAuditV1Tests(unittest.TestCase):
     def setUp(self):
         self.reg=json.loads(REG.read_text(encoding="utf-8"))
+        self.caps=json.loads(CAPS.read_text(encoding="utf-8"))
 
     def test_source_only(self):
         a=self.reg["activation"]
@@ -18,10 +20,13 @@ class KiloToolsComplementsAuditV1Tests(unittest.TestCase):
         self.assertEqual(a["mcp_changes"],"NONE")
         self.assertEqual(a["agent_acl_changes"],"NONE")
 
-    def test_11_roles_have_tooling_profiles(self):
-        self.assertEqual(len(self.reg["role_tooling"]),11)
-        self.assertIn("vx-dev-team",self.reg["role_tooling"])
-        self.assertIn("vx-dev-reviewer",self.reg["role_tooling"])
+    def test_role_tooling_comes_from_canonical_matrix(self):
+        self.assertEqual(
+            self.reg["canonical_capability_matrix"],
+            "registry/dev-team-capability-matrix-v1.json",
+        )
+        self.assertNotIn("role_tooling",self.reg)
+        self.assertEqual(len(self.caps["roles"]),11)
 
     def test_plugin_is_design_only_and_bounded(self):
         plugin=self.reg["recommendations"]["build_internally"][0]
