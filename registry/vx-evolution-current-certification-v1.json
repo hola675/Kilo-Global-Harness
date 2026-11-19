@@ -14,24 +14,6 @@
     "test_vx_approval_contract_v471.py",
     "test_vx_approval_security_v472.py"
   ],
-  "historical_candidates": [
-    {
-      "test": "test_vx_meeting_v45.py",
-      "status": "REMOVE_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS",
-      "replacement": [
-        "test_vx_meeting_current_contract.py",
-        "tests/Test-VX-Meeting-Current-Smoke.ps1"
-      ]
-    },
-    {
-      "test": "test_vx_joint_meeting_v451.py",
-      "status": "REMOVE_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS",
-      "replacement": [
-        "test_vx_meeting_current_contract.py",
-        "tests/Test-VX-Meeting-Current-Smoke.ps1"
-      ]
-    }
-  ],
   "rules": {
     "source_contracts_run_once": true,
     "windows_integration_smokes_must_not_repeat_source_unit_suites": true,
@@ -39,5 +21,25 @@
   },
   "integration_smokes": [
     "tests/Test-VX-Meeting-Current-Smoke.ps1"
+  ],
+  "historical_evidence": [
+    {
+      "retired_test": "test_vx_meeting_v45.py",
+      "replacement": [
+        "test_vx_meeting_current_contract.py",
+        "tests/Test-VX-Meeting-Current-Smoke.ps1"
+      ],
+      "pass_evidence": "registry/vx-historical-test-pass-evidence-meeting-run-463.json",
+      "status": "RETIRED_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS"
+    },
+    {
+      "retired_test": "test_vx_joint_meeting_v451.py",
+      "replacement": [
+        "test_vx_meeting_current_contract.py",
+        "tests/Test-VX-Meeting-Current-Smoke.ps1"
+      ],
+      "pass_evidence": "registry/vx-historical-test-pass-evidence-meeting-run-463.json",
+      "status": "RETIRED_AFTER_SOURCE_AND_WINDOWS_SMOKE_PASS"
+    }
   ]
 }
