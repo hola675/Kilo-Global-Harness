@@ -76,5 +76,13 @@
     "global_rule_applies_to": "all installed VX agents through ~/.config/kilo/rules/vx-global-harness-v3.md",
     "role_specific_overlays": "only roles that design, implement, review or govern tests/CI",
     "runtime_activation": "via normal harness installation; no silent runtime mutation from this PR"
-  }
+  },
+  "supporting_skills": [
+    "skills/vx-test-regression/SKILL.md",
+    "skills/vx-git-ci-quality/SKILL.md",
+    "runtime/dev-team-v2r/skills/vx-dev-test-strategy/SKILL.md",
+    "runtime/dev-team-v2r/skills/vx-dev-independent-review/SKILL.md",
+    "runtime/dev-team-v2r/skills/vx-dev-team-handoff/SKILL.md",
+    "runtime/dev-team-v2r/skills/vx-dev-project-policy/SKILL.md"
+  ]
 }
