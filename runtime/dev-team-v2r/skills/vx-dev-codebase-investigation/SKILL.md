@@ -24,3 +24,8 @@ metadata:
 `CODE_MAP`, `IMPACT_SURFACE`, hallazgos, evidencia, riesgos, unknowns y handoff.
 
 No escribir, ejecutar shell ni convertir una búsqueda incompleta en certeza.
+
+## Integración de evidencia/MCP
+- Priorizar glob/grep/LSP nativos cuando basten.
+- Si se necesita navegación semántica o grafo y el rol lo tiene autorizado, preferir Serena/Codebase Memory mediante `vx-dev-mcp-capability-routing`.
+- Destilar símbolos, referencias, rutas y SHAs; no pasar dumps completos.
