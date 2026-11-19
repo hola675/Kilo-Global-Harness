@@ -460,6 +460,20 @@ Los diez especialistas forman parte de la baseline source y de la ACL `task` del
 
 ## Próxima fase
 
+La siguiente evolución es **Dev Team Skills Pack V1**, actualmente `PROPOSAL_INACTIVE`.
+
+- 18 skills propias `vx-dev-*` ya existen en source bajo `runtime/dev-team-v2r/skills/`;
+- las 31 skills VX históricas quedan como referencia, no como runtime del Dev Team;
+- ninguna skill está instalada ni habilitada todavía;
+- los 11 agentes conservan `skill: deny`;
+- la futura activación usará allowlists exactas por nombre y exigirá recertificación runtime completa;
+- `kilo.jsonc`, MCP y permisos no-skill deben permanecer sin cambios.
+
+Documentación: `docs/VX-DEV-TEAM-SKILLS-MATRIX-V1.md`.
+Investigación: `docs/VX-DEV-TEAM-SKILLS-RESEARCH-V1.md`.
+
+Estado de contratos actuales:
+
 - `vx-dev-explorer` ya usa el contrato `CODE_MAP / IMPACT_SURFACE`;
 - `vx-dev-research` ya usa `SOURCE_LEDGER / CONTRADICTIONS` y su allowlist documental;
 - `vx-dev-architect` ya usa `OPTIONS / TRADEOFFS / CONTRACTS / DECISIONS_REQUIRED` y su allowlist documental;

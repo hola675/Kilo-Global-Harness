@@ -1,0 +1,212 @@
+{
+  "schema": "dev-team-skill-evals/1",
+  "version": "1.0.0-proposal",
+  "status": "DESIGNED_NOT_EXECUTED",
+  "language": "es",
+  "policy": {
+    "minimum_should_trigger": 2,
+    "minimum_should_not_trigger": 2,
+    "evaluation": "Run fresh-agent with-skill vs baseline after runtime activation; do not infer quality from static validation.",
+    "trigger_rule": "Skill should clearly and unambiguously apply; false positives are failures even if output is otherwise good."
+  },
+  "skills": [
+    {
+      "skill": "vx-dev-project-policy",
+      "should_trigger": [
+        "Vamos a cambiar tres módulos y luego hacer PR. Define los gates, el alcance y qué evidencia necesitamos antes del merge.",
+        "Esta decisión cambia el contrato entre servicios y el proceso de release. ¿Necesitamos ADR y qué debe registrar?"
+      ],
+      "should_not_trigger": [
+        "Busca dónde se define la función normalizeEmail.",
+        "Revisa si este botón tiene un aria-label correcto."
+      ]
+    },
+    {
+      "skill": "vx-dev-team-handoff",
+      "should_trigger": [
+        "La tarea toca frontend, backend y datos. Organiza el handoff mínimo entre especialistas sin llamar a todo el equipo.",
+        "Tengo hallazgos contradictorios de Backend y Security. Estructura cómo debe resolverlos el líder con evidencia."
+      ],
+      "should_not_trigger": [
+        "Diseña un índice para esta consulta SQL.",
+        "Explica la diferencia entre LCP e INP."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-readonly",
+      "should_trigger": [
+        "Research debe consultar Context7 y Microsoft Learn para verificar una API sin cambiar nada. Define el procedimiento seguro.",
+        "Usa solo MCP documentales permitidos para reconciliar la versión de una librería y registra la procedencia."
+      ],
+      "should_not_trigger": [
+        "Crea una migración SQL para añadir una columna.",
+        "Haz una revisión visual del formulario de login."
+      ]
+    },
+    {
+      "skill": "vx-dev-mcp-security",
+      "should_trigger": [
+        "Estamos evaluando añadir un servidor MCP de GitHub. Revisa scopes, tools, trust boundaries y riesgos antes de activarlo.",
+        "Cambió el schema de una tool MCP y pide más permisos. Haz una revisión de seguridad sin conectarte."
+      ],
+      "should_not_trigger": [
+        "Consulta Microsoft Learn sobre Get-FileHash.",
+        "Revisa el diff de un refactor por complejidad accidental."
+      ]
+    },
+    {
+      "skill": "vx-dev-codebase-investigation",
+      "should_trigger": [
+        "No sé dónde se implementa el flujo de alta de cuentas. Mapea entrypoint, servicio, referencias y tests.",
+        "Antes de tocar este bug, identifica qué símbolos y archivos forman la superficie de impacto."
+      ],
+      "should_not_trigger": [
+        "Elige entre microservicios o modular monolith para el próximo año.",
+        "Define casos de prueba para dividir por cero."
+      ]
+    },
+    {
+      "skill": "vx-dev-source-reconciliation",
+      "should_trigger": [
+        "Dos documentos dicen versiones distintas de la política de retención. Determina qué está respaldado y qué sigue desconocido.",
+        "El README y el changelog no coinciden sobre la versión activa. Reconcilia las fuentes sin editar."
+      ],
+      "should_not_trigger": [
+        "Mapea todas las referencias de buildReport.",
+        "Revisa la autorización multi-tenant del handler."
+      ]
+    },
+    {
+      "skill": "vx-dev-architecture-decision",
+      "should_trigger": [
+        "Tenemos que decidir si separar este módulo o mantenerlo integrado. Compara opciones, tradeoffs, contratos y consecuencias.",
+        "La migración introduce una nueva cola y cambia ownership entre módulos. Formula la decisión arquitectónica."
+      ],
+      "should_not_trigger": [
+        "Busca qué archivo importa module-b.ts.",
+        "Comprueba si faltan tests negativos."
+      ]
+    },
+    {
+      "skill": "vx-dev-backend-contracts",
+      "should_trigger": [
+        "Revisa POST /accounts: validación, códigos de error, idempotencia y frontera entre handler y servicio.",
+        "Este job reintenta una llamada externa. Analiza contratos, timeouts, retries y efectos parciales."
+      ],
+      "should_not_trigger": [
+        "Diseña el índice UNIQUE y el backfill.",
+        "Audita el contraste de colores del dashboard."
+      ]
+    },
+    {
+      "skill": "vx-dev-data-migration",
+      "should_trigger": [
+        "Queremos añadir un UNIQUE a normalized_email pero hay datos históricos. Analiza preflight, backfill e invariantes.",
+        "Cambiaremos una columna nullable a NOT NULL. Evalúa compatibilidad, migración y rollback sin ejecutar SQL."
+      ],
+      "should_not_trigger": [
+        "El endpoint devuelve 409 en duplicados, ¿está bien el contrato?",
+        "Revisa el pipeline de staging a producción."
+      ]
+    },
+    {
+      "skill": "vx-dev-platform-delivery",
+      "should_trigger": [
+        "El build local pasa pero el paquete de producción falla. Mapea build, runtime config y diferencias de entorno.",
+        "Antes del release, revisa artefactos, healthcheck, observabilidad, promoción y rollback sin desplegar."
+      ],
+      "should_not_trigger": [
+        "Evalúa si el tenant_id del request permite acceso cruzado.",
+        "Revisa si el formulario usa un button semántico."
+      ]
+    },
+    {
+      "skill": "vx-dev-debug-triage",
+      "should_trigger": [
+        "Desde ayer falla el login con 500. Formula hipótesis falsables y delimita la causa antes de proponer un fix.",
+        "Un test empezó a fallar después de un refactor. Haz triage de causa raíz con evidencia."
+      ],
+      "should_not_trigger": [
+        "Crea la arquitectura inicial de una app nueva sin bug observado.",
+        "Escribe criterios WCAG para un componente."
+      ]
+    },
+    {
+      "skill": "vx-dev-frontend-ux",
+      "should_trigger": [
+        "Revisa este flujo de checkout por jerarquía, responsive, navegación, feedback y UX general.",
+        "La pantalla funciona pero se siente confusa en móvil. Audita estados, layout, interacción y performance percibida."
+      ],
+      "should_not_trigger": [
+        "Revisa un índice SQL por scans.",
+        "Reconcilia dos ADR contradictorios."
+      ]
+    },
+    {
+      "skill": "vx-dev-accessibility",
+      "should_trigger": [
+        "Audita este formulario para teclado, foco, labels, errores, target size y WCAG 2.2.",
+        "Revisa si este modal es operable con teclado y si el foco queda visible y recuperable."
+      ],
+      "should_not_trigger": [
+        "Analiza retries de una API externa.",
+        "Decide si debemos usar una cola o polling."
+      ]
+    },
+    {
+      "skill": "vx-dev-ui-state-system",
+      "should_trigger": [
+        "Este componente solo tiene estado normal. Define loading, empty, error, success, retry y disabled.",
+        "La mutación usa optimistic UI pero no tiene rollback. Revisa el sistema de estados y recuperación."
+      ],
+      "should_not_trigger": [
+        "Evalúa vulnerabilidades de dependencias npm.",
+        "Mapea imports circulares entre dos módulos."
+      ]
+    },
+    {
+      "skill": "vx-dev-test-strategy",
+      "should_trigger": [
+        "Convierte este cambio de comportamiento en invariantes, matriz de pruebas, oráculos y regresiones sin ejecutar tests.",
+        "Tenemos un bug de divisor cero. Diseña el test de regresión y los casos negativos necesarios."
+      ],
+      "should_not_trigger": [
+        "Implementa el fix y ejecuta pytest.",
+        "Revisa la configuración de healthcheck de producción."
+      ]
+    },
+    {
+      "skill": "vx-dev-security-threat-review",
+      "should_trigger": [
+        "El handler acepta tenant_id del body aunque el auth context contiene otro tenant. Revisa trust boundaries y abuse cases.",
+        "Añadimos una ruta con datos sensibles. Analiza autorización, exposición y pruebas negativas."
+      ],
+      "should_not_trigger": [
+        "Comprueba si el PR es demasiado grande y tiene scope creep.",
+        "Diseña estados empty/loading del dashboard."
+      ]
+    },
+    {
+      "skill": "vx-dev-supply-chain-review",
+      "should_trigger": [
+        "Queremos añadir una GitHub Action de terceros. Revisa origen, pin, permisos y riesgo supply-chain.",
+        "Vamos a actualizar una dependencia npm crítica. Evalúa licencia, scripts, advisories y rollback."
+      ],
+      "should_not_trigger": [
+        "Revisa la lógica de autorización de un endpoint.",
+        "Define la estrategia de pruebas de una migración."
+      ]
+    },
+    {
+      "skill": "vx-dev-independent-review",
+      "should_trigger": [
+        "Terminamos un refactor no trivial. Haz una revisión independiente de regresiones, complejidad y alcance.",
+        "Compara before/after y dime si el cambio rompe contratos o introduce scope creep antes del merge."
+      ],
+      "should_not_trigger": [
+        "Implementa el cambio solicitado.",
+        "Busca documentación oficial de React sobre useEffect."
+      ]
+    }
+  ]
+}

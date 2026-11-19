@@ -65,12 +65,18 @@ Los MCP globales siguen siendo infraestructura independiente y deny-by-default p
 - [Contrato estructurado histórico V2-R.2](registry/dev-team-v2r2-specialist-certification-v1.json)
 - [Certificación runtime Dev Team 2.3.0](docs/VX-DEV-TEAM-230-RUNTIME-CERTIFICATION.md)
 - [Registro estructurado runtime 2.3.0](registry/dev-team-v230-runtime-certification-v1.json)
+- [Dev Team Skills Pack V1 — propuesta inactiva](docs/VX-DEV-TEAM-SKILLS-MATRIX-V1.md)
+- [Investigación Skills Pack V1](docs/VX-DEV-TEAM-SKILLS-RESEARCH-V1.md)
+- [Registro Skills Matrix V1](registry/dev-team-skills-matrix-v1.proposal.json)
+- [Evals de triggering Skills V1](registry/dev-team-skill-evals-v1.proposal.json)
 - [Baseline estructurado V2-R](registry/dev-team-readonly-baseline-v2.json)
 - [Baseline V1 supersedido](registry/dev-team-only-baseline-v1.json)
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
 **Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al supersedido `vx-dev-backend-data`. La baseline **2.3.0** está certificada sobre las identidades actuales: delegación **10/10 PASS**, contratos de rol **10/10 PASS**, permission enforcement **10/10 PASS**, Research MCP **5/5 PASS**, Architect MCP **5/5 PASS**, routing del líder **PASS**, source/runtime **11/11 MATCH**, `kilo.jsonc` preservado y **0 mutaciones** durante la campaña.
+
+**Siguiente fase — Dev Team Skills Pack V1:** propuesta **inactiva** con **18 skills propias `vx-dev-*`** bajo `runtime/dev-team-v2r/skills/`, derivadas de investigación de Agent Skills/Kilo/MCP/ingeniería/UX pero redactadas específicamente para los contratos del Dev Team. Las 31 skills VX históricas quedan como referencia y no forman parte del runtime. La matriz futura usa `skill: {"*": deny, "<skill-exacta>": allow}` por agente, sin cambiar MCP ni permisos de mutación. La baseline certificada 2.3.0 permanece intacta hasta una activación explícita, tras la cual se exige recertificación runtime completa porque el pool de skills es compartido.
 
 
 ## Principios
