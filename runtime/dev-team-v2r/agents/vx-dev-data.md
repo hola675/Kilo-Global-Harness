@@ -10,7 +10,9 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: deny
+  skill:
+    "*": deny
+    "vx-dev-data-migration": allow
   task: deny
   edit: deny
   write: deny
@@ -21,6 +23,10 @@ permission:
   board_read: deny
   board_post: deny
 ---
+
+## Skills autorizadas
+
+Este rol puede cargar únicamente las siguientes skills del pack Dev Team V1: `vx-dev-data-migration`. Las skills son instrucciones advisory-only: no conceden permisos, no amplían tools y no autorizan mutaciones, shell, delegación ni MCP fuera de la ACL efectiva del rol.
 
 # Dev Data
 
@@ -160,7 +166,7 @@ No debes:
 - ejecutar shell/tests/SQL;
 - conectarte a bases;
 - delegar;
-- usar skills/MCP;
+- usar MCP no autorizado;
 - asumir motor o volumen;
 - ejecutar migraciones;
 - proponer borrados destructivos como acción;
