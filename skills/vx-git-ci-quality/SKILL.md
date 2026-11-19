@@ -12,6 +12,15 @@ metadata:
 
 **Responsable sugerido:** `vx-qa-builder`. **Revisor independiente:** `vx-inspector`. **Prerequisitos de conocimiento:** `vx-test-regression`.
 
+## Propiedad y ciclo de vida de tests
+
+- Cada `test_*.py` directo debe tener un único gate propietario o pertenecer a un manifest canónico.
+- Un gate posterior no reejecuta una suite completa anterior como ritual de regresión.
+- Separar source/unit, smoke de integración/host y certificación runtime.
+- Al modificar CI, decidir `UPDATE`, `REPLACE` o `ADD` para cada suite/gate afectado.
+- Un gate supersedido se retira solo tras PASS del reemplazo; la historia se conserva fuera del CI activo.
+- No mantener nombres/versiones históricas si la invariante vigente puede expresarse con un contrato actual más claro.
+
 ## Ejecución
 
 1. Validar triggers, permisos mínimos y versiones de acciones.
