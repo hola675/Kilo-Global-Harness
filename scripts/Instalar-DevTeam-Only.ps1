@@ -544,7 +544,7 @@ if ($Modo -eq 'Verificar') {
   }
 
   Write-Host '[PASS] Dev Team es el unico primario VX aprobado.' -ForegroundColor Green
-  Write-Host '[PASS] Siete subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
+  Write-Host '[PASS] Ocho subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
   Write-Host '[PASS] Skills/workflows/reglas/plugins/runtime VX legacy no estan instalados.' -ForegroundColor Green
   Write-Host '[PASS] Este verificador no modifica ni autentica MCP.' -ForegroundColor Green
   return
