@@ -19,11 +19,15 @@ metadata:
 6. Mantener fixtures sintéticos y deterministas.
 7. Para bugs, incluir caso que capture la regresión.
 8. Distinguir test existente, test propuesto y test ejecutado.
-9. Diseñar para la verdad actual, no para conservar topologías/versiones supersedidas.
-10. Antes de añadir un test, comprobar si debe actualizar o reemplazar uno existente.
-11. Si el nuevo test reemplaza completamente el oráculo anterior, marcar el viejo como supersedido y retirarlo del CI tras PASS del reemplazo.
-12. Mantener un regression guard solo si el riesgo sigue siendo plausible y distinto.
-13. No convertir historia de certificación en una suite activa permanente; la historia vive en Git/evidencia.
+9. Clasificar la acción de testing como `UPDATE`, `REPLACE` o `ADD`.
+   - `UPDATE`: el oráculo vigente sigue siendo correcto y se actualiza.
+   - `REPLACE`: un nuevo test sustituye completamente al anterior; retirar el supersedido solo tras PASS real.
+   - `ADD`: solo si existe una invariante o riesgo diferencial.
+10. Diseñar para la verdad actual, no para conservar topologías/versiones supersedidas.
+11. Antes de añadir un test, comprobar si debe actualizar o reemplazar uno existente.
+12. Si el nuevo test reemplaza completamente el oráculo anterior, marcar el viejo como supersedido y retirarlo del CI tras PASS del reemplazo.
+13. Mantener un regression guard solo si el riesgo sigue siendo plausible y distinto.
+14. No convertir historia de certificación en una suite activa permanente; la historia vive en Git/evidencia.
 
 ## Estados de evidencia
 `PASS`/`FAIL` solo con ejecución real identificada. En otro caso `NO_EJECUTADO` o `NO_VERIFICADO`.
