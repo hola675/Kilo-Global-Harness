@@ -25,3 +25,8 @@ metadata:
 `ASSETS`, `TRUST_BOUNDARIES`, `ATTACK_SURFACE`, `ACCESS_CONTROL`, `DATA_EXPOSURE`, `ABUSE_CASES`, `THREAT_FINDINGS`.
 
 No afirmar explotación demostrada si solo existe un riesgo plausible.
+
+## Integración de evidencia/MCP
+- Para superficies externas, usar `vx-dev-mcp-tool-contract` y `vx-dev-mcp-sensitive-data` antes de consultar tools sensibles.
+- Snyk/GitHub/Sentry/Cloudflare/Postman son fuentes condicionales, no permisos implícitos.
+- No enviar secretos ni payloads de cliente para “mejorar” un hallazgo.
