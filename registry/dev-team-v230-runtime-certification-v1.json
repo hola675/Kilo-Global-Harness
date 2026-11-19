@@ -1,15 +1,15 @@
 {
   "schema": "dev-team-v230-runtime-certification/1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "source_baseline": "2.3.0-reviewer-specialist",
-  "status": "PARTIAL_OPERATOR_RUNTIME",
+  "status": "PASS_OPERATOR_RUNTIME",
   "purpose": "Certificar Dev Team 2.3.0 con fixtures reales y separar evidencia de delegación, superficie efectiva de herramientas, enforcement de permisos y contrato funcional.",
   "evidence_model": {
     "delegation": "Debe observarse una subtarea fresca creada por vx-dev-team hacia el especialista objetivo.",
     "positive_capabilities": "glob y grep deben ejecutar realmente.",
     "tool_surface_isolation": "NOT_VISIBLE demuestra que la tool no fue expuesta al hijo en esa ejecución.",
-    "permission_deny_enforcement": "Solo se considera probado si el host ofrece evidencia explícita de rechazo/deny; NOT_VISIBLE no se convierte en prueba del backend de permisos.",
-    "mutation_safety": "Las tools mutables no se invocan durante certificación; ausencia en superficie puede probar aislamiento de exposición, no enforcement interno.",
+    "permission_deny_enforcement": "For scalar '*' deny rules, NOT_VISIBLE is accepted as runtime enforcement when the fresh child is known, the effective tool surface is observed, and the installed permission config matches source. This follows verified Kilo host semantics where denied tools are disabled/filtered from the visible catalog.",
+    "mutation_safety": "Mutable tools are not invoked during certification. For scalar deny rules, observed absence from the effective tool surface plus matching installed config is accepted as enforcement under the verified Kilo host semantics.",
     "lsp": "Opcional; NOT_AVAILABLE no bloquea.",
     "role_contract": "Debe evaluarse contra archivos fixture reales y hallazgos esperados.",
     "mcp": "Research/Architect requieren allowlist documental exacta; los demás deben permanecer sin MCP documental expuesto."
@@ -480,13 +480,16 @@
       "config_integrity": "PASS",
       "git_worktree_clean": "YES",
       "runtime_mutations": "NO",
-      "permission_enforcement_status": "PARTIAL_7_OF_10",
-      "note": "Functional/runtime contracts are closed. Permission enforcement is 7/10 PASS; only Quality, Security and Architect need final effective tool-surface evidence."
+      "permission_enforcement_status": "PASS_10_OF_10",
+      "note": "All functional/runtime and permission gates are closed for Dev Team 2.3.0.",
+      "final_status": "PASS_OPERATOR_RUNTIME",
+      "ready_to_record_runtime_baseline": true,
+      "certified_agent_source_head": "a7efb25a9bdf978d9c03de6cb5d7ba5dd79318df"
     },
     "permission_enforcement": {
-      "status": "PARTIAL",
-      "total": "7/10 PASS",
-      "semantics": "Scalar deny may be proven by runtime absence from effective tool surface under verified Kilo host semantics.",
+      "status": "PASS",
+      "total": "10/10 PASS",
+      "semantics": "Scalar '*' deny is enforced by absence from the effective tool surface under verified Kilo host semantics.",
       "specialists": {
         "vx-dev-backend": "PASS",
         "vx-dev-data": "PASS",
@@ -494,41 +497,40 @@
         "vx-dev-reviewer": "PASS",
         "vx-dev-explorer": "PASS",
         "vx-dev-frontend": "PASS",
-        "vx-dev-quality": "PARTIAL",
-        "vx-dev-security": "PARTIAL",
+        "vx-dev-quality": "PASS",
+        "vx-dev-security": "PASS",
         "vx-dev-research": "PASS",
-        "vx-dev-architect": "PARTIAL"
+        "vx-dev-architect": "PASS"
       },
-      "partial_reasons": {
-        "vx-dev-quality": "Surface observed but denied tools remained UNKNOWN; absence not demonstrated.",
-        "vx-dev-security": "Surface observed but denied tools remained UNKNOWN; absence not demonstrated.",
-        "vx-dev-architect": "Effective tool surface could not be observed in the fresh child; docs MCP execution evidence remains 5/5 from prior run."
+      "final_surface_probe": {
+        "vx-dev-quality": {
+          "glob": "VISIBLE",
+          "grep": "VISIBLE",
+          "lsp": "NOT_VISIBLE",
+          "builtin_denies": "NOT_VISIBLE",
+          "generic_mcp": "NOT_VISIBLE",
+          "docs_mcp": "NOT_VISIBLE"
+        },
+        "vx-dev-security": {
+          "glob": "VISIBLE",
+          "grep": "VISIBLE",
+          "lsp": "NOT_VISIBLE",
+          "builtin_denies": "NOT_VISIBLE",
+          "generic_mcp": "NOT_VISIBLE",
+          "docs_mcp": "NOT_VISIBLE"
+        },
+        "vx-dev-architect": {
+          "glob": "VISIBLE",
+          "grep": "VISIBLE",
+          "lsp": "NOT_VISIBLE",
+          "builtin_denies": "NOT_VISIBLE",
+          "generic_mcp": "NOT_VISIBLE",
+          "docs_mcp": "5/5 VISIBLE"
+        }
       },
-      "passed_surface_summary": {
-        "builtin_scalar_denies": [
-          "read",
-          "bash",
-          "task",
-          "skill",
-          "edit",
-          "write",
-          "apply_patch",
-          "agent_manager",
-          "external_directory",
-          "board_read",
-          "board_post"
-        ],
-        "generic_mcp_denies": [
-          "list_mcp_resources",
-          "list_mcp_resource_templates",
-          "read_mcp_resource"
-        ],
-        "positive_tools": [
-          "glob",
-          "grep"
-        ]
-      },
-      "next_gate": "Observe effective tool surface for vx-dev-quality, vx-dev-security and vx-dev-architect only; no need to rerun role contracts or MCP executions."
+      "previous_passes_preserved": "7/7",
+      "installed_permission_config": "10/10 MATCH",
+      "result": "PASS"
     }
   },
   "pass_criteria": {
@@ -549,11 +551,12 @@
       "La ausencia de LSP no bloquea.",
       "El routing final del líder respeta selección mínima por incertidumbre."
     ],
-    "runtime_baseline_recording": "La baseline completa 2.3.0 no se marca runtime-certified hasta cerrar además los seis especialistas restantes, Research/Architect MCP 5/5 y routing del líder.",
+    "runtime_baseline_recording": "CLOSED: Dev Team 2.3.0 satisfies runtime baseline recording criteria with 10/10 role contracts, 10/10 permission enforcement, Research/Architect MCP 5/5, leader routing PASS, disk/config integrity PASS and no runtime mutations.",
     "permission_enforcement": [
-      "For scalar deny rules, NOT_VISIBLE may count as enforcement because Kilo documents deny as disabling/blocking the tool and current host implementation removes disabled tools from the visible catalog.",
-      "Each specialist still needs runtime evidence that the denied tool surface is actually absent (or equivalent session evidence) before permission enforcement is marked PASS for that specialist.",
-      "No destructive/mutating negative invocation is required."
+      "For scalar deny rules, NOT_VISIBLE counts as enforcement when the fresh child identity is established, the effective tool surface is observed, and installed permissions match source.",
+      "Research and Architect must expose exactly their five approved documentation MCP tools while generic MCP helpers remain absent.",
+      "No destructive or mutating negative invocation is required.",
+      "All ten specialists must pass independently before runtime certification is promoted."
     ]
   },
   "permission_enforcement_semantics": {
@@ -576,5 +579,24 @@
       "Therefore NOT_VISIBLE is valid enforcement evidence when the effective scalar deny rule is known to be loaded for that child."
     ],
     "limitation": "Do not promote a specialist on host semantics alone unless its effective tool surface was observed in runtime or equivalent session evidence proves the deny rule was loaded."
+  },
+  "final_certification": {
+    "status": "PASS_OPERATOR_RUNTIME",
+    "date": "2026-11-19",
+    "environment": "Kilo Desktop on Windows",
+    "certified_agent_source_head": "a7efb25a9bdf978d9c03de6cb5d7ba5dd79318df",
+    "source_runtime_match": "11/11",
+    "delegation": "10/10 PASS",
+    "positive_tools": "10/10 PASS",
+    "role_contracts": "10/10 PASS",
+    "permission_enforcement": "10/10 PASS",
+    "research_docs_mcp": "5/5 PASS",
+    "architect_docs_mcp": "5/5 PASS",
+    "leader_routing": "PASS",
+    "disk_verify": "PASS",
+    "config_integrity": "PASS",
+    "runtime_mutations": "NO",
+    "lsp": "OPTIONAL_NOT_VISIBLE",
+    "overall": "PASS"
   }
 }
