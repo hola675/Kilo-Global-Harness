@@ -79,9 +79,9 @@
     },
     {
       "name": "Dev Team MCP Read-Only Matrix V1 - propuesta inactiva y deny-by-default",
-      "class": "REVIEW",
+      "class": "HISTORICAL_CANDIDATE",
       "kind": "dev-team",
-      "reason": "Historical proposal now partially superseded by canonical capability/exact MCP inventories; retain until replacement test passes."
+      "reason": "Superseded by canonical Dev Team capability matrix + exact MCP inventory; remove after replacement PASS."
     },
     {
       "name": "Dev Team 2.3.0 - instalar 10 especialistas, preservar MCP/terceros y restaurar",
@@ -96,16 +96,16 @@
       "reason": "Current restore tamper-protection invariant."
     },
     {
-      "name": "VX Task DAG V0.1 - contratos de equipo sin tareas efectivas",
-      "class": "REVIEW",
+      "name": "VX Task DAG - contratos actuales sin ejecución de agentes",
+      "class": "CURRENT",
       "kind": "orchestration",
-      "reason": "Version label historical; functionality may still be active."
+      "reason": "Current orchestration dependency/DAG invariant; historical version label removed."
     },
     {
-      "name": "VX Skills V0.2 - 31 skills, DAG aciclico y selector sin efectos",
-      "class": "REVIEW",
+      "name": "VX Skill Router - 31 skills, DAG acíclico y selector sin efectos",
+      "class": "CURRENT",
       "kind": "skills",
-      "reason": "Legacy 31-skill pack still referenced by global pack; review against current capability/skill model."
+      "reason": "Current 31-skill router/DAG/no-side-effect invariant; historical version label removed."
     },
     {
       "name": "VX Evidence Revalidation - comando global read-only",
