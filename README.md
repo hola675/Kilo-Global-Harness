@@ -31,9 +31,9 @@ Este pack es **independiente del instalador general del Harness**. `scripts/Inst
 
 El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su token desde el keyring de `gh` únicamente en memoria del proceso. “Connected” acredita handshake MCP; las capacidades funcionales se documentan separadamente según las pruebas realmente realizadas.
 
-## vx-dev-team V2-R.2 — líder único + especialistas ocultos
+## vx-dev-team — source 2.3.0 + evidencia runtime V2-R.2
 
-El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`.
+El diseño mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`. La evidencia runtime aprobada V2-R.2 es histórica; la baseline source 2.3.0 todavía requiere despliegue/sync y validación explícita antes de considerarse certificada en Kilo Desktop.
 
 Detrás del líder existen diez especialistas `mode: subagent` y `hidden: true`:
 
@@ -52,7 +52,7 @@ Todos los hijos requieren `glob` y `grep`; `lsp` queda permitida pero es opciona
 
 El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los diez por defecto y la profundidad máxima es una sola: **Usuario → vx-dev-team → Subagente**.
 
-La evolución del equipo se hace por responsabilidades estables, no por cantidad de agentes. `vx-dev-backend` y `vx-dev-data` ya sustituyen al antiguo `vx-dev-backend-data` en el source y en la ACL del líder. `vx-dev-platform` y `vx-dev-reviewer` siguen como diseño futuro y todavía no forman parte de la ACL activa de `task`.
+La evolución del equipo se hace por responsabilidades estables, no por cantidad de agentes. `vx-dev-backend` y `vx-dev-data` sustituyen al antiguo `vx-dev-backend-data`; `vx-dev-platform` y `vx-dev-reviewer` ya forman parte del source y de la ACL del líder. Ninguno de los especialistas nuevos hereda automáticamente certificación runtime histórica.
 
 GitHub no despliega automáticamente estas definiciones al runtime de Kilo Desktop; una actualización del source requiere instalación/sincronización explícita y reload antes de validar el comportamiento efectivo.
 
@@ -68,7 +68,7 @@ Los MCP globales siguen siendo infraestructura independiente y deny-by-default p
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al ya supersedido `vx-dev-backend-data`. La baseline source 2.1.0 contiene 8 especialistas; `vx-dev-backend` y `vx-dev-data` requieren despliegue/sync y smoke runtime antes de heredar cualquier estado operativo. La Wave 1 documental de Research/Architect conserva sus allowlists exactas.
+**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al ya supersedido `vx-dev-backend-data`. La baseline source **2.3.0** contiene **10 especialistas**; `vx-dev-backend`, `vx-dev-data`, `vx-dev-platform` y `vx-dev-reviewer` requieren despliegue/sync y smoke runtime antes de recibir estado operativo propio. La Wave 1 documental de Research/Architect conserva sus allowlists exactas.
 
 
 ## Principios
