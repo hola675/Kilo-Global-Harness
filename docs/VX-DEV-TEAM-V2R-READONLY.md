@@ -5,7 +5,7 @@
 **Primario visible:** `vx-dev-team`  
 **Especialistas ocultos:** 7  
 **Mutaciones de subagentes:** DENY  
-**MCP de subagentes:** NO EXPUESTO en esta fase
+**MCP de subagentes:** deny-by-default; `vx-dev-research` tiene 5 tools documentales allowlistadas
 
 ## Objetivo
 
@@ -24,7 +24,7 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 | `vx-dev-backend-data` | backend/data analysis | no | deny | deny | deny | deny |
 | `vx-dev-quality` | quality/test planning | no | deny | deny | deny | deny |
 | `vx-dev-security` | security analysis | no | deny | deny | deny | deny |
-| `vx-dev-research` | local repository research | no | deny | deny | deny | deny |
+| `vx-dev-research` | technical research | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
 
 Los especialistas se definen en `runtime/dev-team-v2r/agents/` para mantenerlos separados del árbol legacy de agentes VX.
 
@@ -111,6 +111,32 @@ Fronteras:
 
 No debe convertir exploración en arquitectura, revisión general o propuesta de refactor.
 
+## Contrato especializado: vx-dev-research
+
+`vx-dev-research` confirma conocimiento técnico y procedencia de fuentes. No sustituye a Explorer para mapear código ni a Architect para diseñar.
+
+Su salida específica añade:
+
+- `SOURCE_LEDGER` — fuente, tipo, versión/fecha, afirmación respaldada y autoridad;
+- `CONTRADICTIONS` — conflictos entre fuentes, cuál parece vigente y qué requiere validación.
+
+Evidencia:
+
+- `DOCUMENTED`
+- `CORROBORATED`
+- `INFERRED`
+- `UNKNOWN`
+
+Su política MCP es **deny-by-default**. Solo tiene allow explícito para:
+
+- `context7_resolve-library-id`
+- `context7_query-docs`
+- `microsoft-learn_microsoft_docs_search`
+- `microsoft-learn_microsoft_docs_fetch`
+- `microsoft-learn_microsoft_code_sample_search`
+
+No tiene acceso a helpers MCP genéricos ni a otros servidores. La disponibilidad de una tool no obliga a invocarla: Research trabaja local-first y consulta documentación externa únicamente cuando cambia o valida una conclusión relevante.
+
 ## Permisos de hijos
 
 Requeridos:
@@ -135,7 +161,7 @@ Denegados:
 - `external_directory`
 - `board_read`
 - `board_post`
-- herramientas MCP namespaced
+- herramientas MCP namespaced, excepto allowlists explícitas por agente
 
 ### Nota de compatibilidad Kilo
 
@@ -221,6 +247,7 @@ Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `tas
 ## Próxima fase
 
 - `vx-dev-explorer` ya usa el contrato `CODE_MAP / IMPACT_SURFACE`;
-- continuar con `vx-dev-research`, después Architect y especialistas de dominio;
+- `vx-dev-research` ya usa `SOURCE_LEDGER / CONTRADICTIONS` y su allowlist documental;
+- continuar con `vx-dev-architect` y después especialistas de dominio;
 - mantener el runtime actual estable mientras se diseña cada agente;
 - no ampliar la ACL del líder por adelantado.

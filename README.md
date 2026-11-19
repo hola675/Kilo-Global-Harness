@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
-> **BASELINE APROBADO ACTUAL — Dev Team V2-R.2 (2026-11-17):** **`vx-dev-team`** es el único agente personalizado visible. Puede delegar mediante `task` a **7 subagentes ocultos de análisis no mutable** (Explorer, Architect, Frontend, Backend/Data, Quality, Security y Research). Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan, no usan Board/Agent Manager y no reciben permisos MCP. Tras detectar exposición de recursos MCP genéricos en la primera certificación, V2-R.1 estableció `read: deny`; V2-R.2 conserva `glob` y `grep` como capacidades mínimas y mantiene `lsp: allow` solo como capacidad opcional si el host la expone. Los 13 MCP globales y `kilo.jsonc` se preservan como infraestructura separada.
+> **BASELINE APROBADO ACTUAL — Dev Team V2-R.2 (2026-11-17):** **`vx-dev-team`** es el único agente personalizado visible. Puede delegar mediante `task` a **7 subagentes ocultos de análisis no mutable**. Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan ni usan Board/Agent Manager. `read: deny` mantiene ocultos los helpers MCP genéricos; MCP sigue deny-by-default y `vx-dev-research` dispone únicamente de cinco tools documentales explícitas de Context7/Microsoft Learn. `glob` y `grep` son capacidades mínimas y `lsp: allow` queda como capacidad opcional si el host la expone. `kilo.jsonc` y el resto del pack MCP se preservan como infraestructura separada.
 
 > **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `vx-dev-team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 
@@ -43,7 +43,7 @@ Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`
 - `vx-dev-backend-data`
 - `vx-dev-quality`
 - `vx-dev-security`
-- `vx-dev-research`
+- `vx-dev-research` — investigación técnica con `SOURCE_LEDGER`, `CONTRADICTIONS` y allowlist documental Context7/Microsoft Learn
 
 Todos los hijos requieren `glob` y `grep`; `lsp` queda permitida pero es opcional porque Kilo solo registra esa tool cuando el host habilita `KILO_EXPERIMENTAL_LSP_TOOL`. Tienen `read/edit/write/apply_patch/bash/task/skill/agent_manager/board: deny`. El `read: deny` mantiene ocultas las herramientas genéricas de recursos MCP.
 
@@ -51,7 +51,7 @@ El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas si
 
 La evolución del equipo se hará por responsabilidades estables, no por cantidad de agentes. El diseño aprobado para el pulido actual prevé separar Backend/Data en `vx-dev-backend` y `vx-dev-data`, y diseñar `vx-dev-platform` y `vx-dev-reviewer`. Estos IDs todavía no forman parte de la ACL activa de `task`; se incorporarán únicamente después de definir, revisar y certificar cada agente.
 
-Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R no les concede acceso automático al líder ni a los hijos. La integración MCP se hará posteriormente tool-by-tool.
+Los MCP globales siguen siendo infraestructura independiente y deny-by-default para el equipo. `vx-dev-research` tiene únicamente cinco tools documentales explícitas de Context7/Microsoft Learn; cualquier otra tool MCP requiere allowlist específica y certificación separada.
 
 - [Diseño operativo V2-R.2](docs/VX-DEV-TEAM-V2R-READONLY.md)
 - [Matriz MCP read-only V1 — propuesta inactiva](docs/VX-DEV-TEAM-MCP-READONLY-MATRIX-V1.md)
@@ -63,7 +63,7 @@ Los 13 MCP globales siguen instalados como infraestructura independiente; V2-R n
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Los **7/7 subagentes V2-R.2** tienen evidencia runtime aportada por el operador que cumple el contrato vigente. La matriz MCP read-only V1 ya está diseñada como **propuesta inactiva**; no hay MCP habilitados todavía para los hijos. La primera candidata es Wave 1 de documentación para Research/Architect, pendiente de inventario runtime y aprobación.
+**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Los **7/7 subagentes V2-R.2** tienen evidencia runtime aportada por el operador. La Wave 1 documental fue certificada en runtime para Research/Architect; el source actual incorpora primero la allowlist de Research mientras cada agente se pule e integra de forma individual.
 
 
 ## Principios
