@@ -5,7 +5,7 @@
 **Primario visible:** `vx-dev-team`  
 **Especialistas ocultos:** 7  
 **Mutaciones de subagentes:** DENY  
-**MCP de subagentes:** deny-by-default; `vx-dev-research` tiene 5 tools documentales allowlistadas
+**MCP de subagentes:** deny-by-default; `vx-dev-research` y `vx-dev-architect` tienen 5 tools documentales allowlistadas cada uno
 
 ## Objetivo
 
@@ -19,7 +19,7 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 |---|---|---:|---:|---:|---:|---:|
 | `vx-dev-team` | Team Lead / Technical Lead | sí | ask | ask | allowlist | ninguno automático |
 | `vx-dev-explorer` | codebase exploration | no | deny | deny | deny | deny |
-| `vx-dev-architect` | architecture/contracts | no | deny | deny | deny | deny |
+| `vx-dev-architect` | architecture decisions/contracts | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
 | `vx-dev-frontend` | frontend analysis | no | deny | deny | deny | deny |
 | `vx-dev-backend-data` | backend/data analysis | no | deny | deny | deny | deny |
 | `vx-dev-quality` | quality/test planning | no | deny | deny | deny | deny |
@@ -137,6 +137,34 @@ Su política MCP es **deny-by-default**. Solo tiene allow explícito para:
 
 No tiene acceso a helpers MCP genéricos ni a otros servidores. La disponibilidad de una tool no obliga a invocarla: Research trabaja local-first y consulta documentación externa únicamente cuando cambia o valida una conclusión relevante.
 
+## Contrato especializado: vx-dev-architect
+
+`vx-dev-architect` convierte evidencia verificada y requisitos en decisiones estructurales implementables. No sustituye a Explorer ni Research.
+
+Su salida específica añade:
+
+- `OPTIONS` — alternativas reales cuando exista una decisión material;
+- `TRADEOFFS` — complejidad, acoplamiento, compatibilidad, riesgo, reversibilidad y testabilidad;
+- `CONTRACTS` — contratos `EXISTING`, `CHANGE`, `NEW` o `DEPRECATED`;
+- `DECISIONS_REQUIRED` — decisiones pendientes del líder u operador.
+
+Clasifica afirmaciones como:
+
+- `VERIFIED`
+- `ASSUMPTION`
+- `PROPOSAL`
+- `UNKNOWN`
+
+Comparte la misma allowlist documental de Research:
+
+- `context7_resolve-library-id`
+- `context7_query-docs`
+- `microsoft-learn_microsoft_docs_search`
+- `microsoft-learn_microsoft_docs_fetch`
+- `microsoft-learn_microsoft_code_sample_search`
+
+Architect usa esas tools únicamente para validar restricciones externas concretas; no para investigación abierta.
+
 ## Permisos de hijos
 
 Requeridos:
@@ -248,6 +276,7 @@ Los nuevos IDs son diseño futuro y **no** forman parte de la ACL activa de `tas
 
 - `vx-dev-explorer` ya usa el contrato `CODE_MAP / IMPACT_SURFACE`;
 - `vx-dev-research` ya usa `SOURCE_LEDGER / CONTRADICTIONS` y su allowlist documental;
-- continuar con `vx-dev-architect` y después especialistas de dominio;
+- `vx-dev-architect` ya usa `OPTIONS / TRADEOFFS / CONTRACTS / DECISIONS_REQUIRED` y su allowlist documental;
+- continuar con los especialistas de dominio;
 - mantener el runtime actual estable mientras se diseña cada agente;
 - no ampliar la ACL del líder por adelantado.

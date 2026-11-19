@@ -38,7 +38,7 @@ El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-tea
 Detrás del líder existen siete especialistas `mode: subagent` y `hidden: true`:
 
 - `vx-dev-explorer` — cartografía del codebase con `CODE_MAP` e `IMPACT_SURFACE`
-- `vx-dev-architect`
+- `vx-dev-architect` — decisiones estructurales con `OPTIONS`, `TRADEOFFS`, `CONTRACTS` y `DECISIONS_REQUIRED`
 - `vx-dev-frontend`
 - `vx-dev-backend-data`
 - `vx-dev-quality`
@@ -51,7 +51,7 @@ El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas si
 
 La evolución del equipo se hará por responsabilidades estables, no por cantidad de agentes. El diseño aprobado para el pulido actual prevé separar Backend/Data en `vx-dev-backend` y `vx-dev-data`, y diseñar `vx-dev-platform` y `vx-dev-reviewer`. Estos IDs todavía no forman parte de la ACL activa de `task`; se incorporarán únicamente después de definir, revisar y certificar cada agente.
 
-Los MCP globales siguen siendo infraestructura independiente y deny-by-default para el equipo. `vx-dev-research` tiene únicamente cinco tools documentales explícitas de Context7/Microsoft Learn; cualquier otra tool MCP requiere allowlist específica y certificación separada.
+Los MCP globales siguen siendo infraestructura independiente y deny-by-default para el equipo. `vx-dev-research` y `vx-dev-architect` tienen únicamente cinco tools documentales explícitas de Context7/Microsoft Learn cada uno; cualquier otra tool MCP requiere allowlist específica y certificación separada.
 
 - [Diseño operativo V2-R.2](docs/VX-DEV-TEAM-V2R-READONLY.md)
 - [Matriz MCP read-only V1 — propuesta inactiva](docs/VX-DEV-TEAM-MCP-READONLY-MATRIX-V1.md)
@@ -63,7 +63,7 @@ Los MCP globales siguen siendo infraestructura independiente y deny-by-default p
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Los **7/7 subagentes V2-R.2** tienen evidencia runtime aportada por el operador. La Wave 1 documental fue certificada en runtime para Research/Architect; el source actual incorpora primero la allowlist de Research mientras cada agente se pule e integra de forma individual.
+**Estado de evidencia:** estructura, permisos, instalación y rollback se validan en CI. Los **7/7 subagentes V2-R.2** tienen evidencia runtime aportada por el operador. La Wave 1 documental fue certificada en runtime para Research/Architect y el source actual ya incorpora las dos allowlists documentales exactas.
 
 
 ## Principios
