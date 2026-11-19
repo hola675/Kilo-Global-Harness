@@ -12,7 +12,12 @@
     {
       "test": "test_vx_pack_release_v022.py",
       "replacement": "test_vx_pack_current_contract.py + test_vx_pack_bootstrap_v1.py",
-      "status": "REMOVE_AFTER_REPLACEMENT_PASS"
+      "status": "REPLACEMENT_ACTIVE_AWAITING_CI_PASS",
+      "replacement_evidence": [
+        "test_vx_pack_current_contract.py",
+        "test_vx_pack_bootstrap_v1.py",
+        "VX Pack - certificacion viva del contrato actual"
+      ]
     },
     {
       "test": "test_vx_pack_coexist_v023.py",
@@ -28,6 +33,7 @@
   "rules": {
     "old_version_number_alone_is_not_reason_to_keep_active_test": true,
     "remove_only_after_replacement_pass": true,
-    "preserve_history_in_git": true
+    "preserve_history_in_git": true,
+    "replacement_must_be_in_active_manifest_before_removal": true
   }
 }
