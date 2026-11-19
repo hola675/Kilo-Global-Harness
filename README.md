@@ -43,7 +43,7 @@ Detrás del líder existen ocho especialistas `mode: subagent` y `hidden: true`:
 - `vx-dev-backend` — APIs, servicios, dominio, auth de aplicación e integraciones
 - `vx-dev-data` — schemas, persistencia, queries, constraints, índices y migraciones
 - `vx-dev-quality` — invariants, test matrix, oracles, regression surface y verification plan
-- `vx-dev-security`
+- `vx-dev-security` — assets, trust boundaries, attack surface, access control y evidence-backed threat findings
 - `vx-dev-research` — investigación técnica con `SOURCE_LEDGER`, `CONTRADICTIONS` y allowlist documental Context7/Microsoft Learn
 
 Todos los hijos requieren `glob` y `grep`; `lsp` queda permitida pero es opcional porque Kilo solo registra esa tool cuando el host habilita `KILO_EXPERIMENTAL_LSP_TOOL`. Tienen `read/edit/write/apply_patch/bash/task/skill/agent_manager/board: deny`. El `read: deny` mantiene ocultas las herramientas genéricas de recursos MCP.
