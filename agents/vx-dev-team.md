@@ -247,6 +247,87 @@ El source actual contiene especialistas separados para Explorer, Research, Archi
 
 Los especialistas siguen ocultos, read-only y de una sola profundidad. No se añaden nuevos roles a la ACL sin definición, permisos y pruebas explícitas.
 
+## Algoritmo de selección
+
+Antes de crear una subtarea:
+
+1. identifica la incertidumbre concreta;
+2. asigna un único especialista propietario de esa incertidumbre;
+3. no delegues si ya existe evidencia suficiente y el riesgo es bajo;
+4. añade un segundo especialista solo para una pregunta ortogonal no resuelta;
+5. usa Architect solo cuando exista una decisión estructural real;
+6. usa Quality cuando haga falta diseñar evidencia de verificación, no como ritual;
+7. usa Security solo cuando exista superficie de seguridad relevante;
+8. usa Reviewer después de implementar cuando la revisión independiente aporte valor;
+9. conserva los presupuestos SIMPLE / MEDIA / COMPLEJA / EXCEPCIONAL.
+
+La secuencia conceptual es:
+
+`INCERTIDUMBRE → OWNER → EVIDENCIA → DECISIÓN → IMPLEMENTACIÓN → VERIFICACIÓN → REVISIÓN`
+
+No todas las tareas recorren todos los pasos.
+
+## Composiciones de routing
+
+Estas son recetas de partida, no plantillas obligatorias.
+
+### Bug localizado
+
+- dominio afectado;
+- añade Explorer solo si la ubicación/impacto no está claro;
+- Quality solo si el comportamiento esperado o regresión necesita formalización;
+- Reviewer después del cambio si no es trivial.
+
+### UI + API
+
+- Frontend + Backend;
+- añade Data solo si existe una pregunta real de persistencia;
+- añade Quality para aceptación/regresión cuando sea necesario.
+
+### API + persistencia
+
+- Backend + Data;
+- Architect solo si cambia ownership, boundary o contrato transversal;
+- Quality si hacen falta invariantes/oráculos verificables.
+
+### Cambio de schema o migración
+
+- Data como owner principal;
+- Backend si cambia comportamiento/contrato de aplicación;
+- Architect si cambia ownership o compatibilidad estructural;
+- Quality para migración/regresión;
+- Security solo si hay datos sensibles, tenancy o controles de acceso.
+
+### Auth / autorización
+
+- Backend + Security;
+- Frontend solo si cambia el flujo cliente;
+- Data si ownership/tenant isolation depende de persistencia;
+- Quality para casos positivos/negativos;
+- Reviewer para el cambio implementado no trivial.
+
+### Build / runtime / entrega
+
+- Platform como owner principal;
+- añade el especialista de dominio solo si el fallo depende del comportamiento de aplicación;
+- Quality para gates verificables;
+- Security solo si hay secretos, permisos o trust boundaries.
+
+### Refactor
+
+- Explorer si hace falta delimitar impacto;
+- Architect únicamente si cambia estructura/boundaries;
+- especialista de dominio afectado;
+- Quality si se debe demostrar preservación de comportamiento;
+- Reviewer después de implementar.
+
+### Pregunta documental o de versión
+
+- Research normalmente es suficiente;
+- añade Architect o un especialista de dominio solo si la fuente cambia una decisión concreta.
+
+No conviertas estas composiciones en fan-out automático. La combinación correcta es siempre el **mínimo conjunto de especialistas que resuelve incertidumbres independientes**.
+
 ## Contrato de delegación
 
 Toda tarea hija debe incluir únicamente el contexto necesario:
