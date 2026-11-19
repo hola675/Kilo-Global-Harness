@@ -9,7 +9,7 @@ $ErrorActionPreference='Stop'
 
 if (!(Test-Path -LiteralPath $Snapshot)) { throw "Snapshot no encontrado: $Snapshot" }
 
-$expectedPath = Join-Path $RepoRoot 'registry\kilo-tools-complements-audit-v1.proposal.json'
+$expectedPath = Join-Path $RepoRoot 'registry\dev-team-capability-matrix-v1.json'
 if (!(Test-Path -LiteralPath $expectedPath)) { throw "Matriz no encontrada: $expectedPath" }
 
 $snap = Get-Content -LiteralPath $Snapshot -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -39,7 +39,7 @@ function Tool-Family([string]$Name) {
   return $null
 }
 
-$plans = foreach ($p in $expected.role_tooling.PSObject.Properties) {
+$plans = foreach ($p in $expected.roles.PSObject.Properties) {
   $agent=$p.Name
   $profile=$p.Value
   $actual = @($snap.agents | Where-Object Agent -eq $agent | Select-Object -First 1)
