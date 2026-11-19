@@ -32,6 +32,17 @@ class LivingCertificationAgentPolicyTests(unittest.TestCase):
         self.assertIn("all installed VX agents",scope["global_rule_applies_to"])
         self.assertIn("~/.config/kilo/rules/vx-global-harness-v3.md",scope["global_rule_applies_to"])
 
+    def test_supporting_skills_preserve_living_certification_terms(self):
+        for rel in self.data["supporting_skills"]:
+            with self.subTest(skill=rel):
+                text=(ROOT/rel).read_text(encoding="utf-8")
+                self.assertIn("REPLACE",text)
+                self.assertIn("PASS",text)
+                self.assertTrue(
+                    "UPDATE" in text or "supersed" in text,
+                    f"{rel}: falta lifecycle de certificación viva",
+                )
+
     def test_policy_covers_both_coordination_stacks(self):
         coordinators=set(self.data["roles"]["coordinators"])
         self.assertEqual(
