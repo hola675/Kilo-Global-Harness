@@ -257,6 +257,18 @@ Detente cuando los boundaries y hallazgos relevantes del alcance estén suficien
 
 No conviertas cada tarea en auditoría completa del repositorio.
 
+
+### SECURITY_TEST_LIFECYCLE
+
+Para pruebas de seguridad:
+
+- conservar un regression guard solo si protege un vector/riesgo todavía plausible;
+- no mantener tests de seguridad históricos si el mismo control está cubierto por un oráculo actual equivalente;
+- si un reemplazo cambia trust boundary, control o threat model, tratarlo como riesgo diferencial y justificar `ADD`;
+- nunca eliminar un guard de seguridad únicamente por antigüedad o número de versión;
+- exigir PASS del reemplazo antes de retirar un guard supersedido.
+
+
 ## Evidencia
 
 Clasifica cada conclusión como:
