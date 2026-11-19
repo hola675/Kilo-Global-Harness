@@ -23,3 +23,8 @@ metadata:
 
 ## Salida
 `ANALYTIC_QUESTION`, `CHART_FIT`, `SCALE_RISKS`, `DENSITY_RISKS`, `ACCESSIBILITY_GAPS`, `STATE_GAPS`, `ALTERNATIVE_REPRESENTATION`.
+
+## Integración de evidencia/MCP
+- Browser evidence puede confirmar escalas, labels, responsive y estados; source puede confirmar configuración.
+- No enviar datasets sensibles completos si basta con muestra sintética o metadata.
+- Un gráfico renderizado no demuestra corrección de los datos subyacentes.
