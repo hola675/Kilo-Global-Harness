@@ -35,7 +35,7 @@
     ]
   },
   "obligations": {
-    "coordinator": [
+    "coordinators": [
       "UPDATE",
       "REPLACE",
       "ADD",
