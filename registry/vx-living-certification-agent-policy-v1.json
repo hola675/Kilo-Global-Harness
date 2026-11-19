@@ -71,5 +71,10 @@
       "riesgo",
       "supersed"
     ]
+  },
+  "scope": {
+    "global_rule_applies_to": "all installed VX agents through ~/.config/kilo/rules/vx-global-harness-v3.md",
+    "role_specific_overlays": "only roles that design, implement, review or govern tests/CI",
+    "runtime_activation": "via normal harness installation; no silent runtime mutation from this PR"
   }
 }
