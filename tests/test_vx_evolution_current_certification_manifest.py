@@ -30,6 +30,27 @@ class VXEvolutionCurrentManifestTests(unittest.TestCase):
             self.assertIn("tests/Test-VX-Meeting-Current-Smoke.ps1",evidence["passed_tests"])
             self.assertFalse((ROOT/"tests"/item["retired_test"]).exists())
 
+    def test_meeting_registry_agrees_with_canonical_certification(self):
+        meeting_path=ROOT/"registry"/"vx-meeting-current-certification-v1.json"
+        meeting=json.loads(meeting_path.read_text(encoding="utf-8"))
+        self.assertEqual(
+            meeting["status"],
+            "CURRENT_SOURCE_AND_WINDOWS_SMOKE_CERTIFIED",
+        )
+        self.assertEqual(
+            meeting["active_replacement"],
+            "test_vx_meeting_current_contract.py",
+        )
+        self.assertEqual(
+            meeting["integration_smoke"],
+            "tests/Test-VX-Meeting-Current-Smoke.ps1",
+        )
+        self.assertEqual(
+            meeting["historical_evidence_manifest"],
+            "registry/vx-evolution-current-certification-v1.json",
+        )
+        self.assertNotIn("superseded_candidates", meeting)
+
     def test_current_meeting_replacement_is_present(self):
         data=json.loads((ROOT/"registry"/"vx-evolution-current-certification-v1.json").read_text(encoding="utf-8"))
         self.assertIn("test_vx_meeting_current_contract.py",data["current_contracts"])
