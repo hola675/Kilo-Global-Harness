@@ -1,6 +1,6 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
-> **BASELINE SOURCE ACTUAL — Dev Team 2.1.0 specialist-split:** **`vx-dev-team`** es el único agente personalizado visible. Puede delegar mediante `task` a **8 subagentes ocultos de análisis no mutable**. Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan ni usan Board/Agent Manager. `read: deny` mantiene ocultos los helpers MCP genéricos; MCP sigue deny-by-default y `vx-dev-research` dispone únicamente de cinco tools documentales explícitas de Context7/Microsoft Learn. `glob` y `grep` son capacidades mínimas y `lsp: allow` queda como capacidad opcional si el host la expone. `kilo.jsonc` y el resto del pack MCP se preservan como infraestructura separada.
+> **BASELINE SOURCE ACTUAL — Dev Team 2.2.0 specialist-expansion:** **`vx-dev-team`** es el único agente personalizado visible. Puede delegar mediante `task` a **10 subagentes ocultos de análisis no mutable**. Los hijos no escriben, no ejecutan shell, no cargan skills, no delegan ni usan Board/Agent Manager. `read: deny` mantiene ocultos los helpers MCP genéricos; MCP sigue deny-by-default y `vx-dev-research` dispone únicamente de cinco tools documentales explícitas de Context7/Microsoft Learn. `glob` y `grep` son capacidades mínimas y `lsp: allow` queda como capacidad opcional si el host la expone. `kilo.jsonc` y el resto del pack MCP se preservan como infraestructura separada.
 
 > **Pack VX V0.3.0 + Dev Team V1 (2026-11-17):** **13 agentes VX y 31 skills en código**. Se añade `vx-dev-team` como agente primario visible `vx-dev-team`, con color propio `#8B5CF6`, delegación a especialistas VX y gates MCP conservadores. El pack conserva router/DAG, doctor, bootstrap DPAPI y reversión auditada. **VX Evolution V4.7.2** se integra solo como contratos aislados; `approval_granted=false` y `apply_supported=false`. **En la fecha de esta integración era solo código; posteriormente el operador instaló el Pack por convivencia y verificó sus archivos. La integración no activa scheduler, WebAuthn real ni publicación.** [Acta de integración](docs/VX-CONSOLIDACION-MAIN-20261116.md) · [17 hallazgos corregidos](docs/VX-AUDITORIA-COHERENCIA-PACK-20261116.md).
 
@@ -31,26 +31,28 @@ Este pack es **independiente del instalador general del Harness**. `scripts/Inst
 
 El registro no contiene secretos. OAuth permanece interactivo; GitHub obtiene su token desde el keyring de `gh` únicamente en memoria del proceso. “Connected” acredita handshake MCP; las capacidades funcionales se documentan separadamente según las pruebas realmente realizadas.
 
-## vx-dev-team V2-R.2 — líder único + especialistas ocultos
+## vx-dev-team source 2.2 — líder único + 10 especialistas ocultos
 
-El runtime aprobado mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`.
+El source actual mantiene **un solo modo personalizado visible**: `vx-dev-team`, mostrado como **`vx-dev-team`** con color `#8B5CF6`. El runtime instalado debe sincronizarse/revalidarse por separado.
 
-Detrás del líder existen ocho especialistas `mode: subagent` y `hidden: true`:
+Detrás del líder existen diez especialistas `mode: subagent` y `hidden: true`:
 
 - `vx-dev-explorer` — cartografía del codebase con `CODE_MAP` e `IMPACT_SURFACE`
 - `vx-dev-architect` — decisiones estructurales con `OPTIONS`, `TRADEOFFS`, `CONTRACTS` y `DECISIONS_REQUIRED`
 - `vx-dev-frontend` — UI flows, component/state model, interaction states, accessibility/responsive y API touchpoints
 - `vx-dev-backend` — APIs, servicios, dominio, auth de aplicación e integraciones
 - `vx-dev-data` — schemas, persistencia, queries, constraints, índices y migraciones
+- `vx-dev-platform` — runtime, build/release, configuración, CI/CD, observabilidad y rollback
 - `vx-dev-quality` — invariants, test matrix, oracles, regression surface y verification plan
 - `vx-dev-security` — assets, trust boundaries, attack surface, access control y evidence-backed threat findings
+- `vx-dev-reviewer` — revisión independiente de change sets, contratos, regresiones y evidence gaps
 - `vx-dev-research` — investigación técnica con `SOURCE_LEDGER`, `CONTRADICTIONS` y allowlist documental Context7/Microsoft Learn
 
 Todos los hijos requieren `glob` y `grep`; `lsp` queda permitida pero es opcional porque Kilo solo registra esa tool cuando el host habilita `KILO_EXPERIMENTAL_LSP_TOOL`. Tienen `read/edit/write/apply_patch/bash/task/skill/agent_manager/board: deny`. El `read: deny` mantiene ocultas las herramientas genéricas de recursos MCP.
 
-El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los ocho por defecto y la profundidad máxima es una sola: **Usuario → vx-dev-team → Subagente**.
+El líder escala el esfuerzo según complejidad: 0-1 especialista para tareas simples, 1-2 para medias y 2-4 para complejas. No invoca los diez por defecto y la profundidad máxima es una sola: **Usuario → vx-dev-team → Subagente**.
 
-La evolución del equipo se hace por responsabilidades estables, no por cantidad de agentes. `vx-dev-backend` y `vx-dev-data` ya sustituyen al antiguo `vx-dev-backend-data` en el source y en la ACL del líder. `vx-dev-platform` y `vx-dev-reviewer` siguen como diseño futuro y todavía no forman parte de la ACL activa de `task`.
+La evolución del equipo se hace por responsabilidades estables, no por cantidad de agentes. `vx-dev-backend` + `vx-dev-data` sustituyen al antiguo `vx-dev-backend-data`; `vx-dev-platform` y `vx-dev-reviewer` ya forman parte del source 2.2 y de la ACL del líder. Los diez hijos continúan read-only y deny-by-default.
 
 GitHub no despliega automáticamente estas definiciones al runtime de Kilo Desktop; una actualización del source requiere instalación/sincronización explícita y reload antes de validar el comportamiento efectivo.
 
@@ -59,14 +61,14 @@ Los MCP globales siguen siendo infraestructura independiente y deny-by-default p
 - [Diseño operativo V2-R.2](docs/VX-DEV-TEAM-V2R-READONLY.md)
 - [Matriz MCP read-only V1 — propuesta inactiva](docs/VX-DEV-TEAM-MCP-READONLY-MATRIX-V1.md)
 - [Registro estructurado MCP read-only V1](registry/dev-team-mcp-readonly-matrix-v1.proposal.json)
-- [Certificación runtime de los cinco especialistas pendientes](docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md)
+- [Certificación runtime histórica V2-R.2](docs/VX-DEV-TEAM-V2R2-CERTIFICACION-ESPECIALISTAS.md)
 - [Contrato estructurado de certificación](registry/dev-team-v2r2-specialist-certification-v1.json)
 - [Baseline estructurado V2-R](registry/dev-team-readonly-baseline-v2.json)
 - [Baseline V1 supersedido](registry/dev-team-only-baseline-v1.json)
 - [Arquitectura V1 histórica](docs/VX-DEV-TEAM-ARCHITECTURE-V1.md)
 - [Matriz MCP V1 histórica](docs/VX-DEV-TEAM-MCP-MATRIX-V1.md)
 
-**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al ya supersedido `vx-dev-backend-data`. La baseline source 2.1.0 contiene 8 especialistas; `vx-dev-backend` y `vx-dev-data` requieren despliegue/sync y smoke runtime antes de heredar cualquier estado operativo. La Wave 1 documental de Research/Architect conserva sus allowlists exactas.
+**Estado de evidencia:** la certificación runtime **V2-R.2 7/7** se conserva como evidencia histórica e incluye al ya supersedido `vx-dev-backend-data`; la Wave 1 documental de Research/Architect conserva la evidencia de las cinco tools que se ejercitaron. La baseline source **2.2.0 contiene 10 especialistas y definiciones evolucionadas**: no se considera desplegada/certificada como conjunto hasta ejecutar sync/install explícito, reload y smoke runtime fresco.
 
 
 ## Principios
