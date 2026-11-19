@@ -14,13 +14,6 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 
 CANDIDATES={
-    "test_vx_dev_team_mcp_readonly_matrix_v1.py":{
-        "replacement":[
-            "test_vx_dev_team_capability_matrix_v1.py",
-            "test_vx_dev_team_mcp_exact_inventory_v1.py",
-        ],
-        "gate":"Dev Team MCP Read-Only Matrix V1 - propuesta inactiva y deny-by-default",
-    },
     "test_vx_meeting_v45.py":{
         "replacement":["test_vx_meeting_current_contract.py"],
         "gate":"V4.5 - calendario, reuniones manuales y migración sin scheduler",
