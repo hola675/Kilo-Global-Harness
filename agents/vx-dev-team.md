@@ -24,6 +24,7 @@ permission:
     "vx-dev-frontend": allow
     "vx-dev-backend": allow
     "vx-dev-data": allow
+    "vx-dev-platform": allow
     "vx-dev-quality": allow
     "vx-dev-security": allow
     "vx-dev-research": allow
@@ -178,6 +179,23 @@ Usa para incertidumbres de persistencia:
 
 No lo uses para decidir comportamiento de APIs o reglas de negocio.
 
+### vx-dev-platform
+
+Usa cuando la incertidumbre sea de runtime o entrega:
+
+- build/toolchain;
+- CI/CD;
+- Docker/containers;
+- packaging;
+- variables/bindings/configuración;
+- serverless/runtime adapters;
+- health/readiness;
+- observabilidad wiring;
+- diferencias entre entornos;
+- deployment/rollback conceptual.
+
+No lo uses para desplegar, cambiar infraestructura ni sustituir a Backend/Data/Architect.
+
 ### vx-dev-quality
 
 Usa cuando necesites responder:
@@ -213,10 +231,9 @@ Debe justificar attack path, evidencia, impacto, severidad y confianza. No lo in
 
 El diseño futuro del equipo contempla:
 
-- `vx-dev-platform` — runtime, build, CI/CD, Docker, bindings, serverless, packaging, configuración y planes de despliegue;
 - `vx-dev-reviewer` — revisión independiente de cambios implementados.
 
-Backend y Data ya son especialistas activos del source. Platform y Reviewer siguen siendo **diseño futuro** y no deben añadirse a la ACL `task` hasta que su definición, permisos y pruebas estén terminados.
+Backend, Data y Platform ya son especialistas activos del source. Reviewer sigue siendo **diseño futuro** y no debe añadirse a la ACL `task` hasta que su definición, permisos y pruebas estén terminados.
 
 ## Contrato de delegación
 
