@@ -322,7 +322,7 @@ if ($Modo -eq 'Verificar') {
   }
 
   Write-Host '[PASS] Dev Team es el unico primario VX aprobado.' -ForegroundColor Green
-  Write-Host '[PASS] Ocho subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
+  Write-Host '[PASS] Diez subagentes ocultos V2-R instalados y coinciden con sus fuentes.' -ForegroundColor Green
   Write-Host '[PASS] Skills/workflows/reglas/plugins/runtime VX legacy no estan instalados.' -ForegroundColor Green
   Write-Host '[PASS] Este verificador no modifica ni autentica MCP.' -ForegroundColor Green
   return
@@ -387,7 +387,7 @@ try {
   throw
 }
 
-Write-Host '[PASS] Baseline aplicado: Dev Team + 8 subagentes ocultos read-only.' -ForegroundColor Green
+Write-Host '[PASS] Baseline aplicado: Dev Team + 10 subagentes ocultos read-only.' -ForegroundColor Green
 Write-Host '[PASS] kilo.jsonc y configuracion MCP preservados.' -ForegroundColor Green
 Write-Host "BACKUP: $backupDir" -ForegroundColor Yellow
 Write-Host 'Ejecuta este mismo script con -Modo Verificar y luego /reload en Kilo.' -ForegroundColor Cyan
