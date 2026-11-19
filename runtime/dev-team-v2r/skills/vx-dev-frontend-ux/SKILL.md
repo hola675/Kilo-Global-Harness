@@ -24,3 +24,8 @@ metadata:
 Para cada hallazgo: `{element_or_flow,observed,impact,evidence,recommendation,confidence}`.
 
 Referencias: W3C WCAG 2.2, web.dev Core Web Vitals, USWDS, Vercel Web Interface Guidelines.
+
+## Integración de evidencia/MCP
+- Código estático no demuestra comportamiento visual/runtime.
+- Si está autorizado y hace falta evidencia real, usar Playwright/Chrome DevTools para estados, responsive, consola o red; aplicar `vx-dev-mcp-sensitive-data` en sesiones autenticadas.
+- Si no hay browser MCP disponible, marcar la revisión visual/interactiva como no verificada.
