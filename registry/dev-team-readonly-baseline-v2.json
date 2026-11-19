@@ -1,6 +1,6 @@
 {
   "schema": "kilo-dev-team-v2r/1",
-  "version": "2.2.0-platform-specialist",
+  "version": "2.3.0-reviewer-specialist",
   "status": "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING",
   "primary": {
     "id": "vx-dev-team",
@@ -102,6 +102,22 @@
         "FAILURE_MODES",
         "DEPLOYMENT_RISKS",
         "OBSERVABILITY"
+      ]
+    },
+    {
+      "id": "vx-dev-reviewer",
+      "role": "independent-change-review",
+      "mode": "subagent",
+      "hidden": true,
+      "read_only": true,
+      "special_output": [
+        "CHANGE_SUMMARY",
+        "CONTRACT_REGRESSIONS",
+        "REGRESSION_RISKS",
+        "COMPLEXITY_RISKS",
+        "SCOPE_CONTROL",
+        "REVIEW_FINDINGS",
+        "REVIEW_VERDICT"
       ]
     },
     {
@@ -248,8 +264,8 @@
       }
     }
   },
-  "next_phase": "deploy-and-runtime-certify-backend-data-split-then-continue-specialist-polish",
-  "runtime_note": "Current GitHub source baseline contains 9 hidden specialists, including vx-dev-platform. GitHub source changes do not alter Kilo Desktop runtime until explicit install/sync and reload. LSP remains optional; glob/grep remain minimum local capabilities.",
+  "next_phase": "merge-source-baseline-then-explicit-runtime-sync-and-certification-when-authorized",
+  "runtime_note": "Current GitHub source baseline contains 10 hidden specialists, including vx-dev-platform and vx-dev-reviewer. GitHub source changes do not alter Kilo Desktop runtime until explicit install/sync and reload. LSP remains optional; glob/grep remain minimum local capabilities.",
   "certification": {
     "historical_v2r2": {
       "contract": "registry/dev-team-v2r2-specialist-certification-v1.json",
@@ -259,14 +275,15 @@
       "includes_superseded_specialist": "vx-dev-backend-data"
     },
     "current_source": {
-      "specialists": 9,
-      "deployed_runtime": "NOT_VERIFIED_AFTER_PLATFORM_ADD",
+      "specialists": 10,
+      "deployed_runtime": "NOT_VERIFIED_AFTER_REVIEWER_ADD",
       "pending_runtime": [
         "vx-dev-backend",
         "vx-dev-data",
-        "vx-dev-platform"
+        "vx-dev-platform",
+        "vx-dev-reviewer"
       ],
-      "note": "Historical certification is preserved and is not transferred to the two replacement identities."
+      "note": "Historical V2-R.2 certification is preserved and is not transferred to new/split specialist identities."
     }
   },
   "mcp_design": {
@@ -564,6 +581,45 @@
         "INFERRED",
         "RISK",
         "UNKNOWN"
+      ]
+    },
+    "vx-dev-reviewer": {
+      "mission": "independently review an implemented change for correctness, contract regressions, scope creep and accidental complexity without approving the merge",
+      "required_sections": [
+        "STATUS",
+        "SCOPE_ANALYZED",
+        "CHANGE_SUMMARY",
+        "CONTRACT_REGRESSIONS",
+        "REGRESSION_RISKS",
+        "COMPLEXITY_RISKS",
+        "SCOPE_CONTROL",
+        "REVIEW_FINDINGS",
+        "REVIEW_VERDICT",
+        "EVIDENCE",
+        "RISKS",
+        "RECOMMENDATION",
+        "CONFIDENCE",
+        "UNKNOWNS",
+        "HANDOFF"
+      ],
+      "review_verdicts": [
+        "NO_BLOCKING_FINDINGS",
+        "CHANGES_REQUIRED",
+        "BLOCKED",
+        "INSUFFICIENT_EVIDENCE"
+      ],
+      "contract_states": [
+        "PRESERVED",
+        "INTENTIONAL_CHANGE",
+        "UNINTENTIONAL_CHANGE",
+        "UNKNOWN"
+      ],
+      "finding_severity": [
+        "BLOCKER",
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "INFO"
       ]
     }
   },
