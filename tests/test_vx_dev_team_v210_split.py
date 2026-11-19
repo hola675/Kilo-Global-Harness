@@ -16,6 +16,7 @@ EXPECTED_SPECIALISTS = {
     "vx-dev-frontend",
     "vx-dev-backend",
     "vx-dev-data",
+    "vx-dev-platform",
     "vx-dev-quality",
     "vx-dev-security",
 }
@@ -31,8 +32,8 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         self.baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
         self.leader = LEADER.read_text(encoding="utf-8")
 
-    def test_active_source_baseline_has_eight_specialists(self):
-        self.assertEqual(self.baseline["version"], "2.1.0-specialist-split")
+    def test_active_source_baseline_has_nine_specialists(self):
+        self.assertEqual(self.baseline["version"], "2.2.0-platform-specialist")
         self.assertEqual(self.baseline["status"], "ACTIVE_SOURCE_BASELINE_RUNTIME_PENDING")
         ids = {item["id"] for item in self.baseline["subagents"]}
         self.assertEqual(ids, EXPECTED_SPECIALISTS)
@@ -131,6 +132,22 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         )
         self.assertIn("does not execute scanners/exploits", contract["boundary"])
 
+    def test_platform_contract_is_runtime_delivery_focused(self):
+        contract = self.baseline["specialist_contracts"]["vx-dev-platform"]
+        sections = contract["required_sections"]
+        for required in (
+            "RUNTIME_MAP",
+            "BUILD_AND_RELEASE_FLOW",
+            "CONFIG_SURFACE",
+            "ENVIRONMENT_DIFFS",
+            "DEPLOYMENT_RISKS",
+            "OBSERVABILITY",
+        ):
+            self.assertIn(required, sections)
+        platform = (AGENT_DIR / "vx-dev-platform.md").read_text(encoding="utf-8")
+        for tool in DENIED:
+            self.assertRegex(platform, rf"(?m)^\s{{2}}{re.escape(tool)}: deny\s*$")
+
     def test_runtime_certification_is_not_inherited_from_legacy_identity(self):
         certification = self.baseline["certification"]
         self.assertEqual(certification["historical_v2r2"]["result"], "7/7")
@@ -140,11 +157,11 @@ class DevTeamSpecialistSplitTests(unittest.TestCase):
         )
         self.assertEqual(
             certification["current_source"]["pending_runtime"],
-            ["vx-dev-backend", "vx-dev-data"],
+            ["vx-dev-backend", "vx-dev-data", "vx-dev-platform"],
         )
         self.assertEqual(
             certification["current_source"]["deployed_runtime"],
-            "NOT_VERIFIED_AFTER_SOURCE_SPLIT",
+            "NOT_VERIFIED_AFTER_PLATFORM_ADD",
         )
 
 

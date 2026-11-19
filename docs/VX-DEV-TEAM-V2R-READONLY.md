@@ -1,9 +1,9 @@
 # vx-dev-team — baseline source 2.1.0 con especialistas ocultos
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE SOURCE BASELINE · runtime pendiente de despliegue tras split Backend/Data  
+**Estado:** ACTIVE SOURCE BASELINE · runtime pendiente de despliegue tras split Backend/Data y alta de Platform  
 **Primario visible:** `vx-dev-team`  
-**Especialistas ocultos:** 8  
+**Especialistas ocultos:** 9  
 **Mutaciones de subagentes:** DENY  
 **MCP de subagentes:** deny-by-default; `vx-dev-research` y `vx-dev-architect` tienen 5 tools documentales allowlistadas cada uno
 
@@ -23,6 +23,7 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 | `vx-dev-frontend` | frontend interaction analysis | no | deny | deny | deny | deny |
 | `vx-dev-backend` | backend application analysis | no | deny | deny | deny | deny |
 | `vx-dev-data` | data/persistence analysis | no | deny | deny | deny | deny |
+| `vx-dev-platform` | platform/runtime analysis | no | deny | deny | deny | deny |
 | `vx-dev-quality` | quality verification analysis | no | deny | deny | deny | deny |
 | `vx-dev-security` | security trust/abuse analysis | no | deny | deny | deny | deny |
 | `vx-dev-research` | technical research | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
@@ -252,6 +253,31 @@ Evidencia:
 Severidad permitida: `CRITICAL / HIGH / MEDIUM / LOW / INFO`, siempre separada de `CONFIDENCE`.
 
 Security no ejecuta scanners/exploits, no lee/revela secretos y no sustituye Quality ni al futuro Reviewer.
+
+## Contrato especializado: vx-dev-platform
+
+`vx-dev-platform` analiza build, runtime, configuración y riesgos de entrega sin desplegar ni modificar infraestructura.
+
+Su salida específica añade:
+
+- `RUNTIME_MAP`
+- `BUILD_AND_RELEASE_FLOW`
+- `CONFIG_SURFACE`
+- `ENVIRONMENT_DIFFS`
+- `FAILURE_MODES`
+- `DEPLOYMENT_RISKS`
+- `OBSERVABILITY`
+
+Fronteras:
+
+- Platform analiza runtime/entrega;
+- Backend analiza comportamiento de aplicación;
+- Data analiza persistencia;
+- Architect decide cambios estructurales;
+- Security analiza riesgo de seguridad;
+- el líder ejecuta cualquier operación autorizada.
+
+No tiene shell, escritura, MCP ni permisos de infraestructura.
 
 ## Permisos de hijos
 
