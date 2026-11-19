@@ -25,3 +25,8 @@ No sustituye a `vx-dev-test-strategy`: esta skill define qué debe ser cierto; T
 
 ## Salida
 `REQUIREMENTS`, `ACCEPTANCE_CRITERIA`, `ASSUMPTIONS`, `CONSTRAINTS`, `OUT_OF_SCOPE`, `OPEN_DECISIONS`, `TRACEABILITY`.
+
+## Integración de evidencia/MCP
+- Usar MCP solo para aclarar restricciones externas verificables, no para inventar requisitos del usuario.
+- Las fuentes externas pueden respaldar compatibilidad, estándares o plataforma; los criterios de negocio siguen requiriendo fuente del proyecto/usuario.
+- Registrar cualquier requisito derivado de docs como `DOCUMENTED`, no `CONFIRMED_BY_USER`.
