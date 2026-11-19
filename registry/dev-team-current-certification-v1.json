@@ -9,13 +9,20 @@
     "test_vx_dev_team_v210_split.py",
     "test_vx_dev_team_v230_runtime_certification.py",
     "test_vx_dev_team_skills_matrix_v1.py",
-    "test_vx_dev_team_living_certification_policy_v1.py"
+    "test_vx_dev_team_living_certification_policy_v1.py",
+    "test_vx_dev_team_capability_matrix_v1.py",
+    "test_vx_dev_team_mcp_exact_inventory_v1.py"
   ],
   "historical_evidence": [
     {
       "superseded_test": "test_vx_dev_team_v2r2_specialists.py",
       "evidence_registry": "registry/dev-team-v2r2-specialist-certification-v1.json",
       "reason": "V2-R.2 topology superseded by current 2.3.0 specialist split and runtime certification."
+    },
+    {
+      "superseded_test": "test_vx_dev_team_mcp_readonly_matrix_v1.py",
+      "evidence_registry": "registry/dev-team-mcp-readonly-matrix-v1.proposal.json",
+      "reason": "Historical MCP proposal superseded by canonical capability matrix and exact MCP inventory; remove from active CI only after current replacement passes."
     }
   ],
   "rules": {
