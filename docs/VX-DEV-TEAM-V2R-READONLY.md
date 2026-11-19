@@ -1,7 +1,7 @@
 # vx-dev-team — baseline source 2.3.0 con especialistas ocultos
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE SOURCE BASELINE · runtime sincronizado/cargado · certificación 2.3.0 PARTIAL  
+**Estado:** ACTIVE SOURCE BASELINE · runtime 2.3.0 CERTIFIED  
 **Primario visible:** `vx-dev-team`  
 **Especialistas ocultos:** 10  
 **Mutaciones de subagentes:** DENY  
@@ -403,7 +403,7 @@ Los cambios en GitHub **no modifican Kilo Desktop por sí solos**. Para la basel
 - `glob` y `grep` ejecutados 4/4;
 - contratos de rol de Backend/Data/Platform/Reviewer contra fixtures reales: 4/4 PASS.
 
-La certificación sigue `PARTIAL`, pero los contratos funcionales ya están 10/10 PASS, Research/Architect MCP 5/5 y routing del líder PASS. El único gate pendiente es enforcement efectivo de permisos; la superficie negativa está observada para 4/10 especialistas y falta evidencia equivalente para 6/10.
+La certificación runtime 2.3.0 está cerrada: contratos funcionales 10/10 PASS, permission enforcement 10/10 PASS, Research/Architect MCP 5/5, routing del líder PASS, source/runtime 11/11 MATCH, configuración preservada y cero mutaciones durante probes.
 
 ## Instalación
 
@@ -444,7 +444,7 @@ Antes de permitir cualquier subagente escritor:
 
 ## Dirección actual de evolución
 
-La recertificación runtime 2.3.0 está activa mediante el pack reproducible `registry/dev-team-v230-runtime-certification-v1.json`.
+La certificación runtime 2.3.0 está cerrada como `PASS_OPERATOR_RUNTIME` mediante el pack reproducible `registry/dev-team-v230-runtime-certification-v1.json`.
 
 Prioridad actual:
 
@@ -454,9 +454,9 @@ Prioridad actual:
 4. mantener Platform como análisis de runtime/entrega sin capacidad de despliegue;
 5. mantener Reviewer como revisión independiente sin autoridad de merge;
 6. preservar una sola profundidad y deny-by-default;
-7. cerrar contratos runtime contra fixtures reales y mantener enforcement de permisos como dimensión separada hasta disponer de evidencia explícita.
+7. mantener la baseline certificada y recertificar únicamente ante cambios en agentes, permisos, MCP, routing o semántica del host.
 
-Los diez especialistas ya forman parte de la baseline source y de la ACL `task` del líder. Su presencia en GitHub **no equivale** a certificación runtime.
+Los diez especialistas forman parte de la baseline source y de la ACL `task` del líder, y la campaña 2.3.0 ya certificó su comportamiento runtime actual. Cambios futuros en source no heredan automáticamente este PASS.
 
 ## Próxima fase
 
@@ -468,7 +468,6 @@ Los diez especialistas ya forman parte de la baseline source y de la ACL `task` 
 - `vx-dev-security` ya usa `ASSETS / TRUST_BOUNDARIES / ATTACK_SURFACE / ACCESS_CONTROL / DATA_EXPOSURE / ABUSE_CASES / THREAT_FINDINGS`;
 - `vx-dev-platform` ya usa `RUNTIME_MAP / BUILD_AND_RELEASE_FLOW / CONFIG_SURFACE / ENVIRONMENT_DIFFS / DEPLOYMENT_RISKS / OBSERVABILITY`;
 - `vx-dev-reviewer` ya usa `CHANGE_SUMMARY / CONTRACT_REGRESSIONS / REGRESSION_RISKS / COMPLEXITY_RISKS / SCOPE_CONTROL / REVIEW_FINDINGS / REVIEW_VERDICT`;
-- certificar Explorer/Frontend/Quality/Security contra fixtures versionados;
-- certificar Research/Architect contra fixtures y MCP documental 5/5;
-- cerrar routing mínimo del líder;
-- no promover la baseline a runtime-certified hasta cerrar toda la matriz.
+- conservar el source certificado sin ampliar permisos implícitamente;
+- recertificar el especialista o gate afectado cuando cambien ACL, MCP, contratos o routing;
+- mantener la evidencia histórica V2-R.2 separada de la certificación 2.3.0 actual.
