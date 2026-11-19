@@ -1,9 +1,9 @@
-# vx-dev-team — baseline source 2.1.0 con especialistas ocultos
+# vx-dev-team — baseline source 2.3.0 con especialistas ocultos
 
 **Fecha:** 2026-11-17  
-**Estado:** ACTIVE SOURCE BASELINE · runtime pendiente de despliegue tras split Backend/Data y alta de Platform  
+**Estado:** ACTIVE SOURCE BASELINE · runtime pendiente de despliegue tras split Backend/Data y altas de Platform/Reviewer  
 **Primario visible:** `vx-dev-team`  
-**Especialistas ocultos:** 9  
+**Especialistas ocultos:** 10  
 **Mutaciones de subagentes:** DENY  
 **MCP de subagentes:** deny-by-default; `vx-dev-research` y `vx-dev-architect` tienen 5 tools documentales allowlistadas cada uno
 
@@ -24,6 +24,7 @@ El operador interactúa únicamente con `vx-dev-team`. El líder puede delegar a
 | `vx-dev-backend` | backend application analysis | no | deny | deny | deny | deny |
 | `vx-dev-data` | data/persistence analysis | no | deny | deny | deny | deny |
 | `vx-dev-platform` | platform/runtime analysis | no | deny | deny | deny | deny |
+| `vx-dev-reviewer` | independent change review | no | deny | deny | deny | deny |
 | `vx-dev-quality` | quality verification analysis | no | deny | deny | deny | deny |
 | `vx-dev-security` | security trust/abuse analysis | no | deny | deny | deny | deny |
 | `vx-dev-research` | technical research | no | deny | deny | deny | Context7 + Microsoft Learn (5 tools) |
@@ -278,6 +279,29 @@ Fronteras:
 - el líder ejecuta cualquier operación autorizada.
 
 No tiene shell, escritura, MCP ni permisos de infraestructura.
+
+## Contrato especializado: vx-dev-reviewer
+
+`vx-dev-reviewer` revisa de forma independiente un cambio implementado. No diseña la solución inicial, no sustituye Quality y no sustituye Security.
+
+Su salida específica añade:
+
+- `CHANGE_SUMMARY`
+- `CONTRACT_REGRESSIONS`
+- `REGRESSION_RISKS`
+- `COMPLEXITY_RISKS`
+- `SCOPE_CONTROL`
+- `REVIEW_FINDINGS`
+- `REVIEW_VERDICT`
+
+`REVIEW_VERDICT` usa únicamente:
+
+- `NO_BLOCKING_FINDINGS`
+- `CHANGES_REQUIRED`
+- `BLOCKED`
+- `INSUFFICIENT_EVIDENCE`
+
+Reviewer nunca aprueba el merge. La decisión final sigue perteneciendo a `vx-dev-team`.
 
 ## Permisos de hijos
 
