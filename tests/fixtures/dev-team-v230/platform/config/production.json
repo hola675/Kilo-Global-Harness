@@ -1,0 +1,5 @@
+{
+  "environment": "production",
+  "apiBase": "https://api.example.invalid",
+  "logLevel": "warn"
+}
