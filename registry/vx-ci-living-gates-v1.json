@@ -150,10 +150,10 @@
       "reason": "Current invariant; historical milestone label removed under living certification policy."
     },
     {
-      "name": "VX Reunion - contrato vigente de sesion conjunta manual",
+      "name": "VX Reunion - smoke Windows instalado vigente",
       "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Canonical current meeting policy replacement gate."
+      "reason": "Installed-core integration smoke for joint calendar, SQLite v4, scheduler-off and rollback; source behavior belongs to Evolution current manifest."
     },
     {
       "name": "V4.5 - calendario, reuniones manuales y migración sin scheduler",
