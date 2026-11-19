@@ -25,3 +25,8 @@ metadata:
 
 ## Salida
 `TIMELINE`, `IMPACT`, `BLAST_RADIUS`, `EVIDENCE`, `CONTRIBUTING_FACTORS`, `ROOT_CAUSE_STATUS`, `DETECTION_GAPS`, `PREVENTION_CANDIDATES`.
+
+## Integración de evidencia/MCP
+- Sentry, GitHub y observabilidad de plataforma son fuentes típicas si están autorizadas.
+- Construir timeline con timestamps/IDs exactos y distinguir cambio reciente de causalidad.
+- Minimizar datos sensibles y entregar al líder un handoff con timeline, evidencia y gaps.
