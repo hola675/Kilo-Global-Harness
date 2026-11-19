@@ -1,0 +1,75 @@
+{
+  "schema": "vx-living-certification-agent-policy/1",
+  "version": "1.0.0",
+  "status": "SOURCE_ACTIVE",
+  "global_rule": "rules/vx-global-harness-v3.md",
+  "principles": [
+    "UPDATE_REPLACE_ADD",
+    "REPLACE_REQUIRES_PASS_BEFORE_REMOVAL",
+    "HISTORY_OUTSIDE_ACTIVE_TESTS",
+    "FOCUSED_TESTING",
+    "SINGLE_OWNER_DIRECT_TEST",
+    "SOURCE_INTEGRATION_RUNTIME_EVIDENCE_SEPARATION"
+  ],
+  "roles": {
+    "coordinators": [
+      "agents/vx-dev-team.md",
+      "agents/vx-integrador.md"
+    ],
+    "test_design": [
+      "agents/vx-test-analyst.md",
+      "runtime/dev-team-v2r/agents/vx-dev-quality.md"
+    ],
+    "test_implementation": [
+      "agents/vx-qa-builder.md"
+    ],
+    "independent_review": [
+      "agents/vx-inspector.md",
+      "runtime/dev-team-v2r/agents/vx-dev-reviewer.md"
+    ],
+    "ci_platform": [
+      "runtime/dev-team-v2r/agents/vx-dev-platform.md"
+    ],
+    "security": [
+      "runtime/dev-team-v2r/agents/vx-dev-security.md"
+    ]
+  },
+  "obligations": {
+    "coordinator": [
+      "UPDATE",
+      "REPLACE",
+      "ADD",
+      "PASS",
+      "supersed"
+    ],
+    "test_design": [
+      "UPDATE",
+      "REPLACE",
+      "ADD",
+      "invariante"
+    ],
+    "test_implementation": [
+      "UPDATE",
+      "REPLACE",
+      "ADD",
+      "PASS"
+    ],
+    "independent_review": [
+      "UPDATE",
+      "REPLACE",
+      "ADD",
+      "invariante"
+    ],
+    "ci_platform": [
+      "gate",
+      "source",
+      "runtime",
+      "supersed"
+    ],
+    "security": [
+      "PASS",
+      "riesgo",
+      "supersed"
+    ]
+  }
+}
