@@ -112,9 +112,15 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
                 self.assertEqual(path.parent.name, skill)
                 content = path.read_text(encoding="utf-8")
                 self.assertLessEqual(len(content.splitlines()), 500)
+                self.assertLessEqual(len(skill), 64)
+                self.assertRegex(skill, r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
                 self.assertRegex(content, rf"(?m)^name:\s*{re.escape(skill)}\s*$")
-                self.assertRegex(content, r"(?m)^description:\s*\".+\"\s*$")
-                self.assertRegex(content, r"(?m)^compatibility:\s*\".+\"\s*$")
+                description = re.search(r'(?m)^description:\s*"(.+)"\s*$', content)
+                compatibility = re.search(r'(?m)^compatibility:\s*"(.+)"\s*$', content)
+                self.assertIsNotNone(description)
+                self.assertIsNotNone(compatibility)
+                self.assertLessEqual(len(description.group(1)), 1024)
+                self.assertLessEqual(len(compatibility.group(1)), 500)
                 self.assertNotIn("allowed-tools:", content)
                 self.assertIsNone(
                     re.search(r"!\x60[^\x60]+\x60", content),
