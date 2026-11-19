@@ -1,0 +1,64 @@
+{
+  "schema": "dev-team-runtime-visible-tools/1",
+  "status": "TEMPLATE_NOT_RUNTIME_EVIDENCE",
+  "captured_at": null,
+  "host": null,
+  "kilo_version": null,
+  "agents": [
+    {
+      "Agent": "vx-dev-team",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-explorer",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-research",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-architect",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-frontend",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-backend",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-data",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-platform",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-quality",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-security",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    },
+    {
+      "Agent": "vx-dev-reviewer",
+      "visible_tools": [],
+      "capture_status": "PENDING"
+    }
+  ]
+}
