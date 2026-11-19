@@ -6,7 +6,8 @@
   "active_tests": [
     "test_vx_pack_current_contract.py",
     "test_vx_pack_bootstrap_v1.py",
-    "test_vx_pack_doctor.py"
+    "test_vx_pack_doctor.py",
+    "test_vx_pack_coexist_current.py"
   ],
   "historical_candidates": [
     {
@@ -21,8 +22,9 @@
     },
     {
       "test": "test_vx_pack_coexist_v023.py",
-      "status": "KEEP_PENDING_SEMANTIC_REVIEW",
-      "reason": "Coexistence installer has distinct behavior from strict bootstrap."
+      "status": "REPLACEMENT_ACTIVE_AWAITING_CI_PASS",
+      "reason": "Coexistence installer has distinct behavior from strict bootstrap.",
+      "replacement": "test_vx_pack_coexist_current.py"
     },
     {
       "test": "test_vx_runtime_smoke_v1.py",
