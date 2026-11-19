@@ -23,7 +23,14 @@
     {
       "superseded_test": "test_vx_dev_team_mcp_readonly_matrix_v1.py",
       "evidence_registry": "registry/dev-team-mcp-readonly-matrix-v1.proposal.json",
-      "reason": "Historical MCP proposal superseded by canonical capability matrix and exact MCP inventory; remove from active CI only after current replacement passes."
+      "reason": "Historical MCP proposal superseded by canonical capability matrix and exact MCP inventory; remove from active CI only after current replacement passes.",
+      "status": "RETIRED_AFTER_REPLACEMENT_PASS",
+      "pass_evidence": "registry/vx-historical-test-pass-evidence-dev-team-mcp-run-457.json",
+      "replacement": [
+        "test_vx_dev_team_capability_matrix_v1.py",
+        "test_vx_dev_team_mcp_exact_inventory_v1.py",
+        "test_vx_dev_team_mcp_current_contract.py"
+      ]
     }
   ],
   "rules": {
