@@ -25,3 +25,8 @@ metadata:
 
 ## Evidencia
 No afirmar conformidad WCAG completa solo por inspección estática o scanner. Registrar criterio, elemento, severidad, evidencia y validación pendiente.
+
+## Integración de evidencia/MCP
+- Source puede sostener semántica prevista, pero teclado, foco, reflow y comportamiento real requieren evidencia runtime cuando sea posible.
+- Si Playwright/Chrome DevTools están autorizados, usarlos solo para checks observables y registrar qué se probó.
+- Un resultado automatizado no equivale a conformidad WCAG completa.
