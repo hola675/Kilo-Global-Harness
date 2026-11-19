@@ -22,3 +22,8 @@ metadata:
 
 ## Salida
 `OBSERVABILITY_QUESTIONS`, `SIGNAL_MAP`, `CORRELATION_GAPS`, `PRIVACY_RISKS`, `RETENTION_RISKS`, `ALERTABILITY_GAPS`.
+
+## Integración de evidencia/MCP
+- Sentry/Chrome DevTools/browser pueden contener telemetría, headers, sesiones o PII; aplicar `vx-dev-mcp-sensitive-data`.
+- Preferir métricas/IDs normalizados sobre payloads completos.
+- No copiar logs sensibles a handoffs si basta con un resumen y un identificador reusable.
