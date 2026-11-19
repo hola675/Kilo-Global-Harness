@@ -24,7 +24,7 @@ class ConsolidationTests(unittest.TestCase):
                      "vx-organization-graph-v1.proposal.json"):
             self.assertTrue((ROOT / "registry" / name).is_file(), name)
 
-    def test_v472_contract_tests_present_but_not_bootstrap_assets(self):
+    def test_approval_security_contract_is_current_but_not_bootstrap_asset(self):
         self.assertTrue((ROOT / "scripts/vx_approval_security_v472.py").is_file())
         self.assertTrue((ROOT / "tests/test_vx_approval_security_v472.py").is_file())
         source = (ROOT / "scripts/vx_pack_bootstrap.py").read_text(encoding="utf-8")
@@ -32,8 +32,15 @@ class ConsolidationTests(unittest.TestCase):
         self.assertNotIn('re.fullmatch(r"vx_.*\\.py", item.name)', source)
         self.assertIn("vx_evolution_core.py", source)
         self.assertIn("vx_skill_router.py", source)
-        workflow = (ROOT / ".github/workflows/validar-harness.yml").read_text(encoding="utf-8")
-        self.assertIn("test_vx_approval_security_v472.py", workflow)
+        current = json.loads(
+            (ROOT / "registry/vx-evolution-current-certification-v1.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertIn(
+            "test_vx_approval_security_v472.py",
+            current["current_contracts"],
+        )
 
     def test_scheduler_and_approval_never_auto_enabled(self):
         policy = json.loads((ROOT / "config/vx-reunion-policy.v1.json").read_text(encoding="utf-8"))
