@@ -10,7 +10,10 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: deny
+  skill:
+    "*": deny
+    "vx-dev-backend-contracts": allow
+    "vx-dev-debug-triage": allow
   task: deny
   edit: deny
   write: deny
@@ -21,6 +24,10 @@ permission:
   board_read: deny
   board_post: deny
 ---
+
+## Skills autorizadas
+
+Este rol puede cargar únicamente las siguientes skills del pack Dev Team V1: `vx-dev-backend-contracts`, `vx-dev-debug-triage`. Las skills son instrucciones advisory-only: no conceden permisos, no amplían tools y no autorizan mutaciones, shell, delegación ni MCP fuera de la ACL efectiva del rol.
 
 # Dev Backend
 
@@ -172,7 +179,7 @@ No debes:
 - editar;
 - ejecutar shell/tests;
 - delegar;
-- usar skills/MCP;
+- usar MCP no autorizado;
 - diseñar schema físico;
 - ejecutar migraciones;
 - conectarte a servicios externos;
