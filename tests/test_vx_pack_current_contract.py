@@ -63,9 +63,12 @@ class VXPackCurrentContractTests(unittest.TestCase):
             '{"mcp":{"private":{"headers":{"Authorization":"SECRET_CURRENT"}}}}',
             encoding="utf-8",
         )
-        report = vx.plan(ROOT, self.home)
-        encoded = json.dumps(report)
-        self.assertEqual(report["mcp_changes"], 0)
+        inventory = vx.mcp_suggestions(ROOT, self.home)
+        encoded = json.dumps(inventory)
+        self.assertTrue(
+            all(item["auto_install"] is False for item in inventory["catalog"])
+        )
+        self.assertEqual(inventory["connection_checks"], 0)
         self.assertNotIn("SECRET_CURRENT", encoded)
 
     def test_external_compat_skill_source_blocks_destructive_migration(self):
