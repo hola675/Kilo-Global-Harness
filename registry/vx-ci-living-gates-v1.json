@@ -138,16 +138,22 @@
       "reason": "Synthetic privacy invariant; review against current observer contract."
     },
     {
-      "name": "V4.5 - calendario, reuniones manuales y migración sin scheduler",
-      "class": "REVIEW",
+      "name": "VX Reunion - contrato vigente de sesion conjunta manual",
+      "class": "CURRENT",
       "kind": "evolution",
-      "reason": "Likely superseded by V4.5.1 policy."
+      "reason": "Canonical current meeting policy replacement gate."
+    },
+    {
+      "name": "V4.5 - calendario, reuniones manuales y migración sin scheduler",
+      "class": "HISTORICAL_CANDIDATE",
+      "kind": "evolution",
+      "reason": "Superseded candidate; current meeting contract replacement added and must pass before removal."
     },
     {
       "name": "V4.5.1 - reunion conjunta sin duplicación ni programador",
-      "class": "CURRENT",
+      "class": "HISTORICAL_CANDIDATE",
       "kind": "evolution",
-      "reason": "Matches latest confirmed meeting policy."
+      "reason": "Superseded candidate; current meeting contract replacement added and must pass before removal."
     },
     {
       "name": "ROADMAP V4.6 - coherencia de estado y scheduler desactivado",
