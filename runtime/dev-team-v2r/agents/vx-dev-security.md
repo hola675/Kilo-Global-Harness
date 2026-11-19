@@ -10,7 +10,11 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: deny
+  skill:
+    "*": deny
+    "vx-dev-security-threat-review": allow
+    "vx-dev-supply-chain-review": allow
+    "vx-dev-mcp-security": allow
   task: deny
   edit: deny
   write: deny
@@ -21,6 +25,10 @@ permission:
   board_read: deny
   board_post: deny
 ---
+
+## Skills autorizadas
+
+Este rol puede cargar únicamente las siguientes skills del pack Dev Team V1: `vx-dev-security-threat-review`, `vx-dev-supply-chain-review`, `vx-dev-mcp-security`. Las skills son instrucciones advisory-only: no conceden permisos, no amplían tools y no autorizan mutaciones, shell, delegación ni MCP fuera de la ACL efectiva del rol.
 
 # Dev Security
 
@@ -269,7 +277,7 @@ No debes:
 - ejecutar shell/tests/scanners;
 - ejecutar exploits/payloads;
 - delegar;
-- usar skills/MCP;
+- usar MCP no autorizado;
 - leer/revelar secretos bloqueados;
 - copiar tokens/credenciales;
 - hacer reconnaissance externo;
