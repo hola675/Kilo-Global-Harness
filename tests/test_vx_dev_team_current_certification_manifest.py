@@ -23,6 +23,19 @@ class CurrentCertificationManifestTests(unittest.TestCase):
             "A superseded historical certification test must not remain active.",
         )
 
+    def test_retired_historical_tests_are_not_active_or_present(self):
+        data=module.load_manifest()
+        module.validate_manifest(data)
+        retired={
+            item["retired_test"]
+            for item in data["historical_evidence"]
+            if "retired_test" in item
+        }
+        self.assertIn("test_vx_dev_team_mcp_readonly_matrix_v1.py",retired)
+        for name in retired:
+            self.assertNotIn(name,data["active_tests"])
+            self.assertFalse((ROOT/"tests"/name).exists())
+
     def test_active_tests_are_unique_and_current(self):
         data=module.load_manifest()
         self.assertEqual(len(data["active_tests"]),len(set(data["active_tests"])))
