@@ -4,7 +4,7 @@
   "status": "ACTIVE_APPROVED_BASELINE",
   "primary": {
     "id": "vx-dev-team",
-    "displayName": "👥 Dev Team",
+    "displayName": "vx-dev-team",
     "mode": "primary",
     "visible": true,
     "writes": "ask",
