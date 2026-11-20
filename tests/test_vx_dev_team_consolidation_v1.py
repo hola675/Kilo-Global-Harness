@@ -61,7 +61,14 @@ class ConsolidationV1Tests(unittest.TestCase):
             self.assertFalse((ROOT/path).exists(),path)
 
     def test_main_advanced_fanout_planner_is_inert_and_safe(self):
-        from tools.vx_team_git_reconciliation import plan_main_advanced
+        # CI usa python -I: importar el módulo de source por ruta explícita.
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_reconciliation", ROOT / "tools" / "vx_team_git_reconciliation.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        plan_main_advanced = module.plan_main_advanced
         repo = "hola675/Kilo-Global-Harness"
         old, new = "a" * 40, "b" * 40
         tasks = [
