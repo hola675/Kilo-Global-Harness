@@ -99,8 +99,34 @@ class ActivationPreflightV1Tests(unittest.TestCase):
             self.assertFalse(report["checks"]["skill_source_hash_18_of_18"])
             self.assertIn("vx-dev-team",report["hash_evidence"]["agents"]["different"])
             self.assertIn("vx-dev-independent-review:installed",report["hash_evidence"]["skills"]["missing"])
+            details={x["name"]:x for x in report["hash_evidence"]["agents"]["drift_details"]}
+            self.assertEqual(details["vx-dev-team"]["kind"],"CONTENT_CHANGED")
+            self.assertNotIn("source",details["vx-dev-team"])
+            self.assertNotIn("installed",details["vx-dev-team"])
             self.assertEqual(report["waves"][0]["readiness"],"BLOCKED")
 
+    @unittest.skipUnless(shutil.which("pwsh"),"Windows/PowerShell runtime required")
+    def test_utf8_bom_and_line_endings_are_classified_but_still_block_w1(self):
+        with tempfile.TemporaryDirectory(prefix="vx-preflight-format-") as tmp:
+            home=Path(tmp)
+            self._installed_fixture(home)
+            leader=home/".config"/"kilo"/"agents"/"vx-dev-team.md"
+            skill=home/".kilo"/"skills"/"vx-dev-team-handoff"/"SKILL.md"
+            original_leader=leader.read_bytes()
+            original_skill=skill.read_bytes()
+            leader.write_bytes(b"\xef\xbb\xbf"+original_leader)
+            clean_skill=original_skill.replace(b"\r\n",b"\n")
+            skill.write_bytes(clean_skill.replace(b"\n",b"\r\n"))
+            report=self._run_preflight(home)
+            agent_drift={x["name"]:x for x in report["hash_evidence"]["agents"]["drift_details"]}
+            skill_drift={x["name"]:x for x in report["hash_evidence"]["skills"]["drift_details"]}
+            self.assertEqual(agent_drift["vx-dev-team"]["kind"],"UTF8_BOM_ONLY")
+            self.assertEqual(skill_drift["vx-dev-team-handoff"]["kind"],"EOL_OR_BOM_ONLY")
+            self.assertFalse(report["checks"]["runtime_agent_hash_match"])
+            self.assertFalse(report["checks"]["skill_source_hash_18_of_18"])
+            self.assertEqual(report["waves"][0]["readiness"],"BLOCKED")
+            self.assertEqual(leader.read_bytes(),b"\xef\xbb\xbf"+original_leader)
+            self.assertEqual(skill.read_bytes(),clean_skill.replace(b"\n",b"\r\n"))
 
 if __name__=="__main__":
     unittest.main()
