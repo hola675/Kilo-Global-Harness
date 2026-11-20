@@ -116,7 +116,9 @@ class ActivationPreflightV1Tests(unittest.TestCase):
             original_skill=skill.read_bytes()
             leader.write_bytes(b"\xef\xbb\xbf"+original_leader)
             clean_skill=original_skill.replace(b"\r\n",b"\n")
-            skill.write_bytes(clean_skill.replace(b"\n",b"\r\n"))
+            alternate=clean_skill if clean_skill!=original_skill else clean_skill.replace(b"\n",b"\r\n")
+            self.assertNotEqual(alternate,original_skill)
+            skill.write_bytes(alternate)
             report=self._run_preflight(home)
             agent_drift={x["name"]:x for x in report["hash_evidence"]["agents"]["drift_details"]}
             skill_drift={x["name"]:x for x in report["hash_evidence"]["skills"]["drift_details"]}
@@ -126,7 +128,7 @@ class ActivationPreflightV1Tests(unittest.TestCase):
             self.assertFalse(report["checks"]["skill_source_hash_18_of_18"])
             self.assertEqual(report["waves"][0]["readiness"],"BLOCKED")
             self.assertEqual(leader.read_bytes(),b"\xef\xbb\xbf"+original_leader)
-            self.assertEqual(skill.read_bytes(),clean_skill.replace(b"\n",b"\r\n"))
+            self.assertEqual(skill.read_bytes(),alternate)
 
 if __name__=="__main__":
     unittest.main()
