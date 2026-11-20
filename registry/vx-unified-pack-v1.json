@@ -410,6 +410,9 @@
       ".kilo/skills/vx-codebase-investigation/SKILL.md",
       ".kilo/skills/vx-supply-chain-review/SKILL.md",
       ".kilo/skills/vx-accessibility-review/SKILL.md"
+    ],
+    "commands": [
+      ".config/kilo/commands/vx-p2.md"
     ]
   },
   "activation": {
@@ -423,7 +426,9 @@
     "retire_only_explicit_legacy_assets": true,
     "source_ci_not_runtime_pass": true,
     "backup_dpapi_required": true,
-    "review_required": true
+    "review_required": true,
+    "update_selected_commands": true,
+    "retire_historical_p2_command": true
   },
   "postponed": [
     "26 Dev Team extension skills remain as source proposals, not installed by unified core",
@@ -475,5 +480,22 @@
     "vx-git-ci-quality",
     "vx-agent-collaboration",
     "vx-release-readiness"
+  ],
+  "commands": [
+    {
+      "id": "vx-equipo",
+      "source": "commands/vx-equipo.md",
+      "target": ".config/kilo/commands/vx-equipo.md"
+    },
+    {
+      "id": "vx-dependencias",
+      "source": "commands/vx-dependencias.md",
+      "target": ".config/kilo/commands/vx-dependencias.md"
+    },
+    {
+      "id": "vx-editorial",
+      "source": "commands/vx-editorial.md",
+      "target": ".config/kilo/commands/vx-editorial.md"
+    }
   ]
 }
