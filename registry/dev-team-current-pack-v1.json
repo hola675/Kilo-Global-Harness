@@ -1,0 +1,109 @@
+{
+  "schema": "dev-team-current-pack/1",
+  "version": "1.0.0",
+  "updated": "2026-11-19",
+  "status": "SOURCE_RECONCILED_RUNTIME_NOT_FULLY_VERIFIED",
+  "authority": "Source of truth is referenced registries and agent/skill files; this index does not grant permissions or install anything.",
+  "agents": {
+    "source_baseline": "2.3.0-reviewer-specialist",
+    "total": 11,
+    "primary": "agents/vx-dev-team.md",
+    "hidden_specialists_source": "runtime/dev-team-v2r/agents",
+    "hidden_specialists": 10,
+    "skill_permission_scope": "ONLY_18_CORE_EXACT_IDS_DEFINED_IN_SOURCE",
+    "runtime_certification": "registry/dev-team-v230-runtime-certification-v1.json",
+    "runtime_hash_warning": "Operator preflight 2026-11-19 observed only 6/11 matching source; prior runtime PASS was tied to an older certified source head."
+  },
+  "skills": {
+    "total_source": 44,
+    "layers": [
+      {
+        "name": "CORE_V1",
+        "count": 18,
+        "source": "registry/dev-team-skills-matrix-v1.proposal.json",
+        "id_field": "dev_team_pack.skills[].id",
+        "runtime_status": "REQUIRES_HASH_AND_BEHAVIOR_REVALIDATION"
+      },
+      {
+        "name": "GAP_FILL_V2",
+        "count": 9,
+        "source": "registry/dev-team-skills-gap-v2.proposal.json",
+        "id_field": "additions[].id",
+        "runtime_status": "NOT_AUTHORIZED"
+      },
+      {
+        "name": "UX_UI_PRO_V1",
+        "count": 9,
+        "source": "registry/dev-team-ux-ui-pro-v1.proposal.json",
+        "id_field": "skills[].id",
+        "runtime_status": "NOT_AUTHORIZED"
+      },
+      {
+        "name": "MCP_OPERATIONS_V1",
+        "count": 8,
+        "source": "registry/dev-team-mcp-operations-v1.proposal.json",
+        "id_field": "additions[].id",
+        "runtime_status": "NOT_AUTHORIZED"
+      }
+    ],
+    "source_directory": "runtime/dev-team-v2r/skills",
+    "runtime_location": "~/.kilo/skills",
+    "operator_hash_evidence": "2026-11-19: 2/18 CORE skills byte-identical, 16/18 different; no files absent; no activation implied."
+  },
+  "mcp": {
+    "families": 13,
+    "canonical_registry": "registry/dev-team-mcp-exact-inventory-v1.json",
+    "current_exact_identifiers_verified": 5,
+    "roles_with_documental_allowlist": [
+      "vx-dev-research",
+      "vx-dev-architect"
+    ],
+    "other_tool_candidates": "RUNTIME_UNVERIFIED_DENY",
+    "legacy_alias_to_canonical": {
+      "playwright": "kilo-playwright"
+    },
+    "runtime_permission_verification_issue": "https://github.com/hola675/Kilo-Global-Harness/issues/81"
+  },
+  "tools_and_complements": {
+    "source": "registry/kilo-tools-complements-audit-v1.proposal.json",
+    "status": "RESEARCH_AND_PLAN_ONLY",
+    "external_version": "NOT_VERIFIED_ON_OPERATOR_HOST",
+    "native_tools": "PREFER_NATIVE_WHEN_AVAILABLE_AND_ALLOWED",
+    "mcp_exact_ids": "DO_NOT_PROMOTE_UNOBSERVED_TO_ALLOW",
+    "plugin_installation": "NOT_AUTHORIZED"
+  },
+  "activation": {
+    "wave_registry": "registry/dev-team-activation-waves-v1.json",
+    "preflight": "scripts/Generar-DevTeam-ActivationPreflight.ps1",
+    "all_waves": "BLOCKED_UNTIL_GATES_AND_EXPLICIT_OPERATOR_APPROVAL",
+    "no_kilo_jsonc_change": true,
+    "no_acl_expansion": true,
+    "no_mcp_autoactivation": true,
+    "no_scheduler_activation": true,
+    "source_ci_is_not_runtime_pass": true
+  },
+  "legacy": {
+    "retired_unapproved_proposal_files": [
+      "registry/vx-dev-team-v1.proposal.json",
+      "registry/vx-dev-team-mcp-matrix-v1.proposal.json"
+    ],
+    "retention_rule": "Removed proposals remain in Git history; current runtime and tests must not depend on them.",
+    "preserved_historical_records": [
+      "registry/dev-team-only-baseline-v1.json",
+      "docs/VX-DEV-TEAM-RUNTIME-V1.md",
+      "docs/VX-DEV-TEAM-230-RUNTIME-CERTIFICATION.md"
+    ],
+    "preserved_separate_systems": [
+      "VX Evolution",
+      "VX Pack historic/compatibility sources",
+      "13 MCP family configuration",
+      "external user skills/agents"
+    ],
+    "no_automatic_delete_of_host_resources": true
+  },
+  "test_policy": {
+    "current_manifest": "registry/dev-team-current-certification-v1.json",
+    "action": "UPDATE_EXISTING_TEST_SUITE",
+    "historical_test_retirement": "registry/dev-team-living-certification-policy-v1.json"
+  }
+}
