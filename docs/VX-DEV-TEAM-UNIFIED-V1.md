@@ -88,3 +88,11 @@ La instalación única gestiona también tres comandos globales: **/vx-equipo**,
 **Inventario final bajo gestión del instalador:** 18 agentes, 43 skills, 3 comandos y un bloque de política global VX. Se pueden retirar exactamente seis agentes, siete skills y un comando históricos, si existen; todo el material anterior cambiado se respalda antes de mutar. La existencia de otros comandos o recursos ajenos no convierte su funcionalidad en certificada.
 
 - V1.0 RC1 ajuste de seguridad: recuperacion explicita de respaldo `BACKED_UP` y bloqueo de colisiones por `name:` en skills ajenas globales; casos negativos agregados a la suite viva.
+
+## Integración DAG e inline (corrección RC1)
+
+El instalador único distribuye además **dos archivos de soporte** sin abrir otra instancia: `~/.config/kilo/harness/scripts/vx_task_dag.py` y `~/.config/kilo/harness/vx-unified-pack-v1.json`. `/vx-dependencias` llama al validador con `--registry` apuntando al registro unificado, no al registro histórico; el script admite también el formato legacy solo para compatibilidad, sin activar agentes retirados.
+
+Si `kilo.jsonc` define en línea a cualquiera de los seis agentes legacy retirables (por ejemplo `vx-integrador`), la simulación devuelve `BLOCKED`: eliminar el archivo Markdown no elimina un agente inline. **No editar automáticamente `kilo.jsonc` ni deshabilitar configuración del usuario**; resolver esa colisión por el procedimiento de gestión explícito del host, con respaldo independiente. Comprobar la ausencia del segundo líder antes de aplicar el instalador.
+
+**Inventario completo administrado:** 18 agentes, 43 skills, tres comandos, dos archivos de soporte y un bloque global de política. El número máximo de archivos legacy retirables sigue siendo 14 (seis agentes, siete SKILL.md y un comando); otros recursos globales no se eliminan.
