@@ -27,6 +27,8 @@ class ActivationPreflightV1Tests(unittest.TestCase):
         self.assertNotIn("Set-Acl",text)
         self.assertIn("runtime_agent_hash_match",text)
         self.assertIn("skill_source_hash_18_of_18",text)
+        self.assertIn("vx_editorial_extension",text)
+        self.assertIn("task_permission_runtime_verified=$false",text)
 
     def _installed_fixture(self, home):
         roles=json.loads(MATRIX.read_text(encoding="utf-8"))["roles"]
@@ -43,6 +45,18 @@ class ActivationPreflightV1Tests(unittest.TestCase):
             target=home/".kilo"/"skills"/entry["id"]/"SKILL.md"
             target.parent.mkdir(parents=True,exist_ok=True)
             shutil.copy2(source,target)
+
+    def _installed_editorial(self, home):
+        assets = (
+            ("agents/vx-editorial-builder.md",
+             ".config/kilo/agents/vx-editorial-builder.md"),
+            ("skills/vx-editorial-claridad/SKILL.md",
+             ".kilo/skills/vx-editorial-claridad/SKILL.md"),
+        )
+        for source, target in assets:
+            destination = home / target
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / source, destination)
 
     def _run_preflight(self, home):
         result=subprocess.run(
@@ -84,6 +98,44 @@ class ActivationPreflightV1Tests(unittest.TestCase):
             self.assertFalse(report["checks"]["operator_approval"])
             self.assertEqual(report["hash_evidence"]["scope"],"FILE_SHA256_ONLY_NOT_RUNTIME_BEHAVIOR")
             self.assertEqual(kilo.read_bytes(),before)
+
+    @unittest.skipUnless(shutil.which("pwsh"),"Windows/PowerShell runtime required")
+    def test_editorial_missing_is_explicit_and_does_not_change_w1_gate(self):
+        with tempfile.TemporaryDirectory(prefix="vx-editorial-missing-") as tmp:
+            home=Path(tmp)
+            self._installed_fixture(home)
+            report=self._run_preflight(home)
+            extension=report["vx_editorial_extension"]
+            self.assertEqual(extension["status"],"NOT_INSTALLED_OR_INCOMPLETE")
+            self.assertEqual(extension["agent"]["matched"],0)
+            self.assertEqual(extension["skill"]["matched"],0)
+            self.assertFalse(extension["task_permission_runtime_verified"])
+            self.assertFalse(extension["runtime_functionality_verified"])
+            self.assertTrue(extension["no_activation"])
+            self.assertEqual(report["waves"][0]["readiness"],"READY_FOR_OPERATOR_REVIEW")
+
+    @unittest.skipUnless(shutil.which("pwsh"),"Windows/PowerShell runtime required")
+    def test_editorial_match_then_drift_does_not_claim_runtime_or_change_w1(self):
+        with tempfile.TemporaryDirectory(prefix="vx-editorial-drift-") as tmp:
+            home=Path(tmp)
+            self._installed_fixture(home)
+            self._installed_editorial(home)
+            report=self._run_preflight(home)
+            extension=report["vx_editorial_extension"]
+            self.assertEqual(extension["status"],"SOURCE_FILES_MATCH_ONLY")
+            self.assertEqual(extension["agent"]["matched"],1)
+            self.assertEqual(extension["skill"]["matched"],1)
+            self.assertFalse(extension["task_permission_runtime_verified"])
+            skill=home/".kilo"/"skills"/"vx-editorial-claridad"/"SKILL.md"
+            skill.write_bytes(skill.read_bytes()+b"\\n# test drift\\n")
+            report=self._run_preflight(home)
+            extension=report["vx_editorial_extension"]
+            self.assertEqual(extension["status"],"HASH_DRIFT_REQUIRES_REVIEW")
+            self.assertEqual(extension["skill"]["different"],["vx-editorial-claridad"])
+            self.assertEqual(extension["skill"]["drift_details"][0]["kind"],"CONTENT_CHANGED")
+            self.assertFalse(extension["runtime_functionality_verified"])
+            self.assertEqual(report["waves"][0]["readiness"],"READY_FOR_OPERATOR_REVIEW")
+            self.assertNotIn(str(home),json.dumps(report))
 
     @unittest.skipUnless(shutil.which("pwsh"),"Windows/PowerShell runtime required")
     def test_drift_and_missing_skill_fail_closed(self):
