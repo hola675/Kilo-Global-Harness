@@ -1,6 +1,6 @@
 {
   "schema": "vx-team-git-reconciliation/1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "updated": "2026-11-19",
   "status": "SOURCE_PLAN_ONLY_RUNTIME_NOT_ACTIVATED",
   "documentation": "docs/VX-TEAM-GIT-RECONCILIATION-V1.md",
@@ -77,8 +77,21 @@
   },
   "tests": {
     "existing_suite": "tests/test_vx_dev_team_consolidation_v1.py",
-    "action": "UPDATE",
-    "new_duplicate_test_suite": false
+    "action": "UPDATE_EXISTING_TEST_SUITE",
+    "new_duplicate_test_suite": false,
+    "coverage": [
+      "OBSERVED_MAIN_ADVANCED",
+      "NO_FETCH_NO_PUSH",
+      "UNVERIFIED_ANCESTRY_BLOCK",
+      "DIVERGENT_MAIN_BLOCK",
+      "INVALID_ORIGIN_BLOCK",
+      "QUEUE_IDEMPOTENCE",
+      "QUEUE_COALESCE_NEWER_SHA",
+      "IN_FLIGHT_PAUSE",
+      "OWNER_CHANGE_BLOCK",
+      "CROSS_REPO_ISOLATION",
+      "STALE_TASK_HOLD"
+    ]
   },
   "authorization": {
     "no_acl_expansion": true,
@@ -86,5 +99,41 @@
     "no_kilo_jsonc_change": true,
     "no_host_mutations": true,
     "operator_approval": false
+  },
+  "observer": {
+    "path": "tools/vx_team_git_reconciliation.py",
+    "mode": "ON_DEMAND_READ_ONLY",
+    "trigger": "EXPLICIT_CLI_ONLY",
+    "uses": [
+      "git remote get-url",
+      "git ls-remote",
+      "git cat-file",
+      "git merge-base --is-ancestor"
+    ],
+    "no_fetch": true,
+    "no_merge": true,
+    "no_branch_mutation": true,
+    "fail_closed_if_ancestry_not_local": true,
+    "watcher_enabled": false,
+    "main_advance_required_for_queue": true
+  },
+  "queue": {
+    "mode": "PURE_COALESCE_PLAN_ONLY",
+    "coalescer": "coalesce_pending_queue",
+    "merge_key": [
+      "repo",
+      "branch"
+    ],
+    "dedup_event_id": [
+      "repo",
+      "main_sha",
+      "branch"
+    ],
+    "newest_source": "MAIN_ADVANCED_VERIFIED_ONLY",
+    "coalesce_pending_only": true,
+    "hold_in_flight_or_missing_task": true,
+    "persistence": "NOT_IMPLEMENTED",
+    "dispatch": "NOT_IMPLEMENTED",
+    "mutation_performed": false
   }
 }
