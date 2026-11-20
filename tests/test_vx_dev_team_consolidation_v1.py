@@ -935,6 +935,9 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertEqual(len(result["tickets"]), 1)
         editorial = result["tickets"][0]
         self.assertEqual(editorial["agent_id"], "vx-editorial-builder")
+        self.assertEqual(editorial["assignment_controller"], "vx-dev-team")
+        self.assertTrue(editorial["subagent_only"])
+        self.assertFalse(editorial["direct_invocation_allowed"])
         self.assertEqual(editorial["allowed_paths"], ["README.md", "src/content/forms.json"])
         self.assertIn("PRESERVE_FACTS_AND_MEANING", editorial["requirements"])
         self.assertIn("HUMAN_COMPREHENSION_REVIEW_FOR_CRITICAL_COPY", editorial["requirements"])

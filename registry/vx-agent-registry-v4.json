@@ -38,7 +38,10 @@
       "apply_patch"
     ],
     "runtime_write_permission_validation": "NOT_VERIFIED",
-    "editorial_style_skill": "vx-editorial-claridad"
+    "editorial_style_skill": "vx-editorial-claridad",
+    "editorial_leader": "vx-dev-team",
+    "editorial_visible_as_independent_mode": false,
+    "editorial_task_delegation_source_only": true
   },
   "agents": [
     {
@@ -222,7 +225,7 @@
     {
       "id": "vx-editorial-builder",
       "file": "agents/vx-editorial-builder.md",
-      "mode": "all",
+      "mode": "subagent",
       "role": "builder",
       "writes": true,
       "steps": 90,
@@ -233,7 +236,12 @@
         "editorial-contract-handoff"
       ],
       "permissions": "edit_write_apply_patch_ask_bash_deny",
-      "experience": "SIN_EVALUAR"
+      "experience": "SIN_EVALUAR",
+      "hidden": true,
+      "parent_agent": "vx-dev-team",
+      "direct_selectable": false,
+      "invocation": "LEADER_TASK_ALLOWLIST_ONLY",
+      "runtime_activation": "NOT_VERIFIED"
     }
   ],
   "profiles": [

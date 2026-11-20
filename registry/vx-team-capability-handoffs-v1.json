@@ -76,7 +76,16 @@
       "docs",
       "editorial"
     ],
-    "research_or_review_roles_remain_readonly": true
+    "research_or_review_roles_remain_readonly": true,
+    "editorial_leader": "vx-dev-team",
+    "editorial_subagent": {
+      "id": "vx-editorial-builder",
+      "mode": "subagent",
+      "hidden": true,
+      "direct_entrypoint": false,
+      "assignment": "VX_DEV_TEAM_VIA_TASK_ALLOWLIST",
+      "dispatcher_active": false
+    }
   },
   "execution": {
     "dispatcher_enabled": false,
@@ -99,7 +108,9 @@
     "acl_in_home_changed": false,
     "operator_approval_for_runtime_activation": true,
     "no_installation": true,
-    "no_runtime_dispatch": true
+    "no_runtime_dispatch": true,
+    "editorial_task_allowlisted_in_source": true,
+    "editorial_runtime_task_permission_verified": false
   },
   "safety": {
     "no_merge_to_main_without_ci": true,
