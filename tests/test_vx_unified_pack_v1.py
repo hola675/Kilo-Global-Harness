@@ -113,22 +113,46 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertIn("editorial", editorial)
 
     def test_global_third_party_skill_frontmatter_collision_blocks_without_writes(self):
-        with tempfile.TemporaryDirectory(prefix="vx-unified-foreign-collision-") as tmp:
+        for front in (
+            'name: "vx-dev-project-policy"',
+            "name: vx-dev-project-policy # comentario YAML",
+            "name: 'vx-dev-project-policy' # comentario",
+        ):
+            with self.subTest(front=front), tempfile.TemporaryDirectory(
+                prefix="vx-unified-foreign-collision-"
+            ) as tmp:
+                home = Path(tmp)
+                foreign = home / ".kilo/skills/foreign/SKILL.md"
+                foreign.parent.mkdir(parents=True, exist_ok=True)
+                foreign.write_text(
+                    "---\n" + front + "\ndescription: simulated collision\n---\n",
+                    encoding="utf-8",
+                )
+                original = foreign.read_bytes()
+                result, _ = module.plan(home)
+                self.assertEqual(result["status"], "BLOCKED")
+                self.assertTrue(
+                    any("Skill ajena en pool global declara ID seleccionado" in msg
+                        for msg in result["blockers"])
+                )
+                self.assertEqual(foreign.read_bytes(), original)
+
+    def test_ambiguous_yaml_and_compat_skills_fail_closed(self):
+        with tempfile.TemporaryDirectory(prefix="vx-unified-yaml-") as tmp:
             home = Path(tmp)
             foreign = home / ".kilo/skills/foreign/SKILL.md"
             foreign.parent.mkdir(parents=True, exist_ok=True)
-            foreign.write_text(
-                '---\nname: "vx-dev-project-policy"\ndescription: simulated collision\n---\n',
-                encoding="utf-8",
-            )
-            original = foreign.read_bytes()
-            result, _ = module.plan(home)
-            self.assertEqual(result["status"], "BLOCKED")
-            self.assertTrue(
-                any("Skill ajena en pool global declara ID seleccionado" in msg
-                    for msg in result["blockers"])
-            )
-            self.assertEqual(foreign.read_bytes(), original)
+            foreign.write_text("---\nname: !!str vx-dev-project-policy\n---\n", encoding="utf-8")
+            status, _ = module.plan(home)
+            self.assertEqual(status["status"], "BLOCKED")
+            self.assertTrue(any("no se puede inventariar" in e for e in status["blockers"]))
+            foreign.unlink()
+            external = home / ".agents/skills/external/SKILL.md"
+            external.parent.mkdir(parents=True, exist_ok=True)
+            external.write_text("---\nname: vx-dev-project-policy # compatible\n---\n", encoding="utf-8")
+            status, _ = module.plan(home)
+            self.assertEqual(status["status"], "BLOCKED")
+            self.assertTrue(any(".agents" in e for e in status["blockers"]))
 
     def test_inline_retired_primary_blocks_without_modifying_config(self):
         with tempfile.TemporaryDirectory(prefix="vx-unified-inline-") as tmp:
