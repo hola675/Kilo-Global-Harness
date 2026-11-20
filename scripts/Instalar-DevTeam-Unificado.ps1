@@ -4,7 +4,7 @@
   VX Dev Team Core unificado V1.0-rc1 — una sola instalación global.
 .DESCRIPTION
   Diagnostico/Simular: solo lectura; Aplicar: backup DPAPI CurrentUser,
-  actualización de 18 agentes y 43 skills, retiro EXPLÍCITO de 13 ficheros
+  actualización de 18 agentes y 43 skills, retiro EXPLÍCITO de hasta 14 ficheros
   legacy gestionados por VX. No cambia kilo.jsonc, MCP o recursos de terceros.
   Verificar no equivale a certificar permisos efectivos en Kilo.
 #>
@@ -17,6 +17,7 @@ param(
     [switch]$ConfirmarRetirarVXLegacy,
     [switch]$ConfirmarKiloCerrado,
     [switch]$ConfirmarRestauracion,
+    [switch]$RecuperarInstalacionInterrumpida,
     [string]$CarpetaRespaldo
 )
 $ErrorActionPreference = 'Stop'
@@ -60,7 +61,9 @@ switch ($Modo) {
             ![IO.Path]::IsPathFullyQualified($CarpetaRespaldo)) {
             throw 'Restaurar requiere respaldo absoluto y -ConfirmarRestauracion.'
         }
-        Invoke-Pack 'restore' @('--backup-folder',$CarpetaRespaldo,'--confirm-restore')
+        $restoreArgs = @('--backup-folder',$CarpetaRespaldo,'--confirm-restore')
+        if ($RecuperarInstalacionInterrumpida) { $restoreArgs += '--recover-incomplete' }
+        Invoke-Pack 'restore' $restoreArgs
         return
     }
     'Aplicar' {
