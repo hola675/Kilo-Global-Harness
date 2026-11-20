@@ -21,6 +21,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertEqual(pack["primary"], "vx-dev-team")
         self.assertEqual(len(pack["agents"]), 18)
         self.assertEqual(len(pack["skills"]), 43)
+        self.assertEqual(len(pack["commands"]), 3)
+        self.assertEqual(len(pack["managed_legacy"]["commands"]), 1)
         self.assertEqual(sum(x["role"] == "lead" for x in pack["agents"]), 1)
         self.assertTrue(all(x["hidden"] for x in pack["agents"] if x["role"] != "lead"))
         self.assertEqual(sum(s["layer"] == "CORE" for s in pack["skills"]), 18)
@@ -76,6 +78,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(plan["agents"], 18)
             self.assertEqual(plan["hidden_agents"], 17)
             self.assertEqual(plan["skills"], 43)
+            self.assertEqual(plan["commands"], 3)
             self.assertEqual(plan["legacy_files_to_retire"], 1)
             self.assertIn((".config/kilo/agents/vx-integrador.md", b"legacy VX\n", None), changes)
             self.assertFalse(plan["activation_performed"])
@@ -97,6 +100,9 @@ class UnifiedPackV1Tests(unittest.TestCase):
             retired = home / ".config/kilo/agents/vx-inspector.md"
             retired.parent.mkdir(parents=True, exist_ok=True)
             retired.write_bytes(b"VX old version\n")
+            retired_command = home / ".config/kilo/commands/vx-p2.md"
+            retired_command.parent.mkdir(parents=True, exist_ok=True)
+            retired_command.write_bytes(b"old P2 command\n")
             existing = home / ".config/kilo/agents/vx-dev-team.md"
             existing.write_bytes(b"outdated team\n")
             cfg_before = conf.read_bytes()
@@ -106,6 +112,9 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertTrue(receipt.is_dir())
             self.assertEqual(module.verify(home)["status"], "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED")
             self.assertFalse(retired.exists())
+            self.assertFalse(retired_command.exists())
+            self.assertEqual((home/".config/kilo/commands/vx-equipo.md").read_bytes(),
+                             (ROOT/"commands/vx-equipo.md").read_bytes())
             self.assertNotEqual(existing.read_bytes(), b"outdated team\n")
             self.assertEqual(cfg_before, conf.read_bytes())
             self.assertEqual(third.read_bytes(), b"third party content\n")
@@ -114,6 +123,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(json.loads((receipt/"receipt.json").read_text())["state"], "RESTORED")
             self.assertEqual(existing.read_bytes(), b"outdated team\n")
             self.assertEqual(retired.read_bytes(), b"VX old version\n")
+            self.assertEqual(retired_command.read_bytes(), b"old P2 command\n")
+            self.assertFalse((home/".config/kilo/commands/vx-equipo.md").exists())
             self.assertEqual(cfg_before, conf.read_bytes())
             self.assertEqual(third.read_bytes(), b"third party content\n")
             self.assertFalse((home/".config/kilo/agents/vx-editorial-builder.md").exists())
