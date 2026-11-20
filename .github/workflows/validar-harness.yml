@@ -173,7 +173,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Manifest Pack VX actual invalido.' }
           Write-Host 'VX PACK CURRENT CERTIFICATION: PASS'
 
-      - name: VX Pack 0.3 - smoke Windows, MCP pasivos y rollback
+      - name: VX Pack 0.4 - smoke Windows, MCP pasivos y rollback
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -184,15 +184,15 @@ jobs:
           $report = (python scripts/vx_pack_doctor.py --home $fixture --source . --json | Out-String | ConvertFrom-Json)
           if ($LASTEXITCODE -ne 0) { throw 'Doctor VX fallo en Windows.' }
           if (!$report.ready_for_manual_kilo_smoke -or
-              $report.agents.expected -ne 13 -or $report.agents.found -ne 13 -or
-              $report.skills.expected -ne 31 -or $report.skills.found -ne 31 -or
+              $report.agents.expected -ne 14 -or $report.agents.found -ne 14 -or
+              $report.skills.expected -ne 32 -or $report.skills.found -ne 32 -or
               $report.runtime_verified -ne $false -or $report.mcp.connections_verified -ne $false) {
             throw 'Doctor VX no acredita pack instalado o promete runtime inexistente.'
           }
           $backup = Get-ChildItem (Join-Path $fixture '.config/kilo-harness-backups') -Directory |
             Sort-Object Name -Descending | Select-Object -First 1
           & $installer -Modo Restaurar -RaizUsuario $fixture -BackupFolder $backup.FullName
-          Write-Host 'VX PACK V0.3 WINDOWS SMOKE: 13 AGENTES, 31 SKILLS, MCP PASIVOS Y ROLLBACK PASS'
+          Write-Host 'VX PACK V0.4 WINDOWS SMOKE: 14 AGENTES, 32 SKILLS, MCP PASIVOS Y ROLLBACK PASS'
 
       - name: VX Pack DPAPI - sintaxis y soporte Windows del bootstrap actual
         shell: pwsh
@@ -224,14 +224,14 @@ jobs:
           }
           Write-Host 'MCP PACK V1: REGISTRO 13/13, INSTALADOR Y DOCUMENTACIÓN PASS'
 
-      - name: VX Permisos - MCP namespaced con fallback deny y verificación de 13 roles
+      - name: VX Permisos - MCP namespaced con fallback deny y verificación de 14 roles
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_agent_permissions_v02.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Permisos VX no aíslan herramientas namespaced.' }
           & ./scripts/Validar-Registro-V4.ps1
-          Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 13 AGENTES PASS'
+          Write-Host 'VX PERMISSIONS: MCP DENY BY DEFAULT Y 14 AGENTES PASS'
 
       - name: Dev Team - certificacion viva del contrato actual
         shell: pwsh
@@ -303,7 +303,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Error sintaxis task DAG VX.' }
           Write-Host 'VX TASK DAG CURRENT: GATES Y DEPENDENCIAS SIN AGENTES EJECUTADOS PASS'
 
-      - name: VX Skill Router - 31 skills, DAG acíclico y selector sin efectos
+      - name: VX Skill Router - 32 skills, DAG acíclico y selector sin efectos
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -312,10 +312,10 @@ jobs:
           python -m compileall -q scripts/vx_skill_router.py tests/test_vx_skill_router_v02.py
           if ($LASTEXITCODE -ne 0) { throw 'Falló sintaxis skill router VX.' }
           $check = python scripts/vx_skill_router.py --validate-only | ConvertFrom-Json
-          if ($LASTEXITCODE -ne 0 -or $check.status -ne 'PASS' -or $check.skills -ne 31) {
+          if ($LASTEXITCODE -ne 0 -or $check.status -ne 'PASS' -or $check.skills -ne 32) {
             throw 'Skill pack incompleto o dependencias no válidas.'
           }
-          Write-Host 'VX SKILL ROUTER CURRENT: 31 SKILLS, DAG Y PERMISOS INTACTOS PASS'
+          Write-Host 'VX SKILL ROUTER CURRENT: 32 SKILLS, DAG Y PERMISOS INTACTOS PASS'
 
       - name: VX Evidence Revalidation - comando global read-only
         shell: pwsh
@@ -801,7 +801,7 @@ jobs:
               $cmd -notmatch 'PRECONDITION_NOT_MET' -or
               $cmd -notmatch 'FAIL_UNAPPROVED_WRITE' -or
               $agent -notmatch '(?m)^\s*bash: deny\r?$' -or
-              $registry.pack.version -ne '0.3.0') {
+              $registry.pack.version -ne '0.4.0') {
             throw 'Gates P2.1 incompletos.'
           }
           Write-Host 'PASS P2.1 selector + aprobacion manual sin cambios ACL'
@@ -821,7 +821,7 @@ jobs:
           $pack = Get-Content 'commands/vx-pack.md' -Raw -Encoding UTF8
           if ($pack -match '12 agentes/30 skills') { throw 'Inventario antiguo en vx-pack.' }
           $registry = Get-Content 'registry/vx-agent-registry-v4.json' -Raw -Encoding UTF8 | ConvertFrom-Json
-          if ($registry.pack.version -ne '0.3.0' -or @($registry.pack.owned_agents).Count -ne 13 -or @($registry.pack.owned_skills).Count -ne 31) {
+          if ($registry.pack.version -ne '0.4.0' -or @($registry.pack.owned_agents).Count -ne 14 -or @($registry.pack.owned_skills).Count -ne 32) {
             throw 'Versión de pack inconsistente.'
           }
           $cert = Get-Content 'commands/vx-certificar.md' -Raw -Encoding UTF8

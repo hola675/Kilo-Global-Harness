@@ -26,7 +26,7 @@ class VXPackCurrentContractTests(unittest.TestCase):
         self.home = Path(self.temp.name) / "home"
         (self.home / ".config" / "kilo").mkdir(parents=True)
 
-    def test_current_registry_is_pack_030_with_closed_inventory(self):
+    def test_current_registry_is_pack_040_with_closed_inventory(self):
         pack = self.registry["pack"]
         self.assertEqual(pack["version"], "0.4.0")
         self.assertEqual(len(pack["owned_agents"]), 14)
