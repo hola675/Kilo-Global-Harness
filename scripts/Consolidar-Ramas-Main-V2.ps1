@@ -22,22 +22,28 @@ function Remote-Sha([string]$Ref){
   return [string](($lines[0] -split '\s+')[0])
 }
 function Local-Sha([string]$Ref){
-  $sha=(& git rev-parse --verify $Ref 2>$null | Out-String).Trim()
+  $sha=(& git rev-parse --verify --quiet $Ref 2>$null | Out-String).Trim()
   if($LASTEXITCODE -ne 0){return ''}
   return $sha
 }
 function Open-PR-Branches {
   $url='https://api.github.com/repos/hola675/Kilo-Global-Harness/pulls?state=open&per_page=100'
   try {
-    $prs=@(Invoke-RestMethod -Uri $url -Headers @{'User-Agent'='Kilo-Branch-Cleanup-V2';Accept='application/vnd.github+json'} -Method Get)
+    # PS 5.1 devuelve JSON arrays como un solo objeto: enumerar explicitamente.
+    $response=Invoke-RestMethod -Uri $url -Headers @{'User-Agent'='Kilo-Branch-Cleanup-V2';Accept='application/vnd.github+json'} -Method Get
   }catch{
     if(!(Get-Command gh -ErrorAction SilentlyContinue)){throw 'GitHub PR API no disponible; no borrar.'}
     $json=(& gh api --method GET repos/hola675/Kilo-Global-Harness/pulls -f state=open -f per_page=100 | Out-String)
     Assert-Git 'gh api pulls'
-    $prs=@($json | ConvertFrom-Json)
+    $response=$json | ConvertFrom-Json
   }
+  $prs=[System.Collections.Generic.List[object]]::new()
+  foreach($pr in $response){if($null -ne $pr){[void]$prs.Add($pr)}}
   if($prs.Count -ge 100){throw 'PR paginadas: inventario no completo.'}
-  return @($prs | Where-Object { $_.head.repo.full_name -eq 'hola675/Kilo-Global-Harness' } | ForEach-Object {$_.head.ref})
+  return @($prs | Where-Object {
+    $null -ne $_.head -and $null -ne $_.head.repo -and
+    $_.head.repo.full_name -eq 'hola675/Kilo-Global-Harness'
+  } | ForEach-Object {$_.head.ref})
 }
 function Archive-Sha([string]$Tag,[string]$Sha){
   if($Tag -notmatch '^archive/(?:remote|local)/[A-Za-z0-9._/-]+$' -or $Sha -notmatch '^[a-f0-9]{40}$'){
