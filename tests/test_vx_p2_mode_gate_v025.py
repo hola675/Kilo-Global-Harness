@@ -42,7 +42,7 @@ class P2ModeGateTests(unittest.TestCase):
 
     def test_pack_includes_global_command_and_version(self):
         registry = json.loads((ROOT / "registry/vx-agent-registry-v4.json").read_text(encoding="utf-8"))
-        self.assertEqual(registry["pack"]["version"], "0.3.0")
+        self.assertEqual(registry["pack"]["version"], "0.4.0")
         sys.path.insert(0, str(ROOT / "scripts"))
         import vx_pack_bootstrap as vx
         with tempfile.TemporaryDirectory() as tmp:

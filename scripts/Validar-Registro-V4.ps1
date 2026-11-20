@@ -88,9 +88,19 @@ foreach ($agent in $agents) {
     if ($front -match '(?m)^\s{2}task:\s*allow\s*$') { throw "Agente read-only puede delegar: $id." }
   }
   if ($agent.role -eq 'builder') {
-    if ($agent.writes -ne $true -or $agent.mode -ne 'all') { throw "Builder no coherente: $id" }
+    # Excepcion cerrada: Editorial es subagente oculto del lider.
+    $editorialChild = ($id -eq 'vx-editorial-builder')
+    if ($agent.writes -ne $true) { throw "Builder sin escritura: $id" }
+    if ($editorialChild) {
+      if ($agent.mode -ne 'subagent' -or $agent.hidden -ne $true -or
+          $agent.parent_agent -ne 'vx-dev-team' -or $agent.direct_selectable -ne $false -or
+          $front -notmatch '(?m)^hidden:\s*true\s*$' -or
+          $front -notmatch '(?m)^  bash:\s*deny\s*$') {
+        throw 'Editorial debe ser subagente oculto, sin modo independiente.'
+      }
+    } elseif ($agent.mode -ne 'all') { throw "Builder no coherente: $id" }
     foreach ($pair in @(
-      @{Key='edit';Value='ask'},
+      @{Key='edit';Value='ask'}, @{Key='write';Value='ask'}, @{Key='apply_patch';Value='ask'},
       @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}
     )) {
       $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
@@ -173,6 +183,10 @@ $childSkillMatrix = @{
 foreach ($child in $childIds) {
   $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
   if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
+}
+# Editorial solo via la allowlist task del lider; no aparece como modo.
+if ($devFront -notmatch '(?m)^\s{4}"vx-editorial-builder":\s*allow\s*$') {
+  throw 'Dev Team no puede delegar al subagente editorial.'
 }
 if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
   throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'

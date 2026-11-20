@@ -1,6 +1,6 @@
 {
   "schema": "vx-skill-dependencies/1",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "global_only": true,
   "policy": {
     "execution": "advisory-only",
@@ -738,6 +738,37 @@
         "vx-mcp-safe-integration"
       ],
       "source": "https://github.com/HexRaysSA/ida-mcp",
+      "runtime": "on-demand"
+    },
+    {
+      "id": "vx-editorial-claridad",
+      "phase": "build",
+      "profiles": [
+        "editorial",
+        "docs",
+        "frontend",
+        "design"
+      ],
+      "keywords": [
+        "redactar",
+        "redaccion",
+        "redacción",
+        "contenido",
+        "copy",
+        "microcopy",
+        "texto",
+        "claridad",
+        "lenguaje claro",
+        "formulario",
+        "ortografia",
+        "ortografía",
+        "instrucción",
+        "mensaje"
+      ],
+      "owner": "vx-editorial-builder",
+      "reviewer": "vx-frontend-adviser",
+      "depends_on": [],
+      "source": "https://www.w3.org/WAI/WCAG21/Understanding/reading-level",
       "runtime": "on-demand"
     }
   ]

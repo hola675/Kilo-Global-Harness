@@ -48,7 +48,7 @@
       "reason": "Canonical current Pack VX certification manifest/runner."
     },
     {
-      "name": "VX Pack 0.3 - smoke Windows, MCP pasivos y rollback",
+      "name": "VX Pack 0.4 - smoke Windows, MCP pasivos y rollback",
       "class": "CURRENT",
       "kind": "pack",
       "reason": "Windows-only apply/verify/restore smoke; unit doctor coverage belongs to current Pack certification manifest."
@@ -66,7 +66,7 @@
       "reason": "Current MCP catalog invariant."
     },
     {
-      "name": "VX Permisos - MCP namespaced con fallback deny y verificación de 13 roles",
+      "name": "VX Permisos - MCP namespaced con fallback deny y verificación de 14 roles",
       "class": "CURRENT",
       "kind": "permissions",
       "reason": "Current deny-by-default permission invariant."
@@ -96,7 +96,7 @@
       "reason": "Current orchestration dependency/DAG invariant; historical version label removed."
     },
     {
-      "name": "VX Skill Router - 31 skills, DAG acíclico y selector sin efectos",
+      "name": "VX Skill Router - 32 skills, DAG acíclico y selector sin efectos",
       "class": "CURRENT",
       "kind": "skills",
       "reason": "Current 31-skill router/DAG/no-side-effect invariant; historical version label removed."

@@ -1,6 +1,6 @@
 {
   "schema": "vx-agent-registry/1",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "global_only": true,
   "runtime": "kilo-native",
   "source_policy": "origin-authored-vx-no-external-agent-code",
@@ -21,7 +21,27 @@
     "approval_unavailable_in_noninteractive_task": "BLOCK_AND_RETURN_PLAN",
     "dev_team_primary": "vx-dev-team",
     "dev_team_display_name": "vx-dev-team",
-    "dev_team_runtime": "active-v1"
+    "dev_team_runtime": "active-v1",
+    "capability_handoff_manifest": "registry/vx-team-capability-handoffs-v1.json",
+    "capability_handoff_mode": "SOURCE_PLAN_ONLY_NOT_DISPATCHED",
+    "bounded_code_builders": [
+      "vx-frontend-builder",
+      "vx-backend-builder",
+      "vx-data-builder",
+      "vx-qa-builder",
+      "vx-docs-builder",
+      "vx-editorial-builder"
+    ],
+    "ask_only_file_creation_tools": [
+      "edit",
+      "write",
+      "apply_patch"
+    ],
+    "runtime_write_permission_validation": "NOT_VERIFIED",
+    "editorial_style_skill": "vx-editorial-claridad",
+    "editorial_leader": "vx-dev-team",
+    "editorial_visible_as_independent_mode": false,
+    "editorial_task_delegation_source_only": true
   },
   "agents": [
     {
@@ -201,6 +221,27 @@
       ],
       "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
       "experience": "SIN_EVALUAR"
+    },
+    {
+      "id": "vx-editorial-builder",
+      "file": "agents/vx-editorial-builder.md",
+      "mode": "subagent",
+      "role": "builder",
+      "writes": true,
+      "steps": 90,
+      "capabilities": [
+        "plain-language-editing",
+        "ux-copy-creation",
+        "accessible-content-review",
+        "editorial-contract-handoff"
+      ],
+      "permissions": "edit_write_apply_patch_ask_bash_deny",
+      "experience": "SIN_EVALUAR",
+      "hidden": true,
+      "parent_agent": "vx-dev-team",
+      "direct_selectable": false,
+      "invocation": "LEADER_TASK_ALLOWLIST_ONLY",
+      "runtime_activation": "NOT_VERIFIED"
     }
   ],
   "profiles": [
@@ -527,11 +568,44 @@
       "writer": "code",
       "builder_candidate": null,
       "external_skills_policy": "not-preinstalled; manual verification"
+    },
+    {
+      "id": "editorial",
+      "patterns": [
+        "redaccion",
+        "redacción",
+        "claridad",
+        "texto",
+        "contenido",
+        "microcopy",
+        "etiqueta",
+        "label",
+        "formulario",
+        "lenguaje claro",
+        "ortografia",
+        "ortografía",
+        "mensaje de error"
+      ],
+      "discover": [
+        "vx-researcher"
+      ],
+      "review": [
+        "vx-frontend-adviser",
+        "vx-inspector"
+      ],
+      "skills": [
+        "vx-editorial-claridad",
+        "vx-docs-traceability",
+        "vx-accessibility-review"
+      ],
+      "writer": "code",
+      "builder_candidate": "vx-editorial-builder",
+      "external_skills_policy": "not_preinstalled; manual verification"
     }
   ],
   "pack": {
     "id": "vx-development-team",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "owned_agents": [
       "vx-dev-team",
       "vx-integrador",
@@ -545,7 +619,8 @@
       "vx-backend-builder",
       "vx-qa-builder",
       "vx-data-builder",
-      "vx-docs-builder"
+      "vx-docs-builder",
+      "vx-editorial-builder"
     ],
     "owned_skills": [
       "vx-engineering-harness",
@@ -578,7 +653,8 @@
       "vx-mcp-safe-integration",
       "vx-release-readiness",
       "vx-incident-diagnosis",
-      "vx-ida-mcp-reverse-engineering"
+      "vx-ida-mcp-reverse-engineering",
+      "vx-editorial-claridad"
     ],
     "inline_agents_not_mutated": true,
     "configured_mcp_never_modified": true,

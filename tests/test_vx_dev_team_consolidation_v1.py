@@ -751,6 +751,239 @@ class ConsolidationV1Tests(unittest.TestCase):
             self.assertEqual(writer.snapshot()["heads"][repo], new)
             self.assertEqual(writer.snapshot()["queue"][0]["target_main_sha"], new)
 
+    def test_cross_agent_capability_handoff_backend_to_frontend_and_qa(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_capability_router", ROOT / "tools" / "vx_team_capability_router.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo, previous, current = "hola675/Kilo-Global-Harness", "a"*40, "b"*40
+        observed = {
+            "status": "MAIN_ADVANCED_VERIFIED",
+            "planning_allowed": True, "mutation_performed": False,
+            "repo": repo, "previous_main_sha": previous,
+            "current_main_sha": current,
+        }
+        published = {
+            "schema": "vx-capability-publication/1",
+            "repo": repo, "main_sha": current,
+            "capability_id": "records.delete.v1",
+            "producer_domain": "backend", "operation": "delete",
+            "contract_ref": "src/api/records.ts",
+            "change_impacts": ["api_to_ui", "regression"],
+            "allowed_paths": {
+                "frontend": ["src/components/records"],
+                "qa": ["tests/records"],
+            },
+        }
+        active = [
+            {"repo": repo, "task_id": "TASK-UI-1",
+             "domain": "frontend", "owner_agent": "vx-frontend-builder",
+             "branch": "work/ui-records", "status": "ACTIVE"},
+            {"repo": "other/repo", "task_id": "X", "domain": "frontend",
+             "owner_agent": "vx-frontend-builder", "branch": "work/other",
+             "status": "ACTIVE"},
+        ]
+        result = module.plan_capability_handoff(observed, published, active)
+        self.assertEqual(result["status"], "HANDOFF_PROPOSED")
+        self.assertEqual(result["triage"]["tier"], "COMPLEJA")
+        self.assertEqual(result["triage"]["priority"], "HIGH")
+        self.assertTrue(result["triage"]["security_review"])
+        self.assertFalse(result["dispatch_performed"])
+        self.assertFalse(result["mutation_performed"])
+        self.assertEqual(
+            [ticket["agent_id"] for ticket in result["tickets"]],
+            ["vx-frontend-builder", "vx-qa-builder"]
+        )
+        ui, qa = result["tickets"]
+        self.assertEqual(ui["branch"], "work/ui-records")
+        # El catálogo de reconciliación existente omite domain; inferirlo
+        # desde el owner conocido y reusar la rama, no abrir una segunda.
+        inherited = module.plan_capability_handoff(
+            observed, published, [
+                {key: value for key, value in active[0].items() if key != "domain"}
+            ]
+        )
+        self.assertEqual(inherited["tickets"][0]["branch"], "work/ui-records")
+        self.assertEqual(
+            inherited["tickets"][0]["branch_strategy"],
+            "RECONCILE_THEN_EXTEND_EXISTING"
+        )
+        self.assertEqual(ui["existing_task_id"], "TASK-UI-1")
+        self.assertEqual(ui["branch_strategy"], "RECONCILE_THEN_EXTEND_EXISTING")
+        self.assertEqual(qa["branch_strategy"], "PROPOSE_NEW_TASK_BRANCH")
+        self.assertIsNone(qa["branch"])
+        self.assertIn("UI_CONFIRMATION", ui["requirements"])
+        self.assertIn("SERVER_SIDE_AUTHORIZATION", ui["requirements"])
+        self.assertIn("VERIFY_BUTTON_LOCATION", ui["requirements"])
+        self.assertTrue(all(t["needs_host_approval"] for t in result["tickets"]))
+        self.assertTrue(all(not t["can_write"] and not t["execute"]
+                            for t in result["tickets"]))
+        self.assertEqual(
+            module.plan_capability_handoff(observed, published, active),
+            result, "Deben ser deterministas e idempotentes"
+        )
+        # Un cambio mientras el Frontend está en revisión no debe escribir allí.
+        waiting = module.plan_capability_handoff(
+            observed, published,
+            [dict(active[0], status="IN_REVIEW")]
+        )
+        self.assertEqual(
+            waiting["tickets"][0]["branch_strategy"], "PAUSE_AND_RECHECK"
+        )
+        # Doble propietario activo en el mismo dominio: no despachar ni una tarea.
+        conflict = module.plan_capability_handoff(
+            observed, published,
+            [active[0], dict(active[0], branch="work/other-ui", task_id="UI-2")]
+        )
+        self.assertEqual(conflict["status"], "BLOCKED_REVIEW")
+        self.assertEqual(conflict["tickets"], [])
+        self.assertEqual(conflict["blocked"][0]["reason"],
+                         "MULTIPLE_ACTIVE_ROLE_OWNERS")
+
+    def test_cross_agent_ui_to_backend_capability_with_permission_gates(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_capability_router", ROOT / "tools" / "vx_team_capability_router.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo, old, new = "hola675/Kilo-Global-Harness", "a"*40, "b"*40
+        observed = {
+            "status": "MAIN_ADVANCED_VERIFIED",
+            "planning_allowed": True, "mutation_performed": False,
+            "repo": repo, "previous_main_sha": old,
+            "current_main_sha": new,
+        }
+        published = {
+            "schema": "vx-capability-publication/1", "repo": repo,
+            "main_sha": new, "capability_id": "users.profile.action.v1",
+            "producer_domain": "frontend", "operation": "interact",
+            "contract_ref": "src/components/users/Profile.tsx",
+            "change_impacts": ["ui_to_api", "regression"],
+            "allowed_paths": {
+                "backend": ["src/api/users"],
+                "qa": ["tests/users"],
+            },
+        }
+        result = module.plan_capability_handoff(observed, published, [])
+        self.assertEqual(result["status"], "HANDOFF_PROPOSED")
+        self.assertEqual([x["agent_id"] for x in result["tickets"]],
+                         ["vx-backend-builder", "vx-qa-builder"])
+        self.assertEqual(result["triage"]["tier"], "MEDIA")
+        self.assertIn("VERIFY_API_CONTRACT", result["tickets"][0]["requirements"])
+        self.assertEqual(result["tickets"][0]["permission_source"],
+                         "EDIT_ASK_SOURCE_RUNTIME_UNVERIFIED")
+        blocked = dict(published, allowed_paths={"backend": ["../secrets"], "qa": ["tests/users"]})
+        self.assertEqual(module.plan_capability_handoff(observed, blocked, [])["status"],
+                         "BLOCKED_MISSING_SCOPE")
+        with self.assertRaises(ValueError):
+            module.plan_capability_handoff(
+                dict(observed, planning_allowed=False), published, []
+            )
+        with self.assertRaises(ValueError):
+            module.plan_capability_handoff(
+                observed, dict(published, main_sha=old), []
+            )
+        with self.assertRaises(ValueError):
+            module.plan_capability_handoff(
+                observed, dict(published, producer_domain="data"), []
+            )
+        with self.assertRaises(ValueError):
+            module.plan_capability_handoff(
+                observed, dict(published, change_impacts=["api_to_ui"]), []
+            )
+        # Cambios de contrato sin impactos declarados no disparan tareas especulativas.
+        with self.assertRaises(ValueError):
+            module.plan_capability_handoff(
+                observed, dict(published, change_impacts=[]), []
+            )
+        contract = json.loads(
+            (ROOT / "registry" / "vx-team-capability-handoffs-v1.json").read_text(encoding="utf-8")
+        )
+        self.assertFalse(contract["execution"]["dispatcher_enabled"])
+        self.assertFalse(contract["execution"]["runtime_write_unlocked"])
+        self.assertEqual(contract["routing"]["implementation_agents"]["frontend"],
+                         "vx-frontend-builder")
+        self.assertEqual(contract["routing"]["implementation_agents"]["backend"],
+                         "vx-backend-builder")
+        self.assertTrue(contract["execution"]["requires_runtime_tool_permission"])
+
+    def test_editorial_handoff_any_domain_and_safe_root_file(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_capability_router", ROOT / "tools" / "vx_team_capability_router.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo, old, new = "hola675/Kilo-Global-Harness", "a" * 40, "b" * 40
+        observed = {"status": "MAIN_ADVANCED_VERIFIED",
+                    "planning_allowed": True, "mutation_performed": False,
+                    "repo": repo, "previous_main_sha": old,
+                    "current_main_sha": new}
+        publication = {
+            "schema": "vx-capability-publication/1", "repo": repo,
+            "main_sha": new, "capability_id": "forms.economic-activity.v1",
+            "producer_domain": "frontend", "operation": "interact",
+            "contract_ref": "README.md",
+            "change_impacts": ["ui_to_content"],
+            "allowed_paths": {"editorial": ["README.md", "src/content/forms.json"]},
+        }
+        result = module.plan_capability_handoff(observed, publication, [])
+        self.assertEqual(result["status"], "HANDOFF_PROPOSED")
+        self.assertEqual(len(result["tickets"]), 1)
+        editorial = result["tickets"][0]
+        self.assertEqual(editorial["agent_id"], "vx-editorial-builder")
+        self.assertEqual(editorial["assignment_controller"], "vx-dev-team")
+        self.assertTrue(editorial["subagent_only"])
+        self.assertFalse(editorial["direct_invocation_allowed"])
+        self.assertEqual(editorial["allowed_paths"], ["README.md", "src/content/forms.json"])
+        self.assertIn("PRESERVE_FACTS_AND_MEANING", editorial["requirements"])
+        self.assertIn("HUMAN_COMPREHENSION_REVIEW_FOR_CRITICAL_COPY", editorial["requirements"])
+        self.assertFalse(editorial["can_write"])
+        self.assertTrue(editorial["needs_host_approval"])
+        # Texto aprobado por editorial puede generar handoff a Frontend.
+        content = dict(
+            publication,
+            producer_domain="editorial", operation="update",
+            change_impacts=["content_to_ui"],
+            allowed_paths={"frontend": ["src/components/form.tsx"]},
+        )
+        ui = module.plan_capability_handoff(observed, content, [])
+        self.assertEqual(ui["tickets"][0]["agent_id"], "vx-frontend-builder")
+        # No se permiten destinatarios adicionales sin alcance propio.
+        extended = dict(
+            publication, additional_targets=["docs"],
+            allowed_paths={
+                "editorial": ["README.md"],
+                "docs": ["CHANGELOG.md"],
+            },
+        )
+        handoffs = module.plan_capability_handoff(observed, extended, [])
+        self.assertEqual(
+            [t["agent_id"] for t in handoffs["tickets"]],
+            ["vx-editorial-builder", "vx-docs-builder"]
+        )
+        self.assertEqual(handoffs["triage"]["tier"], "MEDIA")
+        with self.assertRaises(ValueError):
+            module.plan_capability_handoff(observed, dict(
+                publication, additional_targets=["frontend"]
+            ), [])
+        with self.assertRaises(ValueError):
+            module.plan_capability_handoff(observed, dict(
+                publication, additional_targets=["editorial", "editorial"]
+            ), [])
+        blocked = module.plan_capability_handoff(observed, dict(
+            publication, allowed_paths={"editorial": ["../secret"]}
+        ), [])
+        self.assertEqual(blocked["status"], "BLOCKED_MISSING_SCOPE")
+        self.assertFalse(result["dispatch_performed"])
+        reg = json.loads((ROOT / "registry" / "vx-team-capability-handoffs-v1.json").read_text(encoding="utf-8"))
+        self.assertEqual(reg["routing"]["implementation_agents"]["editorial"],
+                         "vx-editorial-builder")
+        self.assertFalse(reg["execution"]["runtime_write_unlocked"])
+
     def test_branch_retirement_requires_remote_archive_and_explicit_apply(self):
         script=(ROOT/"scripts"/"Consolidar-Ramas-Main-V2.ps1").read_text(encoding="utf-8")
         self.assertIn("PLAN_ONLY",script)

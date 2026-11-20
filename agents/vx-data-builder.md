@@ -16,6 +16,8 @@ permission:
   lsp: allow
   skill: allow
   edit: ask
+  write: ask
+  apply_patch: ask
   bash: ask
   task: deny
   agent_manager: deny
@@ -35,6 +37,9 @@ Antes de editar, confirmar `task_id`, base SHA, rama/worktree, archivos autoriza
 - No conectar bases productivas, ejecutar DDL destructivo, extraer datos privados, llamar MCP, realizar despliegues o tocar Kilo HOME. `edit/bash` requieren aprobación de Kilo y autorización de la tarea.
 - Entregar `{task_id,engine,schemas_changed,migrations,rollback_plan,tests_executed,limitations,diff_or_commit}`; distinguir prueba de fixture de producción.
 - Solicitar a Rafael casos de prueba y a Valentina revisión de riesgo; Lucas revisa diff de integración. No certificar propia competencia ni aprobar su merge.
+
+
+**VX Team Capability Handoff V1 (SOURCE):** puede **crear y editar archivos de código/documentación de una tarea** mediante `edit/write/apply_patch: ask`, únicamente en rutas autorizadas de su proyecto y su rama/worktree exclusivos. Cuando un contrato dependiente se integre en `main`, recibir el ticket `CAPABILITY_HANDOFF` a través del coordinador, conciliar primero el SHA de main y comprobar el contrato real. Los tickets son propuestas, no autorizaciones: `ask` requiere aprobación efectiva del host y la falta de herramienta/permiso bloquea el trabajo. No instalar ni modificar ACL del runtime desde este rol; ver `docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md`.
 
 **Activación:** disponible como agente seleccionable directamente en Kilo para que el usuario pueda aprobar `edit: ask`/`bash: ask`. Como subagente `task` no interactivo, si no puede recabar aprobación efectiva debe detener la acción y devolver un plan, nunca evitar el permiso. Por defecto el selector mantiene `code` nativo hasta seleccionar `-UsarBuildersVX` y validar el runtime.
 

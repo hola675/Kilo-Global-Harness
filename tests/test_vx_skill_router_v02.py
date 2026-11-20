@@ -19,10 +19,23 @@ class SkillMatrixTests(unittest.TestCase):
     def setUpClass(cls):
         cls.registry, cls.matrix = vx.load_catalog(ROOT, ROOT / "synthetic_home")
 
-    def test_registry_is_closed_thirty_one(self):
-        self.assertEqual(len(self.registry["pack"]["owned_skills"]), 31)
-        self.assertEqual(len(self.matrix["skills"]), 31)
-        self.assertEqual(len(self.registry["agents"]), 13)
+    def test_registry_is_closed_thirty_two(self):
+        self.assertEqual(len(self.registry["pack"]["owned_skills"]), 32)
+        self.assertEqual(len(self.matrix["skills"]), 32)
+        self.assertEqual(len(self.registry["agents"]), 14)
+
+    def test_editorial_profile_selects_clarity_skill_without_execution(self):
+        plan = vx.choose_skills(
+            self.matrix, "editorial", "build",
+            "Redactar texto claro para un formulario y mensajes de error"
+        )
+        self.assertIn("vx-editorial-claridad", plan["selected"])
+        self.assertEqual(plan["actions_executed"], 0)
+        self.assertFalse(plan["permissions_granted"])
+        agent = next(row for row in plan["owner_reviewers"]
+                     if row["id"] == "vx-editorial-claridad")
+        self.assertEqual(agent["owner"], "vx-editorial-builder")
+        self.assertNotEqual(agent["owner"], agent["reviewer"])
 
     def test_dependency_graph_validated_no_cycles(self):
         corrupted = copy.deepcopy(self.matrix)

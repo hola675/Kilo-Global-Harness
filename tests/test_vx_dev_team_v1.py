@@ -50,11 +50,22 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertRegex(front, r"(?m)^  board_read:\s*deny\s*$")
         self.assertRegex(front, r"(?m)^  board_post:\s*deny\s*$")
 
-    def test_leader_allowlists_exactly_ten_children(self):
+    def test_leader_allowlists_ten_readonly_children_and_one_editorial_builder(self):
         front = frontmatter(LEADER)
         perms = load_agent(LEADER).permissions
         self.assertEqual(perms.fallback("task"), "deny")
-        self.assertEqual(perms.allowlist("task"), set(CHILDREN))
+        self.assertEqual(perms.allowlist("task"), set(CHILDREN) | {"vx-editorial-builder"})
+        # Conservar exactamente los diez especialistas del baseline V2R.
+        # Editorial es miembro oculto distinto, con edicion solo bajo ask.
+        editorial = ROOT / "agents" / "vx-editorial-builder.md"
+        self.assertTrue(editorial.is_file())
+        edit_front = frontmatter(editorial)
+        self.assertRegex(edit_front, r"(?m)^mode:\s*subagent\s*$")
+        self.assertRegex(edit_front, r"(?m)^hidden:\s*true\s*$")
+        for tool in ("edit", "write", "apply_patch"):
+            self.assertRegex(edit_front, rf"(?m)^  {tool}:\s*ask\s*$")
+        for tool in ("task", "agent_manager", "bash"):
+            self.assertRegex(edit_front, rf"(?m)^  {tool}:\s*deny\s*$")
 
     def test_children_are_hidden_and_cannot_mutate_or_delegate(self):
         files = sorted(RUNTIME_DIR.glob("vx-dev-*.md"))

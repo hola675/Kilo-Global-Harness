@@ -62,7 +62,7 @@ def assert_skill_allowlist(testcase, path, agent):
 class VXAgentPermissionsTests(unittest.TestCase):
     def test_legacy_repo_agents_keep_fallback_deny(self):
         agents = sorted(AGENT_DIR.glob("vx-*.md"))
-        self.assertEqual(len(agents), 13)
+        self.assertEqual(len(agents), 14)
         for file in agents:
             with self.subTest(agent=file.name):
                 front = file.read_text(encoding="utf-8").split("---", 2)[1]
@@ -136,6 +136,32 @@ class VXAgentPermissionsTests(unittest.TestCase):
                     r'(?m)^  "[a-z0-9-]+_\*":\s*(allow|ask)\s*$',
                 )
 
+    def test_editorial_agent_plain_language_prompt_has_boundaries(self):
+        file = AGENT_DIR / "vx-editorial-builder.md"
+        content = file.read_text(encoding="utf-8")
+        skill = (ROOT / "skills" / "vx-editorial-claridad" / "SKILL.md")
+        self.assertTrue(skill.is_file())
+        self.assertIn("¿A qué se dedica principalmente tu negocio?", content)
+        self.assertIn("¿Cuál es la actividad económica principal de tu negocio?", content)
+        self.assertIn("BLOCKED_NEEDS_CONTEXT", content)
+        self.assertIn("NO_REALIZADAS", content)
+        self.assertIn("confirmar", skill.read_text(encoding="utf-8").lower())
+        front = content.split("---", 2)[1]
+        self.assertRegex(front, r"(?m)^mode: subagent\s*$")
+        self.assertRegex(front, r"(?m)^hidden: true\s*$")
+        leader = (AGENT_DIR / "vx-dev-team.md").read_text(encoding="utf-8")
+        lead_front = leader.split("---", 2)[1]
+        self.assertRegex(lead_front, r"(?m)^mode: primary\s*$")
+        self.assertRegex(lead_front, r'(?m)^    "vx-editorial-builder": allow\s*$')
+        editor_cmd = (ROOT / "commands" / "vx-editorial.md").read_text(encoding="utf-8")
+        self.assertIn("agent: vx-dev-team", editor_cmd)
+        self.assertNotIn("agent: vx-editorial-builder", editor_cmd)
+        for tool in ("edit", "write", "apply_patch"):
+            self.assertRegex(front, rf"(?m)^  {tool}: ask\s*$")
+        for tool in ("bash", "task", "agent_manager"):
+            self.assertRegex(front, rf"(?m)^  {tool}: deny\s*$")
+        self.assertNotRegex(front, r"(?m)^  (?:edit|write|apply_patch): allow\s*$")
+
     def test_legacy_integrator_remains_history_only_and_bounded(self):
         front = (AGENT_DIR / "vx-integrador.md").read_text(
             encoding="utf-8"
@@ -157,6 +183,9 @@ class VXAgentPermissionsTests(unittest.TestCase):
             with self.subTest(builder=path.name):
                 front = path.read_text(encoding="utf-8").split("---", 2)[1]
                 self.assertRegex(front, r"(?m)^  edit: ask\s*$")
+                self.assertRegex(front, r"(?m)^  write: ask\s*$")
+                self.assertRegex(front, r"(?m)^  apply_patch: ask\s*$")
+                self.assertNotRegex(front, r"(?m)^  (?:edit|write|apply_patch): allow\s*$")
                 self.assertRegex(front, r"(?m)^  bash: (ask|deny)\s*$")
                 self.assertRegex(front, r"(?m)^  task: deny\s*$")
                 self.assertRegex(front, r"(?m)^  agent_manager: deny\s*$")

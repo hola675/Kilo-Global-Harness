@@ -46,10 +46,10 @@ class PackBootstrap(unittest.TestCase):
 
     def test_registry_is_closed_and_source_files_exist(self):
         data, assets = vx.load_pack(ROOT, self.home)
-        self.assertEqual(len(data["pack"]["owned_agents"]), 13)
-        self.assertEqual(len(data["pack"]["owned_skills"]), 31)
+        self.assertEqual(len(data["pack"]["owned_agents"]), 14)
+        self.assertEqual(len(data["pack"]["owned_skills"]), 32)
         self.assertTrue(all(x.source.is_file() for x in assets))
-        self.assertEqual(len(data["pack"]["owned_skills"]), 31)
+        self.assertEqual(len(data["pack"]["owned_skills"]), 32)
         targets = {a.target.name for a in assets}
         self.assertIn("vx-skill-dependencies-v1.json", targets)
         self.assertIn("vx-mcp-catalog-v1.json", targets)
@@ -72,8 +72,8 @@ class PackBootstrap(unittest.TestCase):
             self.assertEqual(len(report["mcp_inventory"]["catalog"]), 6)
             self.assertTrue(all(row["auto_install"] is False for row in report["mcp_inventory"]["catalog"]))
             self.assertNotIn("NEVER_PRINT", run.stdout)
-            self.assertEqual(report["agents"], 13)
-            self.assertEqual(report["skills"], 31)
+            self.assertEqual(report["agents"], 14)
+            self.assertEqual(report["skills"], 32)
         after = sorted(str(x.relative_to(self.home)) for x in self.home.rglob("*"))
         self.assertEqual(before, after)
         self.assertEqual(vx.digest(self.config.read_bytes()), self.config_hash)
