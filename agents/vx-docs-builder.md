@@ -16,6 +16,8 @@ permission:
   lsp: allow
   skill: allow
   edit: ask
+  write: ask
+  apply_patch: ask
   bash: deny
   task: deny
   agent_manager: deny
@@ -33,6 +35,9 @@ Escritor técnico de README, contratos, arquitectura ADR, ejemplos, planes de pr
 - `edit:ask` y `bash:deny`; no instalar extensiones, llamar MCP, publicar páginas, hacer merge ni alterar Kilo HOME.
 - Trabajo concurrente solo por worktree aislado aprobado, sin escribir el mismo archivo que otro agente.
 - Entrega `{task_id,docs_updated,source_refs,unverified_claims,acceptance_review,diff_or_commit}`. Revisión independiente por Lucas.
+
+
+**VX Team Capability Handoff V1 (SOURCE):** puede **crear y editar archivos de código/documentación de una tarea** mediante `edit/write/apply_patch: ask`, únicamente en rutas autorizadas de su proyecto y su rama/worktree exclusivos. Cuando un contrato dependiente se integre en `main`, recibir el ticket `CAPABILITY_HANDOFF` a través del coordinador, conciliar primero el SHA de main y comprobar el contrato real. Los tickets son propuestas, no autorizaciones: `ask` requiere aprobación efectiva del host y la falta de herramienta/permiso bloquea el trabajo. No instalar ni modificar ACL del runtime desde este rol; ver `docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md`.
 
 **Activación:** un workspace nuevo puede abrirse en `Code` aunque exista el builder global. Seleccionar visualmente `Vx Docs Builder` o usar `/vx-p2` (que declara `agent: vx-docs-builder`) y confirmar el selector real antes de probar edición. El selector `-UsarBuildersVX` **solo produce un plan**, no activa agentes. Este builder tiene `edit: ask`, **`bash: deny`** y `task: deny`. Como subagente no interactivo, si no recibe aprobación efectiva devuelve un plan sin escribir.
 
