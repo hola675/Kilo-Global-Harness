@@ -149,7 +149,7 @@
     "newest_source": "MAIN_ADVANCED_VERIFIED_ONLY",
     "coalesce_pending_only": true,
     "hold_in_flight_or_missing_task": true,
-    "persistence": "TEST_ONLY_SQLITE_SANDBOX",
+    "persistence": "NOT_IMPLEMENTED",
     "dispatch": "NOT_IMPLEMENTED",
     "mutation_performed": false
   },
@@ -178,11 +178,11 @@
   },
   "recovery": {
     "path": "tools/vx_team_git_worktrees.py",
-    "mode": "SANDBOX_RECOVERY_HOLD_ONLY",
+    "mode": "PURE_PLAN_ONLY",
     "procedure": "plan_interruption_recovery",
     "on_restart": "HOLD_RECHECK_ALL_PENDING_AND_IN_FLIGHT",
     "requires_fresh_git_and_owner_evidence": true,
-    "persistent_storage": "TEST_ONLY_SQLITE_SANDBOX",
+    "persistent_storage": "NOT_IMPLEMENTED",
     "scheduler_enabled": false,
     "no_dispatch": true,
     "no_mutations": true
@@ -205,6 +205,7 @@
     "cli_enabled": false,
     "scheduler_enabled": false,
     "permits_sensitive_data": false,
-    "operator_approval": false
+    "operator_approval": false,
+    "storage_isolated_from_runtime": true
   }
 }
