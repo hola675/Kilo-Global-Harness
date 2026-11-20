@@ -21,7 +21,8 @@ class P2ModeGateTests(unittest.TestCase):
 
     def test_docs_builder_perms_not_relaxed(self):
         front = self.builder.split("---", 2)[1]
-        self.assertRegex(front, r"(?m)^mode:\s*all\s*$")
+        self.assertRegex(front, r"(?m)^mode:\s*subagent\s*$")
+        self.assertRegex(front, r"(?m)^hidden:\s*true\s*$")
         self.assertRegex(front, r"(?m)^\s*edit:\s*ask\s*$")
         for perm in ("bash", "task", "agent_manager", "external_directory"):
             self.assertRegex(front, rf"(?m)^\s*{perm}:\s*deny\s*$")
