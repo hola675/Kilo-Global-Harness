@@ -209,6 +209,12 @@ def coalesce_pending_queue(plan: dict, existing_queue: list[dict]) -> dict:
                 continue
             if current and current["target_main_sha"] == target and current["status"] != "HOLD_RECHECK":
                 continue
+            # Sin conocer la ascendencia entre dos SHAs distintos no se puede
+            # decidir su antiguedad. Solo sustituir si el plan parte del
+            # mismo SHA que tenia la cola (CAS logico); si no, bloquear.
+            if current and current["target_main_sha"] != target and current["target_main_sha"] != plan.get("previous_main_sha"):
+                blocked.append({"branch": branch, "reason": "MAIN_EVENT_ORDER_UNVERIFIED"})
+                continue
             if current and current["status"] in {"RECONCILING", "VERIFYING"}:
                 blocked.append({"branch": branch, "reason": "IN_FLIGHT_STALE_TARGET_PAUSE"})
                 continue
