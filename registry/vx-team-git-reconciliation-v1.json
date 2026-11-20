@@ -1,6 +1,6 @@
 {
   "schema": "vx-team-git-reconciliation/1",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "updated": "2026-11-19",
   "status": "SOURCE_PLAN_ONLY_RUNTIME_NOT_ACTIVATED",
   "documentation": "docs/VX-TEAM-GIT-RECONCILIATION-V1.md",
@@ -90,7 +90,17 @@
       "IN_FLIGHT_PAUSE",
       "OWNER_CHANGE_BLOCK",
       "CROSS_REPO_ISOLATION",
-      "STALE_TASK_HOLD"
+      "STALE_TASK_HOLD",
+      "MULTI_WORKTREE_FIXTURE",
+      "WORKTREE_ORIGIN_VALIDATION",
+      "WORKTREE_PATH_MISMATCH",
+      "WORKTREE_DUPLICATE_OWNER",
+      "WORKTREE_SHARED_PATH",
+      "WORKTREE_LOCKED_STATE",
+      "POWER_INTERRUPTION_HOLD",
+      "RECOVERY_IDEMPOTENCE",
+      "RECOVERY_INVALID_QUEUE_REJECTED",
+      "REPLACED_WORKTREE_REPOSITORY_REJECTED"
     ]
   },
   "authorization": {
@@ -135,5 +145,39 @@
     "persistence": "NOT_IMPLEMENTED",
     "dispatch": "NOT_IMPLEMENTED",
     "mutation_performed": false
+  },
+  "inventory": {
+    "path": "tools/vx_team_git_worktrees.py",
+    "mode": "ON_DEMAND_READ_ONLY",
+    "reads": [
+      "git remote get-url origin",
+      "git worktree list --porcelain -z",
+      "private_task_catalog_json",
+      "git rev-parse --path-format=absolute --git-common-dir",
+      "git symbolic-ref --quiet HEAD",
+      "git rev-parse --show-toplevel"
+    ],
+    "uses_exact_origin": true,
+    "returns_private_paths": false,
+    "verify_worktree_branch_and_path": true,
+    "one_owner_per_branch": true,
+    "one_writer_per_worktree": true,
+    "agent_identity_authenticated": false,
+    "worktree_cleanliness_checked": false,
+    "runtime_tool_permissions_checked": false,
+    "can_dispatch": false,
+    "host_installation": false,
+    "verify_live_git_common_dir_and_branch": true
+  },
+  "recovery": {
+    "path": "tools/vx_team_git_worktrees.py",
+    "mode": "PURE_PLAN_ONLY",
+    "procedure": "plan_interruption_recovery",
+    "on_restart": "HOLD_RECHECK_ALL_PENDING_AND_IN_FLIGHT",
+    "requires_fresh_git_and_owner_evidence": true,
+    "persistent_storage": "NOT_IMPLEMENTED",
+    "scheduler_enabled": false,
+    "no_dispatch": true,
+    "no_mutations": true
   }
 }
