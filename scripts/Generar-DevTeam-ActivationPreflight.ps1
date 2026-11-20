@@ -3,6 +3,7 @@ param(
   [string]$SourceCiStatus = 'UNKNOWN',
   [string]$RuntimeSnapshot,
   [string]$SkillEvalReport,
+  [string]$RaizUsuario,
   [string]$RepoRoot = (Split-Path -Parent $PSScriptRoot),
   [string]$Salida
 )
@@ -12,14 +13,91 @@ $ErrorActionPreference='Stop'
 $wavesPath=Join-Path $RepoRoot 'registry\dev-team-activation-waves-v1.json'
 $matrixPath=Join-Path $RepoRoot 'registry\dev-team-capability-matrix-v1.json'
 $mcpPath=Join-Path $RepoRoot 'registry\dev-team-mcp-exact-inventory-v1.json'
+$skillsMatrixPath=Join-Path $RepoRoot 'registry\dev-team-skills-matrix-v1.proposal.json'
 
-foreach($path in @($wavesPath,$matrixPath,$mcpPath)){
+foreach($path in @($wavesPath,$matrixPath,$mcpPath,$skillsMatrixPath)){
   if(!(Test-Path -LiteralPath $path)){ throw "Archivo requerido ausente: $path" }
 }
 
 $waves=Get-Content -LiteralPath $wavesPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $matrix=Get-Content -LiteralPath $matrixPath -Raw -Encoding UTF8 | ConvertFrom-Json
 $mcp=Get-Content -LiteralPath $mcpPath -Raw -Encoding UTF8 | ConvertFrom-Json
+$skillsMatrix=Get-Content -LiteralPath $skillsMatrixPath -Raw -Encoding UTF8 | ConvertFrom-Json
+
+# V1.1: evidencia SHA256 solo-lectura con las mismas rutas del instalador vigente.
+$homeRoot=if([string]::IsNullOrWhiteSpace($RaizUsuario)){
+  [IO.Path]::GetFullPath($HOME)
+}else{
+  if(![IO.Path]::IsPathFullyQualified($RaizUsuario)){ throw 'RaizUsuario debe ser absoluta.' }
+  [IO.Path]::GetFullPath($RaizUsuario)
+}
+
+function Test-HashPairs {
+  param([object[]]$Pairs,[int]$Expected)
+  $missing=[System.Collections.Generic.List[string]]::new()
+  $different=[System.Collections.Generic.List[string]]::new()
+  $unreadable=[System.Collections.Generic.List[string]]::new()
+  $matched=0
+  foreach($pair in $Pairs){
+    $name=[string]$pair.name
+    if(!(Test-Path -LiteralPath $pair.source -PathType Leaf)){
+      $missing.Add("$($name):source")
+      continue
+    }
+    if(!(Test-Path -LiteralPath $pair.target -PathType Leaf)){
+      $missing.Add("$($name):installed")
+      continue
+    }
+    try{
+      $sourceHash=(Get-FileHash -LiteralPath $pair.source -Algorithm SHA256).Hash
+      $targetHash=(Get-FileHash -LiteralPath $pair.target -Algorithm SHA256).Hash
+      if($sourceHash -ceq $targetHash){$matched++}
+      else{$different.Add($name)}
+    }catch{$unreadable.Add($name)}
+  }
+  return [pscustomobject]@{
+    status=if($Pairs.Count -eq $Expected -and $matched -eq $Expected){'PASS'}else{'FAIL'}
+    expected=$Expected
+    matched=$matched
+    missing=@($missing)
+    different=@($different)
+    unreadable=@($unreadable)
+  }
+}
+
+$roles=@($matrix.roles.PSObject.Properties.Name)
+if($roles.Count -ne 11 -or @($roles | Select-Object -Unique).Count -ne 11){
+  throw 'La matriz canonica no contiene exactamente 11 agentes unicos.'
+}
+$agentPairs=@(foreach($id in $roles){
+  if($id -notmatch '^vx-dev-[a-z0-9-]+$'){throw "ID agente invalido: $id"}
+  $relative=if($id -eq 'vx-dev-team'){"agents/$id.md"}else{"runtime/dev-team-v2r/agents/$id.md"}
+  [pscustomobject]@{
+    name=$id
+    source=Join-Path $RepoRoot $relative
+    target=Join-Path $homeRoot (".config/kilo/agents/$id.md")
+  }
+})
+$skillEntries=@($skillsMatrix.dev_team_pack.skills)
+$skillIds=@($skillEntries | ForEach-Object {[string]$_.id})
+if($skillIds.Count -ne 18 -or @($skillIds | Select-Object -Unique).Count -ne 18){
+  throw 'El pack V1 no contiene exactamente 18 skills unicas.'
+}
+$skillPairs=@(foreach($entry in $skillEntries){
+  $id=[string]$entry.id
+  if($id -notmatch '^vx-dev-[a-z0-9-]+$'){throw "ID skill invalido: $id"}
+  $relative="runtime/dev-team-v2r/skills/$id/SKILL.md"
+  if(([string]$entry.source).Replace('\','/') -cne $relative){
+    throw "Fuente manifest skill incoherente: $id"
+  }
+  [pscustomobject]@{
+    name=$id
+    source=Join-Path $RepoRoot $relative
+    target=Join-Path $homeRoot (".kilo/skills/$id/SKILL.md")
+  }
+})
+$agentHashCheck=Test-HashPairs -Pairs $agentPairs -Expected 11
+$skillHashCheck=Test-HashPairs -Pairs $skillPairs -Expected 18
 
 $runtime=$null
 if($RuntimeSnapshot){
