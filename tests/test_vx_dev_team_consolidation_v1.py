@@ -403,6 +403,24 @@ class ConsolidationV1Tests(unittest.TestCase):
             git("-C", source, "worktree", "lock", wt_b)
             locked = module.inspect_task_worktrees(source, repo, tasks)
             self.assertEqual(locked["blocked"][0]["reason"], "WORKTREE_UNSAFE_STATE")
+            # La identidad del repositorio real importa: la entrada worktree
+            # puede sobrevivir si esa ruta fue reemplazada por otro Git.
+            import shutil
+            common = git("-C", source, "rev-parse",
+                         "--path-format=absolute", "--git-common-dir")
+            self.assertTrue(module._actual_worktree_identity(str(wt_a), "work/a", common))
+            shutil.rmtree(wt_a)
+            git("init", "-b", "main", wt_a)
+            git("-C", wt_a, "-c", "user.name=Otro",
+                "-c", "user.email=other@example.invalid",
+                "commit", "--allow-empty", "-m", "replaced")
+            self.assertFalse(module._actual_worktree_identity(str(wt_a), "work/a", common))
+            replaced = module.inspect_task_worktrees(source, repo, tasks[:1])
+            self.assertEqual(replaced["matched"], [])
+            self.assertIn(
+                replaced["blocked"][0]["reason"],
+                {"WORKTREE_REAL_GIT_IDENTITY_MISMATCH", "WORKTREE_UNSAFE_STATE"}
+            )
             git("-C", source, "remote", "set-url", "origin", "https://github.com/other/repo.git")
             wrong_remote = module.inspect_task_worktrees(source, repo, tasks)
             self.assertEqual(wrong_remote["status"], "ORIGIN_NOT_VERIFIED")
