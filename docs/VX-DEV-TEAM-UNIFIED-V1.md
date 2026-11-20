@@ -59,6 +59,18 @@ Guardar la ruta absoluta de BACKUP DPAPI impresa al instalar, **no compartirla n
 
 El rollback rechaza sobrescribir archivos modificados desde la instalación; investigar y recuperar de forma dirigida, no forzar.
 
+### Instalación interrumpida antes de confirmar INSTALLED
+
+Si hubo un corte de energía o un error de PowerShell tras crear un respaldo DPAPI, el recibo puede quedar en `BACKED_UP` aunque algunos archivos se hayan actualizado. La restauración normal **rechaza** ese estado; usar recuperación extraordinaria, explícita y con Kilo cerrado, **con la ruta real de ese respaldo**:
+
+    pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Restaurar -CarpetaRespaldo RUTA_REAL_BACKUP -ConfirmarRestauracion -RecuperarInstalacionInterrumpida -ConfirmarKiloCerrado
+
+La recuperación verifica para todos los destinos la allowlist de archivos administrados, el respaldo DPAPI y los hashes `before/after`. Si un archivo tiene un tercer valor inesperado, **se detiene sin sobrescribir**: conservar el respaldo y revisar el conflicto manualmente. Nunca aplicar esta opción para omitir colisiones o modificar archivos ajenos.
+
+### Skills de terceros y colisiones de identidad
+
+El preflight comprueba el ID tanto del directorio como del campo `name` del frontmatter de cada skill externa bajo `~/.kilo/skills`, `~/.agents/skills`, `~/.kilocode/skills` y `~/.claude/skills`. Una skill ajena cuyo archivo esté en otro directorio pero declare un nombre del Core provoca `BLOCKED`. No se elimina ni renombra automáticamente la skill externa.
+
 ## Política operativa de menor burocracia
 
 Para tareas ordinarias el líder determina automáticamente Git root, branch, SHA y archivos por inspección. No exigir formularios ni tickets manuales si el entorno es suficiente. Elegir el mínimo de especialistas; el líder puede resolver tareas sencillas sin delegar. Los seis implementadores pueden editar proyectos con consentimiento de Kilo; no se convierten en modos principales.
@@ -74,3 +86,5 @@ Conservar salvaguardas necesarias: no elevar ACL por falta de herramienta, un es
 La instalación única gestiona también tres comandos globales: **/vx-equipo**, **/vx-dependencias** y **/vx-editorial**. Sus rutas apuntan al único líder `vx-dev-team`; los dos primeros ya no invocan al antiguo `vx-integrador`. El comando experimental histórico `/vx-p2` se retira del HOME con respaldo DPAPI porque seleccionaba directamente a `vx-docs-builder`, que ahora debe ser subagente oculto. El fuente `commands/vx-p2.md` permanece versionado para trazabilidad. Los demás comandos del usuario se conservan, sin borrados por nombre o coincidencias amplias.
 
 **Inventario final bajo gestión del instalador:** 18 agentes, 43 skills, 3 comandos y un bloque de política global VX. Se pueden retirar exactamente seis agentes, siete skills y un comando históricos, si existen; todo el material anterior cambiado se respalda antes de mutar. La existencia de otros comandos o recursos ajenos no convierte su funcionalidad en certificada.
+
+- V1.0 RC1 ajuste de seguridad: recuperacion explicita de respaldo `BACKED_UP` y bloqueo de colisiones por `name:` en skills ajenas globales; casos negativos agregados a la suite viva.
