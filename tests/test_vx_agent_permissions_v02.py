@@ -157,6 +157,9 @@ class VXAgentPermissionsTests(unittest.TestCase):
             with self.subTest(builder=path.name):
                 front = path.read_text(encoding="utf-8").split("---", 2)[1]
                 self.assertRegex(front, r"(?m)^  edit: ask\s*$")
+                self.assertRegex(front, r"(?m)^  write: ask\s*$")
+                self.assertRegex(front, r"(?m)^  apply_patch: ask\s*$")
+                self.assertNotRegex(front, r"(?m)^  (?:edit|write|apply_patch): allow\s*$")
                 self.assertRegex(front, r"(?m)^  bash: (ask|deny)\s*$")
                 self.assertRegex(front, r"(?m)^  task: deny\s*$")
                 self.assertRegex(front, r"(?m)^  agent_manager: deny\s*$")

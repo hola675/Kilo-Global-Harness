@@ -21,7 +21,22 @@
     "approval_unavailable_in_noninteractive_task": "BLOCK_AND_RETURN_PLAN",
     "dev_team_primary": "vx-dev-team",
     "dev_team_display_name": "vx-dev-team",
-    "dev_team_runtime": "active-v1"
+    "dev_team_runtime": "active-v1",
+    "capability_handoff_manifest": "registry/vx-team-capability-handoffs-v1.json",
+    "capability_handoff_mode": "SOURCE_PLAN_ONLY_NOT_DISPATCHED",
+    "bounded_code_builders": [
+      "vx-frontend-builder",
+      "vx-backend-builder",
+      "vx-data-builder",
+      "vx-qa-builder",
+      "vx-docs-builder"
+    ],
+    "ask_only_file_creation_tools": [
+      "edit",
+      "write",
+      "apply_patch"
+    ],
+    "runtime_write_permission_validation": "NOT_VERIFIED"
   },
   "agents": [
     {

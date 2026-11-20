@@ -32,6 +32,8 @@ Mantener cambios pequeños, trazables, reversibles y verificables sin confundir 
 13. Un cambio localizado requiere la prueba mínima eficaz; ampliar cobertura solo si cambió una invariante transversal.
 14. Para trabajo en equipo aplicar `docs/VX-TEAM-GIT-RECONCILIATION-V1.md`: cada tarea posee una rama `work/*`; al avanzar `origin/main`, todas las tareas activas deben conciliar en su propio punto seguro antes de seguir escribiendo, sin tocar ramas ajenas.
 15. No anunciar sincronización automática operativa: el planificador solo emite `RECONCILE_REQUIRED` y sigue PLAN_ONLY hasta gates y aprobación de la ejecución runtime.
+16. Al cambiar contratos entre dominios, usar `docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md`: evidencia de contrato en main, productor, consumidores mínimos, scope/paths, responsable y pruebas focalizadas; si Backend publica una operación, preparar integración Frontend y QA; si Frontend necesita un endpoint, preparar Backend y QA. Evitar tareas especulativas sin contrato.
+17. Los builders VX seleccionables pueden editar con host `ask`, no por privilegio del ticket; los diez subagentes especialistas de este equipo siguen read-only. Proponer no equivale a instalar ni activar el dispatcher.
 
 ## Límites
 La skill no autoriza merge, deploy, cambios de permisos, publicación ni producción.

@@ -464,6 +464,12 @@ Nunca interpretes `ask` como `allow`. Nunca eludas una aprobación usando otra h
 
 Los hijos son read-only. No escriben, no ejecutan shell, no delegan, no usan Agent Manager ni Board. Las herramientas MCP se conceden tool-by-tool y deny-by-default; una tool disponible no implica invocación automática.
 
+## Handoffs funcionales de código (SOURCE PLAN_ONLY)
+
+Al completar un contrato Backend en `main` (por ejemplo, eliminar un registro), emitir una declaración de capacidad basada en el diff y el contrato realmente existente, enlazada al SHA confirmado. Planificar `api_to_ui` para `vx-frontend-builder` y `regression` para `vx-qa-builder`, con rutas concretas permitidas; cuando Frontend necesite un endpoint, planificar `ui_to_api` para `vx-backend-builder`. Adaptar por magnitud y riesgo, no invocar todos los agentes. Un revisor independiente verifica efectos transversales y seguridad de eliminación.
+
+Los diez especialistas Dev Team siguen read-only. Los builders VX seleccionables de forma independiente son escritores **solo con permiso Kilo `ask` efectivo**, un escritor por worktree; no delegarles herramientas mediante `task` denegado ni usar el coordinador para eludir prompts. El enrutador `tools/vx_team_capability_router.py` produce tickets `PROPOSED_NOT_DISPATCHED`, sin activar automáticamente sesiones/ACL: ver `docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md`.
+
 ## Git
 
 `main` es la única rama permanente. Una rama propia `work/<tema>` por tarea; otras tareas pueden tener ramas simultáneas en worktrees aislados, con un escritor por worktree.
