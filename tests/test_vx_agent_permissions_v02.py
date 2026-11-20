@@ -142,17 +142,17 @@ class VXAgentPermissionsTests(unittest.TestCase):
         skill = (ROOT / "skills" / "vx-editorial-claridad" / "SKILL.md")
         self.assertTrue(skill.is_file())
         self.assertIn("¿A qué se dedica principalmente tu negocio?", content)
-        self.assertIn("¿Cuál es tu actividad económica principal?", content)
+        self.assertIn("¿Cuál es la actividad económica principal de tu negocio?", content)
         self.assertIn("BLOCKED_NEEDS_CONTEXT", content)
         self.assertIn("NO_REALIZADAS", content)
         self.assertIn("confirmar", skill.read_text(encoding="utf-8").lower())
         front = content.split("---", 2)[1]
-        self.assertRegex(front, r"(?m)^mode: all\\s*$".replace("\\\\", "\\"))
+        self.assertRegex(front, r"(?m)^mode: all\s*$")
         for tool in ("edit", "write", "apply_patch"):
-            self.assertRegex(front, rf"(?m)^  {tool}: ask\\s*$".replace("\\\\", "\\"))
+            self.assertRegex(front, rf"(?m)^  {tool}: ask\s*$")
         for tool in ("bash", "task", "agent_manager"):
-            self.assertRegex(front, rf"(?m)^  {tool}: deny\\s*$".replace("\\\\", "\\"))
-        self.assertNotRegex(front, r"(?m)^  (?:edit|write|apply_patch): allow\\s*$".replace("\\\\", "\\"))
+            self.assertRegex(front, rf"(?m)^  {tool}: deny\s*$")
+        self.assertNotRegex(front, r"(?m)^  (?:edit|write|apply_patch): allow\s*$")
 
     def test_legacy_integrator_remains_history_only_and_bounded(self):
         front = (AGENT_DIR / "vx-integrador.md").read_text(
