@@ -558,10 +558,12 @@ class ConsolidationV1Tests(unittest.TestCase):
             self.assertEqual(restarted.snapshot(), snapshot)
 
             # Simular interrupción de una tarea en ejecución con fixture SQL.
-            with sqlite3.connect(store.db_path) as connection:
-                connection.execute(
-                    "UPDATE queue SET status='RECONCILING' WHERE branch='work/a'"
-                )
+            from contextlib import closing
+            with closing(sqlite3.connect(store.db_path)) as connection:
+                with connection:
+                    connection.execute(
+                        "UPDATE queue SET status='RECONCILING' WHERE branch='work/a'"
+                    )
             after_restart = module.SandboxQueue(Path(root))
             held = after_restart.recovery_hold()
             self.assertEqual(held["newly_held"], 2)
