@@ -464,5 +464,16 @@
   "test_policy": {
     "action": "ADD_UNIFIED_INSTALLER_SCOPE_AND_UPDATE_CURRENT_PERMISSIONS",
     "runtime_test_required": true
-  }
+  },
+  "lead_skill_allowlist": [
+    "vx-dev-project-policy",
+    "vx-dev-team-handoff",
+    "vx-engineering-harness",
+    "vx-requirements-acceptance",
+    "vx-task-dependency-graph",
+    "vx-implementation-handoff",
+    "vx-git-ci-quality",
+    "vx-agent-collaboration",
+    "vx-release-readiness"
+  ]
 }
