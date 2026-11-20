@@ -3,11 +3,12 @@
 .SYNOPSIS
   Auditoria y limpieza de ramas: main unica local y remota, con tags de archivo.
 .DESCRIPTION
-  V2.0.2 (2026-11-19) | PLAN_ONLY por defecto.
+  V2.0.3 (2026-11-19) | PLAN_ONLY por defecto.
   No toca runtime Kilo, ACL, MCP, agents, skills ni kilo.jsonc.
   Requiere main sincronizada, worktree limpio, cero PR abiertas y confirmacion.
   Archiva cada tip como tag remoto anotado antes de borrar su rama.
 .CHANGELOG
+  2.0.3 - Rechaza refs simbolicas, exige un solo worktree y usa update-ref --no-deref.
   2.0.2 - Retiro local atomico por SHA con update-ref; protege ramas usadas por worktrees.
   2.0.1 - Compatibilidad PS 5.1: enumerar PR y probes silenciosos para tags inexistentes.
   2.0.0 - Preservacion de refs, verificaciones de SHA y retiro main-only.
@@ -88,7 +89,7 @@ if(!$base -or $base -ne (Remote-Sha 'refs/heads/main')){throw 'origin/main no se
 $open=@(Open-PR-Branches)
 $remoteRefs=@(& git for-each-ref '--format=%(refname:strip=3)|%(objectname)' 'refs/remotes/origin/')
 Assert-Git 'inventario remoto'
-$localRefs=@(& git for-each-ref '--format=%(refname:strip=2)|%(objectname)' 'refs/heads/')
+$localRefs=@(& git for-each-ref '--format=%(refname:strip=2)|%(objectname)|%(symref)' 'refs/heads/')
 Assert-Git 'inventario local'
 $remotePlan=@(foreach($line in $remoteRefs){
   if(!$line){continue}
@@ -98,9 +99,13 @@ $remotePlan=@(foreach($line in $remoteRefs){
 })
 $localPlan=@(foreach($line in $localRefs){
   if(!$line){continue}
-  $p=$line -split '\|',2
+  $p=$line -split '\|',3
   if($p[0] -eq 'main'){continue}
-  [pscustomobject]@{Scope='LOCAL';Branch=$p[0];SHA=$p[1];Archive="archive/local/$($p[0])";Status=$(if($p[0] -eq $current){'HOLD_CURRENT'}else{'ARCHIVE_THEN_DELETE'})}
+  $symref=if($p.Count -ge 3){[string]$p[2]}else{''}
+  [pscustomobject]@{
+    Scope='LOCAL';Branch=$p[0];SHA=$p[1];Symref=$symref;Archive="archive/local/$($p[0])"
+    Status=$(if($p[0] -eq $current){'HOLD_CURRENT'}elseif($symref){'HOLD_SYMBOLIC_REF'}else{'ARCHIVE_THEN_DELETE'})
+  }
 })
 $plan=@($remotePlan)+@($localPlan)
 $folder=Join-Path ([IO.Path]::GetTempPath()) 'Kilo-Global-Harness'
@@ -114,6 +119,13 @@ if($current -ne 'main'){throw 'Aplicar solo desde main local.'}
 if((Local-Sha 'refs/heads/main') -ne $base){throw 'main local no sincronizada.'}
 if(@(& git status --porcelain).Count -gt 0){throw 'Worktree no limpio.'}
 if($open.Count -gt 0){throw "PR abiertas: $($open -join ', '). No borrar."}
+$worktreeLines=@(& git worktree list --porcelain);Assert-Git 'inventario worktrees'
+$worktreeCount=@($worktreeLines | Where-Object { $_ -like 'worktree *' }).Count
+if($worktreeCount -ne 1){throw "Aplicar exige un unico worktree; encontrados: $worktreeCount"}
+$symbolic=@($localPlan | Where-Object { $_.Symref })
+if($symbolic.Count -gt 0){
+  throw "Referencias simbolicas locales no se eliminan automaticamente: $($symbolic.Branch -join ', ')"
+}
 if((Remote-Sha 'refs/heads/main') -ne $base){throw 'main remoto cambio; reauditar.'}
 $deletedRemote=0;$deletedLocal=0;$skipped=0
 foreach($item in $remotePlan){
@@ -134,7 +146,7 @@ foreach($item in $localPlan){
     Archive-Sha -Tag $item.Archive -Sha $item.SHA
     Assert-BranchNotCheckedOut -Branch $item.Branch
     # update-ref compara y elimina la ref bajo lock: si el tip avanzo, falla.
-    & git update-ref -d $ref $item.SHA
+    & git update-ref --no-deref -d $ref $item.SHA
     Assert-Git "retiro local CAS $($item.Branch)"
     if(Local-Sha $ref){throw "La rama local sigue existiendo: $($item.Branch)"}
     $deletedLocal++
