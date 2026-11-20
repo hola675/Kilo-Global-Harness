@@ -1,6 +1,6 @@
 # VX Team — Colaboración por capacidades y handoffs entre Frontend, Backend y QA V1
 
-**Fecha:** 2026-11-19 · **Versión:** 1.0.0 · **Estado:** SOURCE PLAN_ONLY. No está conectado todavía al runtime de Kilo.
+**Fecha:** 2026-11-19 · **Versión:** 1.1.0 · **Estado:** SOURCE PLAN_ONLY. No está conectado todavía al runtime de Kilo.
 
 ## Decisión
 
@@ -18,6 +18,16 @@ Frontend implementa interacción → PR + CI + revisión → merge a main
 ```
 
 Si una rama ya está `ACTIVE`, generar **`RECONCILE_THEN_EXTEND_EXISTING`** para su agente responsable: no crear una rama duplicada. Si está en revisión o trabajando en una reconciliación, `PAUSE_AND_RECHECK`; ante múltiples propietarios, bloquear el plan entero. Si no existe trabajo compatible, proponer una rama `work/*` **para esa nueva tarea** sin crearla automáticamente.
+
+## Agente Editorial y handoffs para cualquier especialidad
+
+El pack incluye `vx-editorial-builder` como **agente seleccionable** con `edit/write/apply_patch: ask`, `bash/task/agent_manager: deny`. Su skill `vx-editorial-claridad` crea, simplifica y revisa contenido, textos de formularios, instrucciones, títulos, mensajes de error, confirmaciones, artículos y ayudas, conservando el significado original. En source esto amplía el pack VX a **14 agentes y 32 skills** (pack 0.4.0), sin instalar nada en Windows.
+
+La tabla de dependencias ahora admite más rutas: Frontend→Editorial (textos ambiguos en una pantalla), Editorial→Frontend (cambio aprobado de microcopy), Backend→Editorial (mensajes de error/capacidades visibles), Docs→Editorial (manuales de lectura general), Datos→Editorial (explicación de campos), QA→Frontend/Backend (hallazgo real), Datos→Backend (esquema), Backend→Docs y otros **consumidores explícitos** de la lista cerrada de implementadores. `additional_targets` permite solicitar otro dominio autorizado cuando el impacto está justificado, sin crear nuevas herramientas ni conceder permisos; fanout mayor que 3 requiere descomposición/revisión.
+
+**Ejemplo práctico:** la pregunta «¿Qué define tu actividad?» puede referirse a ocupación, negocio o clasificación económica. Editorial primero confirma qué dato se necesita, luego recomienda «¿A qué se dedica principalmente tu negocio?» para un formulario comercial o «¿Cuál es tu actividad económica principal?» para un campo formal. La oración más larga «Actualmente tu actividad económica mayormente qué comprende o define» no es automáticamente más precisa ni comprensible. Una pregunta comprensible en tests de texto todavía puede fallar ante usuarios reales: no declarar accesibilidad universal sin evaluación humana.
+
+**Prueba de comprensión:** para textos críticos, pedir a personas con distinta familiaridad con el proceso explicar con sus propias palabras qué significa el mensaje y qué harían después; documentar confusiones observadas, nunca fingir respuestas. El validador de CI solo certifica **seguridad del prompt/contrato y rutas del agente**, no comprensión humana.
 
 ## Publicación verificable de capacidad
 

@@ -468,6 +468,8 @@ Los hijos son read-only. No escriben, no ejecutan shell, no delegan, no usan Age
 
 Al completar un contrato Backend en `main` (por ejemplo, eliminar un registro), emitir una declaración de capacidad basada en el diff y el contrato realmente existente, enlazada al SHA confirmado. Planificar `api_to_ui` para `vx-frontend-builder` y `regression` para `vx-qa-builder`, con rutas concretas permitidas; cuando Frontend necesite un endpoint, planificar `ui_to_api` para `vx-backend-builder`. Adaptar por magnitud y riesgo, no invocar todos los agentes. Un revisor independiente verifica efectos transversales y seguridad de eliminación.
 
+Para cualquier contrato transversal (no solo API y UI) permitir consumidores explícitos de Frontend, Backend, Datos, QA, Docs y Editorial según el impacto demostrado. En textos, etiquetas, errores o contenido funcional, enrutar al nuevo `vx-editorial-builder` con skill `vx-editorial-claridad`: preservar intención, datos y términos, revisar comprensibilidad y entregar copy verificable sin afirmar pruebas humanas inexistentes.
+
 Los diez especialistas Dev Team siguen read-only. Los builders VX seleccionables de forma independiente son escritores **solo con permiso Kilo `ask` efectivo**, un escritor por worktree; no delegarles herramientas mediante `task` denegado ni usar el coordinador para eludir prompts. El enrutador `tools/vx_team_capability_router.py` produce tickets `PROPOSED_NOT_DISPATCHED`, sin activar automáticamente sesiones/ACL: ver `docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md`.
 
 ## Git

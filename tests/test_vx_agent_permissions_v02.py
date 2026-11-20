@@ -62,7 +62,7 @@ def assert_skill_allowlist(testcase, path, agent):
 class VXAgentPermissionsTests(unittest.TestCase):
     def test_legacy_repo_agents_keep_fallback_deny(self):
         agents = sorted(AGENT_DIR.glob("vx-*.md"))
-        self.assertEqual(len(agents), 13)
+        self.assertEqual(len(agents), 14)
         for file in agents:
             with self.subTest(agent=file.name):
                 front = file.read_text(encoding="utf-8").split("---", 2)[1]

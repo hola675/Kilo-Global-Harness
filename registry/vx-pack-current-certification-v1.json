@@ -1,8 +1,8 @@
 {
   "schema": "vx-pack-current-certification/1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "CURRENT_SOURCE_CERTIFICATION",
-  "current_pack": "0.3.0",
+  "current_pack": "0.4.0",
   "active_tests": [
     "test_vx_pack_current_contract.py",
     "test_vx_pack_bootstrap_v1.py",

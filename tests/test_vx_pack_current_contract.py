@@ -28,17 +28,17 @@ class VXPackCurrentContractTests(unittest.TestCase):
 
     def test_current_registry_is_pack_030_with_closed_inventory(self):
         pack = self.registry["pack"]
-        self.assertEqual(pack["version"], "0.3.0")
-        self.assertEqual(len(pack["owned_agents"]), 13)
-        self.assertEqual(len(pack["owned_skills"]), 31)
-        self.assertEqual(len(set(pack["owned_agents"])), 13)
-        self.assertEqual(len(set(pack["owned_skills"])), 31)
+        self.assertEqual(pack["version"], "0.4.0")
+        self.assertEqual(len(pack["owned_agents"]), 14)
+        self.assertEqual(len(pack["owned_skills"]), 32)
+        self.assertEqual(len(set(pack["owned_agents"])), 14)
+        self.assertEqual(len(set(pack["owned_skills"])), 32)
 
     def test_bootstrap_loads_current_registry_inventory_without_duplicate_targets(self):
         data, assets = vx.load_pack(ROOT, self.home)
-        self.assertEqual(data["pack"]["version"], "0.3.0")
-        self.assertEqual(len(data["pack"]["owned_agents"]), 13)
-        self.assertEqual(len(data["pack"]["owned_skills"]), 31)
+        self.assertEqual(data["pack"]["version"], "0.4.0")
+        self.assertEqual(len(data["pack"]["owned_agents"]), 14)
+        self.assertEqual(len(data["pack"]["owned_skills"]), 32)
         targets = [str(item.target).casefold() for item in assets]
         self.assertEqual(len(targets), len(set(targets)))
 

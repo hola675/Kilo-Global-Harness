@@ -1,6 +1,6 @@
 {
   "schema": "vx-team-capability-handoffs/1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "updated": "2026-11-19",
   "status": "SOURCE_PLAN_ONLY_RUNTIME_NOT_ACTIVATED",
   "documentation": "docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md",
@@ -25,7 +25,8 @@
       "backend": "vx-backend-builder",
       "qa": "vx-qa-builder",
       "data": "vx-data-builder",
-      "docs": "vx-docs-builder"
+      "docs": "vx-docs-builder",
+      "editorial": "vx-editorial-builder"
     },
     "reviewers": {
       "frontend": "vx-frontend-adviser",
@@ -39,7 +40,19 @@
       "ui_to_api": "frontend→backend",
       "api_to_data": "backend→data",
       "regression": "producer→qa",
-      "documentation": "producer→docs"
+      "documentation": "producer→docs",
+      "api_to_content": "backend→editorial",
+      "ui_to_content": "frontend→editorial",
+      "docs_to_content": "docs→editorial",
+      "data_to_content": "data→editorial",
+      "content_to_ui": "editorial→frontend",
+      "content_to_docs": "editorial→docs",
+      "data_to_backend": "data→backend",
+      "backend_to_docs": "backend→docs",
+      "ui_to_docs": "frontend→docs",
+      "qa_to_ui": "qa→frontend",
+      "qa_to_backend": "qa→backend",
+      "additional_targets": "any declared source→different authorized domain, scoped and reviewed"
     },
     "task_priority": {
       "delete": "HIGH",
@@ -54,7 +67,16 @@
     "create_new_branch_only_if_no_compatible_active_task": true,
     "reconcile_existing_branch_before_extending": true,
     "no_new_branch_for_same_active_role": true,
-    "no_direct_cross_agent_writes": true
+    "no_direct_cross_agent_writes": true,
+    "writing_domains": [
+      "frontend",
+      "backend",
+      "data",
+      "qa",
+      "docs",
+      "editorial"
+    ],
+    "research_or_review_roles_remain_readonly": true
   },
   "execution": {
     "dispatcher_enabled": false,
@@ -87,6 +109,9 @@
     "new_endpoints_require_contract_review": true,
     "missing_contract_scope_or_owner": "BLOCK",
     "pending_permissions": "ASK_OR_BLOCK",
-    "tests": "UPDATE_EXISTING_LIVING_SUITES"
+    "tests": "UPDATE_EXISTING_LIVING_SUITES",
+    "editorial_meaning_preservation_required": true,
+    "critical_copy_requires_human_comprehension_evidence": true,
+    "universal_comprehension_not_automatically_certified": true
   }
 }
