@@ -3,11 +3,12 @@
 .SYNOPSIS
   Auditoria y limpieza de ramas: main unica local y remota, con tags de archivo.
 .DESCRIPTION
-  V2.0.1 (2026-11-19) | PLAN_ONLY por defecto.
+  V2.0.2 (2026-11-19) | PLAN_ONLY por defecto.
   No toca runtime Kilo, ACL, MCP, agents, skills ni kilo.jsonc.
   Requiere main sincronizada, worktree limpio, cero PR abiertas y confirmacion.
   Archiva cada tip como tag remoto anotado antes de borrar su rama.
 .CHANGELOG
+  2.0.2 - Retiro local atomico por SHA con update-ref; protege ramas usadas por worktrees.
   2.0.1 - Compatibilidad PS 5.1: enumerar PR y probes silenciosos para tags inexistentes.
   2.0.0 - Preservacion de refs, verificaciones de SHA y retiro main-only.
 #>
@@ -26,6 +27,16 @@ function Local-Sha([string]$Ref){
   $sha=(& git rev-parse --verify --quiet $Ref 2>$null | Out-String).Trim()
   if($LASTEXITCODE -ne 0){return ''}
   return $sha
+}
+function Assert-BranchNotCheckedOut([string]$Branch){
+  $ref="refs/heads/$Branch"
+  $lines=@(& git worktree list --porcelain)
+  Assert-Git "worktree list for $Branch"
+  foreach($line in $lines){
+    if($line -ceq "branch $ref"){
+      throw "Rama local en uso por un worktree: $Branch"
+    }
+  }
 }
 function Open-PR-Branches {
   $url='https://api.github.com/repos/hola675/Kilo-Global-Harness/pulls?state=open&per_page=100'
@@ -117,12 +128,15 @@ foreach($item in $remotePlan){
 }
 & git fetch origin --prune;Assert-Git 'prune'
 foreach($item in $localPlan){
-  if((Local-Sha "refs/heads/$($item.Branch)") -ne $item.SHA){Write-Warning "Cambio local $($item.Branch)";$skipped++;continue}
+  $ref="refs/heads/$($item.Branch)"
+  if((Local-Sha $ref) -ne $item.SHA){Write-Warning "Cambio local $($item.Branch)";$skipped++;continue}
   try{
     Archive-Sha -Tag $item.Archive -Sha $item.SHA
-    # Git bloquea borrar branches usadas por otros worktrees.
-    & git branch -D -- $item.Branch
-    Assert-Git "retiro local $($item.Branch)"
+    Assert-BranchNotCheckedOut -Branch $item.Branch
+    # update-ref compara y elimina la ref bajo lock: si el tip avanzo, falla.
+    & git update-ref -d $ref $item.SHA
+    Assert-Git "retiro local CAS $($item.Branch)"
+    if(Local-Sha $ref){throw "La rama local sigue existiendo: $($item.Branch)"}
     $deletedLocal++
   }catch{Write-Warning "No se elimino local $($item.Branch) : $_";$skipped++}
 }
