@@ -129,6 +129,28 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
                 key = p.name.casefold() if is_skill else p.stem.casefold()
                 if key in owned and (p.name if is_skill else p.stem) != key:
                     warnings.append("Colisión de capitalización bajo ruta global.")
+                # Las skills de otras carpetas pueden declarar un nombre interno CORE.
+                # Bloquear también el frontmatter de terceros, sin tocar su contenido.
+                if is_skill and p.is_dir() and key not in skills:
+                    candidate = p / "SKILL.md"
+                    if candidate.exists() or candidate.is_symlink():
+                        vx.safe_entry(candidate)
+                        try:
+                            if candidate.stat().st_size > vx.MAX_FILE_BYTES:
+                                raise Blocked("Skill externa demasiado grande para inventariar.")
+                            header = candidate.read_text(encoding="utf-8-sig")[:8192]
+                        except (OSError, UnicodeError) as exc:
+                            raise Blocked("Skill global ajena no puede inventariarse.") from exc
+                        front = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)", header, re.S)
+                        if front:
+                            declared = re.search(
+                                r"(?m)^name:\s*['\"]?([a-zA-Z0-9-]+)['\"]?\s*$", front.group(1)
+                            )
+                            if declared and declared.group(1).casefold() in skills:
+                                warnings.append(
+                                    "Skill ajena en pool global declara ID seleccionado: "
+                                    + declared.group(1).casefold()
+                                )
     target_paths = [_target(home, a["target"]) for a in [*pack["agents"], *pack["skills"], *pack["commands"]]]
     target_paths += [_target(home, rel) for rel in [*pack["managed_legacy"]["agents"],
                                                      *pack["managed_legacy"]["skills"],
@@ -286,8 +308,11 @@ def restore(home: Path, directory: Path, *, partial: bool = False):
     rows, original, receipt = _unseal(home, directory)
     if receipt["state"] == "RESTORED":
         raise Blocked("Este respaldo ya fue restaurado.")
-    if receipt["state"] != "INSTALLED" and not partial:
-        raise Blocked("Backup no confirmado como instalación.")
+    if receipt["state"] not in ("INSTALLED", "BACKED_UP"):
+        raise Blocked("Estado de respaldo desconocido: no restaurar.")
+    if receipt["state"] == "BACKED_UP" and not partial:
+        raise Blocked("Instalación interrumpida: repetir con --recover-incomplete tras revisar HOME.")
+
     pack = load_manifest()
     permitted = {x["target"] for x in [*pack["agents"], *pack["skills"], *pack["commands"]]}
     permitted |= set(pack["managed_legacy"]["agents"]) | set(pack["managed_legacy"]["skills"])
@@ -323,6 +348,7 @@ def main():
     parser.add_argument("--home", type=Path, required=True)
     parser.add_argument("--confirm-install", action="store_true")
     parser.add_argument("--confirm-restore", action="store_true")
+    parser.add_argument("--recover-incomplete", action="store_true")
     parser.add_argument("--backup-folder", type=Path)
     args = parser.parse_args()
     home = args.home
@@ -341,7 +367,7 @@ def main():
     else:
         if not args.confirm_restore or not args.backup_folder:
             raise Blocked("Restaurar requiere --confirm-restore y --backup-folder.")
-        restore(home, args.backup_folder)
+        restore(home, args.backup_folder, partial=args.recover_incomplete)
         print("ESTADO ANTERIOR RESTAURADO; REINICIAR KILO.")
 
 
