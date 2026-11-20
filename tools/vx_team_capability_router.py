@@ -53,7 +53,7 @@ def _valid_scope(value: object) -> bool:
             or "\x00" in value):
         return False
     segments = value.split("/")
-    return len(segments) >= 2 and all(
+    return len(segments) >= 1 and all(
         segment not in {"", ".", ".."} and not segment.startswith(".")
         for segment in segments
     )
@@ -148,7 +148,9 @@ def plan_capability_handoff(
     # Para nuevas combinaciones reales, el productor puede solicitar dominios
     # adicionales explícitos. Nunca se infiere un cambio desde la descripción.
     extra = publication.get("additional_targets", [])
-    if (not isinstance(extra, list) or len(extra) != len(set(extra))
+    if (not isinstance(extra, list)
+            or any(not isinstance(role, str) for role in extra)
+            or len(extra) != len(set(extra))
             or any(role not in WRITERS or role == producer for role in extra)):
         raise ValueError("Destinatarios adicionales inválidos")
     for role in extra:
@@ -181,7 +183,13 @@ def plan_capability_handoff(
     for task in active_tasks:
         if task.get("repo") != repo or task.get("status") not in (ACTIVE | REVIEW_STATES):
             continue
-        role = task.get("domain")
+        # Los catálogos de reconciliación existentes solo guardan owner_agent;
+        # su dominio es opcional. No crear ramas duplicadas si falta.
+        owner = task.get("owner_agent")
+        inferred = next(
+            (role for role, builder in WRITERS.items() if builder == owner), None
+        )
+        role = task.get("domain") or inferred
         if role in existing_by_domain:
             existing_by_domain[role].append(task)
 
