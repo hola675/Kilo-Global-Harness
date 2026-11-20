@@ -65,6 +65,37 @@ class UnifiedPackV1Tests(unittest.TestCase):
                     self.assertEqual(doc.permissions.scalar("edit"), "deny")
         self.assertEqual(len(pack["lead_skill_allowlist"]), 9)
 
+    def test_adaptive_builder_contracts_support_isolated_non_git_lab_without_acl_elevation(self):
+        pack = module.load_manifest()
+        builders = [a for a in pack['agents'] if a['role'] == 'builder']
+        self.assertEqual(len(builders), 6)
+        for agent in builders:
+            with self.subTest(builder=agent['id']):
+                text = (ROOT / agent['source']).read_text(encoding='utf-8')
+                front = text.split('---', 2)[1]
+                self.assertIn('mode: subagent', front)
+                self.assertIn('hidden: true', front)
+                for tool in ('edit', 'write', 'apply_patch'):
+                    self.assertIn(f'  {tool}: ask', front)
+                self.assertIn('  task: deny', front)
+                self.assertIn('GIT_NOT_APPLICABLE', text)
+                self.assertIn('laboratorio', text.lower())
+                self.assertIn('workspace', text)
+                self.assertIn('Auto', text)
+                self.assertNotIn('**Activación:** disponible como agente seleccionable directamente', text)
+                self.assertNotIn('Antes de aceptar un handoff, verificar `task_id`, `base_sha`', text)
+        leader = (ROOT / 'agents/vx-dev-team.md').read_text(encoding='utf-8')
+        self.assertIn('solo crea un archivo', leader)
+        self.assertIn('GIT_NOT_APPLICABLE', leader)
+        self.assertIn('nunca escribe para aparentar el éxito del subagente', leader)
+        handoff = (ROOT / 'skills/vx-implementation-handoff/SKILL.md').read_text(encoding='utf-8')
+        self.assertIn('laboratorio local aislado sin Git', handoff)
+        self.assertIn('GIT_NOT_APPLICABLE', handoff)
+        self.assertIn('modo `Auto`', handoff)
+        collaboration = (ROOT / 'skills/vx-agent-collaboration/SKILL.md').read_text(encoding='utf-8')
+        self.assertIn('**Responsable vigente:** `vx-dev-team`', collaboration)
+        self.assertIn('`vx-dev-reviewer`', collaboration)
+
     def test_simulation_is_readonly_and_preserves_third_party_assets(self):
         with tempfile.TemporaryDirectory(prefix="vx-unified-plan-") as folder:
             home = Path(folder)
