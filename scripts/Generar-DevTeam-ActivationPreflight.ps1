@@ -129,6 +129,8 @@ foreach($server in $mcp.servers.PSObject.Properties){
 $checks=[ordered]@{
   source_ci_pass=($SourceCiStatus -eq 'PASS')
   canonical_roles_11=(@($matrix.roles.PSObject.Properties).Count -eq 11)
+  runtime_agent_hash_match=($agentHashCheck.status -eq 'PASS')
+  skill_source_hash_18_of_18=($skillHashCheck.status -eq 'PASS')
   runtime_snapshot_11_of_11=($runtimeObserved -eq 11)
   skill_eval_report_complete=$evalComplete
   runtime_verified_mcp_id_count=$verifiedMcpIds
@@ -141,6 +143,8 @@ foreach($wave in $waves.waves){
   foreach($req in $wave.prerequisites){
     switch($req){
       'source_ci_pass' { if(!$checks.source_ci_pass){$blocking.Add($req)} }
+      'runtime_agent_hash_match' { if(!$checks.runtime_agent_hash_match){$blocking.Add($req)} }
+      'skill_source_hash_18_of_18' { if(!$checks.skill_source_hash_18_of_18){$blocking.Add($req)} }
       'runtime_visible_snapshot_11_of_11' { if(!$checks.runtime_snapshot_11_of_11){$blocking.Add($req)} }
       'skill_eval_report_complete' { if(!$checks.skill_eval_report_complete){$blocking.Add($req)} }
       'operator_approval' { $blocking.Add($req) }
@@ -160,6 +164,11 @@ $report=[ordered]@{
   generated_at=(Get-Date).ToString('o')
   mode='PLAN_ONLY'
   checks=$checks
+  hash_evidence=[ordered]@{
+    scope='FILE_SHA256_ONLY_NOT_RUNTIME_BEHAVIOR'
+    agents=$agentHashCheck
+    skills=$skillHashCheck
+  }
   waves=$plans
   invariant='This preflight never applies runtime changes and never grants operator approval.'
 }
