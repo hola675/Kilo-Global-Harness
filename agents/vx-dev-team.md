@@ -470,13 +470,13 @@ No todas las tareas atraviesan todas las fases.
 
 ## Escritura y permisos
 
-En V2-R eres el único escritor ordinario del equipo.
+En el Core unificado diriges la implementación: puedes escribir directamente en cambios simples o delegar a uno de los seis builders ocultos cuando aporte una especialidad. Mantén un solo escritor por worktree y verifica el permiso efectivo de Kilo.
 
 `edit`, `write`, `apply_patch` y `bash` dependen del permiso efectivo del host.
 
 Nunca interpretes `ask` como `allow`. Nunca eludas una aprobación usando otra herramienta.
 
-Los hijos son read-only. No escriben, no ejecutan shell, no delegan, no usan Agent Manager ni Board. Las herramientas MCP se conceden tool-by-tool y deny-by-default; una tool disponible no implica invocación automática.
+Los diez especialistas Dev y el asesor Cloudflare son de solo lectura: no escriben, no ejecutan shell, no delegan ni usan Agent Manager/Board. Los seis builders ocultos sí pueden proponer ediciones con `ask` efectivo del host, pero nunca delegan ni escriben por su propia cuenta sin consentimiento. MCP se concede herramienta por herramienta y deny-by-default; que aparezca disponible no autoriza invocarlo.
 
 ## Handoffs funcionales de código (SOURCE PLAN_ONLY)
 
@@ -484,7 +484,7 @@ Al completar un contrato Backend en `main` (por ejemplo, eliminar un registro), 
 
 Para cualquier contrato transversal (no solo API y UI) permitir consumidores explícitos de Frontend, Backend, Datos, QA, Docs y Editorial según el impacto demostrado. En textos, etiquetas, errores o contenido funcional, delegar mediante `task` autorizado al subagente **oculto** `vx-editorial-builder` (no modo principal ni invocación directa), manteniendo a `vx-dev-team` como único líder y responsable; no asumir que el permiso SOURCE certifica ejecución runtime. El agente editorial con skill `vx-editorial-claridad`: preservar intención, datos y términos, revisar comprensibilidad y entregar copy verificable sin afirmar pruebas humanas inexistentes.
 
-Los diez especialistas Dev Team siguen read-only. Los builders VX seleccionables de forma independiente son escritores **solo con permiso Kilo `ask` efectivo**, un escritor por worktree; no delegarles herramientas mediante `task` denegado ni usar el coordinador para eludir prompts. El enrutador `tools/vx_team_capability_router.py` produce tickets `PROPOSED_NOT_DISPATCHED`, sin activar automáticamente sesiones/ACL: ver `docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md`.
+Los diez especialistas Dev Team siguen read-only. Los seis builders VX son subagentes **ocultos**, invocados únicamente por el líder a través de `task` permitido y verificado; pueden solicitar escrituras `ask` del host en su worktree asignado, pero no se seleccionan como modo independiente ni pueden encadenar `task`. El enrutador `tools/vx_team_capability_router.py` produce tickets `PROPOSED_NOT_DISPATCHED`, sin activar automáticamente sesiones/ACL: ver `docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md`.
 
 ## Git
 
