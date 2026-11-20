@@ -656,6 +656,101 @@ class ConsolidationV1Tests(unittest.TestCase):
             self.assertFalse(contract["event"]["watcher_enabled"])
             self.assertFalse(contract["event"]["dispatcher_enabled"])
 
+    def test_sqlite_snapshot_remains_atomic_when_main_advances_mid_read(self):
+        import importlib.util
+        import tempfile
+        import threading
+        from types import SimpleNamespace
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_queue_store", ROOT / "tools" / "vx_team_git_queue_store.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo, old, mid, new = "hola675/Kilo-Global-Harness", "a"*40, "b"*40, "c"*40
+
+        def event(previous, current):
+            return (
+                {
+                    "repo": repo, "previous_main_sha": previous,
+                    "current_main_sha": current,
+                    "status": "MAIN_ADVANCED_VERIFIED",
+                    "planning_allowed": True, "mutation_performed": False,
+                },
+                {
+                    "repo": repo, "previous_main_sha": previous,
+                    "current_main_sha": current,
+                    "status": "PLAN_ONLY", "event": "MAIN_ADVANCED",
+                    "blocked": [], "mutation_performed": False,
+                    "reconcile_tasks": [{
+                        "task_id": "T", "owner_agent": "agent",
+                        "branch": "work/a", "target_main_sha": current,
+                        "event_id": f"{repo}:{current}:work/a",
+                        "status": "RECONCILE_REQUIRED", "execute": False,
+                    }],
+                },
+            )
+
+        with tempfile.TemporaryDirectory() as directory:
+            reader = module.SandboxQueue(Path(directory))
+            reader.initialize()
+            initial_observation, initial_plan = event(old, mid)
+            reader.accept_verified_plan(initial_observation, initial_plan)
+            writer = module.SandboxQueue(Path(directory))
+            writer_observation, writer_plan = event(mid, new)
+            head_read = threading.Event()
+            writer_done = threading.Event()
+            errors = []
+            original_connect = reader._connect
+
+            class InterleavedConnection:
+                def __init__(self, actual):
+                    self.actual = actual
+
+                def execute(self, statement, *args):
+                    cursor = self.actual.execute(statement, *args)
+                    if "SELECT repo,main_sha FROM repo_heads" in statement:
+                        rows = cursor.fetchall()  # Establece snapshot antes del writer.
+                        head_read.set()
+                        if not writer_done.wait(timeout=8):
+                            raise TimeoutError("El escritor no finalizo")
+                        return SimpleNamespace(fetchall=lambda: rows)
+                    return cursor
+
+                def rollback(self):
+                    self.actual.rollback()
+
+                def close(self):
+                    self.actual.close()
+
+            reader._connect = lambda: InterleavedConnection(original_connect())
+
+            def write_new_head():
+                try:
+                    if not head_read.wait(timeout=8):
+                        raise TimeoutError("El lector no empezo")
+                    result = writer.accept_verified_plan(writer_observation, writer_plan)
+                    if result["status"] != "STORED_PLAN_ONLY":
+                        raise AssertionError(result)
+                except Exception as exc:
+                    errors.append(str(exc))
+                finally:
+                    writer_done.set()
+
+            thread = threading.Thread(target=write_new_head)
+            thread.start()
+            try:
+                consistent = reader.snapshot()
+            finally:
+                thread.join(timeout=10)
+            self.assertFalse(thread.is_alive())
+            self.assertEqual(errors, [])
+            # El snapshot ve todo ANTES, nunca HEAD anterior + cola nueva.
+            self.assertEqual(consistent["heads"][repo], mid)
+            self.assertEqual(consistent["queue"][0]["target_main_sha"], mid)
+            # Una lectura posterior ve el nuevo estado completo.
+            self.assertEqual(writer.snapshot()["heads"][repo], new)
+            self.assertEqual(writer.snapshot()["queue"][0]["target_main_sha"], new)
+
     def test_branch_retirement_requires_remote_archive_and_explicit_apply(self):
         script=(ROOT/"scripts"/"Consolidar-Ramas-Main-V2.ps1").read_text(encoding="utf-8")
         self.assertIn("PLAN_ONLY",script)
