@@ -118,6 +118,207 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertFalse(registry["authorization"]["operator_approval"])
         self.assertTrue(registry["concurrency"]["multiple_independent_task_branches"])
 
+    def test_main_observer_and_queue_coalescence_are_fail_closed(self):
+        import importlib.util
+        from unittest.mock import patch
+        from types import SimpleNamespace
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_reconciliation", ROOT / "tools" / "vx_team_git_reconciliation.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo = "hola675/Kilo-Global-Harness"
+        old, new, newest = "a" * 40, "b" * 40, "c" * 40
+
+        def git_verified(argv, **kwargs):
+            self.assertNotIn("fetch", argv)
+            self.assertNotIn("push", argv)
+            self.assertNotIn("merge", argv)
+            args = tuple(argv[3:])
+            if args == ("remote", "get-url", "origin"):
+                return SimpleNamespace(returncode=0, stdout=f"https://github.com/{repo}.git\n")
+            if args == ("ls-remote", "--heads", "origin", "refs/heads/main"):
+                return SimpleNamespace(returncode=0, stdout=f"{new}\trefs/heads/main\n")
+            if args[0] == "cat-file":
+                return SimpleNamespace(returncode=0, stdout="")
+            if args == ("merge-base", "--is-ancestor", old, new):
+                return SimpleNamespace(returncode=0, stdout="")
+            self.fail(f"Git inesperado: {args}")
+
+        with patch.object(module.subprocess, "run", side_effect=git_verified):
+            observed = module.observe_origin_main(ROOT, repo, old)
+        self.assertEqual(observed["status"], "MAIN_ADVANCED_VERIFIED")
+        self.assertTrue(observed["planning_allowed"])
+        self.assertFalse(observed["mutation_performed"])
+
+        tasks = [
+            {"repo": repo, "task_id": "1", "owner_agent": "a", "branch": "work/a",
+             "status": "ACTIVE", "last_reconciled_main_sha": old},
+            {"repo": repo, "task_id": "2", "owner_agent": "b", "branch": "work/b",
+             "status": "ACTIVE", "last_reconciled_main_sha": old},
+        ]
+        plan = module.plan_main_advanced(repo, old, new, tasks)
+        queue = module.coalesce_pending_queue(plan, [])
+        self.assertEqual([x["branch"] for x in queue["queue"]], ["work/a", "work/b"])
+        self.assertFalse(queue["mutation_performed"])
+        self.assertFalse(queue["dispatch_performed"])
+        self.assertTrue(all(item["execute"] is False for item in queue["queue"]))
+        again = module.coalesce_pending_queue(plan, queue["queue"])
+        self.assertEqual(again["queue"], queue["queue"])
+        self.assertEqual(again["superseded"], [])
+        next_plan = module.plan_main_advanced(repo, new, newest, tasks)
+        coalesced = module.coalesce_pending_queue(next_plan, queue["queue"])
+        self.assertEqual(len(coalesced["superseded"]), 2)
+        self.assertTrue(all(x["target_main_sha"] == newest for x in coalesced["queue"]))
+        # Eventos desordenados no deben retroceder la cola a un SHA viejo.
+        outdated = module.coalesce_pending_queue(plan, coalesced["queue"])
+        self.assertEqual(outdated["blocked"][0]["reason"], "MAIN_EVENT_ORDER_UNVERIFIED")
+        self.assertTrue(all(x["target_main_sha"] == newest for x in outdated["queue"]))
+
+        # No pisar un trabajo en curso ni cambiar propietarios silenciosamente.
+        in_flight = [dict(queue["queue"][0], status="RECONCILING"), queue["queue"][1]]
+        paused = module.coalesce_pending_queue(next_plan, in_flight)
+        self.assertEqual(paused["blocked"][0]["reason"], "IN_FLIGHT_STALE_TARGET_PAUSE")
+        self.assertEqual(paused["queue"][0]["target_main_sha"], new)
+        changed_owner = [dict(queue["queue"][0], owner_agent="intruso"), queue["queue"][1]]
+        blocked = module.coalesce_pending_queue(next_plan, changed_owner)
+        self.assertEqual(blocked["blocked"][0]["reason"], "QUEUE_OWNER_CHANGED_REVIEW")
+        self.assertEqual(changed_owner[0]["target_main_sha"], new)
+
+        # Una tarea terminada no queda en cola despachable.
+        plan_one = module.plan_main_advanced(repo, new, newest, tasks[:1])
+        held = module.coalesce_pending_queue(plan_one, queue["queue"])
+        self.assertEqual(held["queue"][1]["status"], "HOLD_RECHECK")
+        self.assertEqual(held["blocked"][0]["reason"], "TASK_NOT_IN_CURRENT_PLAN_RECHECK")
+
+        # Un catálogo multi-repositorio conserva las colas ajenas sin tocarlas.
+        foreign = dict(queue["queue"][0], repo="other/repo")
+        combined = module.coalesce_pending_queue(plan, [foreign])
+        self.assertEqual(len(combined["queue"]), 3)
+        self.assertIn(foreign, combined["queue"])
+        with self.assertRaises(ValueError):
+            module.coalesce_pending_queue(plan, [foreign, foreign])
+
+        registry = json.loads((ROOT / "registry" / "vx-team-git-reconciliation-v1.json").read_text(encoding="utf-8"))
+        self.assertFalse(registry["observer"]["watcher_enabled"])
+        self.assertFalse(registry["observer"]["no_fetch"] is False)
+        self.assertFalse(registry["executor"]["enabled"])
+        self.assertEqual(registry["queue"]["persistence"], "NOT_IMPLEMENTED")
+
+    def test_main_observer_blocks_unverified_origin_and_ancestry(self):
+        import importlib.util
+        from unittest.mock import patch
+        from types import SimpleNamespace
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_reconciliation", ROOT / "tools" / "vx_team_git_reconciliation.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo, old, new = "hola675/Kilo-Global-Harness", "a" * 40, "b" * 40
+
+        with patch.object(module.subprocess, "run", return_value=SimpleNamespace(
+            returncode=0, stdout="https://github.com/otra/empresa.git\n"
+        )):
+            result = module.observe_origin_main(ROOT, repo, old)
+        self.assertEqual(result["status"], "ORIGIN_NOT_VERIFIED")
+        self.assertFalse(result["planning_allowed"])
+
+        def unavailable_objects(argv, **kwargs):
+            args = tuple(argv[3:])
+            if args[0] == "remote":
+                return SimpleNamespace(returncode=0, stdout=f"https://github.com/{repo}.git\n")
+            if args[0] == "ls-remote":
+                return SimpleNamespace(returncode=0, stdout=f"{new}\trefs/heads/main\n")
+            return SimpleNamespace(returncode=1, stdout="")
+
+        with patch.object(module.subprocess, "run", side_effect=unavailable_objects):
+            result = module.observe_origin_main(ROOT, repo, old)
+        self.assertEqual(result["status"], "MAIN_CHANGED_ANCESTRY_UNVERIFIED")
+        self.assertFalse(result["planning_allowed"])
+        self.assertFalse(result["mutation_performed"])
+
+        def divergent(argv, **kwargs):
+            args = tuple(argv[3:])
+            if args[0] == "remote":
+                return SimpleNamespace(returncode=0, stdout=f"https://github.com/{repo}.git\n")
+            if args[0] == "ls-remote":
+                return SimpleNamespace(returncode=0, stdout=f"{new}\trefs/heads/main\n")
+            if args[0] == "cat-file":
+                return SimpleNamespace(returncode=0, stdout="")
+            return SimpleNamespace(returncode=1, stdout="")
+
+        with patch.object(module.subprocess, "run", side_effect=divergent):
+            result = module.observe_origin_main(ROOT, repo, old)
+        self.assertEqual(result["status"], "MAIN_DIVERGED_BLOCKED")
+        self.assertFalse(result["planning_allowed"])
+
+    def test_partial_clone_missing_commit_never_lazy_fetches(self):
+        # Fixture Git real: el observer no puede descargar objetos promisor
+        # al comprobar un SHA que falta en una shallow partial clone.
+        import importlib.util
+        import subprocess
+        import tempfile
+        from unittest.mock import patch
+        from types import SimpleNamespace
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_reconciliation", ROOT / "tools" / "vx_team_git_reconciliation.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, bare, shallow = root / "source", root / "remote.git", root / "partial"
+
+            def git(*args):
+                return subprocess.run(
+                    ["git", *[str(arg) for arg in args]], check=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                    timeout=30,
+                ).stdout.strip()
+
+            git("init", "-b", "main", source)
+            git("-C", source, "-c", "user.name=Test", "-c",
+                "user.email=test@example.invalid", "commit", "--allow-empty", "-m", "A")
+            old = git("-C", source, "rev-parse", "HEAD")
+            git("-C", source, "-c", "user.name=Test", "-c",
+                "user.email=test@example.invalid", "commit", "--allow-empty", "-m", "B")
+            new = git("-C", source, "rev-parse", "HEAD")
+            git("init", "--bare", bare)
+            git("-C", source, "remote", "add", "origin", bare)
+            git("-C", source, "push", "origin", "main")
+            git("-C", bare, "symbolic-ref", "HEAD", "refs/heads/main")
+            git("-C", bare, "config", "uploadpack.allowFilter", "true")
+            git("clone", "--filter=blob:none", "--depth=1", "--no-checkout",
+                bare.as_uri(), shallow)
+            self.assertEqual(git("-C", shallow, "config", "--get",
+                                 "remote.origin.promisor"), "true")
+            self.assertEqual(git("-C", shallow, "rev-parse", "HEAD"), new)
+            packdir = shallow / ".git" / "objects" / "pack"
+            before = {x.name for x in packdir.iterdir()}
+            original_run = subprocess.run
+
+            def observed_git(argv, **kwargs):
+                args = tuple(argv[3:])
+                self.assertEqual(kwargs["env"]["GIT_NO_LAZY_FETCH"], "1")
+                self.assertEqual(kwargs["env"]["GIT_OPTIONAL_LOCKS"], "0")
+                if args == ("remote", "get-url", "origin"):
+                    return SimpleNamespace(
+                        returncode=0,
+                        stdout="https://github.com/hola675/Kilo-Global-Harness.git\n"
+                    )
+                if args == ("ls-remote", "--heads", "origin", "refs/heads/main"):
+                    return SimpleNamespace(returncode=0, stdout=f"{new}\trefs/heads/main\n")
+                return original_run(argv, **kwargs)
+
+            with patch.object(module.subprocess, "run", side_effect=observed_git):
+                observation = module.observe_origin_main(
+                    shallow, "hola675/Kilo-Global-Harness", old
+                )
+            self.assertEqual(observation["status"], "MAIN_CHANGED_ANCESTRY_UNVERIFIED")
+            self.assertFalse(observation["planning_allowed"])
+            after = {x.name for x in packdir.iterdir()}
+            self.assertEqual(before, after, "El observer descargó objetos promisor")
+
     def test_branch_retirement_requires_remote_archive_and_explicit_apply(self):
         script=(ROOT/"scripts"/"Consolidar-Ramas-Main-V2.ps1").read_text(encoding="utf-8")
         self.assertIn("PLAN_ONLY",script)
