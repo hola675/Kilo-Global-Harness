@@ -99,7 +99,8 @@
       "WORKTREE_LOCKED_STATE",
       "POWER_INTERRUPTION_HOLD",
       "RECOVERY_IDEMPOTENCE",
-      "RECOVERY_INVALID_QUEUE_REJECTED"
+      "RECOVERY_INVALID_QUEUE_REJECTED",
+      "REPLACED_WORKTREE_REPOSITORY_REJECTED"
     ]
   },
   "authorization": {
@@ -151,7 +152,10 @@
     "reads": [
       "git remote get-url origin",
       "git worktree list --porcelain -z",
-      "private_task_catalog_json"
+      "private_task_catalog_json",
+      "git rev-parse --path-format=absolute --git-common-dir",
+      "git symbolic-ref --quiet HEAD",
+      "git rev-parse --show-toplevel"
     ],
     "uses_exact_origin": true,
     "returns_private_paths": false,
@@ -162,7 +166,8 @@
     "worktree_cleanliness_checked": false,
     "runtime_tool_permissions_checked": false,
     "can_dispatch": false,
-    "host_installation": false
+    "host_installation": false,
+    "verify_live_git_common_dir_and_branch": true
   },
   "recovery": {
     "path": "tools/vx_team_git_worktrees.py",
