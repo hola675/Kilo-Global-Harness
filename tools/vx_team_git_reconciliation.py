@@ -207,7 +207,7 @@ def coalesce_pending_queue(plan: dict, existing_queue: list[dict]) -> dict:
             ):
                 blocked.append({"branch": branch, "reason": "QUEUE_OWNER_CHANGED_REVIEW"})
                 continue
-            if current and current["target_main_sha"] == target:
+            if current and current["target_main_sha"] == target and current["status"] != "HOLD_RECHECK":
                 continue
             if current and current["status"] in {"RECONCILING", "VERIFYING"}:
                 blocked.append({"branch": branch, "reason": "IN_FLIGHT_STALE_TARGET_PAUSE"})
