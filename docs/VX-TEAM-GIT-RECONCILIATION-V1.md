@@ -61,7 +61,7 @@ El código fuente incorpora un **observador Git ejecutable una sola vez** y un *
 
 - `observe_origin_main`: lee `origin`, consulta `refs/heads/main` con `git ls-remote`, comprueba existencia local de ambos commits y valida `git merge-base --is-ancestor`. No ejecuta `fetch`, `merge`, `push` ni modifica refs.
 - La diferencia de SHA se clasifica como `MAIN_ADVANCED_VERIFIED` solo cuando está demostrada la relación de ancestro. Si el commit remoto aún no existe localmente, devuelve `MAIN_CHANGED_ANCESTRY_UNVERIFIED`; si hubo divergencia, `MAIN_DIVERGED_BLOCKED`. **Ninguno permite crear trabajo de reconciliación**.
-- `coalesce_pending_queue`: conserva una sola entrada pendiente por `(repo, branch)`, admite varios agentes en ramas independientes, descarta duplicados de eventos, reemplaza planes pendientes por el último SHA ya verificado, **no sustituye** una tarea `RECONCILING` o `VERIFYING`, y bloquea cambios de propietario.
+- `coalesce_pending_queue`: conserva una sola entrada pendiente por `(repo, branch)`, admite varios agentes en ramas independientes y descarta duplicados. Solo reemplaza planes pendientes cuando el SHA anterior de la cola coincide con `previous_main_sha` del evento; si las notificaciones llegan desordenadas, devuelve `MAIN_EVENT_ORDER_UNVERIFIED` en vez de retroceder a un SHA viejo. **No sustituye** una tarea `RECONCILING` o `VERIFYING`, y bloquea cambios de propietario.
 - Cuando una tarea deja de aparecer activa, su entrada pendiente pasa a `HOLD_RECHECK`. Si reaparece, podrá obtener un nuevo plan, pero sigue sin autorizar ningún comando Git.
 - El sistema no persiste cola ni recupera sesiones tras cortes eléctricos: **la cola durable, identidad de agente, watcher y despacho siguen pendientes** en la issue #86.
 
