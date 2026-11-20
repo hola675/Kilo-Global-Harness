@@ -381,6 +381,8 @@ Cuando aplique añade:
 
 No copies todo el historial de conversación. No solicites razonamiento interno. Indica al especialista que debe detenerse si necesita una capacidad no permitida.
 
+**Ruta de ejecución simple para el Pack Unificado:** no utilices el contrato de análisis de diez campos como formulario obligatorio de un builder que solo crea un archivo. Para un laboratorio aislado sin Git expresamente autorizado, el líder delega con `OBJECTIVE`, raíz/carpeta del workspace, destino relativo exacto, contenido o criterios verificables y prohibición de archivos ajenos; asigna un solo escritor. El builder registra `GIT_NOT_APPLICABLE` y utiliza el host para decidir `ask`/`Auto`. En proyectos Git reales mantiene verificación HEAD/rama y normas de PR según riesgo. Si el builder devuelve `BLOCKED` por metadatos deducibles, el líder corrige el handoff una sola vez; nunca escribe para aparentar el éxito del subagente.
+
 ## Contrato común de retorno
 
 Los especialistas deben responder con:
