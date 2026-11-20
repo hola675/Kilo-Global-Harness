@@ -40,10 +40,10 @@ def load_manifest() -> dict:
     pack = json.loads(MANIFEST.read_text(encoding="utf-8"))
     if pack.get("schema") != "vx-unified-pack/1" or pack.get("primary") != "vx-dev-team":
         raise Blocked("Manifest unificado no reconocido.")
-    agents, skills = pack["agents"], pack["skills"]
-    if len(agents) != 18 or len(skills) != 43:
+    agents, skills, commands = pack["agents"], pack["skills"], pack["commands"]
+    if len(agents) != 18 or len(skills) != 43 or len(commands) != 3:
         raise Blocked("Inventario unificado inesperado.")
-    for items, kind in ((agents, "agents"), (skills, "skills")):
+    for items, kind in ((agents, "agents"), (skills, "skills"), (commands, "commands")):
         ids = [item["id"] for item in items]
         if len(set(ids)) != len(ids) or not all(re.fullmatch(r"vx-[a-z0-9-]+", s) for s in ids):
             raise Blocked("IDs no válidos o repetidos: " + kind)
@@ -53,7 +53,8 @@ def load_manifest() -> dict:
             if rel.is_absolute() or dest.is_absolute() or ".." in rel.parts or ".." in dest.parts:
                 raise Blocked("Ruta fuera de scope.")
             expected = (f".config/kilo/agents/{item['id']}.md" if kind == "agents"
-                        else f".kilo/skills/{item['id']}/SKILL.md")
+                        else f".kilo/skills/{item['id']}/SKILL.md" if kind == "skills"
+                        else f".config/kilo/commands/{item['id']}.md")
             if dest.as_posix() != expected:
                 raise Blocked("Destino canónico incorrecto: " + item["id"])
             source = ROOT / rel
@@ -63,13 +64,15 @@ def load_manifest() -> dict:
         raise Blocked("Un líder obligatorio.")
     if any(item["role"] == "lead" and item["id"] != pack["primary"] for item in agents):
         raise Blocked("Líder ajeno al contrato.")
-    legacy_items = [*pack["managed_legacy"]["agents"], *pack["managed_legacy"]["skills"]]
-    if len(legacy_items) != 13 or len(set(legacy_items)) != len(legacy_items):
+    legacy_items = [*pack["managed_legacy"]["agents"], *pack["managed_legacy"]["skills"],
+                    *pack["managed_legacy"]["commands"]]
+    if len(legacy_items) != 14 or len(set(legacy_items)) != len(legacy_items):
         raise Blocked("Retiro legacy inesperado.")
-    owned = {item["target"] for item in [*agents, *skills]}
+    owned = {item["target"] for item in [*agents, *skills, *commands]}
     oldpack = json.loads((ROOT / "registry/vx-agent-registry-v4.json").read_text(encoding="utf-8"))["pack"]
     previous = {f".config/kilo/agents/{id}.md" for id in oldpack["owned_agents"]}
     previous |= {f".kilo/skills/{id}/SKILL.md" for id in oldpack["owned_skills"]}
+    previous.add(".config/kilo/commands/vx-p2.md")
     if any(x not in previous or x in owned or ".." in Path(x).parts for x in legacy_items):
         raise Blocked("Retiro no pertenece a assets legacy declarados.")
     return pack
@@ -126,9 +129,10 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
                 key = p.name.casefold() if is_skill else p.stem.casefold()
                 if key in owned and (p.name if is_skill else p.stem) != key:
                     warnings.append("Colisión de capitalización bajo ruta global.")
-    target_paths = [_target(home, a["target"]) for a in [*pack["agents"], *pack["skills"]]]
+    target_paths = [_target(home, a["target"]) for a in [*pack["agents"], *pack["skills"], *pack["commands"]]]
     target_paths += [_target(home, rel) for rel in [*pack["managed_legacy"]["agents"],
-                                                     *pack["managed_legacy"]["skills"]]]
+                                                     *pack["managed_legacy"]["skills"],
+                                                     *pack["managed_legacy"]["commands"]]]
     global_target = home / ".config/kilo/AGENTS.md"
     target_paths.append(global_target)
     _check_paths(home, target_paths)
@@ -137,7 +141,7 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
     after_rules = vx.managed_text(before_rules, rules).encode("utf-8")
     changes: list[tuple[str, bytes | None, bytes | None]] = []
     total = 0
-    for item in [*pack["agents"], *pack["skills"]]:
+    for item in [*pack["agents"], *pack["skills"], *pack["commands"]]:
         rel = item["target"]
         after = (ROOT / item["source"]).read_bytes()
         target = _target(home, rel)
@@ -145,7 +149,8 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
         if before != after:
             changes.append((rel, before, after))
             total += len(before or b"")
-    for rel in [*pack["managed_legacy"]["agents"], *pack["managed_legacy"]["skills"]]:
+    for rel in [*pack["managed_legacy"]["agents"], *pack["managed_legacy"]["skills"],
+                *pack["managed_legacy"]["commands"]]:
         target = _target(home, rel)
         if target.is_file():
             before = target.read_bytes()
@@ -163,9 +168,10 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
         "schema": "vx-unified-plan/1", "status": "READY" if not warnings else "BLOCKED",
         "mode": "PLAN_ONLY", "agents": len(pack["agents"]), "hidden_agents": len(pack["agents"])-1,
         "skills": len(pack["skills"]), "core_skills": sum(x["layer"] == "CORE" for x in pack["skills"]),
-        "primary": pack["primary"], "files_to_update": sum(after is not None for _, _, after in changes),
+        "primary": pack["primary"], "commands": len(pack["commands"]),
+        "files_to_update": sum(after is not None for _, _, after in changes),
         "legacy_files_to_retire": sum(after is None for _, _, after in changes),
-        "unchanged_selected": len(pack["agents"]) + len(pack["skills"]) -
+        "unchanged_selected": len(pack["agents"]) + len(pack["skills"]) + len(pack["commands"]) -
             sum(after is not None and rel != ".config/kilo/AGENTS.md" for rel, _, after in changes),
         "blockers": sorted(set(warnings)), "runtime_verified": False,
         "config_changes": 0, "mcp_changes": 0, "activation_performed": False,
@@ -236,7 +242,7 @@ def verify(home: Path) -> dict:
     if status["blockers"] or changes:
         raise Blocked("Pack no coincide con el manifiesto: " + repr(status))
     return {"status": "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED", "agents": 18, "skills": 43,
-            "primary": "vx-dev-team", "mcp_changes": 0}
+            "primary": "vx-dev-team", "commands": 3, "mcp_changes": 0}
 
 
 def apply(home: Path) -> Path:
@@ -283,8 +289,9 @@ def restore(home: Path, directory: Path, *, partial: bool = False):
     if receipt["state"] != "INSTALLED" and not partial:
         raise Blocked("Backup no confirmado como instalación.")
     pack = load_manifest()
-    permitted = {x["target"] for x in [*pack["agents"], *pack["skills"]]}
+    permitted = {x["target"] for x in [*pack["agents"], *pack["skills"], *pack["commands"]]}
     permitted |= set(pack["managed_legacy"]["agents"]) | set(pack["managed_legacy"]["skills"])
+    permitted |= set(pack["managed_legacy"]["commands"])
     permitted.add(".config/kilo/AGENTS.md")
     jobs = []
     seen = set()
