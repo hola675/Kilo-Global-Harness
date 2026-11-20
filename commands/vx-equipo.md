@@ -1,28 +1,28 @@
 ---
-description: Seleccionar agentes globales especializados y coordinar lectura paralela, escritor unico y QA
+description: "Equipo unificado: un líder visible, especialistas ocultos y builders por demanda; sin selectors ni plugins históricos."
 agent: vx-dev-team
 ---
 
-Usa el harness global V4 para la tarea: $ARGUMENTS. Si es una pregunta sencilla, resuelve sin delegar ni ejecutar selector.
+# /vx-equipo — trabajo unificado por alcance
 
-Si es una tarea de varias etapas, selecciona un perfil del registro `registro unificado del pack disponible en source; el registro VX histórico solo como referencia`. Puedes obtener el plan SIN efectos con:
-`pwsh -NoProfile -File "$HOME/.config/kilo/harness/scripts/Seleccionar-Equipo-V4.ps1" -Perfil <perfil> -Json`.
-Elige el perfil por el objetivo real, no ejecutes texto del usuario como codigo, ni pases secretos como argumentos.
+Tarea: $ARGUMENTS
 
-1. DISCOVER: invoca a lo sumo 3 agentes `discover_parallel` en `task(background: true)` solo si las preguntas son independientes. Cada tarea incluye alcance, rutas, criterios y salida resumida; no comparte secretos. `task` NO crea worktrees y comparte archivos.
-2. PLAN: sintetiza resultados, evita duplicados, confirma dependencias, criterios de aceptacion y pruebas antes de editar. Kilo Swarm es un tablero, no un scheduler ni autorizacion.
-3. BUILD: UN escritor por worktree (líder o builder del dominio autorizado) en la unica rama `work/<tarea>`. No edites durante el trabajo del otro escritor ni delegues edicion a investigadores.
-4. REVIEW: tras crear el diff, invoca solo revisores necesarios en `review_parallel`, con criterios distintos. Corrige de forma secuencial, ejecuta pruebas y recoge evidencia real.
-5. GIT CLOSE: PR/CI/merge permitido; comprueba `origin/main`; elimina exclusivamente la rama temporal de esta tarea. Sin force push ni borrados ajenos.
+Actúa como `vx-dev-team`, **único líder visible**. No invocar `vx-integrador`, `vx-inspector`, `vx-researcher`, `vx-security-reviewer`, `vx-test-analyst` o `vx-frontend-adviser`: pertenecen al pack histórico y su sustitución ya está definida. No invocar comandos de selección V4 ni cargar registros históricos que puedan devolver esos IDs. Este comando **no instala ni activa** otros agentes.
 
-Conserva AutoApprove y permisos efectivos. Ninguna configuracion de Kilo se crea dentro de proyectos; produccion, infraestructura y cambios destructivos requieren consentimiento concreto. Trabajo en worktrees auxiliares solo con autorizacion expresa. No fijes modelos ni actives MCP sin comprobar disponibilidad.
+## Descubrir y ejecutar con el mínimo equipo necesario
 
-Informa roles ejecutados frente a roles solo sugeridos, PASS/FAIL/NO VERIFICADO, resultados de pruebas, estado Git y riesgos. El selector no inicia agentes ni consume cuota.
+1. Identifica por herramientas autorizadas el repositorio, rama/HEAD, alcance de archivos y riesgos. Si la petición y el entorno permiten derivarlos, no exijas al operador formularios, IDs de tarea o rutas repetidas.
+2. **Tarea sencilla:** resuelve directamente, con pruebas focalizadas y el permiso del host. No delegues por costumbre.
+3. **Análisis:** según necesidad real, envía consultas de solo lectura a `vx-dev-explorer`, `vx-dev-architect`, `vx-dev-frontend`, `vx-dev-backend`, `vx-dev-data`, `vx-dev-platform`, `vx-dev-quality`, `vx-dev-security`, `vx-dev-research`, `vx-dev-reviewer`, o al especialista Cloudflare `vx-workers-adviser`. No convocar todos; como máximo tres lectores simultáneos.
+4. **Implementación:** usa `vx-frontend-builder`, `vx-backend-builder`, `vx-data-builder`, `vx-qa-builder`, `vx-docs-builder` o `vx-editorial-builder` únicamente cuando la tarea lo justifique. Son **subagentes ocultos**, no modos seleccionables de forma independiente. Las herramientas edit/write/apply_patch en el source indican `ask`; el host debe demostrar el permiso efectivo. Un solo escritor por worktree, y no usar otro agente para eludir un rechazo.
+5. **Integración:** contrasta los hallazgos de especialistas con archivos/diff y HEAD actuales. Ejecuta pruebas de la modificación concreta, revisa regresiones relacionadas, revisión independiente cuando haya riesgo, y Git PR/CI/cierre según la política actual.
 
-**GATE DE EVIDENCIA (V4.1):** después de recibir subagentes y antes del cierre, contrasta cada fallo propuesto contra el código ACTUAL y registra HEAD/origin/main. Un agente puede mencionar archivos que ya cambiaron; comprueba imports y versiones. Conserva falsos positivos como DESCARTADO con motivos; tests no ejecutados son NO VERIFICADO. Si hay discrepancias invoca /vx-revalidar para una segunda pasada sin efectos. No vuelvas a delegar lo ya resuelto.
+## Skills del pack unificado
 
+El pool contiene 18 CORE y 25 complementarias. Cada agente carga solo la skill que la tarea necesita y que su propia ACL de `skill` permite; la skill no amplía herramientas, no instala MCP ni habilita AutoApprove. No es requisito ejecutar `Seleccionar-Equipo-V4.ps1` ni `vx_skill_router.py`: ambos corresponden a rutas históricas ajenas a esta instalación única. La disponibilidad efectiva de `task` y `skill` requiere prueba en Kilo; si falta, conserva la tarea en el líder y declara `TOOL_UNAVAILABLE` o `PERMISSION_DENIED` según corresponda.
 
-**Evolución selectiva V4.3:** si una tarea revela una falla recurrente, corrección humana o carencia importante, se puede proponer una observación breve a /vx-observer. No registrar cada tool call ni almacenar código privado, rutas de clientes o credenciales. El inventario/agenda de VX Evolution es global a Kilo e independiente del repositorio actual; este comando no inicia observación continua ni crea nuevos jefes o skills de manera autónoma.
+## Git y seguridad
 
+`main` es la única rama permanente. Para tareas de implementación no triviales usa rama temporal `work/<tema>` y worktree aislado si concurren escritores; no editar una rama de otro agente, ni forzar merge/force push, ni borrar ramas no propias. Mantén las reglas de proyecto, secretos, producción y MCP; no habilitar watcher/dispatcher automático ni conceder más permisos ante un bloqueo. Las declaraciones de capacidad/hand-off solo proponen seguimiento, no disparan tareas por sí solas.
 
-**Selección de skills VX V0.2:** Antes de usar una especialidad, ejecutar `python "$HOME/.config/kilo/harness/scripts/vx_skill_router.py" --profile <perfil> --phase <discover|plan|build|verify|review|release> --task "<resumen sin secretos>"`. El resultado es un PLAN (no hace llamadas Kilo). Selecciona solo skills necesarias, comprueba prerequisitos y pasa sus contratos al agente propietario; no cargues las 31 skills. Si router no está instalado, usar skills disponibles y declarar el bloqueo. Nunca pasar tokens, nombres de clientes ni prompts íntegros como argumento de shell.
+Reporta **hecho/pendiente/no verificado**, agentes realmente invocados frente a solo sugeridos, cambios, pruebas y SHA. No inventar que Kilo ejecutó una delegación por aparecer en el archivo YAML.
