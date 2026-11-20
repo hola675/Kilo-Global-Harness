@@ -16,3 +16,4 @@
 *.log
 /scripts
 /tests
+/artifacts
