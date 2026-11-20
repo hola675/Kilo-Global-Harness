@@ -60,6 +60,64 @@ class ConsolidationV1Tests(unittest.TestCase):
         for path in data["legacy"]["retired_unapproved_proposal_files"]:
             self.assertFalse((ROOT/path).exists(),path)
 
+    def test_main_advanced_fanout_planner_is_inert_and_safe(self):
+        # CI usa python -I: importar el módulo de source por ruta explícita.
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_reconciliation", ROOT / "tools" / "vx_team_git_reconciliation.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        plan_main_advanced = module.plan_main_advanced
+        repo = "hola675/Kilo-Global-Harness"
+        old, new = "a" * 40, "b" * 40
+        tasks = [
+            {"repo": repo, "task_id": "1", "owner_agent": "vx-dev-team", "branch": "work/a",
+             "status": "ACTIVE", "last_reconciled_main_sha": old},
+            {"repo": repo, "task_id": "2", "owner_agent": "vx-dev-team", "branch": "work/b",
+             "status": "IN_REVIEW", "last_reconciled_main_sha": old},
+            {"repo": repo, "task_id": "3", "owner_agent": "vx-dev-team", "branch": "work/old",
+             "status": "CLOSED", "last_reconciled_main_sha": old},
+        ]
+        plan = plan_main_advanced(repo, old, new, tasks)
+        self.assertEqual(plan["status"], "PLAN_ONLY")
+        self.assertFalse(plan["mutation_performed"])
+        self.assertEqual([x["branch"] for x in plan["reconcile_tasks"]], ["work/a", "work/b"])
+        self.assertTrue(all(x["execute"] is False for x in plan["reconcile_tasks"]))
+        self.assertEqual(plan_main_advanced(repo, new, new, tasks)["reconcile_tasks"], [])
+        tasks[0]["last_reconciled_main_sha"] = new
+        self.assertEqual(len(plan_main_advanced(repo, old, new, tasks)["reconcile_tasks"]), 1)
+        duplicates = [
+            {"repo": repo, "task_id": "1", "owner_agent": "a", "branch": "work/shared", "status": "ACTIVE"},
+            {"repo": repo, "task_id": "2", "owner_agent": "b", "branch": "work/shared", "status": "ACTIVE"},
+        ]
+        blocked = plan_main_advanced(repo, old, new, duplicates)
+        self.assertEqual(blocked["reconcile_tasks"], [])
+        self.assertEqual(blocked["blocked"][0]["reason"], "MULTIPLE_ACTIVE_TASK_OWNERS")
+        missing = plan_main_advanced(repo, old, new, [
+            {"repo": repo, "task_id": "3", "branch": "work/no-owner", "status": "ACTIVE"}
+        ])
+        self.assertEqual(missing["blocked"][0]["reason"], "MISSING_TASK_OWNER")
+        cross_repo = plan_main_advanced(repo, old, new, [
+            {"repo": "another/project", "task_id": "foreign", "owner_agent": "foreign",
+             "branch": "work/foreign", "status": "ACTIVE"},
+        ])
+        self.assertEqual(cross_repo["reconcile_tasks"], [])
+        no_repo = plan_main_advanced(repo, old, new, [
+            {"task_id": "unknown", "owner_agent": "unknown",
+             "branch": "work/unknown", "status": "ACTIVE"},
+        ])
+        self.assertEqual(no_repo["blocked"][0]["reason"], "TASK_REPO_UNVERIFIED")
+        # Cuando main vuelve a avanzar, el nuevo evento requiere otro SHA.
+        next_plan = plan_main_advanced(repo, new, "c" * 40, tasks)
+        self.assertEqual(next_plan["reconcile_tasks"][0]["target_main_sha"], "c" * 40)
+        registry = json.loads((ROOT / "registry" / "vx-team-git-reconciliation-v1.json").read_text(encoding="utf-8"))
+        self.assertEqual(registry["status"], "SOURCE_PLAN_ONLY_RUNTIME_NOT_ACTIVATED")
+        self.assertFalse(registry["event"]["dispatcher_enabled"])
+        self.assertFalse(registry["executor"]["enabled"])
+        self.assertFalse(registry["authorization"]["operator_approval"])
+        self.assertTrue(registry["concurrency"]["multiple_independent_task_branches"])
+
     def test_branch_retirement_requires_remote_archive_and_explicit_apply(self):
         script=(ROOT/"scripts"/"Consolidar-Ramas-Main-V2.ps1").read_text(encoding="utf-8")
         self.assertIn("PLAN_ONLY",script)

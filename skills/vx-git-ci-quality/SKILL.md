@@ -28,7 +28,8 @@ metadata:
 3. Ejecutar pruebas reproducibles vinculadas a SHA.
 4. Revisar diff.
 5. No merge si fallos.
-6. No borrar ramas ajenas ni usar force push..
+6. No borrar ramas ajenas ni usar force push.
+7. Para ramas activas de un equipo, exigir evidencia `last_reconciled_main_sha` antes del merge; después de avanzar main, emitir/atender `RECONCILE_REQUIRED` por cada otra rama activa desde su propio worktree. El dispatcher aún no está activado: consultar `docs/VX-TEAM-GIT-RECONCILIATION-V1.md`.
 
 ## Handoff y seguridad
 
