@@ -244,6 +244,9 @@ class SandboxQueue:
         """Snapshot para tests: sin paths ni credenciales."""
         connection = self._connect()
         try:
+            # Snapshot MVCC consistente: ambas tablas se leen dentro de
+            # la misma transaccion de lectura, incluso si main avanza.
+            connection.execute("BEGIN")
             heads = {
                 row["repo"]: row["main_sha"]
                 for row in connection.execute(
@@ -258,6 +261,7 @@ class SandboxQueue:
                 ).fetchall()
             ]
         finally:
+            connection.rollback()
             connection.close()
         return {"mode": "SANDBOX_TEST_ONLY", "heads": heads, "queue": rows,
                 "can_dispatch": False, "can_merge": False}
