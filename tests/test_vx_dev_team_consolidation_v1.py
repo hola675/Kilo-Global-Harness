@@ -51,5 +51,17 @@ class ConsolidationV1Tests(unittest.TestCase):
         for path in data["legacy"]["retired_unapproved_proposal_files"]:
             self.assertFalse((ROOT/path).exists(),path)
 
+    def test_branch_retirement_requires_remote_archive_and_explicit_apply(self):
+        script=(ROOT/"scripts"/"Consolidar-Ramas-Main-V2.ps1").read_text(encoding="utf-8")
+        self.assertIn("PLAN_ONLY",script)
+        self.assertIn("ARCHIVAR_Y_LIMPIAR_WORK",script)
+        self.assertIn("Archive-Sha -Tag $item.Archive -Sha $item.SHA",script)
+        self.assertIn("--force-with-lease=",script)
+        self.assertIn("Open-PR-Branches",script)
+        self.assertIn("git status --porcelain",script)
+        self.assertIn("git branch -D",script)
+        self.assertIn("git ls-remote --heads origin",script)
+        self.assertNotIn("kilo.jsonc -",script)
+
 if __name__=="__main__":
     unittest.main()
