@@ -8,8 +8,17 @@ class ConsolidationV1Tests(unittest.TestCase):
         data=json.loads((ROOT/"registry"/"dev-team-consolidation-v1.json").read_text(encoding="utf-8"))
         self.assertEqual(len(data["phases"]),10)
         self.assertEqual(data["status"],"SOURCE_CERTIFIED_RUNTIME_PARTIAL")
+        self.assertEqual(data["version"],"1.1.0")
+        self.assertEqual(data["branch"],"main")
+        self.assertEqual(data["current_pack"],"registry/dev-team-current-pack-v1.json")
+        self.assertEqual(data["source_ci"]["run_number"],511)
+        self.assertEqual(data["source_ci"]["commit_sha"],"af2f299c75a842eeeee56b3a2fb4b01af607ee35")
+        self.assertEqual(data["runtime_observations"]["agents_hash_match"],"6/11")
+        self.assertEqual(data["runtime_observations"]["skills_core_hash_match"],"2/18")
+        self.assertEqual(data["runtime_observations"]["waves"],"W1-W5_BLOCKED")
+        self.assertFalse(data["runtime_observations"]["operator_approval"])
         phase10=data["phases"][-1]
-        self.assertEqual(phase10["runtime_status"],"NOT_APPLIED")
+        self.assertEqual(phase10["runtime_status"],"OPERATOR_OBSERVED_HASH_DRIFT_NOT_APPLIED")
 
     def test_canonical_pack_layers_and_legacy_retirement(self):
         data=json.loads((ROOT/"registry"/"dev-team-current-pack-v1.json").read_text(encoding="utf-8"))
