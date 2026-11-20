@@ -11,5 +11,38 @@ class ConsolidationV1Tests(unittest.TestCase):
         phase10=data["phases"][-1]
         self.assertEqual(phase10["runtime_status"],"NOT_APPLIED")
 
+    def test_canonical_pack_layers_and_legacy_retirement(self):
+        data=json.loads((ROOT/"registry"/"dev-team-current-pack-v1.json").read_text(encoding="utf-8"))
+        self.assertEqual(data["status"],"SOURCE_RECONCILED_RUNTIME_NOT_FULLY_VERIFIED")
+        self.assertEqual(data["agents"]["total"],11)
+        self.assertEqual(data["agents"]["hidden_specialists"],10)
+        self.assertEqual(data["skills"]["total_source"],44)
+        layers=data["skills"]["layers"]
+        self.assertEqual([x["count"] for x in layers],[18,9,9,8])
+        self.assertEqual(sum(x["count"] for x in layers),44)
+        actual={p.parent.name for p in (ROOT/"runtime"/"dev-team-v2r"/"skills").glob("*/SKILL.md")}
+        self.assertEqual(len(actual),44)
+        declared=set()
+        for layer in layers:
+            manifest=json.loads((ROOT/layer["source"]).read_text(encoding="utf-8"))
+            entries=manifest
+            for part in layer["id_field"].split("."):
+                if part.endswith("[]"):
+                    entries=entries[part[:-2]]
+                elif part != "id":
+                    entries=entries[part]
+            ids={x["id"] for x in entries}
+            self.assertEqual(len(ids),layer["count"])
+            self.assertFalse(declared.intersection(ids))
+            declared.update(ids)
+        self.assertEqual(declared,actual)
+        self.assertEqual(data["mcp"]["families"],13)
+        self.assertEqual(data["mcp"]["current_exact_identifiers_verified"],5)
+        self.assertEqual(data["mcp"]["legacy_alias_to_canonical"]["playwright"],"kilo-playwright")
+        self.assertEqual(data["activation"]["all_waves"],"BLOCKED_UNTIL_GATES_AND_EXPLICIT_OPERATOR_APPROVAL")
+        self.assertTrue(data["activation"]["no_kilo_jsonc_change"])
+        for path in data["legacy"]["retired_unapproved_proposal_files"]:
+            self.assertFalse((ROOT/path).exists(),path)
+
 if __name__=="__main__":
     unittest.main()
