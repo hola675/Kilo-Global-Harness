@@ -474,6 +474,283 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertEqual(contract["inventory"]["mode"], "ON_DEMAND_READ_ONLY")
         self.assertEqual(contract["recovery"]["mode"], "PURE_PLAN_ONLY")
 
+    def test_sqlite_sandbox_queue_survives_reopen_without_dispatch(self):
+        import importlib.util
+        import tempfile
+        import sqlite3
+        from concurrent.futures import ThreadPoolExecutor
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_queue_store", ROOT / "tools" / "vx_team_git_queue_store.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo, old, new, latest = "hola675/Kilo-Global-Harness", "a"*40, "b"*40, "c"*40
+
+        def event(previous, current, branches=("work/a", "work/b")):
+            observation = {
+                "status": "MAIN_ADVANCED_VERIFIED", "planning_allowed": True,
+                "mutation_performed": False, "repo": repo,
+                "previous_main_sha": previous, "current_main_sha": current,
+            }
+            items = []
+            for branch in branches:
+                name = branch.rsplit("/", 1)[-1]
+                items.append({
+                    "branch": branch, "task_id": "T-" + name,
+                    "owner_agent": "agent-" + name, "target_main_sha": current,
+                    "event_id": f"{repo}:{current}:{branch}",
+                    "status": "RECONCILE_REQUIRED", "execute": False,
+                })
+            return observation, {
+                "status": "PLAN_ONLY", "event": "MAIN_ADVANCED", "repo": repo,
+                "previous_main_sha": previous, "current_main_sha": current,
+                "mutation_performed": False, "blocked": [], "reconcile_tasks": items,
+            }
+
+        with tempfile.TemporaryDirectory() as root:
+            store = module.SandboxQueue(Path(root))
+            self.assertFalse(store.db_path.exists(), "El constructor no crea DB")
+            store.initialize()
+            obs, plan = event(old, new)
+            result = store.accept_verified_plan(obs, plan)
+            self.assertEqual(result["status"], "STORED_PLAN_ONLY")
+            self.assertEqual(result["accepted"], 2)
+            self.assertFalse(result["dispatch_performed"])
+            self.assertTrue(result["sqlite_sandbox_written"])
+            self.assertEqual(store.snapshot()["heads"][repo], new)
+            self.assertEqual(len(store.snapshot()["queue"]), 2)
+            self.assertTrue(all(x["status"] == "PENDING" for x in store.snapshot()["queue"]))
+            self.assertFalse(store.snapshot()["can_merge"])
+            self.assertFalse(store.snapshot()["can_dispatch"])
+            # Reinicio real del objeto y de la conexión.
+            restarted = module.SandboxQueue(Path(root))
+            self.assertEqual(restarted.snapshot(), store.snapshot())
+
+            # Misma actualización: idempotencia incluso con llamadas concurrentes.
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                repetitions = list(pool.map(
+                    lambda _: restarted.accept_verified_plan(obs, plan), range(8)
+                ))
+            self.assertTrue(all(x["status"] == "DUPLICATE_NOOP" for x in repetitions))
+            self.assertEqual(len(restarted.snapshot()["queue"]), 2)
+
+            # Dos avances: reemplazar solo PENDING con CAS y HEAD verificado.
+            obs2, plan2 = event(new, latest)
+            progress = restarted.accept_verified_plan(obs2, plan2)
+            self.assertEqual(progress["accepted"], 2)
+            self.assertEqual(restarted.snapshot()["heads"][repo], latest)
+            self.assertTrue(all(x["target_main_sha"] == latest for x in restarted.snapshot()["queue"]))
+            stale = restarted.accept_verified_plan(obs, plan)
+            self.assertEqual(stale["status"], "MAIN_EVENT_ORDER_BLOCKED")
+            self.assertEqual(restarted.snapshot()["heads"][repo], latest)
+
+            # No confiar en un JSON que no coincide con la observación.
+            tampered = json.loads(json.dumps(plan2))
+            tampered["reconcile_tasks"][1]["execute"] = True
+            snapshot = restarted.snapshot()
+            with self.assertRaises(ValueError):
+                restarted.accept_verified_plan(obs2, tampered)
+            self.assertEqual(restarted.snapshot(), snapshot)
+            invalid = json.loads(json.dumps(obs2))
+            invalid["planning_allowed"] = False
+            with self.assertRaises(ValueError):
+                restarted.accept_verified_plan(invalid, plan2)
+            self.assertEqual(restarted.snapshot(), snapshot)
+
+            # Simular interrupción de una tarea en ejecución con fixture SQL.
+            from contextlib import closing
+            with closing(sqlite3.connect(store.db_path)) as connection:
+                with connection:
+                    connection.execute(
+                        "UPDATE queue SET status='RECONCILING' WHERE branch='work/a'"
+                    )
+            after_restart = module.SandboxQueue(Path(root))
+            held = after_restart.recovery_hold()
+            self.assertEqual(held["newly_held"], 2)
+            self.assertFalse(held["dispatch_performed"])
+            self.assertFalse(held["git_mutation_performed"])
+            self.assertTrue(all(
+                x["status"] == "HOLD_RECHECK" and x["execute"] is False
+                for x in after_restart.snapshot()["queue"]
+            ))
+            self.assertEqual(after_restart.recovery_hold()["newly_held"], 0)
+            # Aunque main avance otra vez, no desbloquear tareas sin nueva evidencia.
+            obs3, plan3 = event(latest, "d"*40)
+            blocked = after_restart.accept_verified_plan(obs3, plan3)
+            self.assertEqual(blocked["accepted"], 0)
+            self.assertEqual(len(blocked["blocked"]), 2)
+            self.assertTrue(all(x["status"] == "HOLD_RECHECK" for x in after_restart.snapshot()["queue"]))
+            self.assertEqual(after_restart.snapshot()["heads"][repo], "d"*40)
+
+    def test_sqlite_sandbox_queue_rejects_invalid_paths_and_atomic_failures(self):
+        import importlib.util
+        import tempfile
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_queue_store", ROOT / "tools" / "vx_team_git_queue_store.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with self.assertRaises(ValueError):
+                module.SandboxQueue(ROOT)
+            sandbox = module.SandboxQueue(root)
+            sandbox.initialize()
+            repo, old, new = "hola675/Kilo-Global-Harness", "a"*40, "b"*40
+            observation = {
+                "repo": repo, "previous_main_sha": old, "current_main_sha": new,
+                "planning_allowed": True, "status": "MAIN_ADVANCED_VERIFIED",
+                "mutation_performed": False,
+            }
+            plan = {
+                "repo": repo, "previous_main_sha": old, "current_main_sha": new,
+                "status": "PLAN_ONLY", "event": "MAIN_ADVANCED",
+                "blocked": [], "mutation_performed": False,
+                "reconcile_tasks": [
+                    {
+                        "task_id": "t1", "owner_agent": "agent1",
+                        "branch": "work/a", "target_main_sha": new,
+                        "event_id": f"{repo}:{new}:work/a",
+                        "status": "RECONCILE_REQUIRED", "execute": False,
+                    },
+                    {
+                        "task_id": "t2", "owner_agent": "agent2",
+                        "branch": "work/b", "target_main_sha": new,
+                        "event_id": f"{repo}:{new}:work/b",
+                        "status": "RECONCILE_REQUIRED", "execute": False,
+                    },
+                ],
+            }
+            corrupt = json.loads(json.dumps(plan))
+            corrupt["reconcile_tasks"][1]["branch"] = "main"
+            with self.assertRaises(ValueError):
+                sandbox.accept_verified_plan(observation, corrupt)
+            self.assertEqual(sandbox.snapshot()["heads"], {})
+            self.assertEqual(sandbox.snapshot()["queue"], [])
+            duplicate = json.loads(json.dumps(plan))
+            duplicate["reconcile_tasks"][1] = duplicate["reconcile_tasks"][0]
+            with self.assertRaises(ValueError):
+                sandbox.accept_verified_plan(observation, duplicate)
+            self.assertEqual(sandbox.snapshot()["queue"], [])
+            self.assertEqual(sandbox.accept_verified_plan(observation, plan)["accepted"], 2)
+            # Proteger cambios de dueño aunque la actualización de main sea válida.
+            observation2 = dict(observation, previous_main_sha=new, current_main_sha="c"*40)
+            plan2 = json.loads(json.dumps(plan))
+            plan2["previous_main_sha"] = new
+            plan2["current_main_sha"] = "c"*40
+            for task in plan2["reconcile_tasks"]:
+                task["target_main_sha"] = "c"*40
+                task["event_id"] = f"{repo}:{'c'*40}:{task['branch']}"
+            plan2["reconcile_tasks"][0]["owner_agent"] = "intruder"
+            result = sandbox.accept_verified_plan(observation2, plan2)
+            self.assertEqual(result["accepted"], 1)
+            self.assertEqual(result["blocked"][0]["reason"], "OWNER_CHANGED")
+            self.assertEqual(sandbox.snapshot()["queue"][0]["owner_agent"], "agent1")
+            self.assertEqual(sandbox.snapshot()["queue"][0]["target_main_sha"], new)
+            self.assertEqual(sandbox.snapshot()["queue"][1]["target_main_sha"], "c"*40)
+
+            contract = json.loads((ROOT / "registry" / "vx-team-git-reconciliation-v1.json").read_text(encoding="utf-8"))
+            self.assertEqual(contract["sandbox_store"]["mode"], "SANDBOX_TEST_ONLY")
+            self.assertFalse(contract["sandbox_store"]["runtime_storage_enabled"])
+            self.assertFalse(contract["executor"]["enabled"])
+            self.assertFalse(contract["event"]["watcher_enabled"])
+            self.assertFalse(contract["event"]["dispatcher_enabled"])
+
+    def test_sqlite_snapshot_remains_atomic_when_main_advances_mid_read(self):
+        import importlib.util
+        import tempfile
+        import threading
+        from types import SimpleNamespace
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_queue_store", ROOT / "tools" / "vx_team_git_queue_store.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo, old, mid, new = "hola675/Kilo-Global-Harness", "a"*40, "b"*40, "c"*40
+
+        def event(previous, current):
+            return (
+                {
+                    "repo": repo, "previous_main_sha": previous,
+                    "current_main_sha": current,
+                    "status": "MAIN_ADVANCED_VERIFIED",
+                    "planning_allowed": True, "mutation_performed": False,
+                },
+                {
+                    "repo": repo, "previous_main_sha": previous,
+                    "current_main_sha": current,
+                    "status": "PLAN_ONLY", "event": "MAIN_ADVANCED",
+                    "blocked": [], "mutation_performed": False,
+                    "reconcile_tasks": [{
+                        "task_id": "T", "owner_agent": "agent",
+                        "branch": "work/a", "target_main_sha": current,
+                        "event_id": f"{repo}:{current}:work/a",
+                        "status": "RECONCILE_REQUIRED", "execute": False,
+                    }],
+                },
+            )
+
+        with tempfile.TemporaryDirectory() as directory:
+            reader = module.SandboxQueue(Path(directory))
+            reader.initialize()
+            initial_observation, initial_plan = event(old, mid)
+            reader.accept_verified_plan(initial_observation, initial_plan)
+            writer = module.SandboxQueue(Path(directory))
+            writer_observation, writer_plan = event(mid, new)
+            head_read = threading.Event()
+            writer_done = threading.Event()
+            errors = []
+            original_connect = reader._connect
+
+            class InterleavedConnection:
+                def __init__(self, actual):
+                    self.actual = actual
+
+                def execute(self, statement, *args):
+                    cursor = self.actual.execute(statement, *args)
+                    if "SELECT repo,main_sha FROM repo_heads" in statement:
+                        rows = cursor.fetchall()  # Establece snapshot antes del writer.
+                        head_read.set()
+                        if not writer_done.wait(timeout=8):
+                            raise TimeoutError("El escritor no finalizo")
+                        return SimpleNamespace(fetchall=lambda: rows)
+                    return cursor
+
+                def rollback(self):
+                    self.actual.rollback()
+
+                def close(self):
+                    self.actual.close()
+
+            reader._connect = lambda: InterleavedConnection(original_connect())
+
+            def write_new_head():
+                try:
+                    if not head_read.wait(timeout=8):
+                        raise TimeoutError("El lector no empezo")
+                    result = writer.accept_verified_plan(writer_observation, writer_plan)
+                    if result["status"] != "STORED_PLAN_ONLY":
+                        raise AssertionError(result)
+                except Exception as exc:
+                    errors.append(str(exc))
+                finally:
+                    writer_done.set()
+
+            thread = threading.Thread(target=write_new_head)
+            thread.start()
+            try:
+                consistent = reader.snapshot()
+            finally:
+                thread.join(timeout=10)
+            self.assertFalse(thread.is_alive())
+            self.assertEqual(errors, [])
+            # El snapshot ve todo ANTES, nunca HEAD anterior + cola nueva.
+            self.assertEqual(consistent["heads"][repo], mid)
+            self.assertEqual(consistent["queue"][0]["target_main_sha"], mid)
+            # Una lectura posterior ve el nuevo estado completo.
+            self.assertEqual(writer.snapshot()["heads"][repo], new)
+            self.assertEqual(writer.snapshot()["queue"][0]["target_main_sha"], new)
+
     def test_branch_retirement_requires_remote_archive_and_explicit_apply(self):
         script=(ROOT/"scripts"/"Consolidar-Ramas-Main-V2.ps1").read_text(encoding="utf-8")
         self.assertIn("PLAN_ONLY",script)

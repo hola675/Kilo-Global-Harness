@@ -1,6 +1,6 @@
 {
   "schema": "vx-team-git-reconciliation/1",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "updated": "2026-11-19",
   "status": "SOURCE_PLAN_ONLY_RUNTIME_NOT_ACTIVATED",
   "documentation": "docs/VX-TEAM-GIT-RECONCILIATION-V1.md",
@@ -100,7 +100,14 @@
       "POWER_INTERRUPTION_HOLD",
       "RECOVERY_IDEMPOTENCE",
       "RECOVERY_INVALID_QUEUE_REJECTED",
-      "REPLACED_WORKTREE_REPOSITORY_REJECTED"
+      "REPLACED_WORKTREE_REPOSITORY_REJECTED",
+      "TEMP_SQLITE_REOPEN",
+      "SQLITE_CONCURRENT_DEDUP",
+      "SQLITE_MAIN_SHA_CAS",
+      "SQLITE_INVALID_EVENT_ATOMIC_REJECT",
+      "SQLITE_IN_FLIGHT_RECOVERY_HOLD",
+      "SQLITE_OWNER_CHANGE_HOLD",
+      "SANDBOX_PATH_RESTRICTION"
     ]
   },
   "authorization": {
@@ -179,5 +186,26 @@
     "scheduler_enabled": false,
     "no_dispatch": true,
     "no_mutations": true
+  },
+  "sandbox_store": {
+    "path": "tools/vx_team_git_queue_store.py",
+    "mode": "SANDBOX_TEST_ONLY",
+    "storage": "SQLite WAL; synchronous FULL; BEGIN IMMEDIATE",
+    "sandbox_restriction": "EXISTING_CHILD_OF_OS_TEMP",
+    "accept_only_observation_status": "MAIN_ADVANCED_VERIFIED",
+    "event_order": "TRANSACTIONAL_COMPARE_AND_SWAP_MAIN_SHA",
+    "active_queue_ops": "PENDING_ONLY_NO_DISPATCH",
+    "recovery": "ALL_ENTRIES_HOLD_RECHECK",
+    "no_auto_resume": true,
+    "owner_authentication": false,
+    "git_mutations": false,
+    "sqlite_writes_in_sandbox_only": true,
+    "runtime_storage_enabled": false,
+    "automatic_open": false,
+    "cli_enabled": false,
+    "scheduler_enabled": false,
+    "permits_sensitive_data": false,
+    "operator_approval": false,
+    "storage_isolated_from_runtime": true
   }
 }
