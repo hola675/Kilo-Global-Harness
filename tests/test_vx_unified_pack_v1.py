@@ -109,6 +109,54 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertIn("permisos", editorial)
         self.assertIn("editorial", editorial)
 
+    def test_global_third_party_skill_frontmatter_collision_blocks_without_writes(self):
+        with tempfile.TemporaryDirectory(prefix="vx-unified-foreign-collision-") as tmp:
+            home = Path(tmp)
+            foreign = home / ".kilo/skills/foreign/SKILL.md"
+            foreign.parent.mkdir(parents=True, exist_ok=True)
+            foreign.write_text(
+                '---\nname: "vx-dev-project-policy"\ndescription: simulated collision\n---\n',
+                encoding="utf-8",
+            )
+            original = foreign.read_bytes()
+            result, _ = module.plan(home)
+            self.assertEqual(result["status"], "BLOCKED")
+            self.assertTrue(
+                any("Skill ajena en pool global declara ID seleccionado" in msg
+                    for msg in result["blockers"])
+            )
+            self.assertEqual(foreign.read_bytes(), original)
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser solo Windows")
+    def test_explicit_recovery_after_interruption_rejects_unrelated_edits(self):
+        with tempfile.TemporaryDirectory(prefix="vx-unified-crash-recovery-") as tmp:
+            home = Path(tmp)
+            current = home / ".config/kilo/agents/vx-dev-team.md"
+            old = home / ".config/kilo/agents/vx-integrador.md"
+            current.parent.mkdir(parents=True, exist_ok=True)
+            current.write_bytes(b"outdated leader\n")
+            old.write_bytes(b"retired role\n")
+            info, changes = module.plan(home)
+            self.assertEqual(info["status"], "READY")
+            backup = module._backup(home, changes)
+            self.assertEqual(json.loads((backup/"receipt.json").read_text())["state"], "BACKED_UP")
+            row = next(row for row in changes
+                       if row[0] == ".config/kilo/agents/vx-dev-team.md")
+            module.vx.write_atomic(current, row[2])
+            old.unlink()  # Simulate a crash before INSTALL completed.
+            with self.assertRaises(module.Blocked):
+                module.restore(home, backup)
+            # A file not equal to either expected snapshot must block even explicit recovery.
+            current.write_bytes(b"unexpected external modification\n")
+            with self.assertRaises(module.Blocked):
+                module.restore(home, backup, partial=True)
+            self.assertEqual(old.exists(), False)
+            module.vx.write_atomic(current, row[2])
+            module.restore(home, backup, partial=True)
+            self.assertEqual(current.read_bytes(), b"outdated leader\n")
+            self.assertEqual(old.read_bytes(), b"retired role\n")
+            self.assertEqual(json.loads((backup/"receipt.json").read_text())["state"], "RESTORED")
+
     @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser solo Windows")
     def test_apply_verify_restore_is_reversible_and_preserves_user_config(self):
         with tempfile.TemporaryDirectory(prefix="vx-unified-install-") as folder:
