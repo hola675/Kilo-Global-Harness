@@ -319,6 +319,130 @@ class ConsolidationV1Tests(unittest.TestCase):
             after = {x.name for x in packdir.iterdir()}
             self.assertEqual(before, after, "El observer descargó objetos promisor")
 
+    def test_team_worktree_inventory_is_structural_and_read_only(self):
+        import importlib.util
+        import subprocess
+        import tempfile
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_worktrees", ROOT / "tools" / "vx_team_git_worktrees.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo = "hola675/Kilo-Global-Harness"
+
+        def git(*args):
+            return subprocess.run(
+                ["git", *[str(a) for a in args]], check=True,
+                stdin=subprocess.DEVNULL, capture_output=True, timeout=30
+            ).stdout.decode().strip()
+
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source, wt_a, wt_b = root / "source", root / "worktree-a", root / "worktree-b"
+            git("init", "-b", "main", source)
+            git("-C", source, "-c", "user.name=Test",
+                "-c", "user.email=test@example.invalid",
+                "commit", "--allow-empty", "-m", "base")
+            git("-C", source, "remote", "add", "origin", f"https://github.com/{repo}.git")
+            git("-C", source, "worktree", "add", "-b", "work/a", wt_a)
+            git("-C", source, "worktree", "add", "-b", "work/b", wt_b)
+            tasks = [
+                {"repo": repo, "task_id": "T1", "owner_agent": "builder-1",
+                 "branch": "work/a", "worktree_path": str(wt_a), "status": "ACTIVE"},
+                {"repo": repo, "task_id": "T2", "owner_agent": "builder-2",
+                 "branch": "work/b", "worktree_path": str(wt_b), "status": "IN_REVIEW"},
+                {"repo": "other/repo", "task_id": "T3", "owner_agent": "foreign",
+                 "branch": "work/a", "worktree_path": str(wt_a), "status": "ACTIVE"},
+            ]
+            before = git("-C", source, "status", "--porcelain")
+            audit = module.inspect_task_worktrees(source, repo, tasks)
+            after = git("-C", source, "status", "--porcelain")
+            self.assertEqual(before, after)
+            self.assertEqual(audit["status"], "STRUCTURE_AUDITED")
+            self.assertEqual([x["branch"] for x in audit["matched"]], ["work/a", "work/b"])
+            self.assertEqual(audit["worktrees_observed"], 3)
+            self.assertFalse(audit["can_dispatch"])
+            self.assertFalse(audit["owner_authenticated"])
+            self.assertFalse(audit["cleanliness_verified"])
+            self.assertFalse(audit["mutation_performed"])
+            self.assertNotIn(str(wt_a), json.dumps(audit))
+            self.assertNotIn(str(wt_b), json.dumps(audit))
+            self.assertTrue(all(not x["can_reconcile"] for x in audit["matched"]))
+
+            duplicate = module.inspect_task_worktrees(source, repo, tasks[:1] + [tasks[0]])
+            self.assertEqual(duplicate["blocked"][0]["reason"], "MULTIPLE_ACTIVE_TASK_OWNERS")
+            mismatched = module.inspect_task_worktrees(
+                source, repo, [dict(tasks[0], worktree_path=str(wt_b))]
+            )
+            self.assertEqual(mismatched["blocked"][0]["reason"], "WORKTREE_PATH_MISMATCH")
+            not_found = module.inspect_task_worktrees(
+                source, repo, [dict(tasks[0], branch="work/missing")]
+            )
+            self.assertEqual(not_found["blocked"][0]["reason"], "BRANCH_WORKTREE_NOT_UNIQUE")
+            missing = module.inspect_task_worktrees(
+                source, repo, [dict(tasks[0], owner_agent="")]
+            )
+            self.assertEqual(missing["blocked"][0]["reason"], "MISSING_TASK_OWNER")
+            shared = module.inspect_task_worktrees(
+                source, repo, [tasks[0], dict(tasks[1], worktree_path=str(wt_a))]
+            )
+            self.assertEqual(shared["blocked"][0]["reason"], "WORKTREE_SHARED_BY_TASKS")
+            git("-C", source, "worktree", "lock", wt_b)
+            locked = module.inspect_task_worktrees(source, repo, tasks)
+            self.assertEqual(locked["blocked"][0]["reason"], "WORKTREE_UNSAFE_STATE")
+            git("-C", source, "remote", "set-url", "origin", "https://github.com/other/repo.git")
+            wrong_remote = module.inspect_task_worktrees(source, repo, tasks)
+            self.assertEqual(wrong_remote["status"], "ORIGIN_NOT_VERIFIED")
+            self.assertEqual(wrong_remote["matched"], [])
+
+    def test_team_recovery_plan_never_resumes_after_interruption(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_worktrees", ROOT / "tools" / "vx_team_git_worktrees.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        repo, target = "hola675/Kilo-Global-Harness", "f" * 40
+        queue = [
+            {"repo": repo, "branch": "work/a", "task_id": "1",
+             "owner_agent": "agent-1", "target_main_sha": target,
+             "status": "PENDING", "execute": False},
+            {"repo": repo, "branch": "work/b", "task_id": "2",
+             "owner_agent": "agent-2", "target_main_sha": target,
+             "status": "RECONCILING", "execute": False},
+            {"repo": "other/project", "branch": "work/c", "task_id": "3",
+             "owner_agent": "agent-3", "target_main_sha": target,
+             "status": "VERIFYING", "execute": False},
+        ]
+        snapshot = json.loads(json.dumps(queue))
+        result = module.plan_interruption_recovery(queue)
+        self.assertEqual(queue, snapshot)
+        self.assertEqual(len(result["queue"]), 3)
+        self.assertTrue(all(x["status"] == "HOLD_RECHECK" for x in result["queue"]))
+        self.assertTrue(all(x["execute"] is False for x in result["queue"]))
+        self.assertTrue(result["requires_new_owner_authentication"])
+        self.assertTrue(result["requires_fresh_origin_and_worktree_evidence"])
+        self.assertFalse(result["dispatch_performed"])
+        self.assertFalse(result["mutation_performed"])
+        self.assertEqual(
+            module.plan_interruption_recovery(result["queue"])["queue"],
+            result["queue"]
+        )
+        with self.assertRaises(ValueError):
+            module.plan_interruption_recovery(queue + [queue[0]])
+        with self.assertRaises(ValueError):
+            module.plan_interruption_recovery([dict(queue[0], branch="main")])
+        with self.assertRaises(ValueError):
+            module.plan_interruption_recovery([dict(queue[0], target_main_sha="invalid")])
+        contract = json.loads(
+            (ROOT / "registry" / "vx-team-git-reconciliation-v1.json").read_text(encoding="utf-8")
+        )
+        self.assertFalse(contract["executor"]["enabled"])
+        self.assertFalse(contract["event"]["dispatcher_enabled"])
+        self.assertFalse(contract["inventory"]["agent_identity_authenticated"])
+        self.assertEqual(contract["inventory"]["mode"], "ON_DEMAND_READ_ONLY")
+        self.assertEqual(contract["recovery"]["mode"], "PURE_PLAN_ONLY")
+
     def test_branch_retirement_requires_remote_archive_and_explicit_apply(self):
         script=(ROOT/"scripts"/"Consolidar-Ramas-Main-V2.ps1").read_text(encoding="utf-8")
         self.assertIn("PLAN_ONLY",script)
