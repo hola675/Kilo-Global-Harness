@@ -101,6 +101,52 @@ def _check_paths(home: Path, targets: list[Path]):
     vx.assert_safe_install_targets(home, assets)
 
 
+def _skill_ids(folder: Path) -> set[str]:
+    """Inventaria nombre de carpeta y campo YAML name sin aceptar scalar ambiguo."""
+    vx.safe_entry(folder)
+    names = {folder.name.casefold()}
+    candidate = folder / "SKILL.md"
+    if not candidate.exists() and not candidate.is_symlink():
+        return names
+    vx.safe_entry(candidate)
+    if not candidate.is_file() or candidate.stat().st_size > vx.MAX_FILE_BYTES:
+        raise Blocked("SKILL.md ajena insegura o excesiva.")
+    try:
+        header = candidate.read_text(encoding="utf-8-sig")[:8192]
+    except (OSError, UnicodeError) as exc:
+        raise Blocked("No se puede leer SKILL.md ajena.") from exc
+    if header.startswith("---"):
+        front = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)", header, re.S)
+        if not front:
+            raise Blocked("Frontmatter YAML ajeno no verificable.")
+        line = re.search(r"(?m)^\s*name\s*:\s*(.*)$", front.group(1))
+        if line:
+            # Scalars: name: id, name: 'id', name: "id" y comentarios.
+            scalar = line.group(1).strip()
+            matched = re.fullmatch(
+                r"""(?:"([a-zA-Z0-9-]+)"|'([a-zA-Z0-9-]+)'|([a-zA-Z0-9-]+))(?:\s+#.*)?""",
+                scalar,
+            )
+            if not matched:
+                raise Blocked("Nombre YAML de skill ajena ambiguo.")
+            names.add(next(value for value in matched.groups() if value).casefold())
+    return names
+
+
+def _skill_ids_in_root(root: Path) -> set[str]:
+    if not root.exists() and not root.is_symlink():
+        return set()
+    vx.safe_entry(root)
+    if not root.is_dir():
+        raise Blocked("Directorio de skills externo no verificable.")
+    found: set[str] = set()
+    for item in root.iterdir():
+        vx.safe_entry(item)
+        if item.is_dir() and ((item / "SKILL.md").exists() or (item / "SKILL.md").is_symlink()):
+            found.update(_skill_ids(item))
+    return found
+
+
 def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]]:
     pack = load_manifest()
     agents = {a["id"].casefold() for a in pack["agents"]}
@@ -116,7 +162,7 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
                         + ", ".join(sorted(retired_inline)))
     for prefix in (".agents", ".kilocode", ".claude"):
         try:
-            dup = legacy._ids(home / prefix / "skills", skill=True) & skills
+            dup = _skill_ids_in_root(home / prefix / "skills") & skills
         except (Blocked, OSError, UnicodeError):
             warnings.append("Raíz externa no verificable: " + prefix)
             continue
@@ -140,28 +186,18 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
                 key = p.name.casefold() if is_skill else p.stem.casefold()
                 if key in owned and (p.name if is_skill else p.stem) != key:
                     warnings.append("Colisión de capitalización bajo ruta global.")
-                # Las skills de otras carpetas pueden declarar un nombre interno CORE.
-                # Bloquear también el frontmatter de terceros, sin tocar su contenido.
+                # El nombre YAML de cada skill ajena puede colisionar con el Core.
                 if is_skill and p.is_dir() and key not in skills:
-                    candidate = p / "SKILL.md"
-                    if candidate.exists() or candidate.is_symlink():
-                        vx.safe_entry(candidate)
-                        try:
-                            if candidate.stat().st_size > vx.MAX_FILE_BYTES:
-                                raise Blocked("Skill externa demasiado grande para inventariar.")
-                            header = candidate.read_text(encoding="utf-8-sig")[:8192]
-                        except (OSError, UnicodeError) as exc:
-                            raise Blocked("Skill global ajena no puede inventariarse.") from exc
-                        front = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)", header, re.S)
-                        if front:
-                            declared = re.search(
-                                r"(?m)^name:\s*['\"]?([a-zA-Z0-9-]+)['\"]?\s*$", front.group(1)
-                            )
-                            if declared and declared.group(1).casefold() in skills:
-                                warnings.append(
-                                    "Skill ajena en pool global declara ID seleccionado: "
-                                    + declared.group(1).casefold()
-                                )
+                    try:
+                        duplicate = _skill_ids(p) & skills
+                    except (Blocked, OSError, UnicodeError):
+                        warnings.append("Skill ajena en pool global no se puede inventariar.")
+                        continue
+                    if duplicate:
+                        warnings.append(
+                            "Skill ajena en pool global declara ID seleccionado: "
+                            + ", ".join(sorted(duplicate))
+                        )
     target_paths = [_target(home, a["target"]) for a in [*pack["agents"], *pack["skills"],
                                                           *pack["commands"], *pack["support_files"]]]
     target_paths += [_target(home, rel) for rel in [*pack["managed_legacy"]["agents"],
