@@ -1,6 +1,6 @@
 # VX — Reconciliación continua del equipo con main V1
 
-**Fecha:** 2026-11-19 · **Versión:** 1.1.0 · **Estado:** SOURCE / DISEÑO OPERATIVO. No hay daemon, webhook, scheduler, ajuste de ACL ni cambios en HOME activos.
+**Fecha:** 2026-11-19 · **Versión:** 1.2.0 · **Estado:** SOURCE / DISEÑO OPERATIVO. No hay daemon, webhook, scheduler, ajuste de ACL ni cambios en HOME activos.
 
 ## Contrato de trabajo del equipo
 
@@ -82,6 +82,32 @@ Opcionalmente pasar `--tasks <archivo-json-local>` para planificar ramas activas
 Para una observación con SHA nuevo que el Git local todavía no tiene, no se ejecutará el plan: una fase de sincronización Git autorizada debe traer el objeto y repetir la comprobación de ascendencia. Nunca deducir que un SHA de mayor valor hexadecimal es más reciente.
 
 **Certificación:** los tests focalizados pertenecen a la suite existente `tests/test_vx_dev_team_consolidation_v1.py` (`UPDATE`). Las pruebas de contrato no acreditan el funcionamiento real del detector bajo proxy Windows, de la futura cola persistente o de las ACL de Kilo.
+
+## A0 — Inventario de worktrees y recuperación simulada V1.2
+
+Nuevo módulo source-only: `tools/vx_team_git_worktrees.py`. **No instala componentes ni observa automáticamente** las sesiones Kilo.
+
+**Inventario estructural:** recibe un catálogo privado JSON de tareas (fuera del repositorio), compara el repositorio esperado con la URL literal de `origin`, analiza `git worktree list --porcelain -z` y coteja cada rama `work/*` con el worktree declarado. Rechaza ramas ausentes, múltiples propietarios activos, worktrees bloqueados o eliminables, rutas contradictorias, tareas de otros repositorios y datos incompletos. Su salida no imprime las rutas absolutas de los worktrees. Usa `GIT_OPTIONAL_LOCKS=0` y `GIT_NO_LAZY_FETCH=1`.
+
+**Limitación de seguridad:** una coincidencia entre catálogo y worktree **NO autentica al dueño**, no acredita permisos Kilo, no verifica limpieza de archivos, ni concede un lease de rama. Por tanto toda tarea queda en `STRUCTURE_MATCH_ONLY` y `can_reconcile=false`; la autorización del ejecutor continúa bloqueada.
+
+**Recuperación simulada tras interrupción:** `plan_interruption_recovery(queue)` crea una copia de la cola en memoria y cambia todos los trabajos `PENDING`, `PAUSED`, `RECONCILING` o `VERIFYING` a `HOLD_RECHECK`, con `execute=false`. También preserva tareas de otros repositorios sin ejecutarlas y bloquea duplicados o SHAs inválidos. Nunca reanuda automáticamente una tarea que estaba escribiendo o resolviendo una fusión. Al no existir aún almacenamiento local persistente, este método **solo certifica la lógica de recuperación, no la capacidad real de sobrevivir a un apagón**.
+
+Ejemplo de invocación, una vez, **solo lectura**, usando archivos privados preparados por el operador:
+
+```powershell
+Set-Location D:\Proyectos\Kilo-Global-Harness
+py -3 .\tools\vx_team_git_worktrees.py `
+  --repo hola675/Kilo-Global-Harness `
+  --repo-dir . `
+  --tasks "$env:LOCALAPPDATA\VX\team-tasks.json"
+```
+
+El esquema mínimo de cada tarea activa es `{repo, task_id, owner_agent, branch, worktree_path, status}`. `worktree_path` debe ser absoluto; `status` puede ser `ACTIVE` o `IN_REVIEW`. Un catálogo inexistente no se crea automáticamente. Para simular recuperación, añadir opcionalmente `--queue <archivo-privado-json>` con `{ "queue": [...] }`. No se escriben ni cambian tales archivos.
+
+**Certificación viva:** se actualiza la prueba existente `tests/test_vx_dev_team_consolidation_v1.py`, con repositorio temporal Git real y dos worktrees independientes, ruta equivocada, propietario duplicado, worktree bloqueado, remoto no reconocido y cola repetida o interrumpida. La historia permanece en Git, sin otra suite por versión.
+
+**Fases siguientes:** (1) catálogo persistente en ruta privada solo tras autorización específica; (2) autenticación real owner↔sesión↔worktree y snapshot de herramientas Kilo; (3) inspección de limpieza/locks efectiva; (4) cola durable y recuperación con ensayos sintéticos Windows; (5) despacho de eventos `MAIN_ADVANCED`, con aprobación explícita y rollback. Ninguna se considera activada por esta versión.
 
 ## Pendientes para activación posterior
 
