@@ -16,3 +16,6 @@
 *.log
 /scripts
 /tests
+
+# Evidencia del preflight: no versionar snapshots locales de runtime
+/artifacts/

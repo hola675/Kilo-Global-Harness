@@ -74,7 +74,7 @@
     "codebase-memory",
     "github",
     "cloudflare-api",
-    "playwright",
+    "kilo-playwright",
     "chrome-devtools",
     "sentry",
     "snyk",
