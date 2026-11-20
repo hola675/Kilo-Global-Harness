@@ -1,0 +1,92 @@
+{
+  "schema": "vx-team-capability-handoffs/1",
+  "version": "1.0.0",
+  "updated": "2026-11-19",
+  "status": "SOURCE_PLAN_ONLY_RUNTIME_NOT_ACTIVATED",
+  "documentation": "docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md",
+  "planner": "tools/vx_team_capability_router.py",
+  "linked_workflow": "registry/vx-team-git-reconciliation-v1.json",
+  "triggers": {
+    "main_event": "MAIN_ADVANCED_VERIFIED",
+    "capability_event": "CAPABILITY_HANDOFF",
+    "manifest_schema": "vx-capability-publication/1",
+    "source": "EXPLICIT_GROUNDED_CONTRACT_PUBLISHED_WITH_MERGED_CHANGE",
+    "idempotency": [
+      "repo",
+      "main_sha",
+      "capability_id",
+      "destination_domain"
+    ],
+    "no_implicit_code_diff_guessing": true
+  },
+  "routing": {
+    "implementation_agents": {
+      "frontend": "vx-frontend-builder",
+      "backend": "vx-backend-builder",
+      "qa": "vx-qa-builder",
+      "data": "vx-data-builder",
+      "docs": "vx-docs-builder"
+    },
+    "reviewers": {
+      "frontend": "vx-frontend-adviser",
+      "backend": "vx-security-reviewer",
+      "qa": "vx-test-analyst",
+      "diff": "vx-inspector"
+    },
+    "dev_team_readonly_specialists_remain_denied": true,
+    "edges": {
+      "api_to_ui": "backend→frontend",
+      "ui_to_api": "frontend→backend",
+      "api_to_data": "backend→data",
+      "regression": "producer→qa",
+      "documentation": "producer→docs"
+    },
+    "task_priority": {
+      "delete": "HIGH",
+      "other": "NORMAL"
+    },
+    "number_of_writers_per_worktree": 1,
+    "work_in_progress_limit": {
+      "simple": 1,
+      "media": 2,
+      "compleja": 2
+    },
+    "create_new_branch_only_if_no_compatible_active_task": true,
+    "reconcile_existing_branch_before_extending": true,
+    "no_new_branch_for_same_active_role": true,
+    "no_direct_cross_agent_writes": true
+  },
+  "execution": {
+    "dispatcher_enabled": false,
+    "agent_manager_enabled": false,
+    "runtime_write_unlocked": false,
+    "runtime_tool_verification": "NOT_DONE",
+    "requires_runtime_tool_permission": true,
+    "tools_to_confirm": [
+      "edit",
+      "write",
+      "apply_patch",
+      "bash"
+    ],
+    "source_builder_permissions": "ask-not-allow",
+    "actual_allowed_paths_enforced_by_host": "NOT_VERIFIED",
+    "per_task_scope_is_advisory_not_a_security_boundary": true,
+    "requires_repo_worktree_owner_verification": true,
+    "requires_clean_worktree_safe_point": true,
+    "autoapprove_changed": false,
+    "acl_in_home_changed": false,
+    "operator_approval_for_runtime_activation": true,
+    "no_installation": true,
+    "no_runtime_dispatch": true
+  },
+  "safety": {
+    "no_merge_to_main_without_ci": true,
+    "no_force_push_or_reset_hard": true,
+    "no_production_deploy_or_db_delete": true,
+    "destructive_ui_requires_confirmation_auth_and_security_review": true,
+    "new_endpoints_require_contract_review": true,
+    "missing_contract_scope_or_owner": "BLOCK",
+    "pending_permissions": "ASK_OR_BLOCK",
+    "tests": "UPDATE_EXISTING_LIVING_SUITES"
+  }
+}
