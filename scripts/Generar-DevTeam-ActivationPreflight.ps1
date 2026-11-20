@@ -38,12 +38,19 @@ function Get-DriftKind {
   param([string]$Source,[string]$Installed)
   try {
     $utf8=[Text.UTF8Encoding]::new($false,$true)
-    $a=$utf8.GetString([IO.File]::ReadAllBytes($Source))
-    $b=$utf8.GetString([IO.File]::ReadAllBytes($Installed))
+    $sourceBytes=[IO.File]::ReadAllBytes($Source)
+    $installedBytes=[IO.File]::ReadAllBytes($Installed)
+    $sourceHasBom=($sourceBytes.Length -ge 3 -and $sourceBytes[0] -eq 239 -and $sourceBytes[1] -eq 187 -and $sourceBytes[2] -eq 191)
+    $installedHasBom=($installedBytes.Length -ge 3 -and $installedBytes[0] -eq 239 -and $installedBytes[1] -eq 187 -and $installedBytes[2] -eq 191)
+    $a=$utf8.GetString($sourceBytes)
+    $b=$utf8.GetString($installedBytes)
   }catch{
     return 'NOT_VALID_UTF8_OR_UNREADABLE'
   }
-  if($a -ceq $b){ return 'UNKNOWN_BYTE_DIFFERENCE' }
+  if($a -ceq $b){
+    if($sourceHasBom -ne $installedHasBom){ return 'UTF8_BOM_ONLY' }
+    return 'UNKNOWN_BYTE_DIFFERENCE'
+  }
   $withoutBomA=$a.TrimStart([char]0xFEFF)
   $withoutBomB=$b.TrimStart([char]0xFEFF)
   if($withoutBomA -ceq $withoutBomB){ return 'UTF8_BOM_ONLY' }
