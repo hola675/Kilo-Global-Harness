@@ -96,6 +96,24 @@ def _canonical(path: str) -> str:
     return os.path.normcase(os.path.realpath(path))
 
 
+def _actual_worktree_identity(path: str, branch: str, expected_common_dir: str) -> bool:
+    """Comprueba la identidad Git real, no solo la entrada administrativa."""
+    code, real_common = _git_read(
+        Path(path), "rev-parse", "--path-format=absolute", "--git-common-dir"
+    )
+    if code != 0 or not real_common:
+        return False
+    if _canonical(os.fsdecode(real_common).strip()) != _canonical(expected_common_dir):
+        return False
+    code, actual_branch = _git_read(Path(path), "symbolic-ref", "--quiet", "HEAD")
+    if code != 0 or os.fsdecode(actual_branch).strip() != f"refs/heads/{branch}":
+        return False
+    code, actual_root = _git_read(Path(path), "rev-parse", "--show-toplevel")
+    if code != 0 or _canonical(os.fsdecode(actual_root).strip()) != _canonical(path):
+        return False
+    return True
+
+
 def inspect_task_worktrees(repo_dir: Path, repo: str, tasks: list[dict]) -> dict:
     """Solo evidencia estructural; nunca valida identidad, dirty o permisos."""
     if not isinstance(repo, str) or not REPO.fullmatch(repo):
@@ -127,6 +145,13 @@ def inspect_task_worktrees(repo_dir: Path, repo: str, tasks: list[dict]) -> dict
         report["status"] = "WORKTREE_DATA_UNVERIFIED"
         return report
     report["worktrees_observed"] = len(worktrees)
+    code, common = _git_read(
+        repo_dir, "rev-parse", "--path-format=absolute", "--git-common-dir"
+    )
+    if code != 0 or not common:
+        report["status"] = "ROOT_GIT_IDENTITY_UNVERIFIED"
+        return report
+    root_common_dir = os.fsdecode(common).strip()
 
     selected = {}
     for task in tasks:
@@ -189,6 +214,9 @@ def inspect_task_worktrees(repo_dir: Path, repo: str, tasks: list[dict]) -> dict
             continue
         if _canonical(match["path"]) != normalized:
             report["blocked"].append({"branch": branch, "reason": "WORKTREE_PATH_MISMATCH"})
+            continue
+        if not _actual_worktree_identity(match["path"], branch, root_common_dir):
+            report["blocked"].append({"branch": branch, "reason": "WORKTREE_REAL_GIT_IDENTITY_MISMATCH"})
             continue
         report["matched"].append({
             "branch": branch, "task_id": task["task_id"],
