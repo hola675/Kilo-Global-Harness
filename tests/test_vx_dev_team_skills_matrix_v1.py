@@ -86,11 +86,15 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
             "ACTIVE_SOURCE_BASELINE_RUNTIME_CERTIFIED",
         )
 
-    def test_legacy_31_skill_inventory_remains_reference_only(self):
+    def test_historical_31_skill_reference_is_preserved_as_pack_grows(self):
         actual = {path.parent.name for path in LEGACY_SKILLS_DIR.glob("*/SKILL.md")}
         legacy = self.proposal["legacy_skill_inventory"]
-        self.assertEqual(len(actual), 31)
+        prior = {entry["id"] for entry in legacy["prior_classification"]["skills"]}
         self.assertEqual(legacy["total"], 31)
+        self.assertEqual(len(prior), 31)
+        self.assertTrue(prior <= actual, "No perder skills del inventario histórico")
+        self.assertEqual(actual - prior, {"vx-editorial-claridad"})
+        self.assertEqual(len(actual), 32)
         self.assertEqual(legacy["status"], "REFERENCE_ONLY_NOT_RUNTIME_PACK")
 
     def test_v1_declares_18_original_skills_and_all_still_exist(self):
