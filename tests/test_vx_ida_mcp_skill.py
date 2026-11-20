@@ -20,9 +20,9 @@ class IdaMcpSkillTests(unittest.TestCase):
 
     def test_catalogs_are_closed_and_ida_is_opt_in(self):
         skills = self.registry["pack"]["owned_skills"]
-        self.assertEqual(len(skills), 31)
+        self.assertEqual(len(skills), 32)
         self.assertIn("vx-ida-mcp-reverse-engineering", skills)
-        self.assertEqual(len(self.registry["agents"]), 13)
+        self.assertEqual(len(self.registry["agents"]), 14)
         self.assertIn("reverse-engineering", {p["id"] for p in self.registry["profiles"]})
         catalog = json.loads((ROOT / "registry/vx-mcp-catalog-v1.json").read_text(encoding="utf-8"))
         self.assertEqual(len(catalog["candidates"]), 6)
