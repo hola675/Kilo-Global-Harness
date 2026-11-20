@@ -1,8 +1,8 @@
 {
   "schema": "dev-team-consolidation/1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "SOURCE_CERTIFIED_RUNTIME_PARTIAL",
-  "branch": "work/dev-team-consolidation-v1",
+  "branch": "main",
   "phases": [
     {
       "id": 1,
@@ -31,7 +31,7 @@
     {
       "id": 5,
       "name": "source-ci-stabilization",
-      "source_status": "PASS_RUN_480",
+      "source_status": "PASS_RUN_511",
       "runtime_status": "UNCHANGED"
     },
     {
@@ -61,8 +61,8 @@
     {
       "id": 10,
       "name": "runtime-activation-preflight",
-      "source_status": "IMPLEMENTED_PLAN_ONLY",
-      "runtime_status": "NOT_APPLIED"
+      "source_status": "IMPLEMENTED_PLAN_ONLY_WITH_HASH_AND_DRIFT_CLASSIFICATION",
+      "runtime_status": "OPERATOR_OBSERVED_HASH_DRIFT_NOT_APPLIED"
     }
   ],
   "invariants": [
@@ -75,9 +75,22 @@
   "source_ci": {
     "status": "PASS",
     "workflow": "Validar Kilo Global Harness",
-    "run_id": 44604876233,
-    "run_number": 480,
-    "commit_sha": "d4089e60a7430ae4497e337980141b634715ca86",
-    "note": "Full workflow completed successfully after living-certification consolidation."
+    "run_id": 44650833818,
+    "run_number": 511,
+    "commit_sha": "af2f299c75a842eeeee56b3a2fb4b01af607ee35",
+    "note": "Full post-merge workflow passed after canonical pack reconciliation, safe legacy retirement and guarded main-only branch cleanup design."
+  },
+  "current_pack": "registry/dev-team-current-pack-v1.json",
+  "runtime_observations": {
+    "observed_at": "2026-11-19",
+    "mode": "PLAN_ONLY",
+    "agents_hash_match": "6/11",
+    "skills_core_hash_match": "2/18",
+    "missing_agents": 0,
+    "missing_skills_core": 0,
+    "waves": "W1-W5_BLOCKED",
+    "operator_approval": false,
+    "runtime_mutation": "NONE_BY_PREFLIGHT",
+    "note": "Hash drift was observed on the operator Windows host after source advanced. This does not invalidate historical runtime evidence, but blocks claiming that current source equals installed runtime."
   }
 }
