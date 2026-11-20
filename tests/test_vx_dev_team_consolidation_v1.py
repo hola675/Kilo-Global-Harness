@@ -68,6 +68,15 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertIn("HOLD_SYMBOLIC_REF",script)
         self.assertIn("Aplicar exige un unico worktree",script)
         self.assertIn("Referencias simbolicas locales no se eliminan automaticamente",script)
+        self.assertIn("-ceq 'main'",script)
+        self.assertIn("-cne 'main'",script)
+        self.assertIn("-cnotmatch '\\srefs/heads/main
+        self.assertIn("git ls-remote --heads origin",script)
+        self.assertNotIn("kilo.jsonc -",script)
+
+if __name__=="__main__":
+    unittest.main()
+",script)
         self.assertNotIn("git branch -D",script)
         self.assertIn("git ls-remote --heads origin",script)
         self.assertNotIn("kilo.jsonc -",script)
