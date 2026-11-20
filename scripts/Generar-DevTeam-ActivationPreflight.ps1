@@ -140,6 +140,28 @@ $skillPairs=@(foreach($entry in $skillEntries){
 $agentHashCheck=Test-HashPairs -Pairs $agentPairs -Expected 11
 $skillHashCheck=Test-HashPairs -Pairs $skillPairs -Expected 18
 
+# V1.3: anexo editorial del Pack VX. No altera los 11 roles/18 skills CORE,
+# no habilita herramientas y nunca se usa como permiso para aplicar una wave.
+$editorialAgentPair=[pscustomobject]@{
+  name='vx-editorial-builder'
+  source=Join-Path $RepoRoot 'agents/vx-editorial-builder.md'
+  target=Join-Path $homeRoot '.config/kilo/agents/vx-editorial-builder.md'
+}
+$editorialSkillPair=[pscustomobject]@{
+  name='vx-editorial-claridad'
+  source=Join-Path $RepoRoot 'skills/vx-editorial-claridad/SKILL.md'
+  target=Join-Path $homeRoot '.kilo/skills/vx-editorial-claridad/SKILL.md'
+}
+$editorialAgentHash=Test-HashPairs -Pairs @($editorialAgentPair) -Expected 1
+$editorialSkillHash=Test-HashPairs -Pairs @($editorialSkillPair) -Expected 1
+$editorialStatus=if($editorialAgentHash.status -eq 'PASS' -and $editorialSkillHash.status -eq 'PASS'){
+  'SOURCE_FILES_MATCH_ONLY'
+}elseif($editorialAgentHash.missing.Count -gt 0 -or $editorialSkillHash.missing.Count -gt 0){
+  'NOT_INSTALLED_OR_INCOMPLETE'
+}else{
+  'HASH_DRIFT_REQUIRES_REVIEW'
+}
+
 $runtime=$null
 if($RuntimeSnapshot){
   if(!(Test-Path -LiteralPath $RuntimeSnapshot)){ throw "Runtime snapshot ausente: $RuntimeSnapshot" }
@@ -211,6 +233,16 @@ $report=[ordered]@{
     skills=$skillHashCheck
   }
   waves=$plans
+  vx_editorial_extension=[ordered]@{
+    status=$editorialStatus
+    scope='VX_PACK_SOURCE_FILES_NOT_DEV_TEAM_W1_GATE'
+    leader='vx-dev-team'
+    agent=$editorialAgentHash
+    skill=$editorialSkillHash
+    task_permission_runtime_verified=$false
+    runtime_functionality_verified=$false
+    no_activation=$true
+  }
   invariant='This preflight never applies runtime changes and never grants operator approval.'
 }
 
