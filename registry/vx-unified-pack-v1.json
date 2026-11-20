@@ -428,7 +428,9 @@
     "backup_dpapi_required": true,
     "review_required": true,
     "update_selected_commands": true,
-    "retire_historical_p2_command": true
+    "retire_historical_p2_command": true,
+    "install_support_files": true,
+    "no_legacy_registry_required": true
   },
   "postponed": [
     "26 Dev Team extension skills remain as source proposals, not installed by unified core",
@@ -496,6 +498,18 @@
       "id": "vx-editorial",
       "source": "commands/vx-editorial.md",
       "target": ".config/kilo/commands/vx-editorial.md"
+    }
+  ],
+  "support_files": [
+    {
+      "id": "vx-task-dag",
+      "source": "scripts/vx_task_dag.py",
+      "target": ".config/kilo/harness/scripts/vx_task_dag.py"
+    },
+    {
+      "id": "vx-unified-registry",
+      "source": "registry/vx-unified-pack-v1.json",
+      "target": ".config/kilo/harness/vx-unified-pack-v1.json"
     }
   ]
 }
