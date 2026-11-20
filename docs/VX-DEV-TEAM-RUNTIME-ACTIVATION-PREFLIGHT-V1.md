@@ -37,3 +37,21 @@ Los checks `runtime_agent_hash_match` y `skill_source_hash_18_of_18` solo son PA
 Este control **no** prueba capacidades efectivas del host, ACL, visibilidad, comportamiento de herramientas MCP ni resultado de los smoke tests runtime. Un archivo instalado idéntico al source no acredita una ejecución funcional. Las waves W2–W5 permanecen bloqueadas por sus verificaciones y aprobaciones propias.
 
 `-SourceCiStatus PASS` es una **declaración del operador**; debe apoyarse en un run real del HEAD vigente, no deducirse de las comparaciones de hashes. No permitir `operator_approval=true` en este generador. Ningún resultado `READY_FOR_OPERATOR_REVIEW` autoriza instalación ni activación.
+
+## Diagnóstico de deriva local V1.2 (solo lectura)
+
+En `hash_evidence.agents.drift_details` y `hash_evidence.skills.drift_details` se emite, para cada par con SHA distinto, únicamente identificador, clasificación y tamaños en bytes. **No** se incluyen contenidos, rutas absolutas, tokens ni diffs textuales.
+
+Clasificaciones: `UTF8_BOM_ONLY`, `EOL_OR_BOM_ONLY`, `TRAILING_WHITESPACE_ONLY`, `CONTENT_CHANGED`, `NOT_VALID_UTF8_OR_UNREADABLE`, `UNKNOWN_BYTE_DIFFERENCE`.
+
+Incluso una diferencia de formato mantiene el check SHA-256 **FAIL**. `CONTENT_CHANGED` indica contenido distinto tras normalizar únicamente BOM, finales de línea y espacios finales; **no** presume que los permisos sean maliciosos ni recomienda reemplazar archivos. Se debe revisar el contenido localmente mediante comparación visual antes de cualquier despliegue.
+
+Ejemplo de inspección sin escribir en la instalación:
+
+```powershell
+$r=Get-Content .\artifacts\dev-team-activation-preflight.json -Raw | ConvertFrom-Json
+$r.hash_evidence.agents.drift_details | Format-Table -AutoSize
+$r.hash_evidence.skills.drift_details | Format-Table -AutoSize
+```
+
+El operador puede investigar una diferencia real de forma local con `code --diff <fuente> <instalado>`; esta comparación no modifica archivos. No ejecutar `Instalar-DevTeam-Only.ps1 -Modo Aplicar` como mecanismo automático de reparación de hashes.

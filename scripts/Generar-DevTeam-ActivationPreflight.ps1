@@ -32,11 +32,43 @@ $homeRoot=if([string]::IsNullOrWhiteSpace($RaizUsuario)){
   [IO.Path]::GetFullPath($RaizUsuario)
 }
 
+# V1.2: clasificacion de deriva; NO equivale a smoke ni permiso runtime.
+# Unicamente interpreta archivos de texto UTF-8; una diferencia de formato sigue FAIL.
+function Get-DriftKind {
+  param([string]$Source,[string]$Installed)
+  try {
+    $utf8=[Text.UTF8Encoding]::new($false,$true)
+    $sourceBytes=[IO.File]::ReadAllBytes($Source)
+    $installedBytes=[IO.File]::ReadAllBytes($Installed)
+    $sourceHasBom=($sourceBytes.Length -ge 3 -and $sourceBytes[0] -eq 239 -and $sourceBytes[1] -eq 187 -and $sourceBytes[2] -eq 191)
+    $installedHasBom=($installedBytes.Length -ge 3 -and $installedBytes[0] -eq 239 -and $installedBytes[1] -eq 187 -and $installedBytes[2] -eq 191)
+    $a=$utf8.GetString($sourceBytes)
+    $b=$utf8.GetString($installedBytes)
+  }catch{
+    return 'NOT_VALID_UTF8_OR_UNREADABLE'
+  }
+  if($a -ceq $b){
+    if($sourceHasBom -ne $installedHasBom){ return 'UTF8_BOM_ONLY' }
+    return 'UNKNOWN_BYTE_DIFFERENCE'
+  }
+  $withoutBomA=$a.TrimStart([char]0xFEFF)
+  $withoutBomB=$b.TrimStart([char]0xFEFF)
+  if($withoutBomA -ceq $withoutBomB){ return 'UTF8_BOM_ONLY' }
+  $normA=$withoutBomA.Replace("`r`n","`n").Replace("`r","`n")
+  $normB=$withoutBomB.Replace("`r`n","`n").Replace("`r","`n")
+  if($normA -ceq $normB){ return 'EOL_OR_BOM_ONLY' }
+  $stripA=[regex]::Replace($normA,'(?m)[ \t]+(?=\n|$)','')
+  $stripB=[regex]::Replace($normB,'(?m)[ \t]+(?=\n|$)','')
+  if($stripA -ceq $stripB){ return 'TRAILING_WHITESPACE_ONLY' }
+  return 'CONTENT_CHANGED'
+}
+
 function Test-HashPairs {
   param([object[]]$Pairs,[int]$Expected)
   $missing=[System.Collections.Generic.List[string]]::new()
   $different=[System.Collections.Generic.List[string]]::new()
   $unreadable=[System.Collections.Generic.List[string]]::new()
+  $details=[System.Collections.Generic.List[object]]::new()
   $matched=0
   foreach($pair in $Pairs){
     $name=[string]$pair.name
@@ -52,7 +84,15 @@ function Test-HashPairs {
       $sourceHash=(Get-FileHash -LiteralPath $pair.source -Algorithm SHA256).Hash
       $targetHash=(Get-FileHash -LiteralPath $pair.target -Algorithm SHA256).Hash
       if($sourceHash -ceq $targetHash){$matched++}
-      else{$different.Add($name)}
+      else{
+        $different.Add($name)
+        $details.Add([pscustomobject]@{
+          name=$name
+          kind=(Get-DriftKind -Source $pair.source -Installed $pair.target)
+          source_bytes=(Get-Item -LiteralPath $pair.source).Length
+          installed_bytes=(Get-Item -LiteralPath $pair.target).Length
+        })
+      }
     }catch{$unreadable.Add($name)}
   }
   return [pscustomobject]@{
@@ -62,6 +102,7 @@ function Test-HashPairs {
     missing=@($missing)
     different=@($different)
     unreadable=@($unreadable)
+    drift_details=@($details)
   }
 }
 
