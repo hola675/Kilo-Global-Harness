@@ -58,6 +58,8 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertIn("Archive-Sha -Tag $item.Archive -Sha $item.SHA",script)
         self.assertIn("--force-with-lease=",script)
         self.assertIn("Open-PR-Branches",script)
+        self.assertIn("foreach($pr in $response)",script)
+        self.assertIn("git rev-parse --verify --quiet",script)
         self.assertIn("git status --porcelain",script)
         self.assertIn("git branch -D",script)
         self.assertIn("git ls-remote --heads origin",script)
