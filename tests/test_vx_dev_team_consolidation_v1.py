@@ -386,7 +386,20 @@ class ConsolidationV1Tests(unittest.TestCase):
             shared = module.inspect_task_worktrees(
                 source, repo, [tasks[0], dict(tasks[1], worktree_path=str(wt_a))]
             )
-            self.assertEqual(shared["blocked"][0]["reason"], "WORKTREE_SHARED_BY_TASKS")
+            self.assertEqual(shared["matched"], [])
+            self.assertEqual(
+                {x["branch"] for x in shared["blocked"] if x["reason"] == "WORKTREE_SHARED_BY_TASKS"},
+                {"work/a", "work/b"}
+            )
+            # La colisión permanece bloqueada aunque invirtamos el orden.
+            reverse_shared = module.inspect_task_worktrees(
+                source, repo, [dict(tasks[0], worktree_path=str(wt_b)), tasks[1]]
+            )
+            self.assertEqual(reverse_shared["matched"], [])
+            self.assertEqual(
+                {x["branch"] for x in reverse_shared["blocked"] if x["reason"] == "WORKTREE_SHARED_BY_TASKS"},
+                {"work/a", "work/b"}
+            )
             git("-C", source, "worktree", "lock", wt_b)
             locked = module.inspect_task_worktrees(source, repo, tasks)
             self.assertEqual(locked["blocked"][0]["reason"], "WORKTREE_UNSAFE_STATE")
