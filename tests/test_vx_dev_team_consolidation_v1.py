@@ -170,6 +170,10 @@ class ConsolidationV1Tests(unittest.TestCase):
         coalesced = module.coalesce_pending_queue(next_plan, queue["queue"])
         self.assertEqual(len(coalesced["superseded"]), 2)
         self.assertTrue(all(x["target_main_sha"] == newest for x in coalesced["queue"]))
+        # Eventos desordenados no deben retroceder la cola a un SHA viejo.
+        outdated = module.coalesce_pending_queue(plan, coalesced["queue"])
+        self.assertEqual(outdated["blocked"][0]["reason"], "MAIN_EVENT_ORDER_UNVERIFIED")
+        self.assertTrue(all(x["target_main_sha"] == newest for x in outdated["queue"]))
 
         # No pisar un trabajo en curso ni cambiar propietarios silenciosamente.
         in_flight = [dict(queue["queue"][0], status="RECONCILING"), queue["queue"][1]]
