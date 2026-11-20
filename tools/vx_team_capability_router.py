@@ -20,6 +20,7 @@ WRITERS = {
     "qa": "vx-qa-builder",
     "data": "vx-data-builder",
     "docs": "vx-docs-builder",
+    "editorial": "vx-editorial-builder",
 }
 NEEDS = {
     "api_to_ui": ("backend", "frontend"),
@@ -27,6 +28,17 @@ NEEDS = {
     "api_to_data": ("backend", "data"),
     "regression": (None, "qa"),
     "documentation": (None, "docs"),
+    "api_to_content": ("backend", "editorial"),
+    "ui_to_content": ("frontend", "editorial"),
+    "docs_to_content": ("docs", "editorial"),
+    "data_to_content": ("data", "editorial"),
+    "content_to_ui": ("editorial", "frontend"),
+    "content_to_docs": ("editorial", "docs"),
+    "data_to_backend": ("data", "backend"),
+    "backend_to_docs": ("backend", "docs"),
+    "ui_to_docs": ("frontend", "docs"),
+    "qa_to_ui": ("qa", "frontend"),
+    "qa_to_backend": ("qa", "backend"),
 }
 ACTIVE = {"ACTIVE", "RECONCILE_REQUIRED", "WAIT_SAFEPOINT"}
 REVIEW_STATES = {"IN_REVIEW", "RECONCILING", "VERIFYING"}
@@ -108,14 +120,14 @@ def plan_capability_handoff(
     operation = publication.get("operation")
     contract_ref = publication.get("contract_ref")
     if (not isinstance(capability_id, str) or not IDENT.fullmatch(capability_id)
-            or producer not in {"backend", "frontend", "data"}
-            or operation not in {"create", "read", "update", "delete", "interact"}
+            or producer not in WRITERS
+            or operation not in {"create", "read", "update", "delete", "interact", "publish", "explain"}
             or not _valid_scope(contract_ref)):
         raise ValueError("Contrato o productor inválido")
 
     changes = publication.get("change_impacts")
     scopes = publication.get("allowed_paths")
-    if (not isinstance(changes, list) or not changes or len(changes) > 4
+    if (not isinstance(changes, list) or not changes or len(changes) > 8
             or len(changes) != len(set(changes))
             or any(impact not in NEEDS for impact in changes)
             or not isinstance(scopes, dict)):
@@ -132,6 +144,16 @@ def plan_capability_handoff(
             raise ValueError("Un agente no se hace handoff a sí mismo")
         if target not in recipients:
             recipients.append(target)
+
+    # Para nuevas combinaciones reales, el productor puede solicitar dominios
+    # adicionales explícitos. Nunca se infiere un cambio desde la descripción.
+    extra = publication.get("additional_targets", [])
+    if (not isinstance(extra, list) or len(extra) != len(set(extra))
+            or any(role not in WRITERS or role == producer for role in extra)):
+        raise ValueError("Destinatarios adicionales inválidos")
+    for role in extra:
+        if role not in recipients:
+            recipients.append(role)
 
     if len(recipients) > 3:
         return {
@@ -195,6 +217,11 @@ def plan_capability_handoff(
             flags.extend(["ACCESSIBILITY_AND_UX_STATES", "VERIFY_BUTTON_LOCATION"])
         if role == "backend":
             flags.extend(["VALIDATE_INPUT_AND_AUTH", "VERIFY_API_CONTRACT"])
+        if role == "editorial":
+            flags.extend(["VERIFY_INTENT_AND_PUBLIC", "PRESERVE_FACTS_AND_MEANING",
+                          "PLAIN_LANGUAGE_AND_INCLUSIVE_TONE", "HUMAN_COMPREHENSION_REVIEW_FOR_CRITICAL_COPY"])
+        if role == "docs":
+            flags.append("CONFIRM_SOURCE_TRACEABILITY")
         tickets.append({
             "ticket_id": _ticket_id(repo, current, capability_id, role),
             "event": "CAPABILITY_HANDOFF",
