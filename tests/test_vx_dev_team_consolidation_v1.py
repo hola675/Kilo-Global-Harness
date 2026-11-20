@@ -252,6 +252,73 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertEqual(result["status"], "MAIN_DIVERGED_BLOCKED")
         self.assertFalse(result["planning_allowed"])
 
+    def test_partial_clone_missing_commit_never_lazy_fetches(self):
+        # Fixture Git real: el observer no puede descargar objetos promisor
+        # al comprobar un SHA que falta en una shallow partial clone.
+        import importlib.util
+        import subprocess
+        import tempfile
+        from unittest.mock import patch
+        from types import SimpleNamespace
+        spec = importlib.util.spec_from_file_location(
+            "vx_team_git_reconciliation", ROOT / "tools" / "vx_team_git_reconciliation.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, bare, shallow = root / "source", root / "remote.git", root / "partial"
+
+            def git(*args):
+                return subprocess.run(
+                    ["git", *[str(arg) for arg in args]], check=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                    timeout=30,
+                ).stdout.strip()
+
+            git("init", "-b", "main", source)
+            git("-C", source, "-c", "user.name=Test", "-c",
+                "user.email=test@example.invalid", "commit", "--allow-empty", "-m", "A")
+            old = git("-C", source, "rev-parse", "HEAD")
+            git("-C", source, "-c", "user.name=Test", "-c",
+                "user.email=test@example.invalid", "commit", "--allow-empty", "-m", "B")
+            new = git("-C", source, "rev-parse", "HEAD")
+            git("init", "--bare", bare)
+            git("-C", source, "remote", "add", "origin", bare)
+            git("-C", source, "push", "origin", "main")
+            git("-C", bare, "symbolic-ref", "HEAD", "refs/heads/main")
+            git("-C", bare, "config", "uploadpack.allowFilter", "true")
+            git("clone", "--filter=blob:none", "--depth=1", "--no-checkout",
+                bare.as_uri(), shallow)
+            self.assertEqual(git("-C", shallow, "config", "--get",
+                                 "remote.origin.promisor"), "true")
+            self.assertEqual(git("-C", shallow, "rev-parse", "HEAD"), new)
+            packdir = shallow / ".git" / "objects" / "pack"
+            before = {x.name for x in packdir.iterdir()}
+            original_run = subprocess.run
+
+            def observed_git(argv, **kwargs):
+                args = tuple(argv[3:])
+                self.assertEqual(kwargs["env"]["GIT_NO_LAZY_FETCH"], "1")
+                self.assertEqual(kwargs["env"]["GIT_OPTIONAL_LOCKS"], "0")
+                if args == ("remote", "get-url", "origin"):
+                    return SimpleNamespace(
+                        returncode=0,
+                        stdout="https://github.com/hola675/Kilo-Global-Harness.git\n"
+                    )
+                if args == ("ls-remote", "--heads", "origin", "refs/heads/main"):
+                    return SimpleNamespace(returncode=0, stdout=f"{new}\trefs/heads/main\n")
+                return original_run(argv, **kwargs)
+
+            with patch.object(module.subprocess, "run", side_effect=observed_git):
+                observation = module.observe_origin_main(
+                    shallow, "hola675/Kilo-Global-Harness", old
+                )
+            self.assertEqual(observation["status"], "MAIN_CHANGED_ANCESTRY_UNVERIFIED")
+            self.assertFalse(observation["planning_allowed"])
+            after = {x.name for x in packdir.iterdir()}
+            self.assertEqual(before, after, "El observer descargó objetos promisor")
+
     def test_branch_retirement_requires_remote_archive_and_explicit_apply(self):
         script=(ROOT/"scripts"/"Consolidar-Ramas-Main-V2.ps1").read_text(encoding="utf-8")
         self.assertIn("PLAN_ONLY",script)
