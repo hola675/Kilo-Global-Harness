@@ -55,3 +55,26 @@ $r.hash_evidence.skills.drift_details | Format-Table -AutoSize
 ```
 
 El operador puede investigar una diferencia real de forma local con `code --diff <fuente> <instalado>`; esta comparación no modifica archivos. No ejecutar `Instalar-DevTeam-Only.ps1 -Modo Aplicar` como mecanismo automático de reparación de hashes.
+
+## V1.3 — Anexo editorial del Pack VX 0.4.0 (solo diagnóstico)
+
+El preflight añade `vx_editorial_extension` para consultar dos archivos instalados: `vx-editorial-builder.md` bajo `~/.config/kilo/agents/` y `vx-editorial-claridad/SKILL.md` bajo `~/.kilo/skills/`. Aplica los mismos SHA-256 y clasificaciones de deriva sin exportar rutas absolutas ni contenidos.
+
+| Estado | Interpretación |
+| --- | --- |
+| `SOURCE_FILES_MATCH_ONLY` | Ambos archivos idénticos a source. **No certifica delegación ni ejecución**. |
+| `NOT_INSTALLED_OR_INCOMPLETE` | Uno o ambos archivos no se encuentran en source o en la instalación. |
+| `HASH_DRIFT_REQUIRES_REVIEW` | Existen archivos no idénticos, ilegibles o con diferencias de contenido o formato. |
+
+Esta comprobación es **independiente de W1 CORE**: no cambia los 11 roles ni las 18 skills Dev Team, no altera los gates de la wave y jamás autoriza instalar el Pack VX. Los campos `task_permission_runtime_verified=false` y `runtime_functionality_verified=false` permanecen falsos aunque los dos hashes coincidan. El líder `vx-dev-team` todavía requiere una prueba real de permiso de `task` en Kilo, con consentimiento del host y revisión independiente.
+
+Consulta sin modificar HOME:
+
+```powershell
+$r = & pwsh -NoProfile -File .\scripts\Generar-DevTeam-ActivationPreflight.ps1 -SourceCiStatus UNKNOWN | ConvertFrom-Json
+$r.vx_editorial_extension | Format-List status,scope,task_permission_runtime_verified,runtime_functionality_verified
+$r.vx_editorial_extension.agent.drift_details | Format-Table -AutoSize
+$r.vx_editorial_extension.skill.drift_details | Format-Table -AutoSize
+```
+
+**TEST_ACTION=UPDATE:** la suite viva `tests/test_vx_dev_team_activation_preflight_v1.py` cubre ausencias, igualdad y modificación de contenido editorial. Sin suite paralela histórica. `SourceCiStatus` sigue siendo una declaración externa, no una verificación remota de GitHub realizada por este script.
