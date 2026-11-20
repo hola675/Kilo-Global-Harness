@@ -27,6 +27,8 @@ En la estación de referencia se validaron **13/13 servidores MCP conectados** m
 
 “Conectado” significa handshake MCP correcto. “Probado” significa además que se ejecutó al menos una consulta funcional de lectura. No implica permisos ilimitados ni autoriza acciones destructivas.
 
+**Extensiones opcionales no certificadas:** TinyFish se conserva separadamente en `registry/vx-mcp-optional-catalog-v1.json` como candidato no registrado ni autenticado. No se añade a los **13 MCP del pack**, ni se instala, conecta o autoriza desde este procedimiento. La skill `use-tinyfish` versionada no demuestra permisos ni disponibilidad real.
+
 ## Política de seguridad
 
 El pack aplica estas reglas:

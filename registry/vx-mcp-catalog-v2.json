@@ -371,40 +371,13 @@
       },
       "auth": "none",
       "risk": "semantic-code-access-and-editing-tools"
-    },
-    {
-      "id": "tinyfish",
-      "status": "installed-not-registered-or-authenticated",
-      "transport": "remote-http-via-tinyfish-cli",
-      "description": "TinyFish web search, page fetching, browser automation, and web research through its hosted MCP endpoint and CLI.",
-      "source": "https://github.com/tinyfish-io/tinyfish-cookbook",
-      "observed_version": "@tiny-fish/cli 0.59.0; use-tinyfish skill installed from the official cookbook",
-      "dependencies": [
-        "Node.js and npm",
-        "HTTPS outbound to https://agent.tinyfish.ai/mcp",
-        "TinyFish account/API key for authenticated operations",
-        "Kilo CLI registration must be available to the TinyFish connector"
-      ],
-      "install": {
-        "kind": "npm-global-plus-official-skill",
-        "windows": "npm install -g @tiny-fish/cli; npx skills add github.com/tinyfish-io/tinyfish-cookbook --skill use-tinyfish",
-        "connect": "tinyfish connect kilo (not run: connector reports kilo is not on PATH)",
-        "auth": "tinyfish auth login (interactive; not run)"
-      },
-      "kilo": {
-        "url": "https://agent.tinyfish.ai/mcp",
-        "registration": "not-verified",
-        "oauth": "not-verified",
-        "timeout_ms": 120000
-      },
-      "auth": "tinyfish-api-key-required; no key stored",
-      "risk": "external-web-access-and-browser-automation-can-interact-with-sites; enable only exact verified tools after authentication and functional validation"
     }
   ],
   "notes": [
     "Este registro describe el pack MCP global reproducible; no contiene secretos ni tokens.",
     "Los endpoints OAuth requieren autorización interactiva después de registrar la configuración.",
     "Estado connected acredita handshake MCP; las pruebas funcionales documentadas acreditan capacidades concretas, no permisos ilimitados.",
-    "vx-mcp-catalog-v1.json se conserva como registro histórico de candidatos anteriores al pack operativo de 13 servidores."
+    "vx-mcp-catalog-v1.json se conserva como registro histórico de candidatos anteriores al pack operativo de 13 servidores.",
+    "TinyFish permanece como candidato opcional no certificado en registry/vx-mcp-optional-catalog-v1.json; no se incluye en los 13 MCP canónicos ni se autoriza su activación."
   ]
 }
