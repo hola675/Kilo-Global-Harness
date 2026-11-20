@@ -72,11 +72,11 @@ class ConsolidationV1Tests(unittest.TestCase):
         repo = "hola675/Kilo-Global-Harness"
         old, new = "a" * 40, "b" * 40
         tasks = [
-            {"task_id": "1", "owner_agent": "vx-dev-team", "branch": "work/a",
+            {"repo": repo, "task_id": "1", "owner_agent": "vx-dev-team", "branch": "work/a",
              "status": "ACTIVE", "last_reconciled_main_sha": old},
-            {"task_id": "2", "owner_agent": "vx-dev-team", "branch": "work/b",
+            {"repo": repo, "task_id": "2", "owner_agent": "vx-dev-team", "branch": "work/b",
              "status": "IN_REVIEW", "last_reconciled_main_sha": old},
-            {"task_id": "3", "owner_agent": "vx-dev-team", "branch": "work/old",
+            {"repo": repo, "task_id": "3", "owner_agent": "vx-dev-team", "branch": "work/old",
              "status": "CLOSED", "last_reconciled_main_sha": old},
         ]
         plan = plan_main_advanced(repo, old, new, tasks)
@@ -88,16 +88,29 @@ class ConsolidationV1Tests(unittest.TestCase):
         tasks[0]["last_reconciled_main_sha"] = new
         self.assertEqual(len(plan_main_advanced(repo, old, new, tasks)["reconcile_tasks"]), 1)
         duplicates = [
-            {"task_id": "1", "owner_agent": "a", "branch": "work/shared", "status": "ACTIVE"},
-            {"task_id": "2", "owner_agent": "b", "branch": "work/shared", "status": "ACTIVE"},
+            {"repo": repo, "task_id": "1", "owner_agent": "a", "branch": "work/shared", "status": "ACTIVE"},
+            {"repo": repo, "task_id": "2", "owner_agent": "b", "branch": "work/shared", "status": "ACTIVE"},
         ]
         blocked = plan_main_advanced(repo, old, new, duplicates)
         self.assertEqual(blocked["reconcile_tasks"], [])
         self.assertEqual(blocked["blocked"][0]["reason"], "MULTIPLE_ACTIVE_TASK_OWNERS")
         missing = plan_main_advanced(repo, old, new, [
-            {"task_id": "3", "branch": "work/no-owner", "status": "ACTIVE"}
+            {"repo": repo, "task_id": "3", "branch": "work/no-owner", "status": "ACTIVE"}
         ])
         self.assertEqual(missing["blocked"][0]["reason"], "MISSING_TASK_OWNER")
+        cross_repo = plan_main_advanced(repo, old, new, [
+            {"repo": "another/project", "task_id": "foreign", "owner_agent": "foreign",
+             "branch": "work/foreign", "status": "ACTIVE"},
+        ])
+        self.assertEqual(cross_repo["reconcile_tasks"], [])
+        no_repo = plan_main_advanced(repo, old, new, [
+            {"task_id": "unknown", "owner_agent": "unknown",
+             "branch": "work/unknown", "status": "ACTIVE"},
+        ])
+        self.assertEqual(no_repo["blocked"][0]["reason"], "TASK_REPO_UNVERIFIED")
+        # Cuando main vuelve a avanzar, el nuevo evento requiere otro SHA.
+        next_plan = plan_main_advanced(repo, new, "c" * 40, tasks)
+        self.assertEqual(next_plan["reconcile_tasks"][0]["target_main_sha"], "c" * 40)
         registry = json.loads((ROOT / "registry" / "vx-team-git-reconciliation-v1.json").read_text(encoding="utf-8"))
         self.assertEqual(registry["status"], "SOURCE_PLAN_ONLY_RUNTIME_NOT_ACTIVATED")
         self.assertFalse(registry["event"]["dispatcher_enabled"])
