@@ -3,6 +3,7 @@ from pathlib import Path
 import importlib.util
 import json
 import os
+import subprocess
 import tempfile
 import unittest
 
@@ -22,6 +23,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertEqual(len(pack["agents"]), 18)
         self.assertEqual(len(pack["skills"]), 43)
         self.assertEqual(len(pack["commands"]), 3)
+        self.assertEqual(len(pack["support_files"]), 2)
         self.assertEqual(len(pack["managed_legacy"]["commands"]), 1)
         self.assertEqual(sum(x["role"] == "lead" for x in pack["agents"]), 1)
         self.assertTrue(all(x["hidden"] for x in pack["agents"] if x["role"] != "lead"))
@@ -79,6 +81,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(plan["hidden_agents"], 17)
             self.assertEqual(plan["skills"], 43)
             self.assertEqual(plan["commands"], 3)
+            self.assertEqual(plan["support_files"], 2)
             self.assertEqual(plan["legacy_files_to_retire"], 1)
             self.assertIn((".config/kilo/agents/vx-integrador.md", b"legacy VX\n", None), changes)
             self.assertFalse(plan["activation_performed"])
@@ -126,6 +129,54 @@ class UnifiedPackV1Tests(unittest.TestCase):
                     for msg in result["blockers"])
             )
             self.assertEqual(foreign.read_bytes(), original)
+
+    def test_inline_retired_primary_blocks_without_modifying_config(self):
+        with tempfile.TemporaryDirectory(prefix="vx-unified-inline-") as tmp:
+            home = Path(tmp)
+            config = home / ".config/kilo/kilo.jsonc"
+            config.parent.mkdir(parents=True, exist_ok=True)
+            config.write_text('{"agent":{"vx-integrador":{"mode":"primary"}}}', encoding="utf-8")
+            old = config.read_bytes()
+            report, _ = module.plan(home)
+            self.assertEqual(report["status"], "BLOCKED")
+            self.assertTrue(
+                any("Agentes inline históricos sobreviven" in message
+                    for message in report["blockers"])
+            )
+            self.assertEqual(config.read_bytes(), old)
+
+    def test_unified_dag_cli_accepts_new_agents_and_has_no_actions(self):
+        pack = module.load_manifest()
+        self.assertEqual(
+            {row["id"] for row in pack["support_files"]},
+            {"vx-task-dag", "vx-unified-registry"},
+        )
+        with tempfile.TemporaryDirectory(prefix="vx-unified-dag-") as tmp:
+            file = Path(tmp) / "plan.json"
+            file.write_text(json.dumps({
+                "schema": "vx-task-plan/1",
+                "mode": "STRICT",
+                "tasks": [{
+                    "id": "implement-task", "owner": "vx-backend-builder",
+                    "reviewer": "vx-dev-reviewer", "state": "PENDING",
+                    "writer": True, "worktree": "work/sample",
+                    "allowed_paths": ["src/api.py"], "depends_on": [],
+                }],
+            }), encoding="utf-8")
+            run = subprocess.run(
+                [sys.executable, "-I", str(ROOT / "scripts/vx_task_dag.py"),
+                 "--registry", str(ROOT / "registry/vx-unified-pack-v1.json"),
+                 "--plan", str(file)],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(run.returncode, 0, run.stderr + run.stdout)
+            result = json.loads(run.stdout)
+            self.assertEqual(result["ready"], ["implement-task"])
+            self.assertEqual(result["actions_executed"], 0)
+            self.assertFalse(result["runtime_verified"])
+        command = (ROOT / "commands/vx-dependencias.md").read_text(encoding="utf-8")
+        self.assertIn("--registry", command)
+        self.assertIn("vx-unified-pack-v1.json", command)
 
     @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser solo Windows")
     def test_explicit_recovery_after_interruption_rejects_unrelated_edits(self):
@@ -183,6 +234,9 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(module.verify(home)["status"], "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED")
             self.assertFalse(retired.exists())
             self.assertFalse(retired_command.exists())
+            self.assertEqual((home/".config/kilo/harness/vx-unified-pack-v1.json").read_bytes(),
+                             (ROOT/"registry/vx-unified-pack-v1.json").read_bytes())
+            self.assertTrue((home/".config/kilo/harness/scripts/vx_task_dag.py").is_file())
             self.assertEqual((home/".config/kilo/commands/vx-equipo.md").read_bytes(),
                              (ROOT/"commands/vx-equipo.md").read_bytes())
             self.assertNotEqual(existing.read_bytes(), b"outdated team\n")
@@ -195,6 +249,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(retired.read_bytes(), b"VX old version\n")
             self.assertEqual(retired_command.read_bytes(), b"old P2 command\n")
             self.assertFalse((home/".config/kilo/commands/vx-equipo.md").exists())
+            self.assertFalse((home/".config/kilo/harness/vx-unified-pack-v1.json").exists())
+            self.assertFalse((home/".config/kilo/harness/scripts/vx_task_dag.py").exists())
             self.assertEqual(cfg_before, conf.read_bytes())
             self.assertEqual(third.read_bytes(), b"third party content\n")
             self.assertFalse((home/".config/kilo/agents/vx-editorial-builder.md").exists())
