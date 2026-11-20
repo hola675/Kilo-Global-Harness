@@ -1,6 +1,6 @@
 # VX — Reconciliación continua del equipo con main V1
 
-**Fecha:** 2026-11-19 · **Versión:** 1.2.0 · **Estado:** SOURCE / DISEÑO OPERATIVO. No hay daemon, webhook, scheduler, ajuste de ACL ni cambios en HOME activos.
+**Fecha:** 2026-11-19 · **Versión:** 1.3.0 · **Estado:** SOURCE / DISEÑO OPERATIVO. No hay daemon, webhook, scheduler, ajuste de ACL ni cambios en HOME activos.
 
 ## Contrato de trabajo del equipo
 
@@ -108,6 +108,20 @@ El esquema mínimo de cada tarea activa es `{repo, task_id, owner_agent, branch,
 **Certificación viva:** se actualiza la prueba existente `tests/test_vx_dev_team_consolidation_v1.py`, con repositorio temporal Git real y dos worktrees independientes, ruta equivocada, propietario duplicado, worktree bloqueado, remoto no reconocido y cola repetida o interrumpida. La historia permanece en Git, sin otra suite por versión.
 
 **Fases siguientes:** (1) catálogo persistente en ruta privada solo tras autorización específica; (2) autenticación real owner↔sesión↔worktree y snapshot de herramientas Kilo; (3) inspección de limpieza/locks efectiva; (4) cola durable y recuperación con ensayos sintéticos Windows; (5) despacho de eventos `MAIN_ADVANCED`, con aprobación explícita y rollback. Ninguna se considera activada por esta versión.
+
+## A1 — Prototipo transaccional SQLite en sandbox V1.3
+
+Se incorpora `tools/vx_team_git_queue_store.py` como **librería de pruebas aislada**, sin CLI ni autoarranque. Esta fase desarrolla almacenamiento real únicamente cuando un test llama explícitamente a `SandboxQueue` con un subdirectorio preexistente del directorio temporal del sistema; el constructor **no** crea bases. El almacenamiento real del operador continúa **desactivado**.
+
+**Transacción:** SQLite usa `journal_mode=WAL`, `synchronous=FULL` y `BEGIN IMMEDIATE`. Conserva un `repo_heads` por repositorio y una única fila por `(repo,branch)`. Solo acepta eventos cuyo observador declaró `MAIN_ADVANCED_VERIFIED`, con `planning_allowed=true` y un plan `PLAN_ONLY` idéntico, sin tareas bloqueadas, `execute=false`. Bloquea eventos de SHA fuera de orden con un compare-and-swap transaccional; una repetición del mismo evento es idempotente. Aunque una fila se almacene, **no hay despacho ni merge Git**.
+
+**Continuidad:** las propuestas pendientes se renuevan al avance verificado de `main` cuando coinciden con la última base, sin tocar registros `RECONCILING`, `VERIFYING` o `HOLD_RECHECK`. Una modificación silenciosa del propietario es bloqueada. El evento puede avanzar el SHA general de `main` aunque determinadas ramas requieran revisión; esto no habilita esas ramas.
+
+**Recuperación tras interrupción:** al reabrir la base de pruebas, `recovery_hold()` cambia todos los trabajos a `HOLD_RECHECK` de forma transaccional y repetible. Ninguna entrada vuelve a `PENDING` por una nueva actualización de `main` sin una fase independiente de autenticación y validación de worktree. Los snapshots muestran explícitamente `execute=false`, `can_dispatch=false` y `can_merge=false`.
+
+**Límites:** no se persisten secretos, rutas de worktrees ni datos reales de usuario en este prototipo; exclusivamente identificadores sintéticos de fixtures. No se almacena automáticamente nada bajo HOME de Kilo ni se modifica `kilo.jsonc`, ACL o MCP. Para producción siguen pendientes un almacén privado autorizado, identidad real de agentes/sesiones, limpieza Git, handles de tareas, leases de branch, protección de `main`, ejecución focalizada y recuperación de fallos a mitad de merge. El WAL de test no implica certificación de tolerancia a apagones físicos.
+
+**Test certification:** la misma suite viva `tests/test_vx_dev_team_consolidation_v1.py` prueba reapertura real, idempotencia concurrente, SHA desordenado, rollback ante entrada inválida, bloqueo por cambio de propietario y recuperación sin ejecutar. Se actualiza esta suite (`TEST_ACTION=UPDATE`), sin conservar suites redundantes por versión.
 
 ## Pendientes para activación posterior
 
