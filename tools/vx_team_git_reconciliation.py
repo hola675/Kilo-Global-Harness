@@ -44,6 +44,12 @@ def plan_main_advanced(
             raise ValueError("Cada tarea debe ser un objeto")
         if entry.get("status") not in ACTIVE:
             continue
+        # El catálogo puede contener tareas de múltiples proyectos: jamás
+        # despachar trabajo de otro repositorio (ni de uno sin identidad).
+        if entry.get("repo") != repo:
+            if entry.get("repo") is None:
+                result["blocked"].append({"branch": str(entry.get("branch", "")), "reason": "TASK_REPO_UNVERIFIED"})
+            continue
         branch = entry.get("branch", "")
         if not isinstance(branch, str) or not BRANCH.fullmatch(branch) or ".." in branch or "//" in branch or branch.endswith(".lock"):
             result["blocked"].append({"branch": str(branch), "reason": "INVALID_TASK_BRANCH"})
