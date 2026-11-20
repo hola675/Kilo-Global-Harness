@@ -100,7 +100,10 @@ def observe_origin_main(repo_dir: Path, repo: str, previous_main_sha: str) -> di
     }
 
     def git(*args: str) -> tuple[int | None, str]:
-        env = dict(os.environ, GIT_TERMINAL_PROMPT="0", GCM_INTERACTIVE="never")
+        # Evitar descargas implicitas en clones parciales (promisor), y locks
+        # opcionales durante observaciones que deben ser read-only.
+        env = dict(os.environ, GIT_TERMINAL_PROMPT="0", GCM_INTERACTIVE="never",
+                   GIT_NO_LAZY_FETCH="1", GIT_OPTIONAL_LOCKS="0")
         try:
             proc = subprocess.run(
                 ["git", "-C", str(repo_dir), *args],
