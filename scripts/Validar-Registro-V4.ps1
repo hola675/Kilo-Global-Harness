@@ -88,13 +88,17 @@ foreach ($agent in $agents) {
     if ($front -match '(?m)^\s{2}task:\s*allow\s*$') { throw "Agente read-only puede delegar: $id." }
   }
   if ($agent.role -eq 'builder') {
-    # Excepcion cerrada: Editorial pertenece al lider y no es modo principal.
-    # Los demas builders mantienen el modo 'all' sin cambiar su contrato.
-    if ($agent.writes -ne $true) { throw "Builder sin escritura bajo ask: $id" }
-    if ($id -eq 'vx-editorial-builder') {
+    # Builder editorial: subagente oculto bajo el lider, nunca modo propio.
+    $editorialChild = ($id -eq 'vx-editorial-builder')
+    if ($agent.writes -ne $true) { throw "Builder no coherente: $id" }
+    if ($editorialChild) {
       if ($agent.mode -ne 'subagent' -or $agent.hidden -ne $true -or
           $agent.parent_agent -ne 'vx-dev-team' -or $agent.direct_selectable -ne $false -or
           $front -notmatch '(?m)^hidden:\s*true\s*
+    foreach ($pair in @(
+      @{Key='edit';Value='ask'}, @{Key='write';Value='ask'}, @{Key='apply_patch';Value='ask'},
+      @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}
+    )) {
       $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
       if ($front -notmatch $pat) { throw "Builder $id sin permiso $($pair.Key) = $($pair.Value)" }
     }
@@ -173,8 +177,11 @@ $childSkillMatrix = @{
   'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
 }
 foreach ($child in $childIds) {
-  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*
-if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
+}
+# Permiso de delegacion editorial: una unica entrada allowlist en el lider.
+if ($devFront -notmatch '(?m)^\s{4}"vx-editorial-builder":\s*allow\s*if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
   throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
 }
 
@@ -264,181 +271,8 @@ foreach ($candidate in @($catalog.candidates)) {
 Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
  -or
           $front -notmatch '(?m)^  bash:\s*deny\s*
-      $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
-      if ($front -notmatch $pat) { throw "Builder $id sin permiso $($pair.Key) = $($pair.Value)" }
-    }
-    if ($front -notmatch '(?m)^\s{2}bash:\s*(ask|deny)\s*$') { throw "Builder bash inseguro: $id" }
-  }
-}
-$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-foreach ($p in $profiles) {
-  $name = [string]$p.id
-  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
-  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
-  foreach ($phase in @('discover','review')) {
-    $list = @($p[$phase])
-    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
-    foreach ($a in $list) {
-      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
-      $role = @($agents | Where-Object { $_.id -eq $a })[0]
-      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
-    }
-  }
-  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
-  if ($p.ContainsKey('builder_candidate') -and $p.builder_candidate) {
-    $matched = @($agents | Where-Object { $_.id -eq $p.builder_candidate -and $_.role -eq 'builder' })
-    if ($matched.Count -ne 1) { throw "Builder no registrado en perfil $name" }
-  }
-}
-if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
-
-# Dev Team source actual: único primario visible + diez subagentes ocultos read-only.
-if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
-    $data.execution.dev_team_display_name -ne 'vx-dev-team' -or
-    $data.execution.dev_team_runtime -ne 'active-v1') {
-  throw 'Registro Dev Team primario incompleto.'
-}
-$devTeam = @($agents | Where-Object { $_.id -eq 'vx-dev-team' })
-if ($devTeam.Count -ne 1 -or $devTeam[0].mode -ne 'primary' -or
-    $devTeam[0].role -ne 'coordinator' -or $devTeam[0].writes -ne $true) {
-  throw 'vx-dev-team no esta registrado como coordinador primario.'
-}
-$devFile = Join-Path $RaizFuentes 'agents/vx-dev-team.md'
-if (!(Test-Path -LiteralPath $devFile -PathType Leaf)) { throw 'Falta agente global vx-dev-team.' }
-$devRaw = Get-Content -LiteralPath $devFile -Raw -Encoding UTF8
-$devFrontMatch = [regex]::Match($devRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
-if (!$devFrontMatch.Success) { throw 'Frontmatter Dev Team invalido.' }
-$devFront = $devFrontMatch.Groups[1].Value
-foreach ($required in @(
-  '(?m)^displayName:\s*"vx-dev-team"\s*$',
-  '(?m)^color:\s*"#8B5CF6"\s*$',
-  '(?m)^\s{2}skill:\s*$',
-  '(?m)^\s{4}"\*":\s*deny\s*$',
-  '(?m)^\s{4}"vx-dev-project-policy":\s*allow\s*$',
-  '(?m)^\s{4}"vx-dev-team-handoff":\s*allow\s*$',
-  '(?m)^\s{2}task:\s*$',
-  '(?m)^\s{4}"\*":\s*deny\s*$',
-  '(?m)^\s{2}agent_manager:\s*deny\s*$',
-  '(?m)^\s{2}board_read:\s*deny\s*$',
-  '(?m)^\s{2}board_post:\s*deny\s*$'
-)) {
-  if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
-}
-$childIds = @(
-  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
-  'vx-dev-data','vx-dev-platform','vx-dev-reviewer','vx-dev-quality',
-  'vx-dev-security','vx-dev-research'
-)
-$childSkillMatrix = @{
-  'vx-dev-explorer'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
-  'vx-dev-research'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
-  'vx-dev-architect' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
-  'vx-dev-frontend'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
-  'vx-dev-backend'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
-  'vx-dev-data'      = @('vx-dev-data-migration')
-  'vx-dev-platform'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
-  'vx-dev-quality'   = @('vx-dev-test-strategy','vx-dev-accessibility')
-  'vx-dev-security'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
-  'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
-}
-foreach ($child in $childIds) {
-  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
-  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
-}
-if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
-}
-
-$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
-$installedAgentDir = Join-Path $RaizFuentes 'agents'
-$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
-if (!$validateChildren) {
-  $validateChildren = $true
-  foreach ($child in $childIds) {
-    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
-      $validateChildren = $false
-      break
-    }
-  }
-}
-if ($validateChildren) {
-  foreach ($child in $childIds) {
-    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
-    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
-      $childFile = Join-Path $installedAgentDir ($child + '.md')
-    }
-    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
-    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
-    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
-    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
-    $childFront = $childFrontMatch.Groups[1].Value
-    foreach ($required in @(
-      '(?m)^mode:\s*subagent\s*$',
-      '(?m)^hidden:\s*true\s*$',
-      '(?m)^\s{2}read:\s*deny\s*$',
-      '(?m)^\s{2}skill:\s*$',
-      '(?m)^\s{4}"\*":\s*deny\s*$',
-      '(?m)^\s{2}task:\s*deny\s*$',
-      '(?m)^\s{2}edit:\s*deny\s*$',
-      '(?m)^\s{2}write:\s*deny\s*$',
-      '(?m)^\s{2}apply_patch:\s*deny\s*$',
-      '(?m)^\s{2}bash:\s*deny\s*$',
-      '(?m)^\s{2}agent_manager:\s*deny\s*$',
-      '(?m)^\s{2}board_read:\s*deny\s*$',
-      '(?m)^\s{2}board_post:\s*deny\s*$'
-    )) {
-      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
-    }
-    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-      throw "Subagente $child contiene permisos MCP automaticos."
-    }
-    foreach ($skill in $childSkillMatrix[$child]) {
-      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
-      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
-    }
-  }
-}
-
-if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
-if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
-foreach ($id in @($data.pack.owned_agents)) {
-  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
-}
-$skillBase = Join-Path $RaizFuentes 'skills'
-if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
-  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
-  $skillBase = Join-Path $userRoot '.kilo/skills'
-}
-$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-foreach ($entry in @($data.pack.owned_skills)) {
-  $skill = [string]$entry
-  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
-  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
-  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
-  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
-  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
-    throw "Nombre de skill VX no coincide: $skill"
-  }
-}
-$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
-if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
-  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
-}
-if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
-$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
-if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
-  throw 'Catalogo MCP VX incompatible.'
-}
-foreach ($candidate in @($catalog.candidates)) {
-  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
-}
-Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
-) {
-        throw 'Editorial debe ser subagente oculto del lider, sin modo propio.'
-      }
-    } elseif ($agent.mode -ne 'all') { throw "Builder no coherente: $id" }
     foreach ($pair in @(
-      @{Key='edit';Value='ask'}, @{Key='write';Value='ask'}, @{Key='apply_patch';Value='ask'},
+      @{Key='edit';Value='ask'},
       @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}
     )) {
       $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
@@ -610,277 +444,12 @@ foreach ($candidate in @($catalog.candidates)) {
   if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
 }
 Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
-
-  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
-}
-# Editorial es un miembro nuevo bajo el lider, distinto de los diez lectores
-# clasicos; no constituye un nuevo modo primario ni una excepcion de permisos.
-if ($devFront -notmatch '(?m)^\s{4}"vx-editorial-builder":\s*allow\s*
-if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
-}
-
-$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
-$installedAgentDir = Join-Path $RaizFuentes 'agents'
-$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
-if (!$validateChildren) {
-  $validateChildren = $true
-  foreach ($child in $childIds) {
-    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
-      $validateChildren = $false
-      break
-    }
-  }
-}
-if ($validateChildren) {
-  foreach ($child in $childIds) {
-    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
-    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
-      $childFile = Join-Path $installedAgentDir ($child + '.md')
-    }
-    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
-    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
-    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
-    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
-    $childFront = $childFrontMatch.Groups[1].Value
-    foreach ($required in @(
-      '(?m)^mode:\s*subagent\s*$',
-      '(?m)^hidden:\s*true\s*$',
-      '(?m)^\s{2}read:\s*deny\s*$',
-      '(?m)^\s{2}skill:\s*$',
-      '(?m)^\s{4}"\*":\s*deny\s*$',
-      '(?m)^\s{2}task:\s*deny\s*$',
-      '(?m)^\s{2}edit:\s*deny\s*$',
-      '(?m)^\s{2}write:\s*deny\s*$',
-      '(?m)^\s{2}apply_patch:\s*deny\s*$',
-      '(?m)^\s{2}bash:\s*deny\s*$',
-      '(?m)^\s{2}agent_manager:\s*deny\s*$',
-      '(?m)^\s{2}board_read:\s*deny\s*$',
-      '(?m)^\s{2}board_post:\s*deny\s*$'
-    )) {
-      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
-    }
-    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-      throw "Subagente $child contiene permisos MCP automaticos."
-    }
-    foreach ($skill in $childSkillMatrix[$child]) {
-      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
-      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
-    }
-  }
-}
-
-if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
-if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
-foreach ($id in @($data.pack.owned_agents)) {
-  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
-}
-$skillBase = Join-Path $RaizFuentes 'skills'
-if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
-  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
-  $skillBase = Join-Path $userRoot '.kilo/skills'
-}
-$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-foreach ($entry in @($data.pack.owned_skills)) {
-  $skill = [string]$entry
-  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
-  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
-  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
-  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
-  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
-    throw "Nombre de skill VX no coincide: $skill"
-  }
-}
-$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
-if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
-  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
-}
-if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
-$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
-if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
-  throw 'Catalogo MCP VX incompatible.'
-}
-foreach ($candidate in @($catalog.candidates)) {
-  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
-}
-Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
- -or
-          $front -notmatch '(?m)^  bash:\s*deny\s*
-      $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
-      if ($front -notmatch $pat) { throw "Builder $id sin permiso $($pair.Key) = $($pair.Value)" }
-    }
-    if ($front -notmatch '(?m)^\s{2}bash:\s*(ask|deny)\s*$') { throw "Builder bash inseguro: $id" }
-  }
-}
-$profilesSeen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-foreach ($p in $profiles) {
-  $name = [string]$p.id
-  if ($name -notmatch '^[a-z][a-z0-9-]+$' -or !$profilesSeen.Add($name)) { throw "Perfil repetido/invalido: $name." }
-  if (@($p.discover).Count -gt 3 -or @($p.review).Count -gt 3) { throw "Demasiados delegados en $name." }
-  foreach ($phase in @('discover','review')) {
-    $list = @($p[$phase])
-    if (@($list | Select-Object -Unique).Count -ne $list.Count) { throw "Duplicado de $phase en $name." }
-    foreach ($a in $list) {
-      if (!$seen.Contains([string]$a)) { throw "Perfil $name referencia agente inexistente: $a." }
-      $role = @($agents | Where-Object { $_.id -eq $a })[0]
-      if ($role.writes -ne $false -or $role.mode -ne 'subagent') { throw "No es lector seguro: $a." }
-    }
-  }
-  if ($p.writer -and $p.writer -ne 'code') { throw "Escritor no soportado en $name." }
-  if ($p.ContainsKey('builder_candidate') -and $p.builder_candidate) {
-    $matched = @($agents | Where-Object { $_.id -eq $p.builder_candidate -and $_.role -eq 'builder' })
-    if ($matched.Count -ne 1) { throw "Builder no registrado en perfil $name" }
-  }
-}
-if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
-
-# Dev Team source actual: único primario visible + diez subagentes ocultos read-only.
-if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
-    $data.execution.dev_team_display_name -ne 'vx-dev-team' -or
-    $data.execution.dev_team_runtime -ne 'active-v1') {
-  throw 'Registro Dev Team primario incompleto.'
-}
-$devTeam = @($agents | Where-Object { $_.id -eq 'vx-dev-team' })
-if ($devTeam.Count -ne 1 -or $devTeam[0].mode -ne 'primary' -or
-    $devTeam[0].role -ne 'coordinator' -or $devTeam[0].writes -ne $true) {
-  throw 'vx-dev-team no esta registrado como coordinador primario.'
-}
-$devFile = Join-Path $RaizFuentes 'agents/vx-dev-team.md'
-if (!(Test-Path -LiteralPath $devFile -PathType Leaf)) { throw 'Falta agente global vx-dev-team.' }
-$devRaw = Get-Content -LiteralPath $devFile -Raw -Encoding UTF8
-$devFrontMatch = [regex]::Match($devRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
-if (!$devFrontMatch.Success) { throw 'Frontmatter Dev Team invalido.' }
-$devFront = $devFrontMatch.Groups[1].Value
-foreach ($required in @(
-  '(?m)^displayName:\s*"vx-dev-team"\s*$',
-  '(?m)^color:\s*"#8B5CF6"\s*$',
-  '(?m)^\s{2}skill:\s*$',
-  '(?m)^\s{4}"\*":\s*deny\s*$',
-  '(?m)^\s{4}"vx-dev-project-policy":\s*allow\s*$',
-  '(?m)^\s{4}"vx-dev-team-handoff":\s*allow\s*$',
-  '(?m)^\s{2}task:\s*$',
-  '(?m)^\s{4}"\*":\s*deny\s*$',
-  '(?m)^\s{2}agent_manager:\s*deny\s*$',
-  '(?m)^\s{2}board_read:\s*deny\s*$',
-  '(?m)^\s{2}board_post:\s*deny\s*$'
-)) {
-  if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
-}
-$childIds = @(
-  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
-  'vx-dev-data','vx-dev-platform','vx-dev-reviewer','vx-dev-quality',
-  'vx-dev-security','vx-dev-research'
-)
-$childSkillMatrix = @{
-  'vx-dev-explorer'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
-  'vx-dev-research'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
-  'vx-dev-architect' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
-  'vx-dev-frontend'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
-  'vx-dev-backend'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
-  'vx-dev-data'      = @('vx-dev-data-migration')
-  'vx-dev-platform'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
-  'vx-dev-quality'   = @('vx-dev-test-strategy','vx-dev-accessibility')
-  'vx-dev-security'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
-  'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
-}
-foreach ($child in $childIds) {
-  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
-  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
-}
-if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
-}
-
-$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
-$installedAgentDir = Join-Path $RaizFuentes 'agents'
-$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
-if (!$validateChildren) {
-  $validateChildren = $true
-  foreach ($child in $childIds) {
-    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
-      $validateChildren = $false
-      break
-    }
-  }
-}
-if ($validateChildren) {
-  foreach ($child in $childIds) {
-    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
-    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
-      $childFile = Join-Path $installedAgentDir ($child + '.md')
-    }
-    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
-    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
-    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
-    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
-    $childFront = $childFrontMatch.Groups[1].Value
-    foreach ($required in @(
-      '(?m)^mode:\s*subagent\s*$',
-      '(?m)^hidden:\s*true\s*$',
-      '(?m)^\s{2}read:\s*deny\s*$',
-      '(?m)^\s{2}skill:\s*$',
-      '(?m)^\s{4}"\*":\s*deny\s*$',
-      '(?m)^\s{2}task:\s*deny\s*$',
-      '(?m)^\s{2}edit:\s*deny\s*$',
-      '(?m)^\s{2}write:\s*deny\s*$',
-      '(?m)^\s{2}apply_patch:\s*deny\s*$',
-      '(?m)^\s{2}bash:\s*deny\s*$',
-      '(?m)^\s{2}agent_manager:\s*deny\s*$',
-      '(?m)^\s{2}board_read:\s*deny\s*$',
-      '(?m)^\s{2}board_post:\s*deny\s*$'
-    )) {
-      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
-    }
-    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
-      throw "Subagente $child contiene permisos MCP automaticos."
-    }
-    foreach ($skill in $childSkillMatrix[$child]) {
-      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
-      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
-    }
-  }
-}
-
-if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
-if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
-foreach ($id in @($data.pack.owned_agents)) {
-  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
-}
-$skillBase = Join-Path $RaizFuentes 'skills'
-if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
-  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
-  $skillBase = Join-Path $userRoot '.kilo/skills'
-}
-$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
-foreach ($entry in @($data.pack.owned_skills)) {
-  $skill = [string]$entry
-  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
-  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
-  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
-  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
-  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
-    throw "Nombre de skill VX no coincide: $skill"
-  }
-}
-$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
-if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
-  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
-}
-if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
-$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
-if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
-  throw 'Catalogo MCP VX incompatible.'
-}
-foreach ($candidate in @($catalog.candidates)) {
-  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
-}
-Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
 ) {
-        throw 'Editorial debe ser subagente oculto del lider, sin modo propio.'
+        throw 'Editorial debe ser subagente oculto sin modo independiente.'
       }
     } elseif ($agent.mode -ne 'all') { throw "Builder no coherente: $id" }
     foreach ($pair in @(
-      @{Key='edit';Value='ask'}, @{Key='write';Value='ask'}, @{Key='apply_patch';Value='ask'},
+      @{Key='edit';Value='ask'},
       @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}
     )) {
       $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
@@ -1055,7 +624,6 @@ Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) per
 ) {
   throw 'Dev Team no puede delegar al subagente editorial.'
 }
-
 if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
   throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
 }
@@ -1146,6 +714,10 @@ foreach ($candidate in @($catalog.candidates)) {
 Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
  -or
           $front -notmatch '(?m)^  bash:\s*deny\s*
+    foreach ($pair in @(
+      @{Key='edit';Value='ask'},
+      @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}
+    )) {
       $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
       if ($front -notmatch $pat) { throw "Builder $id sin permiso $($pair.Key) = $($pair.Value)" }
     }
@@ -1316,11 +888,11 @@ foreach ($candidate in @($catalog.candidates)) {
 }
 Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
 ) {
-        throw 'Editorial debe ser subagente oculto del lider, sin modo propio.'
+        throw 'Editorial debe ser subagente oculto sin modo independiente.'
       }
     } elseif ($agent.mode -ne 'all') { throw "Builder no coherente: $id" }
     foreach ($pair in @(
-      @{Key='edit';Value='ask'}, @{Key='write';Value='ask'}, @{Key='apply_patch';Value='ask'},
+      @{Key='edit';Value='ask'},
       @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}
     )) {
       $pat = '(?m)^\s{2}' + [regex]::Escape($pair.Key) + ':\s*' + [regex]::Escape($pair.Value) + '\s*$'
