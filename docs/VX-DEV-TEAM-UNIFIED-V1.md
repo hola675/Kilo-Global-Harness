@@ -68,3 +68,9 @@ Conservar salvaguardas necesarias: no elevar ACL por falta de herramienta, un es
 ## Changelog
 
 - V1.0 RC1 (2026-11-20): 18 agentes únicos, 43 skills seleccionadas, un solo instalador reversible, seis agentes y siete skills históricas retirables, pruebas de instalación/rollback en suite viva; source aún no equivale a runtime instalado.
+
+## Comandos compatibilizados (V1.0 RC1)
+
+La instalación única gestiona también tres comandos globales: **/vx-equipo**, **/vx-dependencias** y **/vx-editorial**. Sus rutas apuntan al único líder `vx-dev-team`; los dos primeros ya no invocan al antiguo `vx-integrador`. El comando experimental histórico `/vx-p2` se retira del HOME con respaldo DPAPI porque seleccionaba directamente a `vx-docs-builder`, que ahora debe ser subagente oculto. El fuente `commands/vx-p2.md` permanece versionado para trazabilidad. Los demás comandos del usuario se conservan, sin borrados por nombre o coincidencias amplias.
+
+**Inventario final bajo gestión del instalador:** 18 agentes, 43 skills, 3 comandos y un bloque de política global VX. Se pueden retirar exactamente seis agentes, siete skills y un comando históricos, si existen; todo el material anterior cambiado se respalda antes de mutar. La existencia de otros comandos o recursos ajenos no convierte su funcionalidad en certificada.
