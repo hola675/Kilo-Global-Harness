@@ -40,6 +40,28 @@ Las dos propuestas iniciales `registry/vx-dev-team-v1.proposal.json` y `registry
 
 Se fusionan cambios exclusivamente vía PR sobre `main`, CI y revisión independiente. Tras el merge, se retiran ramas `work/*` utilizando una operación con verificación SHA y, para las no fusionadas directamente, referencias archivadas recuperables. No eliminar ramas locales que estén asociadas a worktrees o tengan trabajo sin guardar. El borrado de referencias no certifica runtime.
 
+## Cierre seguro de ramas después del merge
+
+Una vez que el CI y la revisión de esta consolidación sean PASS y el merge esté en `main`, el operador puede verificar y eliminar ramas remotas/locales sin perder los commits exclusivos. El script versionado `scripts/Consolidar-Ramas-Main-V2.ps1` **no ejecuta borrados por defecto**:
+
+```powershell
+cd D:\Proyectos\Kilo-Global-Harness
+git switch main
+git fetch origin --prune
+git pull --ff-only origin main
+pwsh -NoProfile -File .\scripts\Consolidar-Ramas-Main-V2.ps1
+```
+
+Inspeccionar el CSV en `$env:TEMP\Kilo-Global-Harness`. El segundo comando requiere aprobación explícita:
+
+```powershell
+pwsh -NoProfile -File .\scripts\Consolidar-Ramas-Main-V2.ps1 -Aplicar -Confirmacion ARCHIVAR_Y_LIMPIAR_WORK
+```
+
+Antes de cada retiro, el script guarda el SHA del tip en un **tag remoto anotado** `archive/remote/...` (o `archive/local/...`), verifica ese tag y usa `--force-with-lease` para evitar cambios concurrentes. Aborta con PR abiertas, `main` desactualizada o worktree sucio. Git rechaza eliminar una rama usada en otro worktree. Al final comprueba que solo existe la rama `main` tanto local como remota; los tags son historia recuperable, **no ramas activas**. El script puede dejar ramas retenidas si falla una protección y deberá investigarse, sin hacer force manual.
+
+Los tags `archive/*` permiten rescatar commits históricos; no deben ejecutarse como runtime ni considerarse certificados.
+
 ## Siguiente paso
 
 Sin modificar tu instalación, sincroniza `main` y ejecuta el preflight. Inspecciona clasificaciones y diffs de los cinco agentes con derivación, especialmente permisos y routing, antes de planear una ola de actualización. Las pruebas `TEST_ACTION: UPDATE` deben residir en la suite actual, no crear duplicados históricos.
