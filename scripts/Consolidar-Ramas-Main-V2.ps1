@@ -3,11 +3,12 @@
 .SYNOPSIS
   Auditoria y limpieza de ramas: main unica local y remota, con tags de archivo.
 .DESCRIPTION
-  V2.0.0 (2026-11-19) | PLAN_ONLY por defecto.
+  V2.0.1 (2026-11-19) | PLAN_ONLY por defecto.
   No toca runtime Kilo, ACL, MCP, agents, skills ni kilo.jsonc.
   Requiere main sincronizada, worktree limpio, cero PR abiertas y confirmacion.
   Archiva cada tip como tag remoto anotado antes de borrar su rama.
 .CHANGELOG
+  2.0.1 - Compatibilidad PS 5.1: enumerar PR y probes silenciosos para tags inexistentes.
   2.0.0 - Preservacion de refs, verificaciones de SHA y retiro main-only.
 #>
 [CmdletBinding()]
