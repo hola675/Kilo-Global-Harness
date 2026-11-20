@@ -61,7 +61,10 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertIn("foreach($pr in $response)",script)
         self.assertIn("git rev-parse --verify --quiet",script)
         self.assertIn("git status --porcelain",script)
-        self.assertIn("git branch -D",script)
+        self.assertIn("git update-ref -d",script)
+        self.assertIn("git worktree list --porcelain",script)
+        self.assertIn("Assert-BranchNotCheckedOut",script)
+        self.assertNotIn("git branch -D",script)
         self.assertIn("git ls-remote --heads origin",script)
         self.assertNotIn("kilo.jsonc -",script)
 
