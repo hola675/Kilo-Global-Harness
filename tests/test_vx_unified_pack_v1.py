@@ -87,6 +87,28 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(before, after)
             self.assertEqual(third.read_bytes(), before[third.relative_to(home)])
 
+    def test_unified_commands_and_leader_have_no_retired_execution_paths(self):
+        pack = module.load_manifest()
+        installed_commands = {item["id"]: (ROOT / item["source"]).read_text(encoding="utf-8")
+                              for item in pack["commands"]}
+        self.assertEqual(set(installed_commands), {"vx-equipo", "vx-dependencias", "vx-editorial"})
+        for cmd, text in installed_commands.items():
+            self.assertIn("agent: vx-dev-team", text, cmd)
+            self.assertNotIn("agent: vx-integrador", text, cmd)
+        team = installed_commands["vx-equipo"]
+        self.assertNotIn('File "$HOME/.config/kilo/harness/scripts/Seleccionar-Equipo-V4.ps1"', team)
+        self.assertNotIn('vx_skill_router.py" --profile', team)
+        self.assertIn("vx-frontend-builder", team)
+        self.assertIn("vx-editorial-builder", team)
+        lead = (ROOT / "agents/vx-dev-team.md").read_text(encoding="utf-8")
+        self.assertNotIn("Los hijos son read-only. No escriben", lead)
+        self.assertNotIn("Los builders VX seleccionables de forma independiente", lead)
+        policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
+        self.assertNotIn("El coordinador delega únicamente a los seis lectores VX", policy)
+        editorial = installed_commands["vx-editorial"]
+        self.assertIn("permisos", editorial)
+        self.assertIn("editorial", editorial)
+
     @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser solo Windows")
     def test_apply_verify_restore_is_reversible_and_preserves_user_config(self):
         with tempfile.TemporaryDirectory(prefix="vx-unified-install-") as folder:
