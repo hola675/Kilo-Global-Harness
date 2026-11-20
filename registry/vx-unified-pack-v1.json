@@ -1,0 +1,515 @@
+{
+  "schema": "vx-unified-pack/1",
+  "version": "1.0.0-rc1",
+  "updated": "2026-11-20",
+  "status": "SOURCE_CANDIDATE_NOT_INSTALLED",
+  "scope": "ONE_GLOBAL_PACK_KILO_WINDOWS",
+  "primary": "vx-dev-team",
+  "agents": [
+    {
+      "id": "vx-dev-team",
+      "source": "agents/vx-dev-team.md",
+      "target": ".config/kilo/agents/vx-dev-team.md",
+      "role": "lead",
+      "hidden": false
+    },
+    {
+      "id": "vx-dev-explorer",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-explorer.md",
+      "target": ".config/kilo/agents/vx-dev-explorer.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-architect",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-architect.md",
+      "target": ".config/kilo/agents/vx-dev-architect.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-frontend",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-frontend.md",
+      "target": ".config/kilo/agents/vx-dev-frontend.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-backend",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-backend.md",
+      "target": ".config/kilo/agents/vx-dev-backend.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-data",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-data.md",
+      "target": ".config/kilo/agents/vx-dev-data.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-platform",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-platform.md",
+      "target": ".config/kilo/agents/vx-dev-platform.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-reviewer",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-reviewer.md",
+      "target": ".config/kilo/agents/vx-dev-reviewer.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-quality",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-quality.md",
+      "target": ".config/kilo/agents/vx-dev-quality.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-security",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-security.md",
+      "target": ".config/kilo/agents/vx-dev-security.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-dev-research",
+      "source": "runtime/dev-team-v2r/agents/vx-dev-research.md",
+      "target": ".config/kilo/agents/vx-dev-research.md",
+      "role": "readonly",
+      "hidden": true
+    },
+    {
+      "id": "vx-frontend-builder",
+      "source": "agents/vx-frontend-builder.md",
+      "target": ".config/kilo/agents/vx-frontend-builder.md",
+      "role": "builder",
+      "hidden": true
+    },
+    {
+      "id": "vx-backend-builder",
+      "source": "agents/vx-backend-builder.md",
+      "target": ".config/kilo/agents/vx-backend-builder.md",
+      "role": "builder",
+      "hidden": true
+    },
+    {
+      "id": "vx-data-builder",
+      "source": "agents/vx-data-builder.md",
+      "target": ".config/kilo/agents/vx-data-builder.md",
+      "role": "builder",
+      "hidden": true
+    },
+    {
+      "id": "vx-qa-builder",
+      "source": "agents/vx-qa-builder.md",
+      "target": ".config/kilo/agents/vx-qa-builder.md",
+      "role": "builder",
+      "hidden": true
+    },
+    {
+      "id": "vx-docs-builder",
+      "source": "agents/vx-docs-builder.md",
+      "target": ".config/kilo/agents/vx-docs-builder.md",
+      "role": "builder",
+      "hidden": true
+    },
+    {
+      "id": "vx-editorial-builder",
+      "source": "agents/vx-editorial-builder.md",
+      "target": ".config/kilo/agents/vx-editorial-builder.md",
+      "role": "builder",
+      "hidden": true
+    },
+    {
+      "id": "vx-workers-adviser",
+      "source": "agents/vx-workers-adviser.md",
+      "target": ".config/kilo/agents/vx-workers-adviser.md",
+      "role": "specialist",
+      "hidden": true
+    }
+  ],
+  "skills": [
+    {
+      "id": "vx-dev-project-policy",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-project-policy/SKILL.md",
+      "target": ".kilo/skills/vx-dev-project-policy/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-team-handoff",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-team-handoff/SKILL.md",
+      "target": ".kilo/skills/vx-dev-team-handoff/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-mcp-readonly",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-mcp-readonly/SKILL.md",
+      "target": ".kilo/skills/vx-dev-mcp-readonly/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-mcp-security",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-mcp-security/SKILL.md",
+      "target": ".kilo/skills/vx-dev-mcp-security/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-codebase-investigation",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-codebase-investigation/SKILL.md",
+      "target": ".kilo/skills/vx-dev-codebase-investigation/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-source-reconciliation",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-source-reconciliation/SKILL.md",
+      "target": ".kilo/skills/vx-dev-source-reconciliation/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-architecture-decision",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-architecture-decision/SKILL.md",
+      "target": ".kilo/skills/vx-dev-architecture-decision/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-backend-contracts",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-backend-contracts/SKILL.md",
+      "target": ".kilo/skills/vx-dev-backend-contracts/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-data-migration",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-data-migration/SKILL.md",
+      "target": ".kilo/skills/vx-dev-data-migration/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-platform-delivery",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-platform-delivery/SKILL.md",
+      "target": ".kilo/skills/vx-dev-platform-delivery/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-debug-triage",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-debug-triage/SKILL.md",
+      "target": ".kilo/skills/vx-dev-debug-triage/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-frontend-ux",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-frontend-ux/SKILL.md",
+      "target": ".kilo/skills/vx-dev-frontend-ux/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-accessibility",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-accessibility/SKILL.md",
+      "target": ".kilo/skills/vx-dev-accessibility/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-ui-state-system",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-ui-state-system/SKILL.md",
+      "target": ".kilo/skills/vx-dev-ui-state-system/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-test-strategy",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-test-strategy/SKILL.md",
+      "target": ".kilo/skills/vx-dev-test-strategy/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-security-threat-review",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-security-threat-review/SKILL.md",
+      "target": ".kilo/skills/vx-dev-security-threat-review/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-supply-chain-review",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-supply-chain-review/SKILL.md",
+      "target": ".kilo/skills/vx-dev-supply-chain-review/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-dev-independent-review",
+      "source": "runtime/dev-team-v2r/skills/vx-dev-independent-review/SKILL.md",
+      "target": ".kilo/skills/vx-dev-independent-review/SKILL.md",
+      "layer": "CORE"
+    },
+    {
+      "id": "vx-engineering-harness",
+      "source": "skills/vx-engineering-harness/SKILL.md",
+      "target": ".kilo/skills/vx-engineering-harness/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-implementation-handoff",
+      "source": "skills/vx-implementation-handoff/SKILL.md",
+      "target": ".kilo/skills/vx-implementation-handoff/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-test-regression",
+      "source": "skills/vx-test-regression/SKILL.md",
+      "target": ".kilo/skills/vx-test-regression/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-debugging-root-cause",
+      "source": "skills/vx-debugging-root-cause/SKILL.md",
+      "target": ".kilo/skills/vx-debugging-root-cause/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-frontend-quality",
+      "source": "skills/vx-frontend-quality/SKILL.md",
+      "target": ".kilo/skills/vx-frontend-quality/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-data-contracts",
+      "source": "skills/vx-data-contracts/SKILL.md",
+      "target": ".kilo/skills/vx-data-contracts/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-docs-traceability",
+      "source": "skills/vx-docs-traceability/SKILL.md",
+      "target": ".kilo/skills/vx-docs-traceability/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-requirements-acceptance",
+      "source": "skills/vx-requirements-acceptance/SKILL.md",
+      "target": ".kilo/skills/vx-requirements-acceptance/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-task-dependency-graph",
+      "source": "skills/vx-task-dependency-graph/SKILL.md",
+      "target": ".kilo/skills/vx-task-dependency-graph/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-api-contract-design",
+      "source": "skills/vx-api-contract-design/SKILL.md",
+      "target": ".kilo/skills/vx-api-contract-design/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-typescript-engineering",
+      "source": "skills/vx-typescript-engineering/SKILL.md",
+      "target": ".kilo/skills/vx-typescript-engineering/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-python-engineering",
+      "source": "skills/vx-python-engineering/SKILL.md",
+      "target": ".kilo/skills/vx-python-engineering/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-cloudflare-worker-runtime",
+      "source": "skills/vx-cloudflare-worker-runtime/SKILL.md",
+      "target": ".kilo/skills/vx-cloudflare-worker-runtime/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-cloudflare-storage-messaging",
+      "source": "skills/vx-cloudflare-storage-messaging/SKILL.md",
+      "target": ".kilo/skills/vx-cloudflare-storage-messaging/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-sql-query-performance",
+      "source": "skills/vx-sql-query-performance/SKILL.md",
+      "target": ".kilo/skills/vx-sql-query-performance/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-agent-collaboration",
+      "source": "skills/vx-agent-collaboration/SKILL.md",
+      "target": ".kilo/skills/vx-agent-collaboration/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-git-ci-quality",
+      "source": "skills/vx-git-ci-quality/SKILL.md",
+      "target": ".kilo/skills/vx-git-ci-quality/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-e2e-browser-testing",
+      "source": "skills/vx-e2e-browser-testing/SKILL.md",
+      "target": ".kilo/skills/vx-e2e-browser-testing/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-performance-measurement",
+      "source": "skills/vx-performance-measurement/SKILL.md",
+      "target": ".kilo/skills/vx-performance-measurement/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-observability-privacy",
+      "source": "skills/vx-observability-privacy/SKILL.md",
+      "target": ".kilo/skills/vx-observability-privacy/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-mcp-safe-integration",
+      "source": "skills/vx-mcp-safe-integration/SKILL.md",
+      "target": ".kilo/skills/vx-mcp-safe-integration/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-release-readiness",
+      "source": "skills/vx-release-readiness/SKILL.md",
+      "target": ".kilo/skills/vx-release-readiness/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-incident-diagnosis",
+      "source": "skills/vx-incident-diagnosis/SKILL.md",
+      "target": ".kilo/skills/vx-incident-diagnosis/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-ida-mcp-reverse-engineering",
+      "source": "skills/vx-ida-mcp-reverse-engineering/SKILL.md",
+      "target": ".kilo/skills/vx-ida-mcp-reverse-engineering/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-editorial-claridad",
+      "source": "skills/vx-editorial-claridad/SKILL.md",
+      "target": ".kilo/skills/vx-editorial-claridad/SKILL.md",
+      "layer": "CAPABILITY"
+    }
+  ],
+  "managed_legacy": {
+    "agents": [
+      ".config/kilo/agents/vx-integrador.md",
+      ".config/kilo/agents/vx-inspector.md",
+      ".config/kilo/agents/vx-researcher.md",
+      ".config/kilo/agents/vx-security-reviewer.md",
+      ".config/kilo/agents/vx-test-analyst.md",
+      ".config/kilo/agents/vx-frontend-adviser.md"
+    ],
+    "skills": [
+      ".kilo/skills/vx-evolution-core/SKILL.md",
+      ".kilo/skills/vx-security-review/SKILL.md",
+      ".kilo/skills/vx-self-improvement/SKILL.md",
+      ".kilo/skills/vx-architecture-decisions/SKILL.md",
+      ".kilo/skills/vx-codebase-investigation/SKILL.md",
+      ".kilo/skills/vx-supply-chain-review/SKILL.md",
+      ".kilo/skills/vx-accessibility-review/SKILL.md"
+    ],
+    "commands": [
+      ".config/kilo/commands/vx-p2.md"
+    ]
+  },
+  "activation": {
+    "only_one_primary": true,
+    "builders_hidden_and_delegated": true,
+    "no_automatic_install": true,
+    "no_kilo_jsonc_change": true,
+    "no_mcp_change": true,
+    "no_third_party_change": true,
+    "update_existing_owned_assets": true,
+    "retire_only_explicit_legacy_assets": true,
+    "source_ci_not_runtime_pass": true,
+    "backup_dpapi_required": true,
+    "review_required": true,
+    "update_selected_commands": true,
+    "retire_historical_p2_command": true,
+    "install_support_files": true,
+    "no_legacy_registry_required": true
+  },
+  "postponed": [
+    "26 Dev Team extension skills remain as source proposals, not installed by unified core",
+    "VX Evolution independent runtime components and observer not activated",
+    "Legacy VX original role sources remain in Git and are not installed after migration"
+  ],
+  "routing": {
+    "lead_delegates_to": [
+      "vx-dev-explorer",
+      "vx-dev-architect",
+      "vx-dev-frontend",
+      "vx-dev-backend",
+      "vx-dev-data",
+      "vx-dev-platform",
+      "vx-dev-reviewer",
+      "vx-dev-quality",
+      "vx-dev-security",
+      "vx-dev-research",
+      "vx-frontend-builder",
+      "vx-backend-builder",
+      "vx-data-builder",
+      "vx-qa-builder",
+      "vx-docs-builder",
+      "vx-editorial-builder",
+      "vx-workers-adviser"
+    ],
+    "one_writer_per_worktree": true,
+    "frontend": "vx-frontend-builder",
+    "backend": "vx-backend-builder",
+    "data": "vx-data-builder",
+    "qa": "vx-qa-builder",
+    "documentation": "vx-docs-builder",
+    "editorial": "vx-editorial-builder",
+    "cloudflare": "vx-workers-adviser",
+    "independent_review": "vx-dev-reviewer",
+    "security": "vx-dev-security"
+  },
+  "test_policy": {
+    "action": "ADD_UNIFIED_INSTALLER_SCOPE_AND_UPDATE_CURRENT_PERMISSIONS",
+    "runtime_test_required": true
+  },
+  "lead_skill_allowlist": [
+    "vx-dev-project-policy",
+    "vx-dev-team-handoff",
+    "vx-engineering-harness",
+    "vx-requirements-acceptance",
+    "vx-task-dependency-graph",
+    "vx-implementation-handoff",
+    "vx-git-ci-quality",
+    "vx-agent-collaboration",
+    "vx-release-readiness"
+  ],
+  "commands": [
+    {
+      "id": "vx-equipo",
+      "source": "commands/vx-equipo.md",
+      "target": ".config/kilo/commands/vx-equipo.md"
+    },
+    {
+      "id": "vx-dependencias",
+      "source": "commands/vx-dependencias.md",
+      "target": ".config/kilo/commands/vx-dependencias.md"
+    },
+    {
+      "id": "vx-editorial",
+      "source": "commands/vx-editorial.md",
+      "target": ".config/kilo/commands/vx-editorial.md"
+    }
+  ],
+  "support_files": [
+    {
+      "id": "vx-task-dag",
+      "source": "scripts/vx_task_dag.py",
+      "target": ".config/kilo/harness/scripts/vx_task_dag.py"
+    },
+    {
+      "id": "vx-unified-registry",
+      "source": "registry/vx-unified-pack-v1.json",
+      "target": ".config/kilo/harness/vx-unified-pack-v1.json"
+    }
+  ]
+}

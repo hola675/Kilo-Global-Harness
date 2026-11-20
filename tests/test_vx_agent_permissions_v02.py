@@ -1,5 +1,6 @@
 """Validación estática de permisos VX y Dev Team V2-R; no ejecuta Kilo."""
 from pathlib import Path
+import json
 import re
 import unittest
 
@@ -7,6 +8,7 @@ from dev_team_agent_parser_support import load_agent
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_DIR = ROOT / "agents"
+UNIFIED = json.loads((ROOT / "registry/vx-unified-pack-v1.json").read_text(encoding="utf-8"))
 V2R_DIR = ROOT / "runtime" / "dev-team-v2r" / "agents"
 
 V2R_CHILDREN = (
@@ -23,7 +25,7 @@ V2R_CHILDREN = (
 )
 
 EXPECTED_SKILLS = {
-    "vx-dev-team": {"vx-dev-project-policy", "vx-dev-team-handoff"},
+    "vx-dev-team": set(UNIFIED["lead_skill_allowlist"]),
     "vx-dev-explorer": {"vx-dev-codebase-investigation", "vx-dev-debug-triage"},
     "vx-dev-research": {"vx-dev-source-reconciliation", "vx-dev-mcp-readonly"},
     "vx-dev-architect": {
@@ -75,7 +77,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
                     self.assertRegex(front, r"(?m)^  skill: allow\s*$")
                 self.assertNotRegex(front, r"(?m)^  mcp:\s*deny\s*$")
 
-    def test_dev_team_allowlists_only_v2r_children(self):
+    def test_dev_team_allowlists_all_unified_children(self):
         front = (AGENT_DIR / "vx-dev-team.md").read_text(
             encoding="utf-8"
         ).split("---", 2)[1]
@@ -85,7 +87,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
         assert_skill_allowlist(self, AGENT_DIR / "vx-dev-team.md", "vx-dev-team")
         self.assertRegex(front, r"(?m)^  task:\s*$")
         self.assertRegex(front, r'(?m)^    "\*": deny\s*$')
-        for child in V2R_CHILDREN:
+        for child in {x["id"] for x in UNIFIED["agents"] if x["role"] != "lead"}:
             self.assertRegex(
                 front,
                 rf'(?m)^    "{re.escape(child)}": allow\s*$',

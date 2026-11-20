@@ -41,7 +41,10 @@
     "editorial_style_skill": "vx-editorial-claridad",
     "editorial_leader": "vx-dev-team",
     "editorial_visible_as_independent_mode": false,
-    "editorial_task_delegation_source_only": true
+    "editorial_task_delegation_source_only": true,
+    "unified_pack_manifest": "registry/vx-unified-pack-v1.json",
+    "unified_pack_source_candidate": true,
+    "visible_pack_leader": "vx-dev-team"
   },
   "agents": [
     {
@@ -150,12 +153,15 @@
       "capabilities": [
         "cloudflare-review",
         "worker-bindings"
-      ]
+      ],
+      "hidden": true,
+      "direct_selectable": false,
+      "parent_agent": "vx-dev-team"
     },
     {
       "id": "vx-frontend-builder",
       "file": "agents/vx-frontend-builder.md",
-      "mode": "all",
+      "mode": "subagent",
       "role": "builder",
       "writes": true,
       "steps": 90,
@@ -164,12 +170,15 @@
         "accessibility-implementation"
       ],
       "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
-      "experience": "SIN_EVALUAR"
+      "experience": "SIN_EVALUAR",
+      "hidden": true,
+      "direct_selectable": false,
+      "parent_agent": "vx-dev-team"
     },
     {
       "id": "vx-backend-builder",
       "file": "agents/vx-backend-builder.md",
-      "mode": "all",
+      "mode": "subagent",
       "role": "builder",
       "writes": true,
       "steps": 100,
@@ -178,12 +187,15 @@
         "api-contracts"
       ],
       "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
-      "experience": "SIN_EVALUAR"
+      "experience": "SIN_EVALUAR",
+      "hidden": true,
+      "direct_selectable": false,
+      "parent_agent": "vx-dev-team"
     },
     {
       "id": "vx-qa-builder",
       "file": "agents/vx-qa-builder.md",
-      "mode": "all",
+      "mode": "subagent",
       "role": "builder",
       "writes": true,
       "steps": 90,
@@ -192,12 +204,15 @@
         "synthetic-fixtures"
       ],
       "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
-      "experience": "SIN_EVALUAR"
+      "experience": "SIN_EVALUAR",
+      "hidden": true,
+      "direct_selectable": false,
+      "parent_agent": "vx-dev-team"
     },
     {
       "id": "vx-data-builder",
       "file": "agents/vx-data-builder.md",
-      "mode": "all",
+      "mode": "subagent",
       "role": "builder",
       "writes": true,
       "steps": 100,
@@ -206,12 +221,15 @@
         "migration-design"
       ],
       "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
-      "experience": "SIN_EVALUAR"
+      "experience": "SIN_EVALUAR",
+      "hidden": true,
+      "direct_selectable": false,
+      "parent_agent": "vx-dev-team"
     },
     {
       "id": "vx-docs-builder",
       "file": "agents/vx-docs-builder.md",
-      "mode": "all",
+      "mode": "subagent",
       "role": "builder",
       "writes": true,
       "steps": 80,
@@ -220,7 +238,10 @@
         "changelog"
       ],
       "permissions": "edit_ask_bash_ask_or_deny_never_autoapprove",
-      "experience": "SIN_EVALUAR"
+      "experience": "SIN_EVALUAR",
+      "hidden": true,
+      "direct_selectable": false,
+      "parent_agent": "vx-dev-team"
     },
     {
       "id": "vx-editorial-builder",

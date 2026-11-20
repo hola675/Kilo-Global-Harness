@@ -98,7 +98,11 @@ foreach ($agent in $agents) {
           $front -notmatch '(?m)^  bash:\s*deny\s*$') {
         throw 'Editorial debe ser subagente oculto, sin modo independiente.'
       }
-    } elseif ($agent.mode -ne 'all') { throw "Builder no coherente: $id" }
+    } elseif ($agent.mode -ne 'subagent' -or $agent.hidden -ne $true -or
+              $agent.parent_agent -ne 'vx-dev-team' -or $agent.direct_selectable -ne $false -or
+              $front -notmatch '(?m)^hidden:\s*true\s*$') {
+      throw "Builder no coherente con la instalacion unificada: $id"
+    }
     foreach ($pair in @(
       @{Key='edit';Value='ask'}, @{Key='write';Value='ask'}, @{Key='apply_patch';Value='ask'},
       @{Key='task';Value='deny'}, @{Key='agent_manager';Value='deny'}

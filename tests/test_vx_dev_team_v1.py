@@ -7,6 +7,7 @@ import unittest
 from dev_team_agent_parser_support import load_agent
 
 ROOT = Path(__file__).resolve().parents[1]
+UNIFIED = json.loads((ROOT / "registry/vx-unified-pack-v1.json").read_text(encoding="utf-8"))
 LEADER = ROOT / "agents" / "vx-dev-team.md"
 RUNTIME_DIR = ROOT / "runtime" / "dev-team-v2r" / "agents"
 BASELINE = ROOT / "registry" / "dev-team-readonly-baseline-v2.json"
@@ -44,17 +45,17 @@ class DevTeamV2RTests(unittest.TestCase):
         self.assertEqual(perms.fallback("skill"), "deny")
         self.assertEqual(
             perms.allowlist("skill"),
-            {"vx-dev-project-policy", "vx-dev-team-handoff"},
+            set(UNIFIED["lead_skill_allowlist"]),
         )
         self.assertRegex(front, r"(?m)^  agent_manager:\s*deny\s*$")
         self.assertRegex(front, r"(?m)^  board_read:\s*deny\s*$")
         self.assertRegex(front, r"(?m)^  board_post:\s*deny\s*$")
 
-    def test_leader_allowlists_ten_readonly_children_and_one_editorial_builder(self):
+    def test_leader_allowlists_unified_children_and_editorial_builder(self):
         front = frontmatter(LEADER)
         perms = load_agent(LEADER).permissions
         self.assertEqual(perms.fallback("task"), "deny")
-        self.assertEqual(perms.allowlist("task"), set(CHILDREN) | {"vx-editorial-builder"})
+        self.assertEqual(perms.allowlist("task"), {x["id"] for x in UNIFIED["agents"] if x["role"] != "lead"})
         # Conservar exactamente los diez especialistas del baseline V2R.
         # Editorial es miembro oculto distinto, con edicion solo bajo ask.
         editorial = ROOT / "agents" / "vx-editorial-builder.md"

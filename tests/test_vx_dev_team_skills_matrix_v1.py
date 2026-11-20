@@ -174,7 +174,8 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
             self.assertEqual(perms.fallback("skill"), "deny")
             self.assertEqual(
                 perms.allowlist("skill"),
-                EXPECTED_PERMISSIONS[agent],
+                (set(json.loads((ROOT / "registry/vx-unified-pack-v1.json").read_text(encoding="utf-8"))["lead_skill_allowlist"])
+                 if agent == "vx-dev-team" else EXPECTED_PERMISSIONS[agent]),
                 f"{agent} must expose only its exact approved skill allowlist",
             )
 

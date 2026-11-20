@@ -51,11 +51,12 @@
     "test_vx_dev_team_skills_gap_v2.py",
     "test_vx_dev_team_tool_plan_generator_v1.py",
     "test_vx_dev_ux_ui_pro_v1.py",
-    "test_vx_kilo_tools_complements_audit_v1.py"
+    "test_vx_kilo_tools_complements_audit_v1.py",
+    "test_vx_unified_pack_v1.py"
   ],
   "source_only_policy": {
     "runtime_claim": "NONE",
-    "purpose": "Validate source-only proposals, planners, inventories and inactive activation machinery without upgrading runtime certification.",
+    "purpose": "Validate source-only proposals and the new unified installer, including synthetic Windows DPAPI backup/rollback. A source CI PASS never proves effective Kilo tool permissions.",
     "must_pass_in_source_ci": true
   }
 }

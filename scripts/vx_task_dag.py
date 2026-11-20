@@ -122,19 +122,31 @@ def analyze(plan: dict[str, Any], known_agents: set[str],
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida DAG de tareas de agente VX sin acciones.")
     parser.add_argument("--plan", required=True, type=Path)
-    parser.add_argument("--registry", type=Path, default=Path(__file__).resolve().parent.parent /
-                        "registry" / "vx-agent-registry-v4.json")
+    parser.add_argument("--registry", type=Path, default=None)
     args = parser.parse_args()
     try:
-        reg_path = args.registry
-        if not reg_path.is_file():
-            reg_path = Path.home() / ".config/kilo/harness/vx-agent-registry-v4.json"
+        global_unified = Path.home() / ".config/kilo/harness/vx-unified-pack-v1.json"
+        local_legacy = Path(__file__).resolve().parent.parent / "registry" / "vx-agent-registry-v4.json"
+        global_legacy = Path.home() / ".config/kilo/harness/vx-agent-registry-v4.json"
+        reg_path = args.registry or next(
+            (p for p in (global_unified, local_legacy, global_legacy) if p.is_file()),
+            global_unified,
+        )
         reg = json.loads(reg_path.read_text(encoding="utf-8"))
-        if reg.get("schema") != "vx-agent-registry/1":
+        schema = reg.get("schema")
+        if schema == "vx-unified-pack/1":
+            agents = reg["agents"]
+            known = {item["id"] for item in agents}
+            writable = {item["id"] for item in agents
+                        if item.get("role") in ("lead", "builder")}
+        elif schema == "vx-agent-registry/1":
+            agents = reg["agents"]
+            known = {item["id"] for item in agents}
+            writable = {item["id"] for item in agents if item.get("writes") is True}
+        else:
             raise ValueError("Registro de agentes incompatible.")
         task_plan = json.loads(args.plan.read_text(encoding="utf-8"))
-        result = analyze(task_plan, {r["id"] for r in reg["agents"]},
-                         {r["id"] for r in reg["agents"] if r.get("writes") is True})
+        result = analyze(task_plan, known, writable)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
         return 0
     except (OSError, KeyError, ValueError, TypeError) as exc:
