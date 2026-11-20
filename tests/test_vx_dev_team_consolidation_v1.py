@@ -37,6 +37,13 @@ class ConsolidationV1Tests(unittest.TestCase):
             declared.update(ids)
         self.assertEqual(declared,actual)
         self.assertEqual(data["mcp"]["families"],13)
+        exact=json.loads((ROOT/"registry"/"dev-team-mcp-exact-inventory-v1.json").read_text(encoding="utf-8"))
+        operations=json.loads((ROOT/"registry"/"dev-team-mcp-operations-v1.proposal.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(operations["server_families"]),set(exact["servers"]))
+        self.assertEqual(len(exact["servers"]),13)
+        self.assertEqual(
+            sum(len(v["runtime_verified_exact"]) for v in exact["servers"].values()),5
+        )
         self.assertEqual(data["mcp"]["current_exact_identifiers_verified"],5)
         self.assertEqual(data["mcp"]["legacy_alias_to_canonical"]["playwright"],"kilo-playwright")
         self.assertEqual(data["activation"]["all_waves"],"BLOCKED_UNTIL_GATES_AND_EXPLICIT_OPERATOR_APPROVAL")
