@@ -10,12 +10,12 @@ metadata:
 
 **Activación:** Usar para coordinar task/swarm y agent manager con evidencia cuando una tarea mencione agentes, delegacion, swarm, agent manager. Exigir evidencia real y no cambiar permisos.
 
-**Responsable sugerido:** `vx-integrador`. **Revisor independiente:** `vx-inspector`. **Prerequisitos de conocimiento:** `vx-task-dependency-graph`, `vx-implementation-handoff`.
+**Responsable vigente:** `vx-dev-team` (único líder). **Revisor independiente:** `vx-dev-reviewer` cuando el riesgo justifique revisión. Los nombres `vx-integrador` y `vx-inspector` pertenecen a la familia histórica retirada del pack activo. **Prerequisitos de conocimiento:** `vx-task-dependency-graph`, `vx-implementation-handoff`.
 
 ## Ejecución
 
 1. Distinguir task mismo árbol, Swarm de sesión y Agent Manager sesión independiente.
-2. Emitir contratos task_id/base_sha/allowed_paths.
+2. Emitir un contrato proporcional: tarea, workspace, archivo(s), objetivo y aceptación. Derivar `task_id`/SHA/rama de Git solo cuando existan; laboratorio aislado no Git usa `GIT_NOT_APPLICABLE`, no bloquea por SHA inexistente.
 3. Divulgar solo interfaz con dependientes.
 4. Prevenir doble escritura.
 5. No inventar mensajes cruzando worktrees..
