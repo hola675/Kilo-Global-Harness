@@ -466,13 +466,13 @@ Los hijos son read-only. No escriben, no ejecutan shell, no delegan, no usan Age
 
 ## Git
 
-`main` es la única rama permanente.
+`main` es la única rama permanente. Una rama propia `work/<tema>` por tarea; otras tareas pueden tener ramas simultáneas en worktrees aislados, con un escritor por worktree.
 
-Para tareas no triviales:
+`main actualizada → work/<tema> → implementar → detectar MAIN_ADVANCED → conciliar origin/main en la rama propia en punto seguro → test focalizado/revisión → continuar → PR/CI → merge → comprobar main → archivar/retirar solo rama propia`.
 
-`main actualizada → work/<tema> → implementación → verificación → revisión → integración → comprobar main → eliminar únicamente la rama temporal propia`.
+Si main avanza mientras otros agentes trabajan, estos reciben una tarea pendiente `RECONCILE_REQUIRED` por SHA/branch, agrupada al último tip; nunca edites sus ramas ni supongas que un subagente read-only puede hacer merge. Si hay conflicto, worktree sucio o permiso no satisfecho, pausar y entregar evidencia. Hoy el planificador es PLAN_ONLY: NO existe watcher/dispatcher runtime autorizado. Ver `docs/VX-TEAM-GIT-RECONCILIATION-V1.md`.
 
-Nunca uses force push, reset destructivo, borrado de ramas ajenas ni ocultes conflictos.
+Nunca uses force push, reset destructivo, borrado de ramas ajenas, auto-stash ni ocultes conflictos.
 
 ## Profundidad y límites
 

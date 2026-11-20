@@ -1,0 +1,90 @@
+{
+  "schema": "vx-team-git-reconciliation/1",
+  "version": "1.0.0",
+  "updated": "2026-11-19",
+  "status": "SOURCE_PLAN_ONLY_RUNTIME_NOT_ACTIVATED",
+  "documentation": "docs/VX-TEAM-GIT-RECONCILIATION-V1.md",
+  "scope": "authorized_repositories_only",
+  "permanent_branch": "main",
+  "temporary_branch_prefix": "work/",
+  "concurrency": {
+    "multiple_independent_task_branches": true,
+    "one_writer_per_worktree": true,
+    "one_owner_per_branch": true,
+    "main_write_by_PR_after_review": true
+  },
+  "event": {
+    "type": "MAIN_ADVANCED",
+    "source": "verified_origin_main_sha_transition",
+    "dedup_key": [
+      "repo",
+      "main_sha",
+      "branch"
+    ],
+    "fanout": "ACTIVE_AND_IN_REVIEW_TASK_OWNERS_ONLY",
+    "coalesce_latest_main_sha": true,
+    "notifier_enabled": false,
+    "dispatcher_enabled": false,
+    "watcher_enabled": false
+  },
+  "planner": {
+    "path": "tools/vx_team_git_reconciliation.py",
+    "mode": "READ_ONLY_NO_GIT_WRITES",
+    "inputs": [
+      "repo",
+      "previous_main_sha",
+      "current_main_sha",
+      "tasks[]"
+    ],
+    "outputs": [
+      "event",
+      "reconcile_tasks",
+      "blocked"
+    ],
+    "runtime_dispatch": false
+  },
+  "executor": {
+    "enabled": false,
+    "required_steps": [
+      "WAIT_SAFEPOINT",
+      "VERIFY_BRANCH_OWNER_AND_WORKTREE",
+      "VERIFY_ORIGIN_MAIN_TIP",
+      "MERGE_OWN_BRANCH_WITH_MAIN",
+      "TARGETED_TESTS",
+      "INDEPENDENT_REVIEW",
+      "RECORD_RECONCILED_SHA",
+      "RESUME"
+    ],
+    "forbid": [
+      "AUTO_STASH",
+      "RESET_HARD",
+      "FORCE_PUSH",
+      "UNREVIEWED_CONFLICT_RESOLUTION",
+      "MERGE_TO_MAIN_WITHOUT_CI",
+      "MUTATE_KILO_RUNTIME"
+    ],
+    "blocked_on_dirty_worktree": true,
+    "blocked_on_conflict": true,
+    "blocked_on_permission_denial": true,
+    "operator_approval_required": true
+  },
+  "closure": {
+    "merge_to_main": "PR_AFTER_CI_AND_REVIEW",
+    "remote_verification_required": true,
+    "archive_before_deletion": true,
+    "delete_only_owned_task_branch": true,
+    "other_active_branches_reconcile_after_merge": true
+  },
+  "tests": {
+    "existing_suite": "tests/test_vx_dev_team_consolidation_v1.py",
+    "action": "UPDATE",
+    "new_duplicate_test_suite": false
+  },
+  "authorization": {
+    "no_acl_expansion": true,
+    "no_scheduler_activation": true,
+    "no_kilo_jsonc_change": true,
+    "no_host_mutations": true,
+    "operator_approval": false
+  }
+}

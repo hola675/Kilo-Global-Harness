@@ -10,7 +10,7 @@
 4. **BUILD** — cambios mínimos, reversibles y consistentes. TDD para funciones y defectos con pruebas posibles. No solapar ediciones concurrentes sobre los mismos archivos.
 5. **VERIFY** — recoger comandos y códigos de salida reales; distinguir PASS/FAIL/NO EJECUTADO. Para Workers, además validar DEV/STAGING por URL real cuando corresponda.
 6. **REVIEW** — diff, seguridad, rendimiento, contratos, datos sensibles, compatibilidad y documentación útil.
-7. **GIT CLOSE** — usar ramas `work/*` para tareas no triviales. Partir de `main` sincronizada sin perder cambios locales. PR y CI si el repo lo exige; merge solo tras validación. Verificar `main` remota antes de eliminar únicamente la rama creada por la tarea.
+7. **GIT CONTINUOUS SYNC + CLOSE** — una rama `work/*` propia por tarea no trivial, creada desde `main` sincronizada. Varias ramas de agentes pueden coexistir solamente con worktrees/propietarios aislados. Si `origin/main` avanza, cada rama activa recibe una tarea idempotente `RECONCILE_REQUIRED`: parar en un punto seguro, conciliar `main` en la rama propia, ejecutar pruebas focalizadas y reanudar; los conflictos, worktrees sucios y permisos bloquean sin resolución automática. El detector/dispatcher aún es diseño, no scheduler activo. PR/CI/revisión antes de merge; verificar `main` remota y retirar solo la rama propia. Fuente: `docs/VX-TEAM-GIT-RECONCILIATION-V1.md`.
 8. **REPORT** — resultado, pruebas, commits/PR, riesgos, siguiente paso y rollback.
 
 ## Certificación viva y deuda de tests
@@ -64,5 +64,5 @@ Al cerrar una tarea, el coordinador debe poder responder:
 - Para tareas amplias, `/vx-equipo` y `~/.config/kilo/harness/vx-agent-registry-v4.json`; el script global `harness/scripts/Seleccionar-Equipo-V4.ps1` sugiere equipo sin lanzar modelos ni procesos.
 - Hasta tres agentes de lectura realmente independientes via `task(background: true)`; sintetizar, UN escritor, luego revisores por especialidad. No activar todos por inercia.
 - `task` comparte el arbol de archivos; Kilo Swarm transmite mensajes, no toma decisiones. Otra sesion Agent Manager requiere coordinacion externa y worktree para aislar edicion.
-- Solo una rama `work/*` temporal en modo estricto, `main` permanente. El modo de escrituras paralelas en ramas auxiliares es opt-in y no se activa aqui.
+- Una rama `work/*` temporal por tarea, `main` permanente. Varias ramas de tareas independientes solo con worktrees aislados, propiedad explícita y un escritor por worktree; en el mismo árbol se mantiene una sola rama escritora. La ejecución paralela y el despachador automático requieren habilitación específica.
 - Nunca introducir credenciales como parametros del selector, ni asumir que una recomendacion equivale a ejecutar un agente.

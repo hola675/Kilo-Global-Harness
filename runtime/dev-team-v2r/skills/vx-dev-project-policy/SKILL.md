@@ -30,6 +30,8 @@ Mantener cambios pequeños, trazables, reversibles y verificables sin confundir 
 11. Si una prueba nueva cubre completamente la misma invariante que una prueba antigua y pasa, retirar la prueba supersedida del CI activo.
 12. Conservar historia en Git, changelog, registries y evidencia; no mediante suites históricas activas.
 13. Un cambio localizado requiere la prueba mínima eficaz; ampliar cobertura solo si cambió una invariante transversal.
+14. Para trabajo en equipo aplicar `docs/VX-TEAM-GIT-RECONCILIATION-V1.md`: cada tarea posee una rama `work/*`; al avanzar `origin/main`, todas las tareas activas deben conciliar en su propio punto seguro antes de seguir escribiendo, sin tocar ramas ajenas.
+15. No anunciar sincronización automática operativa: el planificador solo emite `RECONCILE_REQUIRED` y sigue PLAN_ONLY hasta gates y aprobación de la ejecución runtime.
 
 ## Límites
 La skill no autoriza merge, deploy, cambios de permisos, publicación ni producción.
