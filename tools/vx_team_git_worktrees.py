@@ -144,7 +144,21 @@ def inspect_task_worktrees(repo_dir: Path, repo: str, tasks: list[dict]) -> dict
             continue
         selected.setdefault(branch, []).append(task)
 
-    claimed_paths = set()
+    # Detectar todas las colisiones antes de aceptar cualquier tarea.
+    # Un mismo worktree declarado por dos ramas bloquea AMBAS, sin
+    # dependencia del orden lexicográfico de los branches.
+    path_claims: dict[str, set[str]] = {}
+    for branch, owners in selected.items():
+        for task in owners:
+            declared = task.get("worktree_path")
+            if isinstance(declared, str) and os.path.isabs(declared):
+                path_claims.setdefault(_canonical(declared), set()).add(branch)
+    colliding_branches = {
+        branch
+        for branch_set in path_claims.values() if len(branch_set) > 1
+        for branch in branch_set
+    }
+
     for branch in sorted(selected):
         owners = selected[branch]
         if len(owners) != 1:
@@ -162,10 +176,9 @@ def inspect_task_worktrees(repo_dir: Path, repo: str, tasks: list[dict]) -> dict
             report["blocked"].append({"branch": branch, "reason": "WORKTREE_PATH_UNDECLARED"})
             continue
         normalized = _canonical(declared)
-        if normalized in claimed_paths:
+        if branch in colliding_branches:
             report["blocked"].append({"branch": branch, "reason": "WORKTREE_SHARED_BY_TASKS"})
             continue
-        claimed_paths.add(normalized)
         matches = [wt for wt in worktrees if wt["branch"] == branch]
         if len(matches) != 1:
             report["blocked"].append({"branch": branch, "reason": "BRANCH_WORKTREE_NOT_UNIQUE"})
