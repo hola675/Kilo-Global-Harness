@@ -42,7 +42,7 @@ def load_manifest() -> dict:
         raise Blocked("Manifest unificado no reconocido.")
     agents, skills, commands, support = (pack["agents"], pack["skills"],
                                         pack["commands"], pack["support_files"])
-    if len(agents) != 18 or len(skills) != 53 or len(commands) != 3 or len(support) != 2:
+    if len(agents) != 18 or len(skills) != 57 or len(commands) != 3 or len(support) != 2:
         raise Blocked("Inventario unificado inesperado.")
     for items, kind in ((agents, "agents"), (skills, "skills"),
                         (commands, "commands"), (support, "support")):
@@ -312,7 +312,7 @@ def verify(home: Path) -> dict:
     status, changes = plan(home)
     if status["blockers"] or changes:
         raise Blocked("Pack no coincide con el manifiesto: " + repr(status))
-    return {"status": "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED", "agents": 18, "skills": 53,
+    return {"status": "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED", "agents": 18, "skills": 57,
             "primary": "vx-dev-team", "commands": 3, "support_files": 2, "mcp_changes": 0}
 
 
