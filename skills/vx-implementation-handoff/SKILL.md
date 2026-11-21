@@ -11,6 +11,10 @@ description: "Usar en una tarea de programación VX autorizada con implementador
 
 **Contrato adaptable según contexto:** antes de escribir identificar responsable, workspace efectivamente autorizado, archivos específicos permitidos/prohibidos, objetivo y aceptación. Inferir `task_id`, `base_sha`, rama/worktree y pruebas del entorno cuando existan; no exigir su introducción manual si pueden verificarse. Para un proyecto Git real verificar rama/HEAD, dependencias y alcance antes de cambios relevantes. **En un laboratorio local aislado sin Git explícitamente autorizado**, registrar `GIT_NOT_APPLICABLE` en lugar de inventar SHA/rama y trabajar solo en el archivo indicado bajo la carpeta del laboratorio. Si falta autorización, identidad del workspace, ruta segura o permiso efectivo, detener la escritura y devolver un plan. Un único escritor Git por worktree. Para ediciones concurrentes de archivos **exactos y disjuntos** en un mismo workspace, exigir contrato expreso `write_scope: EXACT_FILES`, dos builders como máximo y prohibir cambios Git/lockfiles compartidos hasta la barrera. Para cambios solapados, serializar o comprobar worktrees reales; `task` no crea aislamiento.
 
+## Desarrollo Desktop preferido: Tauri 2
+
+Si el contrato exige una aplicación de escritorio nueva, el líder usa **Tauri 2** como arquitectura preferida. Los builders que implementen frontend o comandos Rust pueden cargar la skill complementaria `vx-tauri-desktop` con su propia ACL; el líder no la carga si no aparece en su allowlist. Dividir frontend web y backend Rust por rutas exclusivas, acordar contrato IPC antes de consumirlo y reservar `tauri.conf.json`, capacidades, manifiestos/lockfiles y registro de comandos para integración después de la barrera. No reescribir proyectos existentes ni instalar toolchains/elevar capacidades sin autorización. Verificar WebView2/MSVC, Rust y tests efectivos antes de anunciar un empaquetado PASS.
+
 ## Protocolo
 
 1. Diagnosticar solamente los módulos implicados; evitar cargar skills no relacionadas.
