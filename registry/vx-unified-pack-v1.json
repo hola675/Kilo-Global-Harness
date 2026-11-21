@@ -761,7 +761,8 @@
         "recovery_policy": "BLOCKED resume with same observed running host ID and independent check, or reset with host-ended evidence before new task; never blind retry",
         "concurrency_limits": "persist max_background_tasks, max_parallel_writers and allow_shared_worktree_exact_files per project; reject contract drift",
         "atomic_capacity": "at most 100 tasks per project; sync exceeding cap aborts before commit",
-        "safe_storage": "resolve canonical path; reject symlinks/junctions to Git; escaped read-only SQLite URI"
+        "safe_storage": "resolve canonical path; reject symlinks/junctions to Git; escaped read-only SQLite URI",
+        "blocked_reservation": "BLOCKED host_task_id retains capacity and exact file leases until reviewed reset; resume does not dispatch"
       }
     },
     "capability_routing": [
