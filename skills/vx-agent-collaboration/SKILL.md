@@ -17,7 +17,7 @@ metadata:
 1. **En Kilo Desktop**, usar `task` foreground si el resultado es requisito inmediato; `task(background: true)` si el trabajo independiente permite continuar al padre. El argumento debe existir realmente en la herramienta: no escribirlo como texto de la tarea ni fingir que se inició un hijo.
 2. Distinguir `task` (mismo workspace/worktree) de Agent Manager (sesiones/worktrees aislados **solo en la extensión VS Code**, no herramienta disponible aquí) y de Kilo Swarm (mensajes, no despachador). No elevar `agent_manager`, `board_read` ni `board_post` sin autorización explícita.
 3. Emitir contratos mínimos con objetivo, workspace, archivos exactos, dependencia y aceptación; inferir ID/SHA/rama reales cuando existan, o `GIT_UNBORN_HEAD` si Git no tiene primer commit.
-4. Limitar a cuatro hijos background activos y dos escritores con rutas exclusivas; con globs, archivos compartidos, commits o dependencias sin verificar, serializar o trabajar en worktrees efectivamente aislados.
+4. Limitar a cuatro hijos background activos y dos escritores con rutas exclusivas. En workspace compartido exigir contrato explícito `write_scope: EXACT_FILES`, `allowed_paths` sin solapamientos y propietario exclusivo por archivo; con globs, archivos compartidos, commits o dependencias sin verificar, serializar o trabajar en worktrees efectivamente aislados.
 5. El líder trabaja en paralelo en contratos, inspecciones, documentación fuera de las rutas reservadas o tareas independientes; no sustituye ni duplica la escritura del hijo.
 6. Esperar la finalización real del hijo; si se interrumpe, `HOLD_RECHECK` y reanudar por identificador solo si Kilo lo permite. Integrar cambios y pruebas en una barrera; no dar por VERIFIED el reporte del propio builder.
 
