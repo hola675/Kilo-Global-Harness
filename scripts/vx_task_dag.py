@@ -252,7 +252,13 @@ CREATE TABLE IF NOT EXISTS tasks (
 CREATE TABLE IF NOT EXISTS events (
  event_key TEXT NOT NULL, project TEXT NOT NULL, id TEXT NOT NULL,
  event TEXT NOT NULL, summary TEXT NOT NULL, evidence_ref TEXT NOT NULL,
- observed_at TEXT NOT NULL, PRIMARY KEY(project,event_key)
+ observed_at TEXT NOT NULL, request_hash TEXT NOT NULL DEFAULT '',
+ PRIMARY KEY(project,event_key)
+);
+CREATE TABLE IF NOT EXISTS project_config (
+ project TEXT NOT NULL PRIMARY KEY,
+ max_background_tasks INTEGER NOT NULL, max_parallel_writers INTEGER NOT NULL,
+ allow_shared_worktree_exact_files INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS events_task ON events(project,id);
 """
@@ -299,6 +305,28 @@ def _queue_open(path: Path, *, mutate: bool) -> sqlite3.Connection:
     return conn
 
 
+def _queue_options(plan: dict[str, Any]) -> tuple[int, int, bool]:
+    max_tasks = plan.get("max_background_tasks", 4)
+    max_writers = plan.get("max_parallel_writers", min(2, max_tasks) if type(max_tasks) is int else 2)
+    shared = plan.get("allow_shared_worktree_exact_files", False)
+    if (type(max_tasks) is not int or not 1 <= max_tasks <= 4
+        or type(max_writers) is not int or not 1 <= max_writers <= min(2, max_tasks)
+        or type(shared) is not bool):
+        raise ValueError("Limites de cola fuera del contrato 4 hijos/2 escritores.")
+    return max_tasks, max_writers, shared
+
+
+def _queue_config(conn: sqlite3.Connection, project: str) -> tuple[int, int, bool]:
+    row = conn.execute(
+        "SELECT max_background_tasks,max_parallel_writers,allow_shared_worktree_exact_files "
+        "FROM project_config WHERE project=?", (project,)
+    ).fetchone()
+    if row is None:
+        # Fail closed if a legacy database lacks the project contract.
+        raise ValueError("Cola sin limites de proyecto persistidos; no despachar.")
+    return row[0], row[1], bool(row[2])
+
+
 def _queue_tasks(conn: sqlite3.Connection, project: str) -> list[dict[str, Any]]:
     rows = conn.execute("SELECT * FROM tasks WHERE project=? ORDER BY id", (project,)).fetchall()
     result = []
@@ -316,8 +344,11 @@ def _queue_report(conn: sqlite3.Connection, project: str,
     if not tasks:
         return {"schema": QUEUE_SCHEMA, "project": project, "status": "EMPTY",
                 "tasks": [], "ready_queue": [], "actions_executed": 0}
+    max_tasks, max_writers, shared = _queue_config(conn, project)
     plan = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
-            "allow_shared_worktree_exact_files": True, "tasks": tasks}
+            "allow_shared_worktree_exact_files": shared,
+            "max_background_tasks": max_tasks, "max_parallel_writers": max_writers,
+            "tasks": tasks}
     report = analyze(plan, known, writable)
     state_counts = {name: sum(t["state"] == name for t in tasks) for name in STATES}
     return {
@@ -327,6 +358,8 @@ def _queue_report(conn: sqlite3.Connection, project: str,
                   for t in tasks],
         "ready_queue": report["ready_queue"], "background_candidates": report["background_candidates"],
         "parallel_deferred": report["parallel_deferred"], "state_counts": state_counts,
+        "limits": {"max_background_tasks": max_tasks, "max_parallel_writers": max_writers,
+                   "allow_shared_worktree_exact_files": shared},
         "tool_invocations_performed": 0, "git_changes": 0,
         "runtime_trace_authenticated": False,
         "note": "La cola persiste estados declarados, no lanza task, board ni modifica proyectos."
@@ -349,6 +382,21 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
                 raise ValueError("sync requiere modo PARALLEL_SAFE.")
             if any(t["state"] != "PENDING" for t in plan["tasks"]):
                 raise ValueError("sync solo admite tareas PENDING nuevas.")
+            max_tasks, max_writers, shared = _queue_options(plan)
+            previous = conn.execute("SELECT * FROM project_config WHERE project=?", (project,)).fetchone()
+            options = (max_tasks, max_writers, int(shared))
+            if previous and tuple(previous[k] for k in (
+                    "max_background_tasks", "max_parallel_writers",
+                    "allow_shared_worktree_exact_files")) != options:
+                raise ValueError("Conflicto de limites persistidos del proyecto.")
+            if not previous:
+                conn.execute("INSERT INTO project_config VALUES (?,?,?,?)", (project, *options))
+            existing_ids = {r[0] for r in conn.execute(
+                "SELECT id FROM tasks WHERE project=?", (project,)).fetchall()}
+            incoming_ids = {t["id"] for t in plan["tasks"]}
+            if len(existing_ids | incoming_ids) > 100:
+                raise ValueError("Sync excede 100 tareas acumuladas; transaccion rechazada.")
+
             for task in plan["tasks"]:
                 # Persist coordination metadata only, never raw prompts or secrets.
                 allowed = {"id", "owner", "reviewer", "state", "depends_on",
@@ -393,11 +441,12 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
                     raise ValueError("start exige PENDING y un ID real devuelto por Kilo.")
                 if any(by_id[dep]["state"] != "VERIFIED" for dep in target.get("depends_on", [])):
                     raise ValueError("Prerequisitos no verificados.")
+                max_tasks, max_writers, shared = _queue_config(conn, project)
                 running = [t for t in tasks if t["state"] == "RUNNING"]
-                if len(running) >= 4 or (target["writer"] and
-                   sum(t["writer"] for t in running) >= 2):
+                if len(running) >= max_tasks or (target["writer"] and
+                   sum(t["writer"] for t in running) >= max_writers):
                     raise ValueError("Capacidad concurrente agotada.")
-                if any(_writer_conflict(target, other, True) for other in running):
+                if any(_writer_conflict(target, other, shared) for other in running):
                     raise ValueError("Conflicto de rutas; no iniciar escritor.")
                 if conn.execute("SELECT 1 FROM tasks WHERE project=? AND host_task_id=?",
                                 (project, host_task_id)).fetchone():
