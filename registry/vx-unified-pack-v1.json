@@ -391,6 +391,12 @@
       "source": "skills/vx-editorial-claridad/SKILL.md",
       "target": ".kilo/skills/vx-editorial-claridad/SKILL.md",
       "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-tauri-desktop",
+      "source": "skills/vx-tauri-desktop/SKILL.md",
+      "target": ".kilo/skills/vx-tauri-desktop/SKILL.md",
+      "layer": "CAPABILITY"
     }
   ],
   "managed_legacy": {
@@ -480,6 +486,18 @@
       "live_file_leases_implemented": false,
       "automatic_dispatch_enabled": false,
       "barrier_before_integration": true
+    },
+    "desktop": {
+      "preferred_engine": "Tauri 2",
+      "applies_to": "NEW_DESKTOP_APPLICATIONS",
+      "migration_of_existing_apps": "ONLY_WITH_EXPLICIT_REQUEST",
+      "frontend_owner": "vx-frontend-builder",
+      "native_rust_owner": "vx-backend-builder",
+      "qa_owner": "vx-qa-builder",
+      "shared_tauri_config_owner": "LEADER_AFTER_BARRIER",
+      "skill": "vx-tauri-desktop",
+      "toolchain_installation": "EXPLICIT_PERMISSION_ONLY",
+      "automatic_rewrite": false
     }
   },
   "test_policy": {
