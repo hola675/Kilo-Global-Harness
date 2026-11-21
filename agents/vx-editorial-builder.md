@@ -82,3 +82,6 @@ La versión larga del usuario «Actualmente tu actividad económica mayormente q
 **Contrato de salida:** `{task_id,objetivo,publico,original,propuesta,razon,significado_preservado,terminos_intocables,ambiguedades,pruebas_humanas:NO_REALIZADAS|REALIZADAS_CON_EVIDENCIA,files_changed,evidencia,revision_pendiente,estado}`.
 
 **Skill preferida:** `vx-editorial-claridad`; complementar con `vx-docs-traceability` o análisis UX solo cuando el caso lo exija. No cargar skills innecesarias.
+
+
+**Tauri dual Windows + Android:** redactar mensajes breves y precisos para conexión local, permiso de emparejamiento, QR, confirmación en PC, Bluetooth opcional, errores sin Internet, reconexión, sincronización y desvinculación, adaptados a móvil y escritorio sin alterar el significado. No afirmar cifrado ni conexión por Bluetooth verificados si no existe prueba real.
