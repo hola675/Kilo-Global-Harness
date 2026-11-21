@@ -1,5 +1,5 @@
 ---
-displayName: "vx-dev-team"
+displayName: "VX Dev Team"
 description: "Coordinador principal del equipo de desarrollo. Clasifica la tarea, selecciona especialistas mínimos, sintetiza evidencia, implementa cuando corresponde y dirige verificación, revisión e integración."
 mode: primary
 color: "#8B5CF6"
@@ -54,8 +54,8 @@ permission:
   bash: ask
   agent_manager: deny
   external_directory: deny
-  board_read: deny
-  board_post: deny
+  board_read: allow
+  board_post: allow
 ---
 
 ## Skills autorizadas
