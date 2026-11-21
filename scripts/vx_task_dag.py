@@ -145,6 +145,12 @@ def analyze(plan: dict[str, Any], known_agents: set[str],
         deps = t.get("depends_on", [])
         if not isinstance(deps, list) or not all(isinstance(d, str) for d in deps) or len(deps) != len(set(deps)):
             raise ValueError("Dependencias repetidas o inválidas.")
+        priority = t.get("priority", 0)
+        if type(priority) is not int or not 0 <= priority <= 100:
+            raise ValueError("Prioridad debe estar entre 0 y 100.")
+        contract = t.get("contract_version", "1")
+        if not isinstance(contract, str) or not 1 <= len(contract) <= 64:
+            raise ValueError("Version del contrato invalida.")
         if type(t.get("writer")) is not bool:
             raise ValueError("Declarar si la tarea escribe con un booleano.")
         if t["writer"] and owner not in writable_agents:
@@ -258,6 +264,8 @@ def _now() -> str:
 
 def _queue_db_path(path: Path | None, *, mutate: bool) -> Path:
     path = path or (Path.home() / ".config/kilo/harness/state/vx-team-queue.sqlite3")
+    if path == Path(path.anchor):
+        raise ValueError("No usar raiz del disco como cola.")
     if not path.is_absolute() or path.suffix != ".sqlite3":
         raise ValueError("La cola requiere ruta absoluta .sqlite3.")
     path = path.expanduser()
@@ -333,6 +341,12 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
             if any(t["state"] != "PENDING" for t in plan["tasks"]):
                 raise ValueError("sync solo admite tareas PENDING nuevas.")
             for task in plan["tasks"]:
+                # Persist coordination metadata only, never raw prompts or secrets.
+                allowed = {"id", "owner", "reviewer", "state", "depends_on",
+                           "writer", "worktree", "allowed_paths", "write_scope",
+                           "priority", "contract_version"}
+                if not set(task) <= allowed:
+                    raise ValueError("Cola no acepta campos ajenos, contenido de proyecto ni prompts.")
                 fingerprint = sha256(json.dumps(task, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
                 row = conn.execute("SELECT fingerprint FROM tasks WHERE project=? AND id=?",
                                    (project, task["id"])).fetchone()
