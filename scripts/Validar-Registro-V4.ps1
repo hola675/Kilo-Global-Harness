@@ -70,6 +70,14 @@ foreach ($agent in $agents) {
         $front -notmatch '(?m)^  task:\s*$') {
       throw 'Dev Team V2-R requiere skills deny-by-default con allowlist exacta y delegacion allowlist.'
     }
+  } elseif ($agent.role -eq 'builder') {
+    # Core VX 1.4: listas exactas de skills sin comodines de concesion.
+    if ($front -notmatch '(?m)^  skill:\s*$' -or
+        $front -notmatch '(?m)^    "\*":\s*deny\s*$' -or
+        $front -notmatch '(?m)^    "vx-[a-z0-9-]+":\s*allow\s*$' -or
+        $front -match '(?m)^  skill:\s*allow\s*$') {
+      throw "Builder sin skills deny-by-default: $id."
+    }
   } elseif ($front -notmatch '(?m)^  skill:\s*allow\s*$') {
     throw "Agente sin carga controlada de skills: $id."
   }

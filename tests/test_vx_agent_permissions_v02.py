@@ -73,6 +73,13 @@ class VXAgentPermissionsTests(unittest.TestCase):
                 if file.name == "vx-dev-team.md":
                     assert_skill_allowlist(self, file, "vx-dev-team")
                     self.assertRegex(front, r"(?m)^  task:\s*$")
+                elif file.stem in UNIFIED["builder_skill_allowlists"]:
+                    doc = load_agent(file)
+                    self.assertEqual(doc.permissions.fallback("skill"), "deny")
+                    self.assertEqual(
+                        doc.permissions.allowlist("skill"),
+                        set(UNIFIED["builder_skill_allowlists"][file.stem]),
+                    )
                 else:
                     self.assertRegex(front, r"(?m)^  skill: allow\s*$")
                 self.assertNotRegex(front, r"(?m)^  mcp:\s*deny\s*$")

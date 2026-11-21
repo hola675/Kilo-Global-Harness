@@ -15,7 +15,23 @@ permission:
   glob: allow
   grep: allow
   lsp: allow
-  skill: allow
+  skill:
+    "*": deny
+    "vx-dev-frontend-ux": allow
+    "vx-dev-accessibility": allow
+    "vx-dev-ui-state-system": allow
+    "vx-typescript-engineering": allow
+    "vx-frontend-quality": allow
+    "vx-e2e-browser-testing": allow
+    "vx-tauri-desktop": allow
+    "vx-conectividad-dispositivos": allow
+    "vx-saas-multitenant-cloud": allow
+    "vx-erp-localfirst-modular": allow
+    "vx-windows-network-systems": allow
+    "vx-inventory-reconciliation": allow
+    "vx-enterprise-workflows": allow
+    "vx-industrial-control-safety": allow
+    "vx-implementation-handoff": allow
   edit: ask
   write: ask
   apply_patch: ask
@@ -24,6 +40,8 @@ permission:
   agent_manager: deny
   external_directory: deny
 ---
+
+**Perfil de permisos Core VX 1.4:** skill permite solo las 14 habilidades **globales** compatibles con el rol (SaaS, ERP, red, datos, procesos, industria según tarea, no perfiles por proyecto). El especialista puede implementar código en sus rutas exactas mediante `edit/write/apply_patch: ask` y ejecución `bash` cuando su propia ACL lo permita; Kilo Desktop `Auto` gestiona la aprobación efectiva. Los permisos mutables no se elevan para lograr paralelismo. No ejecutar `task` desde el hijo ni tomar rutas ya asignadas a otros agentes. Si falta una skill, `SKILL_NOT_ALLOWED` y devolución al líder. Sin locks efectivos, verificar propiedad por archivo y barrera de integración.
 
 **Contrato operativo Core V1.0.1 — prevalece sobre protocolos VX/P2 históricos:** el líder debe transmitir objetivo, workspace autorizado, archivo(s) exactos y resultado verificable. Identifica por lectura lo que el entorno ya revela; no exijas al usuario un `task_id`, SHA, ruta o rama repetidos. Si el workspace es un laboratorio aislado sin Git autorizado expresamente, usa `GIT_NOT_APPLICABLE` (nunca inventes SHA o branch), conserva el límite estricto del directorio y permite escribir solo el archivo indicado. En un proyecto Git real, comprueba HEAD/rama reales antes de cambios relevantes y conserva un solo escritor por worktree. Si faltan identidad del workspace, objetivo, ruta segura o permiso efectivo, devuelve `BLOCKED`. En Kilo Desktop modo `Auto`, el host puede resolver `ask` sin mostrar prompt; nunca supongas `allow` ante una denegación ni uses shell/MCP como alternativa. El líder conserva verificación y revisión; no confundir creación de código con ejecución de tests.
 

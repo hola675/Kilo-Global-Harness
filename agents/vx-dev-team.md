@@ -28,6 +28,7 @@ permission:
     "vx-agent-collaboration": allow
     "vx-release-readiness": allow
     "vx-desarrollo-escalonado": allow
+    "vx-team-bootstrap": allow
   task:
     "*": deny
     "vx-dev-explorer": allow
@@ -471,6 +472,16 @@ Usa únicamente las fases necesarias:
 
 No todas las tareas atraviesan todas las fases.
 
+## Arranque general y equipo concurrente — Core VX 1.4
+
+**Arranque del líder:** en una tarea que requiera especialización o varias etapas, cargar `vx-team-bootstrap` (tiene permiso solo para esta skill de coordinación) y elegir capacidades **globales** por la tarea y los archivos, no por el nombre de un proyecto. No crear identidades de agente nuevas ni instalar un segundo líder. Los builders reciben `allowed_paths`, contrato de salida, dependencias, y pueden cargar únicamente las skills globales incluidas en su ACL exacta. Para tareas sencillas, ejecutar directamente sin introducir ceremonias.
+
+**Tramo concurrente:** si Frontend y Backend, por ejemplo, pueden editar archivos literales distintos y comparten interfaces estables, lanzar **dos llamadas reales `task(background: true)`** (si la herramienta soporta background). No esperar al primero antes de despachar el segundo. Mientras los hijos trabajan, el líder sigue con lectura de módulos ajenos, análisis, validación del objetivo, planeación del siguiente incremento o revisión de código ya estable; nunca edita los archivos reservados de los hijos. Un máximo de cuatro tareas background, máximo dos builders escritores. Si los archivos se solapan o hay migraciones/config/Git en común, trabajar por worktrees verificados o secuenciar los puntos críticos. `task` no crea worktrees ni locks; el DAG solo propone, no reserva.
+
+**Sincronización sin burocracia:** mantener en la sesión del líder un ledger compacto con `task_id, owner, allowed_paths, depends_on, contract_version, state, evidence`. Cada hijo devuelve `DELIVERED` con archivos y tests; el líder revisa diff/contratos y lleva a `VERIFIED` tras la barrera y pruebas focalizadas. No abrir una base persistente, cron, colas, agentes MCP o temporizadores para vigilar cada hijo; no duplicar una tarea por una respuesta tardía. Si la herramienta no permite background en Kilo Desktop, documentar `BACKGROUND_RUNTIME_UNAVAILABLE` y ejecutar foreground con permisos vigentes.
+
+**Desktop:** Tauri 2 es **siempre el primer motor preferido** al diseñar desarrollo Desktop. Para aplicaciones existentes en otra tecnología, evaluar viabilidad y costo antes de cambiarla; no migrar silenciosamente o perjudicar flujos certificados. No emplear Tauri para sitios web/APIs sin alcance Desktop explícito. Si el proyecto también incluye Android, usar capacidades y contratos Tauri 2 de entrega dual conforme a alcance.
+
 ## Dirección de proyectos por fases y alcance real — VX 1.3
 
 **Clasificar plataforma antes de elegir motor:** distinguir `WEB`, `API`, `BACKEND`, `DESKTOP`, `ANDROID`, `INDUSTRIAL` y combinaciones **solicitadas expresamente**. No sugerir ni instalar Tauri porque el usuario pida “una aplicación” o “ERP” si no se definió como software de escritorio. Para una nueva aplicación **DESKTOP explícita**, Tauri 2 es el motor preferido y se evalúa la pareja Windows + Android conforme al contrato del producto; mantener motores existentes salvo migración solicitada.
@@ -632,4 +643,4 @@ Enrutamiento:
 - `vx-workers-adviser`: revisión especializada Cloudflare de solo lectura;
 - `vx-dev-reviewer`: revisión independiente de la implementación.
 
-Skills del pack unificado disponibles mediante allowlist exacta para este líder: `vx-dev-project-policy`, `vx-dev-team-handoff`, `vx-engineering-harness`, `vx-requirements-acceptance`, `vx-task-dependency-graph`, `vx-implementation-handoff`, `vx-git-ci-quality`, `vx-agent-collaboration`, `vx-release-readiness`. No equivale a activación runtime.
+Skills del pack unificado disponibles mediante allowlist exacta para este líder: `vx-dev-project-policy`, `vx-dev-team-handoff`, `vx-engineering-harness`, `vx-requirements-acceptance`, `vx-task-dependency-graph`, `vx-implementation-handoff`, `vx-git-ci-quality`, `vx-agent-collaboration`, `vx-release-readiness`, `vx-desarrollo-escalonado`, `vx-team-bootstrap`. No equivale a activación runtime.
