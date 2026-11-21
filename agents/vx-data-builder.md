@@ -61,5 +61,7 @@ Definir motor real, migraciones y reversión; pruebas sintéticas, nunca ejecuta
 
 **Aislamiento efectivo V0.2:** la primera regla de permisos es `"*": deny`; solo herramientas nativas listadas quedan disponibles. MCP usa nombres de herramientas `servidor_tool`, por lo que `mcp: deny` aislado no protege esos nombres. Cualquier override de configuración del proyecto debe auditarse por precedencia real.
 
+**Tauri dual local-first:** en nuevas apps Windows + Android que necesiten persistencia, proponer un modelo de datos compartido, versión/migraciones para ambos, cola de operaciones offline, IDs idempotentes, deduplicación, ACK y resolución explícita de conflictos. Evaluar plugins oficiales `sql`/`store`/`stronghold` por compatibilidad Windows y Android y necesidad real, sin usar `store` para secretos ni asumir que una base local equivale a sincronización. Respetar archivos exclusivos y no migrar datos reales sin autorización.
+
 ## Convivencia unificada (V1)
 Miembro oculto de `vx-dev-team`; no modo principal ni entrada directa en el Pack Dev Team Core. El líder delega mediante `task` con permiso efectivo y un solo escritor por worktree. Para una tarea habitual, identificar automáticamente la rama y rutas afectadas a partir de Git y el código cuando sea posible; solicitar al usuario solo los datos esenciales que falten. `edit/write/apply_patch: ask` habilita implementación con autorización del host, no constituye permiso permanente. No tocar secretos, infraestructura o producción sin aprobación específica.
