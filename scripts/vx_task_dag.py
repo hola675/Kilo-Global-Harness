@@ -425,14 +425,28 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
             state = task_row["state"]
             if not event_key or len(event_key) > 128 or not re.fullmatch(r"[a-zA-Z0-9_.:-]+", event_key):
                 raise ValueError("Mutaciones requieren --event-key estable, sin espacios.")
-            present = conn.execute("SELECT id,event FROM events WHERE project=? AND event_key=?",
-                                   (project, event_key)).fetchone()
-            desired_event = "RUNNING" if action == "start" else ("VERIFIED" if action == "verify" else event)
+            desired_event = {
+                "start": "RUNNING", "verify": "VERIFIED",
+                "resume": "RESUMED", "reset": "RESET",
+            }.get(action, event)
+            request = {
+                "action": action, "task_id": task_id, "host_task_id": host_task_id,
+                "event": event, "summary": summary, "evidence_ref": evidence_ref,
+                "review_ref": review_ref, "test_report": test_report,
+            }
+            request_hash = sha256(
+                json.dumps(request, sort_keys=True, ensure_ascii=False).encode("utf-8")
+            ).hexdigest()
+            present = conn.execute(
+                "SELECT id,event,request_hash FROM events WHERE project=? AND event_key=?",
+                (project, event_key),
+            ).fetchone()
             if present:
-                if present["id"] == task_id and present["event"] == desired_event:
+                if (present["id"] == task_id and present["event"] == desired_event
+                        and present["request_hash"] == request_hash):
                     conn.commit()
                     return
-                raise ValueError("Colision de clave idempotente.")
+                raise ValueError("Colision idempotente: mismo event_key con otra peticion.")
             tasks = _queue_tasks(conn, project)
             by_id = {t["id"]: t for t in tasks}
             target = by_id[task_id]
@@ -463,6 +477,27 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
                     state = "REVIEW"
                 elif event == "BLOCKED":
                     state = "BLOCKED"
+            elif action in ("resume", "reset"):
+                if state != "BLOCKED":
+                    raise ValueError("Solo se recuperan tareas BLOCKED.")
+                if (not host_task_id or host_task_id != task_row["host_task_id"]
+                        or not review_ref.strip() or not evidence_ref.strip()):
+                    raise ValueError("Recuperacion requiere ID original, revision humana y evidencia del host.")
+                if action == "resume":
+                    # Operator attests the SAME host session is alive; no new task dispatch.
+                    if any(by_id[dep]["state"] != "VERIFIED"
+                           for dep in target.get("depends_on", [])):
+                        raise ValueError("Prerequisitos pendientes en recuperacion.")
+                    max_tasks, max_writers, shared = _queue_config(conn, project)
+                    running = [t for t in tasks if t["state"] == "RUNNING"]
+                    if (len(running) >= max_tasks or
+                            (target["writer"] and sum(t["writer"] for t in running) >= max_writers)
+                            or any(_writer_conflict(target, other, shared) for other in running)):
+                        raise ValueError("Recuperacion chocaria con trabajos activos.")
+                    state = "RUNNING"
+                else:
+                    # Operator attests the OLD host task ended; next start needs a NEW real host id.
+                    state = "PENDING"
             elif action == "verify":
                 if state != "REVIEW" or not review_ref.strip() or not test_report.strip():
                     raise ValueError("verify requiere REVIEW, revision y test_report.")
@@ -476,11 +511,12 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
             else:
                 raise ValueError("Accion de cola no permitida.")
             conn.execute("UPDATE tasks SET state=?,host_task_id=?,updated_at=? WHERE project=? AND id=?",
-                         (state, host_task_id if action == "start" else task_row["host_task_id"],
+                         (state, (None if action == "reset" else
+                                   host_task_id if action == "start" else task_row["host_task_id"]),
                           _now(), project, task_id))
-            conn.execute("INSERT INTO events VALUES (?,?,?,?,?,?,?)",
+            conn.execute("INSERT INTO events VALUES (?,?,?,?,?,?,?,?)",
                          (event_key, project, task_id, desired_event, summary[:500],
-                          evidence_ref[:500], _now()))
+                          evidence_ref[:500], _now(), request_hash))
         conn.commit()
     except Exception:
         conn.rollback()
@@ -518,7 +554,7 @@ def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida DAG de tareas de agente VX sin acciones.")
     parser.add_argument("--plan", type=Path)
-    parser.add_argument("--queue-action", choices=["sync","start","event","verify","report"])
+    parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report"])
     parser.add_argument("--queue-db", type=Path)
     parser.add_argument("--project")
     parser.add_argument("--task-id")
