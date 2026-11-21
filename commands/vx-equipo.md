@@ -25,9 +25,13 @@ Máximo **cuatro** subtareas activas, con un máximo de **dos** escritores sobre
 
 No vigilar con polling constante ni duplicar tareas por silencio. Cuando Kilo entregue resultados, revisar cambios reales, verificar que solo se editaron los archivos reservados y esperar una **barrera** antes de ejecutar tests integrados, commits, PR y merge. Ante `TOOL_UNAVAILABLE` para background, usar foreground de forma transparente; `Auto` del operador sigue activo, sin ampliar ACL.
 
+## Motor preferido para nuevas aplicaciones de escritorio — Tauri 2
+
+Cuando se solicite desarrollar una aplicación de escritorio desde cero, **Tauri 2** es el motor preferido, con interfaz web y núcleo Rust. El líder entrega a `vx-frontend-builder` la UI y a `vx-backend-builder` los comandos y servicios Rust, cargando `vx-tauri-desktop` únicamente en los builders que necesiten ese contexto (no en el líder si su ACL de skills no la incluye). Para tareas independientes puede usar `task(background: true)`, asignando archivos exclusivos y dejando el puente IPC, las capabilities, `Cargo.toml`, lockfiles y manifiestos comunes para la barrera de integración. Proteger permisos Tauri con mínimo privilegio; verificar WebView2, toolchain MSVC, Rust y empaquetado Windows antes de asegurar que la aplicación compila. **No migrar** automáticamente una aplicación ya implementada en Qt, PySide, Electron u otro motor.
+
 ## Skills del pack unificado
 
-El pool contiene 18 CORE y 25 complementarias. Cada agente carga solo la skill que la tarea necesita y que su propia ACL de `skill` permite; la skill no amplía herramientas, no instala MCP ni habilita AutoApprove. No es requisito ejecutar `Seleccionar-Equipo-V4.ps1` ni `vx_skill_router.py`: ambos corresponden a rutas históricas ajenas a esta instalación única. La disponibilidad efectiva de `task` y `skill` requiere prueba en Kilo; si falta, conserva la tarea en el líder y declara `TOOL_UNAVAILABLE` o `PERMISSION_DENIED` según corresponda.
+El pool contiene 18 CORE y 26 complementarias. Cada agente carga solo la skill que la tarea necesita y que su propia ACL de `skill` permite; la skill no amplía herramientas, no instala MCP ni habilita AutoApprove. No es requisito ejecutar `Seleccionar-Equipo-V4.ps1` ni `vx_skill_router.py`: ambos corresponden a rutas históricas ajenas a esta instalación única. La disponibilidad efectiva de `task` y `skill` requiere prueba en Kilo; si falta, conserva la tarea en el líder y declara `TOOL_UNAVAILABLE` o `PERMISSION_DENIED` según corresponda.
 
 ## Git y seguridad
 
