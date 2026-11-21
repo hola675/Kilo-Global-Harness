@@ -272,7 +272,8 @@ def _queue_db_path(path: Path | None, *, mutate: bool) -> Path:
     path = path.expanduser()
     # Project files, including a repository's .kilo, are never coordination state.
     root = Path(__file__).resolve().parents[1]
-    if path == root or root in path.parents or path.is_symlink():
+    source_repo = (root / "registry" / "vx-unified-pack-v1.json").is_file()
+    if (source_repo and (path == root or root in path.parents)) or path.is_symlink():
         raise ValueError("Prohibido guardar la cola en el repo o bajo symlink.")
     if mutate:
         path.parent.mkdir(parents=True, exist_ok=True)
