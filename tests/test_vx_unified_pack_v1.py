@@ -212,6 +212,50 @@ class UnifiedPackV1Tests(unittest.TestCase):
                 dict(tasks[0], state="RUNNING"), dict(tasks[1], state="RUNNING")]),
                 known, writers)
 
+    def test_unified_parallel_desktop_contract_is_scoped_and_preserves_acl(self):
+        pack = module.load_manifest()
+        self.assertEqual(pack["version"], "1.1.0-rc1")
+        routing = pack["routing"]["parallel_background"]
+        self.assertEqual(routing["max_parallel_writers"], 2)
+        self.assertEqual(routing["max_background_tasks"], 4)
+        self.assertFalse(routing["automatic_dispatch_enabled"])
+        self.assertFalse(routing["live_file_leases_implemented"])
+        self.assertTrue(pack["routing"]["one_writer_per_worktree"])
+        lead = (ROOT / "agents/vx-dev-team.md").read_text(encoding="utf-8")
+        policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
+        command = (ROOT / "commands/vx-equipo.md").read_text(encoding="utf-8")
+        dependency = (ROOT / "commands/vx-dependencias.md").read_text(encoding="utf-8")
+        for text in (lead, policy, command):
+            self.assertIn("background: true", text)
+            self.assertIn("EXACT_FILES", text)
+            self.assertIn("Auto", text)
+        self.assertIn("PARALLEL_SAFE", dependency)
+        self.assertIn("PROPOSED_NOT_DISPATCHED", lead)
+        self.assertIn("Agent Manager", lead)
+        self.assertIn("  agent_manager: deny", lead)
+        self.assertIn("  edit: ask", lead)
+        self.assertIn("  write: ask", lead)
+        self.assertIn("  apply_patch: ask", lead)
+        self.assertIn("No hacer polling", lead)
+        builders = [a for a in pack["agents"] if a["role"] == "builder"]
+        self.assertEqual(len(builders), 6)
+        for builder in builders:
+            with self.subTest(agent=builder["id"]):
+                body = (ROOT / builder["source"]).read_text(encoding="utf-8")
+                front = body.split("---", 2)[1]
+                self.assertIn("background: true", body)
+                self.assertIn("EXACT_FILES", body)
+                self.assertIn("task: deny", front)
+                self.assertIn("agent_manager: deny", front)
+                self.assertIn("edit: ask", front)
+                self.assertIn("write: ask", front)
+                self.assertIn("apply_patch: ask", front)
+        for skill in ("vx-task-dependency-graph", "vx-agent-collaboration",
+                      "vx-implementation-handoff"):
+            text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("background: true", text)
+            self.assertIn("EXACT_FILES", text)
+
     def test_simulation_is_readonly_and_preserves_third_party_assets(self):
         with tempfile.TemporaryDirectory(prefix="vx-unified-plan-") as folder:
             home = Path(folder)
