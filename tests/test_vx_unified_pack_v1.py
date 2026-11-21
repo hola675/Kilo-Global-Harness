@@ -349,6 +349,13 @@ class UnifiedPackV1Tests(unittest.TestCase):
                            event="MILESTONE", event_key="aa-m1", evidence="trace:two")
                 mutate(conn, "restricted", "event", task_id="aa",
                        event="BLOCKED", event_key="aa-block")
+                # BLOCKED is not a released lease while ses_A may still be alive.
+                blocked_report = dag._queue_report(conn, "restricted", known, writers)
+                self.assertEqual(blocked_report["background_candidates"], [])
+                self.assertEqual(blocked_report["state_counts"]["BLOCKED"], 1)
+                with self.assertRaises(ValueError):
+                    mutate(conn, "restricted", "start", task_id="bb",
+                           host_id="ses_B2", event_key="bb-while-aa-blocked")
                 with self.assertRaises(ValueError):
                     mutate(conn, "restricted", "resume", task_id="aa", host_id="ses_X",
                            event_key="aa-resume", review="review:live", evidence="trace:alive")
@@ -382,6 +389,47 @@ class UnifiedPackV1Tests(unittest.TestCase):
                     mutate(conn, "bulk", "sync", plan=second)
                 report = dag._queue_report(conn, "bulk", known, writers)
                 self.assertEqual(len(report["tasks"]), 60)
+            finally:
+                conn.close()
+
+    def test_vx_team_queue_blocked_writer_preserves_exact_file_lease(self):
+        pack = module.load_manifest()
+        known = {a["id"] for a in pack["agents"]}
+        writers = {a["id"] for a in pack["agents"] if a["role"] in ("lead", "builder")}
+        def t(id):
+            return {"id": id, "owner": "vx-frontend-builder", "reviewer": "vx-dev-reviewer",
+                    "state": "PENDING", "depends_on": [], "writer": True,
+                    "worktree": "lab", "write_scope": "EXACT_FILES",
+                    "allowed_paths": ["src/shared.py"]}
+        def move(conn, action, task_id=None, event_key=None, host_id=None,
+                 event=None, review="", evidence="", plan=None):
+            return dag._queue_mutate(
+                conn, project="overlap", action=action, plan=plan,
+                task_id=task_id, host_task_id=host_id, event=event, event_key=event_key,
+                summary="", evidence_ref=evidence, review_ref=review, test_report="",
+                known=known, writable=writers,
+            )
+        with tempfile.TemporaryDirectory(prefix="vx-blocked-reserved-") as root:
+            conn = dag._queue_open(Path(root) / "queue.sqlite3", mutate=True)
+            try:
+                plan = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
+                        "max_background_tasks": 2, "max_parallel_writers": 2,
+                        "allow_shared_worktree_exact_files": True,
+                        "tasks": [t("aa"), t("bb")]}
+                move(conn, "sync", plan=plan)
+                move(conn, "start", "aa", "aa-start", "ses_A")
+                move(conn, "event", "aa", "aa-block", event="BLOCKED")
+                r = dag._queue_report(conn, "overlap", known, writers)
+                self.assertEqual(r["background_candidates"], [])
+                self.assertTrue(any(i["id"] == "bb" and i["reason"] == "OVERLAPPING_PATHS"
+                                    for i in r["parallel_deferred"]))
+                with self.assertRaises(ValueError):
+                    move(conn, "start", "bb", "bb-premature", "ses_B")
+                move(conn, "reset", "aa", "aa-reset", "ses_A",
+                     review="host:ended", evidence="trace:ended")
+                move(conn, "start", "bb", "bb-safe-start", "ses_B")
+                self.assertEqual(
+                    dag._queue_report(conn, "overlap", known, writers)["state_counts"]["RUNNING"], 1)
             finally:
                 conn.close()
 
