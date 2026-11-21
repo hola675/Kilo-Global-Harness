@@ -1,6 +1,6 @@
 {
   "schema": "vx-unified-pack/1",
-  "version": "1.5.0-rc1",
+  "version": "1.6.0-rc1",
   "updated": "2026-11-21",
   "status": "SOURCE_CANDIDATE_NOT_INSTALLED",
   "scope": "ONE_GLOBAL_PACK_KILO_WINDOWS",
@@ -518,7 +518,18 @@
     "contextual_skills_install_only": true,
     "contextual_skills_not_auto_allowlisted": true,
     "runtime_acl_change_requires_separate_review": true,
-    "no_board_acl_change": true
+    "no_board_acl_change": false,
+    "board_acl_change_user_authorized": true,
+    "board_acl_allowlist": [
+      "vx-dev-team",
+      "vx-frontend-builder",
+      "vx-backend-builder",
+      "vx-data-builder",
+      "vx-qa-builder",
+      "vx-docs-builder",
+      "vx-editorial-builder"
+    ],
+    "no_agent_manager_elevation": true
   },
   "postponed": [
     "26 Dev Team extension skills remain as source proposals, not installed by unified core",
@@ -643,7 +654,7 @@
     "team_coordination": {
       "schema": "vx-team-task-ledger/1",
       "owner": "vx-dev-team",
-      "ledger_location": "LEADER_SESSION_ONLY_UNLESS_EXPLICIT_USER_AUTHORIZATION",
+      "ledger_location": "LEADER_SESSION_OR_PRIVATE_SQLITE_ON_DEMAND",
       "phase_statuses": [
         "PENDING",
         "RUNNING",
@@ -670,13 +681,13 @@
       "no_cross_agent_task_stealing": true,
       "barrier_before_shared_files": true,
       "scope_permissions": "R0_READ_R1_SCOPED_CODE_R2_GIT_R3_EXPLICIT_HIGH_RISK",
-      "runtime_enforcement": "NOT_IMPLEMENTED_PLAN_ONLY",
+      "runtime_enforcement": "SQLITE_TRANSACTIONAL_QUEUE_METADATA_ONLY_KILO_TOOL_DISPATCH_EXTERNAL",
       "file_lease_runtime_enforced": false,
       "background_runtime_certified": false,
       "progress_protocol": {
         "schema": "vx-progress-event/1",
-        "version": "1.0.0",
-        "status": "SOURCE_CONTRACT_ONLY_BOARD_DENIED",
+        "version": "2.0.0",
+        "status": "SOURCE_V2_BOARD_ACL_AUTHORIZED_HOST_NOT_CERTIFIED",
         "events": [
           "STARTED",
           "CONTRACT_READY",
@@ -685,7 +696,7 @@
           "DELIVERED",
           "CORRECTION"
         ],
-        "verified_emitter": "vx-dev-team only after tool trace and diff/test verification",
+        "verified_emitter": "vx-dev-team after independently observed tool trace and focused tests",
         "event_fields": [
           "task_id_or_local_ref",
           "owner_agent",
@@ -697,9 +708,9 @@
           "evidence_ref",
           "verification_state"
         ],
-        "leader_ledger": "SESSION_ONLY",
+        "leader_ledger": "SESSION_OR_PRIVATE_SQLITE_AFTER_APPROVED_TOOL_CALL",
         "board_channel": "KILO_SWARM_IF_HOST_EXPOSES_AND_ACL_ALLOWS",
-        "current_leader_board_acl": "DENY",
+        "current_leader_board_acl": "ALLOW",
         "fallback": "TASK_RESULT",
         "allow_real_time_claim_without_board": false,
         "agent_manager_cross_session_board_shared": false,
@@ -710,7 +721,42 @@
         "no_new_agents": true,
         "no_new_skills": true,
         "runtime_background_certified": false,
-        "runtime_board_certified": false
+        "runtime_board_certified": false,
+        "board_scoped_roles": [
+          "vx-dev-team",
+          "vx-frontend-builder",
+          "vx-backend-builder",
+          "vx-data-builder",
+          "vx-qa-builder",
+          "vx-docs-builder",
+          "vx-editorial-builder"
+        ]
+      },
+      "task_queue": {
+        "schema": "vx-team-queue/1",
+        "version": "1.0.0",
+        "status": "LOCAL_RECORD_AND_READINESS_NO_AUTONOMOUS_HOST_DISPATCH",
+        "engine": "scripts/vx_task_dag.py",
+        "installed_script": ".config/kilo/harness/scripts/vx_task_dag.py",
+        "storage_default": "~/.config/kilo/harness/state/vx-team-queue.sqlite3",
+        "storage": "SQLite WAL synchronous FULL; BEGIN IMMEDIATE; coordination metadata only",
+        "actions": [
+          "sync",
+          "report",
+          "start",
+          "event",
+          "verify"
+        ],
+        "leader_only_write_by_policy": true,
+        "requires_host_task_id_to_start": true,
+        "idempotency": "event_key",
+        "ready_queue_order": "priority DESC then topological order",
+        "max_background_tasks": 4,
+        "max_parallel_writers": 2,
+        "task_runtime_dispatch": "KILO_NATIVE_TASK_ONLY",
+        "actual_dispatch_executed_by_queue": false,
+        "daemon_or_scheduler_enabled": false,
+        "recovery_policy": "RUNNING_REQUIRES_HOST_TRACE_RECHECK_NO_BLIND_RETRY"
       }
     },
     "capability_routing": [
