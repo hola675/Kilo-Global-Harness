@@ -1,6 +1,6 @@
-# VX Dev Team Core Unificado — instalación V1.1 RC1
+# VX Dev Team Core Unificado — instalación V1.3 RC1
 
-**Fecha:** 2026-11-21. **Estado:** SOURCE V1.1 RC1, pendiente CI/revisión e instalación local de esta mejora. El Core V1.0 anterior fue probado en Kilo Desktop por el operador; no confundirlo con certificación del nuevo background paralelo. **No instalado automáticamente.**
+**Fecha:** 2026-11-21. **Estado:** SOURCE V1.3 RC1, pendiente CI/revisión e instalación local de esta mejora. El Core V1.0 anterior fue probado en Kilo Desktop por el operador; no confundirlo con certificación del nuevo background paralelo. **No instalado automáticamente.**
 
 ## Decisión
 
@@ -16,7 +16,7 @@ Unificar el Pack VX 0.4.0 y Dev Team 2.3.0 en una única instalación global. No
 
 ### Skills
 
-**44 skills**: 18 Dev CORE, más 26 VX complementarias seleccionadas por aportar una capacidad de ejecución o dominio que no se cubre solo con la estrategia CORE (TypeScript, Python, Cloudflare, SQL, E2E, Docs, Git/CI, performance, observabilidad, editorial, IDA, incidentes y colaboración, entre otras). La lista exacta y sus rutas únicas están en el manifiesto. Las skills se cargan bajo demanda: nunca las 44 simultáneamente.
+**46 skills**: 18 Dev CORE, más 28 VX complementarias seleccionadas por aportar una capacidad de ejecución o dominio que no se cubre solo con la estrategia CORE (TypeScript, Python, Cloudflare, SQL, E2E, Docs, Git/CI, performance, observabilidad, editorial, IDA, incidentes y colaboración, entre otras). La lista exacta y sus rutas únicas están en el manifiesto. Las skills se cargan bajo demanda: nunca las 46 simultáneamente.
 
 Se conservan en Git las 26 Dev adicionales que aún eran propuestas y las 7 VX no incluidas. No se activan waves W2-W5 automáticamente ni se elimina la documentación de VX Evolution.
 
@@ -35,7 +35,7 @@ Se desinstalan solamente seis agentes VX anteriores: vx-integrador, vx-inspector
     pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Diagnostico
     pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Simular
 
-La respuesta debe indicar READY, 18 agentes y 44 skills, sin bloqueos ni cambios a configuración. Revisar el número de archivos a retirar antes de confirmar.
+La respuesta debe indicar READY, 18 agentes y 46 skills, sin bloqueos ni cambios a configuración. Revisar el número de archivos a retirar antes de confirmar.
 
 ### 2. Aplicación
 
@@ -85,7 +85,7 @@ Conservar salvaguardas necesarias: no elevar ACL por falta de herramienta, un es
 
 La instalación única gestiona también tres comandos globales: **/vx-equipo**, **/vx-dependencias** y **/vx-editorial**. Sus rutas apuntan al único líder `vx-dev-team`; los dos primeros ya no invocan al antiguo `vx-integrador`. El comando experimental histórico `/vx-p2` se retira del HOME con respaldo DPAPI porque seleccionaba directamente a `vx-docs-builder`, que ahora debe ser subagente oculto. El fuente `commands/vx-p2.md` permanece versionado para trazabilidad. Los demás comandos del usuario se conservan, sin borrados por nombre o coincidencias amplias.
 
-**Inventario final bajo gestión del instalador:** 18 agentes, 44 skills, 3 comandos y un bloque de política global VX. Se pueden retirar exactamente seis agentes, siete skills y un comando históricos, si existen; todo el material anterior cambiado se respalda antes de mutar. La existencia de otros comandos o recursos ajenos no convierte su funcionalidad en certificada.
+**Inventario final bajo gestión del instalador:** 18 agentes, 46 skills, 3 comandos y un bloque de política global VX. Se pueden retirar exactamente seis agentes, siete skills y un comando históricos, si existen; todo el material anterior cambiado se respalda antes de mutar. La existencia de otros comandos o recursos ajenos no convierte su funcionalidad en certificada.
 
 - V1.0 RC1 ajuste de seguridad: recuperacion explicita de respaldo `BACKED_UP` y bloqueo de colisiones por `name:` en skills ajenas globales; casos negativos agregados a la suite viva.
 
@@ -95,7 +95,7 @@ El instalador único distribuye además **dos archivos de soporte** sin abrir ot
 
 Si `kilo.jsonc` define en línea a cualquiera de los seis agentes legacy retirables (por ejemplo `vx-integrador`), la simulación devuelve `BLOCKED`: eliminar el archivo Markdown no elimina un agente inline. **No editar automáticamente `kilo.jsonc` ni deshabilitar configuración del usuario**; resolver esa colisión por el procedimiento de gestión explícito del host, con respaldo independiente. Comprobar la ausencia del segundo líder antes de aplicar el instalador.
 
-**Inventario completo administrado:** 18 agentes, 44 skills, tres comandos, dos archivos de soporte y un bloque global de política. El número máximo de archivos legacy retirables sigue siendo 14 (seis agentes, siete SKILL.md y un comando); otros recursos globales no se eliminan.
+**Inventario completo administrado:** 18 agentes, 46 skills, tres comandos, dos archivos de soporte y un bloque global de política. El número máximo de archivos legacy retirables sigue siendo 14 (seis agentes, siete SKILL.md y un comando); otros recursos globales no se eliminan.
 
 ## VX-RT-02C — Contrato adaptable para builders (V1.0.1)
 
@@ -237,3 +237,18 @@ El cierre del producto requiere un reporte separado de `windows_status`, `androi
 ### Changelog
 
 - **V1.2 RC1 (2026-11-21):** skill `vx-tauri-desktop` v1.1.0, dos targets Windows/Android por defecto para nuevas apps de escritorio, selección fundamentada de plugins Tauri 2, conexión Wi-Fi LAN/hotspot local-first, Bluetooth/Wi-Fi Direct condicional, protocolo seguro de pairing y QA/entrega dual sin pruebas ficticias.
+
+
+## VX 1.3 — Habilidades independientes y selección explícita de plataforma
+
+La **elección de Tauri depende de que el proyecto se haya especificado como Desktop**; no es framework obligatorio para ERP web, API, sitios, scripts u otras plataformas. Para nuevas aplicaciones de escritorio el contrato puede incluir Windows + Android según el alcance del producto, con UI y capacidades por plataforma y bloqueos explícitos si falta el SDK/hardware.
+
+El pack mantiene 18 agentes y añade dos skills bajo demanda, para un total de **46** (18 CORE + 28 complementarias):
+- `vx-conectividad-dispositivos`: guía transversal a frameworks para LAN, servicio Rust, WebSocket cliente, QR/pairing, DNS-SD, Bluetooth BLE/GATT y Wi-Fi Direct, con detección de hardware y permisos Android 17 `ACCESS_LOCAL_NETWORK`. No instala plugins.
+- `vx-desarrollo-escalonado`: permite al líder conservar `FINAL_GOAL`, base real, PLATFORM_SCOPE, entregas por etapas y una sola hoja de ruta viva. La ACL `skill` del líder agrega únicamente este ID, sin cambiar escritura/MCP/Auto.
+
+Guía práctica de qué añadir **solo por proyecto** y cómo validar dependencias/etapas: [VX Desarrollo Escalonado y Conectividad](VX-DESARROLLO-ESCALONADO-CONECTIVIDAD-V1.md). El catálogo Tauri no incorpora por sí mismo servidor Rust ni conexión Bluetooth completa. Prohibido afirmar que se compilaron EXE/APK o que el enlace es seguro sin pruebas físicas y artefactos.
+
+### Changelog
+
+- **V1.3 RC1 (2026-11-21):** Tauri solo para proyectos explícitos Desktop; conectividad independiente del framework con fases/diagnóstico y dependencias condicionales; meta final, fases, gates, Android 17 LAN y 46 skills. Sin instalación ni permisos globales nuevos.
