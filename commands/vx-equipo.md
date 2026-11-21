@@ -25,6 +25,12 @@ Máximo **cuatro** subtareas activas, con un máximo de **dos** escritores sobre
 
 No vigilar con polling constante ni duplicar tareas por silencio. Cuando Kilo entregue resultados, revisar cambios reales, verificar que solo se editaron los archivos reservados y esperar una **barrera** antes de ejecutar tests integrados, commits, PR y merge. Ante `TOOL_UNAVAILABLE` para background, usar foreground de forma transparente; `Auto` del operador sigue activo, sin ampliar ACL.
 
+## Meta final y desarrollo escalonado para todos los proyectos
+
+Antes de elegir tecnología, confirmar **el alcance de plataforma expresamente solicitado** (web, API, ERP web, Android, Desktop, industrial). **Tauri 2 solo cuando la aplicación está definida como escritorio**, no para cualquier proyecto. En tareas complejas, el líder carga `vx-desarrollo-escalonado` desde su ACL: define `FINAL_GOAL`, baseline y entregables por fases y conserva una sola hoja de ruta viva. En trabajos de conectividad delega a builders la skill `vx-conectividad-dispositivos`, **independiente de Tauri**, y consulta la guía `docs/VX-DESARROLLO-ESCALONADO-CONECTIVIDAD-V1.md` solo cuando ayuda a elegir herramientas, permisos y diagnósticos.
+
+No añadir SDK/NDK, Rust libraries, plugins, diagnósticos Bluetooth o herramientas externas a un proyecto que no los necesite. Primero comprobar el stack, el dispositivo, el problema de conexión y las condiciones de aceptación; instalar dependencias **en el proyecto autorizado** solo después de verificar licencias, versiones, soporte y permisos del host. No confundir `tauri-plugin-websocket` con servidor ni mDNS con autenticación.
+
 ## Nuevas aplicaciones de escritorio: pareja Tauri 2 Windows + Android
 
 Para **cada nuevo producto de escritorio**, el líder `vx-dev-team` dirige la **entrega dual** Windows `.exe` + Android `.apk` (AAB solo cuando se requiere Google Play). Ambos comparten contratos, datos, comandos y protocolo; Windows mantiene experiencia de escritorio y Android se diseña para táctil, safe areas, orientación, navegación móvil y botón Atrás. **No entregar una sola versión ni afirmar compilación del segundo target sin pruebas**. Respetar stacks existentes salvo migración solicitada.
