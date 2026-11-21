@@ -1064,7 +1064,7 @@ class ConsolidationV1Tests(unittest.TestCase):
         tauri = (ROOT / "skills" / "vx-tauri-desktop" / "SKILL.md").read_text(encoding="utf-8")
         self.assertIn("## Gate V0", bootstrap)
         self.assertIn("BASELINE_UNVERIFIED", bootstrap)
-        self.assertIn("BASE_SHA", phased)
+        self.assertIn("V0_BASELINE", phased)
         self.assertIn("PySide6", phased)
         self.assertIn("Windows-only", tauri)
         self.assertIn("Tauri", (ROOT / "skills" / "vx-technology-fit" / "SKILL.md").read_text(encoding="utf-8"))
