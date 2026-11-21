@@ -1,6 +1,25 @@
-# VX Dev Team Core Unificado — instalación V1.4 RC1
+# VX Dev Team Core Unificado — instalación V1.5 RC1
 
 **Fecha:** 2026-11-21. **Estado:** SOURCE V1.4 RC1, pendiente CI/revisión e instalación local de esta mejora. El Core V1.0 anterior fue probado en Kilo Desktop por el operador; no confundirlo con certificación del nuevo background paralelo. **No instalado automáticamente.**
+
+## Core VX 1.5 — instalación unificada de 57 Skills (2026-11-21)
+
+La versión integrada de Core VX añade cuatro Skills contextuales originales a la selección global **53 + 4 = 57**, sin aumentar agentes (18), comandos (3), archivos de soporte (2), MCP ni privilegios. El manifiesto `registry/vx-unified-pack-v1.json`, el motor `scripts/vx_unified_pack.py` y la prueba viva comparten ahora el contrato 57. El instalador continúa transaccional con respaldo **DPAPI CurrentUser** para rutas administradas; no instala Skills de terceros ni realiza una segunda instalación paralela.
+
+**Advertencia de permisos:** se instalan los cuatro `SKILL.md` en el HOME global, pero **no se añaden** a `permission.skill` del líder ni builders. Sus instrucciones integradas en `vx-team-bootstrap` ya permitido pueden orientar el flujo; *tener el archivo disponible no demuestra que el agente pueda invocar la Skill explícitamente*. Un cambio de allowlist requiere diff por rol, aprobación separada y pruebas de denegación. No afirmar `RUNTIME_PASS` por el `Verificar` del instalador.
+
+**Antes de mutar HOME:** El último preflight del operador (19/11) observó 5 archivos de agentes y 16 Skills Core distintos de source. Es un dato histórico, no un snapshot actual. La instalación solicitada requiere comparar diferencias actuales (hashes y cambios de permisos/instrucciones) y conservar o aprobar explícitamente las modificaciones locales; el respaldo DPAPI permite recuperación, pero no es autorización para sobrescribir diferencias sin revisarlas. Si `Simular` devuelve `BLOCKED` (colisión de agentes inline, Skills duplicadas, configuración ilegible o riesgo de terceros), **no usar -Aplicar**.
+
+### Orden operativo Windows
+
+1. `cd D:\Proyectos\Kilo-Global-Harness`; `git status --short`; `git switch main`; `git fetch origin --prune`; `git pull --ff-only origin main`. Si hay cambios locales, detenerse sin `stash` ni `reset` automáticos.
+2. `pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Diagnostico` y luego `-Modo Simular`: ambas consultas son lectura; **esperar 18 agentes, 57 Skills, 3 comandos, 2 soportes y `runtime_verified:false`**. Examinar `blockers`, duplicados, drift y cambios previstos. No confundir el plan con instalación.
+3. Una vez estudiados los archivos modificados, respaldados los datos pertinentes y aprobada la sustitución, cerrar VS Code/VSCodium/Kilo Desktop y ejecutar `pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Aplicar -ConfirmarInstalacion -ConfirmarRetirarVXLegacy -ConfirmarKiloCerrado`. Los switches de confirmación **no** esquivan bloqueos del motor.
+4. `pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Verificar` debe devolver `SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED` con `skills:57`. Guardar la ruta **privada** del respaldo DPAPI; nunca publicarla en Git.
+5. Reiniciar Kilo Desktop, verificar un único `vx-dev-team` visible, 17 hijos ocultos, cargas realmente autorizadas, comandos, handoffs y pruebas de denegación de ACL. Probar los 11 escenarios contextuales del catálogo si/solo si los accesos están efectivamente habilitados para cada rol. No declarar habilidades o paralelismo operativo sin trazas de host.
+6. Para restaurar: usar el `-Modo Restaurar` del mismo instalador con carpeta absoluta del respaldo y confirmaciones; el respaldo DPAPI solo puede abrirse con el usuario/entorno Windows autorizado. No ejecutar restauración ciega ante terceros que modificaron archivos desde la instalación.
+
+**Fuente vs. runtime:** `SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED` solo demuestra archivos coincidentes, no permisos efectivos, tools, despacho background, emparejamiento entre dispositivos o tests físicos.
 
 ## Decisión
 
