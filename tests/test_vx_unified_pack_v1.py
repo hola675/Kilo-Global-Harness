@@ -286,6 +286,110 @@ class UnifiedPackV1Tests(unittest.TestCase):
             finally:
                 conn.close()
 
+    def test_vx_team_queue_limits_recovery_idempotence_and_atomic_size(self):
+        pack = module.load_manifest()
+        known = {item["id"] for item in pack["agents"]}
+        writers = {item["id"] for item in pack["agents"] if item["role"] in ("lead", "builder")}
+        def task(name, writer=False):
+            return {
+                "id": name, "owner": "vx-frontend-builder" if writer else "vx-dev-explorer",
+                "reviewer": "vx-dev-reviewer", "state": "PENDING", "depends_on": [],
+                "writer": writer, "worktree": "lab",
+                **({"write_scope": "EXACT_FILES", "allowed_paths": [f"src/{name}.html"]}
+                   if writer else {}),
+            }
+        def mutate(conn, project, action, *, plan=None, task_id=None, host_id=None,
+                   event=None, event_key=None, evidence="", review=""):
+            return dag._queue_mutate(
+                conn, project=project, action=action, plan=plan,
+                task_id=task_id, host_task_id=host_id, event=event, event_key=event_key,
+                summary="", evidence_ref=evidence, review_ref=review, test_report="",
+                known=known, writable=writers,
+            )
+        with tempfile.TemporaryDirectory(prefix="vx-team-queue-gates-") as root:
+            conn = dag._queue_open(Path(root) / "queue.sqlite3", mutate=True)
+            try:
+                plan = {
+                    "schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
+                    "max_background_tasks": 1, "max_parallel_writers": 1,
+                    "allow_shared_worktree_exact_files": False,
+                    "tasks": [task("aa", True), task("bb", True)],
+                }
+                mutate(conn, "restricted", "sync", plan=plan)
+                report = dag._queue_report(conn, "restricted", known, writers)
+                self.assertEqual(report["background_candidates"], ["aa"])
+                self.assertEqual(report["limits"]["max_background_tasks"], 1)
+                self.assertFalse(report["limits"]["allow_shared_worktree_exact_files"])
+                with self.assertRaises(ValueError):
+                    mutate(conn, "restricted", "sync",
+                           plan=dict(plan, max_background_tasks=2))
+                mutate(conn, "restricted", "start", task_id="aa",
+                       host_id="ses_A", event_key="start-aa")
+                mutate(conn, "restricted", "start", task_id="aa",
+                       host_id="ses_A", event_key="start-aa")
+                with self.assertRaises(ValueError):
+                    mutate(conn, "restricted", "start", task_id="aa",
+                           host_id="ses_B", event_key="start-aa")
+                with self.assertRaises(ValueError):
+                    mutate(conn, "restricted", "start", task_id="bb",
+                           host_id="ses_B", event_key="start-bb")
+                mutate(conn, "restricted", "event", task_id="aa",
+                       event="MILESTONE", event_key="aa-m1", evidence="trace:one")
+                with self.assertRaises(ValueError):
+                    mutate(conn, "restricted", "event", task_id="aa",
+                           event="MILESTONE", event_key="aa-m1", evidence="trace:two")
+                mutate(conn, "restricted", "event", task_id="aa",
+                       event="BLOCKED", event_key="aa-block")
+                with self.assertRaises(ValueError):
+                    mutate(conn, "restricted", "resume", task_id="aa", host_id="ses_X",
+                           event_key="aa-resume", review="review:live", evidence="trace:alive")
+                mutate(conn, "restricted", "resume", task_id="aa", host_id="ses_A",
+                       event_key="aa-resume", review="review:live", evidence="trace:alive")
+                self.assertEqual(dag._queue_report(
+                    conn, "restricted", known, writers)["state_counts"]["RUNNING"], 1)
+                mutate(conn, "restricted", "event", task_id="aa",
+                       event="BLOCKED", event_key="aa-block-again")
+                mutate(conn, "restricted", "reset", task_id="aa", host_id="ses_A",
+                       event_key="aa-reset", review="review:ended", evidence="trace:ended")
+                mutate(conn, "restricted", "reset", task_id="aa", host_id="ses_A",
+                       event_key="aa-reset", review="review:ended", evidence="trace:ended")
+                self.assertIsNone(next(t for t in dag._queue_report(
+                    conn, "restricted", known, writers)["tasks"]
+                    if t["id"] == "aa")["host_task_id"])
+                mutate(conn, "restricted", "start", task_id="aa",
+                       host_id="ses_NEW", event_key="aa-new-start")
+                bulk = {
+                    "schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
+                    "allow_shared_worktree_exact_files": False,
+                    "tasks": [task(f"n{i:03}") for i in range(60)],
+                }
+                mutate(conn, "bulk", "sync", plan=bulk)
+                second = dict(bulk, tasks=[task(f"n{i:03}") for i in range(60, 120)])
+                with self.assertRaises(ValueError):
+                    mutate(conn, "bulk", "sync", plan=second)
+                report = dag._queue_report(conn, "bulk", known, writers)
+                self.assertEqual(len(report["tasks"]), 60)
+            finally:
+                conn.close()
+
+    def test_vx_team_queue_readonly_uri_handles_hash_and_spaces(self):
+        with tempfile.TemporaryDirectory(prefix="vx-team-sqlite-uri-") as root:
+            db = Path(root) / "Lab #1" / "queue.sqlite3"
+            checked = dag._queue_db_path(db, mutate=True)
+            conn = dag._queue_open(checked, mutate=True)
+            try:
+                self.assertIsNotNone(conn.execute("SELECT name FROM sqlite_master").fetchone())
+            finally:
+                conn.close()
+            readonly = dag._queue_open(checked, mutate=False)
+            try:
+                self.assertIsNotNone(readonly.execute(
+                    "SELECT name FROM sqlite_master WHERE name='tasks'").fetchone())
+            finally:
+                readonly.close()
+            self.assertFalse((Path(root) / "Lab ").exists())
+            self.assertEqual(dag._queue_db_path(db, mutate=False), db)
+
     def test_exact_permissions_and_only_one_visible_primary(self):
         pack = module.load_manifest()
         from dev_team_agent_parser_support import load_agent
