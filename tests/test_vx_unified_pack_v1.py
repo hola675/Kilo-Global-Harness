@@ -96,6 +96,121 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertIn('**Responsable vigente:** `vx-dev-team`', collaboration)
         self.assertIn('`vx-dev-reviewer`', collaboration)
 
+    def test_parallel_dag_proposes_two_isolated_writers_without_dispatch(self):
+        import vx_task_dag as dag
+        known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
+        writers = {"vx-backend-builder", "vx-frontend-builder"}
+        tasks = [
+            {"id": "backend", "owner": "vx-backend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "writer": True, "worktree": "work/backend",
+             "allowed_paths": ["src/api/service.py"]},
+            {"id": "frontend", "owner": "vx-frontend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "writer": True, "worktree": "work/frontend",
+             "allowed_paths": ["src/ui/form.ts"]},
+        ]
+        report = dag.analyze({"schema": "vx-task-plan/1",
+                              "mode": "PARALLEL_SAFE", "tasks": tasks}, known, writers)
+        self.assertEqual(report["background_candidates"], ["backend", "frontend"])
+        self.assertEqual(report["file_lease_proposals"][0]["id"], "backend")
+        self.assertEqual(report["dispatch_state"], "PROPOSED_NOT_DISPATCHED")
+        self.assertFalse(report["file_leases_enforced"])
+        self.assertFalse(report["worktree_identity_verified"])
+        self.assertFalse(report["runtime_verified"])
+        self.assertEqual(report["actions_executed"], 0)
+        self.assertEqual(report["parallel_deferred"], [])
+
+        tasks[1]["depends_on"] = ["backend"]
+        dependent = dag.analyze({"schema": "vx-task-plan/1",
+                                 "mode": "PARALLEL_SAFE", "tasks": tasks}, known, writers)
+        self.assertEqual(dependent["background_candidates"], ["backend"])
+        self.assertEqual(dependent["blocked"][0]["id"], "frontend")
+
+    def test_parallel_dag_same_worktree_needs_explicit_disjoint_file_leases(self):
+        import vx_task_dag as dag
+        known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
+        writers = {"vx-backend-builder", "vx-frontend-builder"}
+        tasks = [
+            {"id": "backend", "owner": "vx-backend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "writer": True, "write_scope": "EXACT_FILES", "worktree": "shared",
+             "allowed_paths": ["src/api.py"]},
+            {"id": "frontend", "owner": "vx-frontend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "writer": True, "write_scope": "EXACT_FILES", "worktree": "shared",
+             "allowed_paths": ["src/ui.tsx"]},
+        ]
+        base = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE", "tasks": tasks}
+        default = dag.analyze(base, known, writers)
+        self.assertEqual(default["background_candidates"], ["backend"])
+        self.assertEqual(default["parallel_deferred"],
+                         [{"id": "frontend", "reason": "WORKTREE_WRITE_LOCK"}])
+        opted = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                            known, writers)
+        self.assertEqual(opted["background_candidates"], ["backend", "frontend"])
+        tasks[1]["allowed_paths"] = ["src/api.py"]
+        collision = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                                known, writers)
+        self.assertEqual(collision["background_candidates"], ["backend"])
+        self.assertEqual(collision["parallel_deferred"][0]["reason"], "OVERLAPPING_PATHS")
+        tasks[1]["allowed_paths"] = ["src/api.py/child"]
+        parent_child = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                                   known, writers)
+        self.assertEqual(parent_child["parallel_deferred"][0]["reason"], "OVERLAPPING_PATHS")
+        tasks[1]["allowed_paths"] = ["src/another.py"]
+        tasks[1].pop("write_scope")
+        ambiguous = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                                known, writers)
+        self.assertEqual(ambiguous["parallel_deferred"][0]["reason"],
+                         "WRITE_SCOPE_NOT_EXACT")
+        tasks[1]["write_scope"] = "EXACT_FILES"
+        tasks[0]["state"] = "RUNNING"
+        running = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                              known, writers)
+        self.assertEqual(running["running_tasks_declared"], ["backend"])
+        self.assertEqual(running["background_candidates"], ["frontend"])
+
+    def test_parallel_dag_fail_closed_on_invalid_paths_running_conflicts_and_budget(self):
+        import vx_task_dag as dag
+        known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
+        writers = {"vx-backend-builder", "vx-frontend-builder"}
+        tasks = [
+            {"id": "backend", "owner": "vx-backend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "RUNNING",
+             "writer": True, "write_scope": "EXACT_FILES", "worktree": "shared",
+             "allowed_paths": ["src/a.py"]},
+            {"id": "frontend", "owner": "vx-frontend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "RUNNING",
+             "writer": True, "write_scope": "EXACT_FILES", "worktree": "shared",
+             "allowed_paths": ["src/a.py"]},
+        ]
+        base = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
+                "allow_shared_worktree_exact_files": True, "tasks": tasks}
+        with self.assertRaises(ValueError):
+            dag.analyze(base, known, writers)
+        tasks[1]["allowed_paths"] = ["src/b.py"]
+        accepted = dag.analyze(base, known, writers)
+        self.assertEqual(accepted["running_writers_declared"], ["backend", "frontend"])
+        with self.assertRaises(ValueError):
+            dag.analyze(dict(base, max_parallel_writers=1), known, writers)
+        with self.assertRaises(ValueError):
+            dag.analyze(dict(base, max_background_tasks=0), known, writers)
+        with self.assertRaises(ValueError):
+            dag.analyze(dict(base, allow_shared_worktree_exact_files="yes"), known, writers)
+        for bad in ("../secret", "src/../secret", "C:\\secret", "src/*",
+                    "src//bad.py", "src/./bad.py", "src/bad.py/", "src/\x00bad.py"):
+            with self.subTest(bad=repr(bad)), self.assertRaises(ValueError):
+                tasks[1]["allowed_paths"] = [bad]
+                dag.analyze(base, known, writers)
+        tasks[1]["allowed_paths"] = ["src/b.py"]
+        tasks[0]["state"] = "PENDING"
+        tasks[1]["state"] = "PENDING"
+        with self.assertRaises(ValueError):
+            dag.analyze(dict(base, mode="STRICT", tasks=[
+                dict(tasks[0], state="RUNNING"), dict(tasks[1], state="RUNNING")]),
+                known, writers)
+
     def test_simulation_is_readonly_and_preserves_third_party_assets(self):
         with tempfile.TemporaryDirectory(prefix="vx-unified-plan-") as folder:
             home = Path(folder)
