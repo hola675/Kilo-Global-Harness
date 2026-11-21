@@ -15,7 +15,7 @@ description: "Usar en una tarea de programación VX autorizada con implementador
 
 Al entregar una API/UI/dato o contrato consumible por otro builder, incluir `task_id_or_local_ref`, `owner_agent`, `contract_version`, `allowed_paths`, `interfaces_stable`, `event: MILESTONE|BLOCKED|DELIVERED`, `evidence_ref`, `next_or_blocker` y `verification_state: CLAIMED|OBSERVED|NOT_VERIFIED`. No exigir todo para una corrección trivial de un archivo.
 
-Si Kilo Swarm y `board_post` / `board_read` están habilitados por permisos exactos, comunicar solo el cambio de contrato y consultar actualizaciones de hermanos en la siguiente barrera natural; no usar Board como lock, autorización o entrega garantizada. Si está denegado, el avance se incorpora a `task_result` y lo distribuye el líder en los handoffs posteriores. El receptor no altera un contrato ya estable sin nueva instrucción verificada del líder.
+Si Kilo Swarm y `board_post` / `board_read` están disponibles en el host bajo los permisos V2, comunicar solo el cambio de contrato y consultar actualizaciones de hermanos en la siguiente barrera natural; no usar Board como lock, autorización o entrega garantizada. Si está denegado, el avance se incorpora a `task_result` y lo distribuye el líder en los handoffs posteriores. El receptor no altera un contrato ya estable sin nueva instrucción verificada del líder.
 
 La integración depende de `diff` y tests reales, **nunca** de un mensaje `DONE`. Para comprobar autoría de escritura, observar la transcripción de herramientas del hijo; un archivo que existe no prueba quién lo creó.
 

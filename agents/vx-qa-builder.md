@@ -34,6 +34,8 @@ permission:
   write: ask
   apply_patch: ask
   bash: ask
+  board_read: allow
+  board_post: allow
   task: deny
   agent_manager: deny
   external_directory: deny

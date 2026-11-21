@@ -143,7 +143,8 @@ foreach ($p in $profiles) {
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
 
-# Dev Team source actual: único primario visible + diez subagentes ocultos read-only.
+# Dev Team source actual: VX Dev Team visible y diez especialistas read-only.
+# ACL Board V2: solo líder y seis builders reciben allow; lectores permanecen deny.
 if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
     $data.execution.dev_team_display_name -ne 'vx-dev-team' -or
     $data.execution.dev_team_runtime -ne 'active-v1') {
@@ -161,7 +162,7 @@ $devFrontMatch = [regex]::Match($devRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
 if (!$devFrontMatch.Success) { throw 'Frontmatter Dev Team invalido.' }
 $devFront = $devFrontMatch.Groups[1].Value
 foreach ($required in @(
-  '(?m)^displayName:\s*"vx-dev-team"\s*$',
+  '(?m)^displayName:\s*"VX Dev Team"\s*$',
   '(?m)^color:\s*"#8B5CF6"\s*$',
   '(?m)^\s{2}skill:\s*$',
   '(?m)^\s{4}"\*":\s*deny\s*$',
@@ -170,8 +171,8 @@ foreach ($required in @(
   '(?m)^\s{2}task:\s*$',
   '(?m)^\s{4}"\*":\s*deny\s*$',
   '(?m)^\s{2}agent_manager:\s*deny\s*$',
-  '(?m)^\s{2}board_read:\s*deny\s*$',
-  '(?m)^\s{2}board_post:\s*deny\s*$'
+  '(?m)^\s{2}board_read:\s*allow\s*$',
+  '(?m)^\s{2}board_post:\s*allow\s*$'
 )) {
   if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
 }

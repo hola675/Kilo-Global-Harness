@@ -2,7 +2,7 @@
 name: vx-agent-collaboration
 description: "Usar para coordinar task/swarm y agent manager con evidencia cuando una tarea mencione agentes, delegacion, swarm, agent manager. Exigir evidencia real y no cambiar permisos."
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
   origin: "vx-original"
 ---
 
@@ -35,6 +35,12 @@ metadata:
 - **Sesiones independientes Agent Manager:** no comparten Swarm aunque usen el mismo repo/worktree; usar evidencia de Git, PR y diffs, worktrees realmente aislados y revisión del integrador. `agent_manager` permanece denegado al líder de Kilo Desktop.
 
 **Barrera:** `DELIVERED` no es `VERIFIED`; el líder comprueba paths, diffs, evidencia de herramienta y tests focalizados después de que todos los escritores afectados terminen. `BLOCKED` no es aprobación para reintentar en otra herramienta.
+
+## Control de cola y recuperación — V2
+
+Las dependencias reales gobiernan la wave de trabajo: ninguna tarea dependiente sale de PENDING hasta que el líder haya verificado la evidencia de sus antecedentes. Para un único objetivo complejo, el líder crea un plan `vx-task-plan/1` mínimo, lo pasa al motor de DAG y, si hace falta continuidad entre sesiones, utiliza su cola privada SQLite (`--queue-action sync`, `report`, `start`, `event`, `verify`). `report` muestra orden sugerido y límites de escritores, pero **no despacha tareas**. Solo una llamada real `task` del host seguida de un ID observado permite `start`.
+
+El líder reanuda por el ID real que el host permita; un registro `RUNNING` en disco después de interrupción exige `HOLD_RECHECK`, nunca reintento duplicado. Los eventos son idempotentes mediante `--event-key`. El sistema no requiere conexión ni servicios externos, y el ledger nunca se sube al repositorio Git. Sin CLI aprobada se usa ledger de sesión y `task_result`.
 
 ## Handoff y seguridad
 

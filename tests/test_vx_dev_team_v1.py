@@ -35,7 +35,7 @@ def frontmatter(path: Path) -> str:
 class DevTeamV2RTests(unittest.TestCase):
     def test_primary_agent_is_the_only_visible_custom_leader(self):
         front = frontmatter(LEADER)
-        self.assertRegex(front, r'(?m)^displayName:\s*"vx-dev-team"\s*$')
+        self.assertRegex(front, r'(?m)^displayName:\s*"VX Dev Team"\s*$')
         self.assertRegex(front, r'(?m)^mode:\s*primary\s*$')
         self.assertRegex(front, r'(?m)^color:\s*"#8B5CF6"\s*$')
         self.assertNotRegex(front, r"(?m)^hidden:\s*true\s*$")
@@ -48,8 +48,8 @@ class DevTeamV2RTests(unittest.TestCase):
             set(UNIFIED["lead_skill_allowlist"]),
         )
         self.assertRegex(front, r"(?m)^  agent_manager:\s*deny\s*$")
-        self.assertRegex(front, r"(?m)^  board_read:\s*deny\s*$")
-        self.assertRegex(front, r"(?m)^  board_post:\s*deny\s*$")
+        self.assertRegex(front, r"(?m)^  board_read:\s*allow\s*$")
+        self.assertRegex(front, r"(?m)^  board_post:\s*allow\s*$")
 
     def test_leader_allowlists_unified_children_and_editorial_builder(self):
         front = frontmatter(LEADER)

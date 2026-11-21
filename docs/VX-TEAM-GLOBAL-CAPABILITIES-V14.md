@@ -1,6 +1,6 @@
-# VX Core 1.4 — inicio, skills globales y trabajo simultáneo
+# VX Dev Team V2 — inicio, Skills globales y trabajo simultáneo
 
-**Estado:** SOURCE candidato; falta CI, revisión independiente, merge y actualización de Kilo Desktop. No afirmar runtime paralelo ni instalación en el PC antes de comprobarlos.
+**Estado:** VX Dev Team V2 (SOURCE; runtime de Kilo pendiente de actualización/certificación). El primer Core VX 1.5 fue instalado por el operador, pero esta actualización V2 aún no demuestra Swarm/background activo.
 
 ## Evolución VX Progress V1 — Core VX 1.5 (SOURCE 2026-11-21)
 
@@ -13,9 +13,9 @@
 
 **Canales y estados:** el ledger de progreso vive únicamente en la sesión del líder. Eventos `STARTED`, `CONTRACT_READY`, `MILESTONE`, `BLOCKED`, `DELIVERED`, `CORRECTION`. El líder emite `VERIFIED` solo después de comprobar tool trace, diff y pruebas focalizadas. En laboratorio sin Git, `GIT_NOT_APPLICABLE`; sin ID real usar referencia local asignada y no inventar ID de Kilo. Evitar porcentajes o estimaciones de progreso sin medición.
 
-**Puerta de permisos actual:** `board_read: deny` y `board_post: deny` en el líder. Esta fase mantiene las ACL exactas, el modo Auto, Kilo Desktop y `kilo.jsonc` **sin cambios**. Mientras persista `deny`, `PROGRESS_CHANNEL_DENIED` y avances solo por `task_result` del hijo al líder; **no existe mensajería en tiempo real validada**. Para habilitar la pizarra posteriormente hace falta aprobar el cambio puntual de ACL, reinstalar el paquete actualizado y verificar las herramientas en sesiones reales.
+**Permisos VX Dev Team V2 autorizados por el operador:** `board_read: allow` y `board_post: allow` exclusivamente para el líder y seis builders. Los demás roles mantienen sus permisos y no se modifica `kilo.jsonc`, MCP ni AutoApprove. Si el host no expone Board, `PROGRESS_CHANNEL_UNAVAILABLE` y fallback `task_result`; **todavía no está certificada la comunicación en tiempo real de Kilo**.
 
-**Prueba focal posterior (no ejecutada todavía):** dos builders con archivos HTML/JSON distintos en un laboratorio; llamadas `task(background: true)` observadas y solapadas mientras el líder investiga un tercer archivo; al terminar, contrastar `task_result`, herramienta que escribió cada uno, ausencia de edición cruzada y verificación independiente. Solo después de aprobar `board_read/post`, añadir prueba con `MILESTONE` publicado, lectura del otro participante y evidencia de entrega/recepción separadas. No repetir RT-01/RT-02: eran foreground, y RT-02 carecía de traza de autoría del hijo.
+**Prueba focal posterior (no ejecutada todavía):** dos builders con archivos HTML/JSON distintos en un laboratorio; llamadas `task(background: true)` observadas y solapadas mientras el líder investiga un tercer archivo; al terminar, contrastar `task_result`, herramienta que escribió cada uno, ausencia de edición cruzada y verificación independiente. La ACL Board ya fue autorizada para esos siete roles; falta RT-04 con `MILESTONE` publicado, lectura del otro participante y evidencia de entrega/recepción separadas. No repetir RT-01/RT-02: eran foreground, y RT-02 carecía de traza de autoría del hijo.
 
 **Referencias:** https://kilo.ai/docs/automate/agent-manager · https://kilo.ai/docs/automate/agent-manager-workflows · https://kilo.ai/docs/automate/tools · https://kilo.ai/docs/customize/agent-permissions .
 
@@ -44,7 +44,7 @@ Un único agente principal `vx-dev-team` clasifica tareas, carga la skill de arr
 | `vx-enterprise-workflows` | RRHH, planes, acuerdos, actas, aprobaciones, consolidación | No inventar jerarquías o datos reales |
 | `vx-industrial-control-safety` | PLC/PCC, supervisión industrial, adaptadores, metrología | No manipular equipos reales sin gate |
 
-Las skills anteriores `vx-tauri-desktop`, `vx-conectividad-dispositivos`, `vx-desarrollo-escalonado`, las capacidades de Frontend/Backend/QA/Datos y las de seguridad se conservan; total **18 agentes y 53 skills**. No hay skills especiales llamadas `vx-vecidya`, `vx-multinexo`, etc. Ejemplo: un proyecto como Vecidya puede combinar **SaaS + Frontend/UX + Cloudflare + Editorial**, tomando su versión y gobernanza de su repo, sin que la skill dependa de su nombre.
+Las skills anteriores `vx-tauri-desktop`, `vx-conectividad-dispositivos`, `vx-desarrollo-escalonado`, las capacidades de Frontend/Backend/QA/Datos y las de seguridad se conservan; total **18 agentes y 57 Skills**. No hay skills especiales llamadas `vx-vecidya`, `vx-multinexo`, etc. Ejemplo: un proyecto como Vecidya puede combinar **SaaS + Frontend/UX + Cloudflare + Editorial**, tomando su versión y gobernanza de su repo, sin que la skill dependa de su nombre.
 
 ## Roles, permisos y niveles
 
@@ -67,4 +67,5 @@ Para cualquier **nuevo proyecto Desktop explícito**, Tauri 2 es la **primera op
 
 ## Changelog
 
+- 2.0.0-rc1 (2026-11-21): VX Dev Team visible, Board autorizado solo para líder+6 builders, cola privada SQLite idempotente, priorización por dependencias y gates de runtime; guía vigente [Autopilot V2](VX-DEV-TEAM-AUTOPILOT-V2.md).
 - 1.4 RC1 (2026-11-21): arranque dirigido por capacidades globales, seis skills generales, permisos de skills por builder, dueño de archivos, coordinación background con barrera y Tauri-first Desktop. No altera `kilo.jsonc`, MCP, AutoApprove ni instalaciones del operador.

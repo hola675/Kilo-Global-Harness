@@ -88,7 +88,7 @@ class VXAgentPermissionsTests(unittest.TestCase):
         front = (AGENT_DIR / "vx-dev-team.md").read_text(
             encoding="utf-8"
         ).split("---", 2)[1]
-        self.assertRegex(front, r'(?m)^displayName:\s*"vx-dev-team"\s*$')
+        self.assertRegex(front, r'(?m)^displayName:\s*"VX Dev Team"\s*$')
         self.assertRegex(front, r"(?m)^mode:\s*primary\s*$")
         self.assertRegex(front, r'(?m)^color:\s*"#8B5CF6"\s*$')
         assert_skill_allowlist(self, AGENT_DIR / "vx-dev-team.md", "vx-dev-team")
@@ -102,12 +102,34 @@ class VXAgentPermissionsTests(unittest.TestCase):
         self.assertRegex(front, r"(?m)^  edit: ask\s*$")
         self.assertRegex(front, r"(?m)^  bash: ask\s*$")
         self.assertRegex(front, r"(?m)^  agent_manager: deny\s*$")
-        self.assertRegex(front, r"(?m)^  board_read: deny\s*$")
-        self.assertRegex(front, r"(?m)^  board_post: deny\s*$")
+        self.assertRegex(front, r"(?m)^  board_read: allow\s*$")
+        self.assertRegex(front, r"(?m)^  board_post: allow\s*$")
         self.assertNotRegex(
             front,
             r'(?m)^  "[a-z0-9-]+_\*":\s*(allow|ask)\s*$',
         )
+
+    def test_vx_dev_team_board_roles_are_exact_and_no_extra_privileges(self):
+        approved = set(UNIFIED["activation"]["board_acl_allowlist"])
+        self.assertEqual(approved, {
+            "vx-dev-team", "vx-frontend-builder", "vx-backend-builder",
+            "vx-data-builder", "vx-qa-builder", "vx-docs-builder",
+            "vx-editorial-builder",
+        })
+        for item in UNIFIED["agents"]:
+            path = ROOT / item["source"]
+            front = path.read_text(encoding="utf-8").split("---", 2)[1]
+            if item["id"] in approved:
+                self.assertIn("  board_read: allow", front)
+                self.assertIn("  board_post: allow", front)
+            else:
+                self.assertNotIn("  board_read: allow", front)
+                self.assertNotIn("  board_post: allow", front)
+            if item["role"] == "builder":
+                for tool in ("edit", "write", "apply_patch"):
+                    self.assertIn(f"  {tool}: ask", front)
+                self.assertIn("  task: deny", front)
+                self.assertIn("  agent_manager: deny", front)
 
     def test_v2r_children_are_hidden_strict_read_only(self):
         files = sorted(V2R_DIR.glob("vx-dev-*.md"))

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""VX Task DAG V0.2: planifica concurrencia segura, sin lanzar agentes ni mutar archivos."""
+"""VX Task DAG V0.3: planea trabajo y gestiona cola privada SQLite; no invoca subagentes."""
 from __future__ import annotations
 import argparse
 import json
 import re
+import sqlite3
+from datetime import datetime, timezone
+from hashlib import sha256
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
@@ -66,7 +69,8 @@ def _propose_background_wave(plan: dict[str, Any], tasks: list[dict[str, Any]],
     if type(allow_shared) is not bool:
         raise ValueError("allow_shared_worktree_exact_files debe ser booleano.")
     by_id = {t["id"]: t for t in tasks}
-    active = [t for t in tasks if t["state"] == "RUNNING"]
+    active = [t for t in tasks if t["state"] == "RUNNING" or
+              (t["state"] == "BLOCKED" and t.get("host_task_id"))]
     if len(active) > max_tasks:
         raise ValueError("RUNNING supera el limite de tareas de background.")
     active_writers = [t for t in active if t["writer"]]
@@ -101,7 +105,8 @@ def _propose_background_wave(plan: dict[str, Any], tasks: list[dict[str, Any]],
         "dispatch_state": "PROPOSED_NOT_DISPATCHED",
         "background_candidates": selected,
         "parallel_deferred": deferred,
-        "running_tasks_declared": [t["id"] for t in active],
+        "running_tasks_declared": [t["id"] for t in active if t["state"] == "RUNNING"],
+        "blocked_sessions_reserved": [t["id"] for t in active if t["state"] == "BLOCKED"],
         "file_lease_proposals": [
             {"id": task_id, "worktree": by_id[task_id]["worktree"],
              "allowed_paths": by_id[task_id]["allowed_paths"]}
@@ -141,6 +146,12 @@ def analyze(plan: dict[str, Any], known_agents: set[str],
         deps = t.get("depends_on", [])
         if not isinstance(deps, list) or not all(isinstance(d, str) for d in deps) or len(deps) != len(set(deps)):
             raise ValueError("Dependencias repetidas o inválidas.")
+        priority = t.get("priority", 0)
+        if type(priority) is not int or not 0 <= priority <= 100:
+            raise ValueError("Prioridad debe estar entre 0 y 100.")
+        contract = t.get("contract_version", "1")
+        if not isinstance(contract, str) or not 1 <= len(contract) <= 64:
+            raise ValueError("Version del contrato invalida.")
         if type(t.get("writer")) is not bool:
             raise ValueError("Declarar si la tarea escribe con un booleano.")
         if t["writer"] and owner not in writable_agents:
@@ -206,13 +217,15 @@ def analyze(plan: dict[str, Any], known_agents: set[str],
             else:
                 blocked.append({"id": name, "waiting_for": [], "reason": "manual_block"})
                 unblock_candidates.append(name)
-    parallel = (_propose_background_wave(plan, tasks, ready)
+    prioritized_ready = sorted(ready, key=lambda name: (-by_id[name].get("priority", 0), topo.index(name), name))
+    parallel = (_propose_background_wave(plan, tasks, prioritized_ready)
                 if plan["mode"] == PARALLEL_MODE else {})
     return {
         "schema": "vx-task-dag-report/1",
         "mode": plan["mode"],
         "topological_order": topo,
         "ready": ready,
+        "ready_queue": prioritized_ready,
         "blocked": blocked,
         "unblock_candidates": unblock_candidates,
         "verified_tasks_declared_only": [t["id"] for t in tasks if t["state"] == "VERIFIED"],
@@ -225,12 +238,356 @@ def analyze(plan: dict[str, Any], known_agents: set[str],
     }
 
 
+# VX Dev Team V2 - Control plane local-only. Kilo task/Swarm is the execution plane.
+# Every database transition is an operator/leader-declared observation, never host proof.
+QUEUE_PROJECT = re.compile(r"^[a-z][a-z0-9_-]{1,63}$")
+QUEUE_EVENTS = {"STARTED", "CONTRACT_READY", "MILESTONE", "BLOCKED",
+                "DELIVERED", "CORRECTION"}
+QUEUE_SCHEMA = "vx-team-queue/1"
+QUEUE_DDL = """
+CREATE TABLE IF NOT EXISTS tasks (
+ project TEXT NOT NULL, id TEXT NOT NULL, definition TEXT NOT NULL,
+ fingerprint TEXT NOT NULL, state TEXT NOT NULL, host_task_id TEXT,
+ contract_version TEXT NOT NULL, updated_at TEXT NOT NULL,
+ PRIMARY KEY(project,id)
+);
+CREATE TABLE IF NOT EXISTS events (
+ event_key TEXT NOT NULL, project TEXT NOT NULL, id TEXT NOT NULL,
+ event TEXT NOT NULL, summary TEXT NOT NULL, evidence_ref TEXT NOT NULL,
+ observed_at TEXT NOT NULL, request_hash TEXT NOT NULL DEFAULT '',
+ PRIMARY KEY(project,event_key)
+);
+CREATE TABLE IF NOT EXISTS project_config (
+ project TEXT NOT NULL PRIMARY KEY,
+ max_background_tasks INTEGER NOT NULL, max_parallel_writers INTEGER NOT NULL,
+ allow_shared_worktree_exact_files INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS events_task ON events(project,id);
+"""
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _queue_db_path(path: Path | None, *, mutate: bool) -> Path:
+    path = path or (Path.home() / ".config/kilo/harness/state/vx-team-queue.sqlite3")
+    if path == Path(path.anchor):
+        raise ValueError("No usar raiz del disco como cola.")
+    if not path.is_absolute() or path.suffix != ".sqlite3":
+        raise ValueError("La cola requiere ruta absoluta .sqlite3.")
+    path = path.expanduser()
+    # Project files, including a repository's .kilo, are never coordination state.
+    # Resolve the complete path: ancestor symlinks/junctions must not escape the gate.
+    resolved = path.resolve(strict=False)
+    # Windows HOME/TEMP can legitimately traverse a junction. Reject only
+    # source checkouts, checking BOTH supplied and resolved paths, or a direct file symlink.
+    roots = (path.absolute(), resolved)
+    inside_source = any(
+        (ancestor / "registry" / "vx-unified-pack-v1.json").is_file()
+        or (ancestor / ".git").exists()
+        for candidate in roots for ancestor in (candidate, *candidate.parents)
+    )
+    if inside_source or path.is_symlink():
+        raise ValueError("Prohibido guardar la cola dentro de un checkout Git o por symlink de archivo.")
+    if mutate:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    elif not path.is_file():
+        raise ValueError("Cola privada inexistente; registrar plan primero.")
+    return path
+
+
+def _queue_open(path: Path, *, mutate: bool) -> sqlite3.Connection:
+    if mutate:
+        conn = sqlite3.connect(str(path), timeout=10)
+        conn.executescript("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;" + QUEUE_DDL)
+    else:
+        conn = sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=10)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def _queue_options(plan: dict[str, Any]) -> tuple[int, int, bool]:
+    max_tasks = plan.get("max_background_tasks", 4)
+    max_writers = plan.get("max_parallel_writers", min(2, max_tasks) if type(max_tasks) is int else 2)
+    shared = plan.get("allow_shared_worktree_exact_files", False)
+    if (type(max_tasks) is not int or not 1 <= max_tasks <= 4
+        or type(max_writers) is not int or not 1 <= max_writers <= min(2, max_tasks)
+        or type(shared) is not bool):
+        raise ValueError("Limites de cola fuera del contrato 4 hijos/2 escritores.")
+    return max_tasks, max_writers, shared
+
+
+def _queue_config(conn: sqlite3.Connection, project: str) -> tuple[int, int, bool]:
+    row = conn.execute(
+        "SELECT max_background_tasks,max_parallel_writers,allow_shared_worktree_exact_files "
+        "FROM project_config WHERE project=?", (project,)
+    ).fetchone()
+    if row is None:
+        # Fail closed if a legacy database lacks the project contract.
+        raise ValueError("Cola sin limites de proyecto persistidos; no despachar.")
+    return row[0], row[1], bool(row[2])
+
+
+def _queue_tasks(conn: sqlite3.Connection, project: str) -> list[dict[str, Any]]:
+    rows = conn.execute("SELECT * FROM tasks WHERE project=? ORDER BY id", (project,)).fetchall()
+    result = []
+    for row in rows:
+        task = json.loads(row["definition"])
+        task["state"] = row["state"]
+        task["host_task_id"] = row["host_task_id"]
+        result.append(task)
+    return result
+
+
+def _queue_report(conn: sqlite3.Connection, project: str,
+                  known: set[str], writable: set[str]) -> dict[str, Any]:
+    tasks = _queue_tasks(conn, project)
+    if not tasks:
+        return {"schema": QUEUE_SCHEMA, "project": project, "status": "EMPTY",
+                "tasks": [], "ready_queue": [], "actions_executed": 0}
+    max_tasks, max_writers, shared = _queue_config(conn, project)
+    plan = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
+            "allow_shared_worktree_exact_files": shared,
+            "max_background_tasks": max_tasks, "max_parallel_writers": max_writers,
+            "tasks": tasks}
+    report = analyze(plan, known, writable)
+    state_counts = {name: sum(t["state"] == name for t in tasks) for name in STATES}
+    return {
+        "schema": QUEUE_SCHEMA, "project": project, "status": "RECORDED_NOT_HOST_CERTIFIED",
+        "tasks": [{"id": t["id"], "owner": t["owner"], "state": t["state"],
+                   "depends_on": t.get("depends_on", []), "host_task_id": t["host_task_id"]}
+                  for t in tasks],
+        "ready_queue": report["ready_queue"], "background_candidates": report["background_candidates"],
+        "parallel_deferred": report["parallel_deferred"], "state_counts": state_counts,
+        "limits": {"max_background_tasks": max_tasks, "max_parallel_writers": max_writers,
+                   "allow_shared_worktree_exact_files": shared},
+        "tool_invocations_performed": 0, "git_changes": 0,
+        "runtime_trace_authenticated": False,
+        "note": "La cola persiste estados declarados, no lanza task, board ni modifica proyectos."
+    }
+
+
+def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
+                  plan: dict[str, Any] | None, task_id: str | None,
+                  host_task_id: str | None, event: str | None,
+                  event_key: str | None, summary: str, evidence_ref: str,
+                  review_ref: str, test_report: str,
+                  known: set[str], writable: set[str]) -> None:
+    conn.execute("BEGIN IMMEDIATE")
+    try:
+        if action == "sync":
+            if plan is None:
+                raise ValueError("sync requiere --plan.")
+            analyze(plan, known, writable)
+            if plan["mode"] != "PARALLEL_SAFE":
+                raise ValueError("sync requiere modo PARALLEL_SAFE.")
+            if any(t["state"] != "PENDING" for t in plan["tasks"]):
+                raise ValueError("sync solo admite tareas PENDING nuevas.")
+            max_tasks, max_writers, shared = _queue_options(plan)
+            previous = conn.execute("SELECT * FROM project_config WHERE project=?", (project,)).fetchone()
+            options = (max_tasks, max_writers, int(shared))
+            if previous and tuple(previous[k] for k in (
+                    "max_background_tasks", "max_parallel_writers",
+                    "allow_shared_worktree_exact_files")) != options:
+                raise ValueError("Conflicto de limites persistidos del proyecto.")
+            if not previous:
+                conn.execute("INSERT INTO project_config VALUES (?,?,?,?)", (project, *options))
+            existing_ids = {r[0] for r in conn.execute(
+                "SELECT id FROM tasks WHERE project=?", (project,)).fetchall()}
+            incoming_ids = {t["id"] for t in plan["tasks"]}
+            if len(existing_ids | incoming_ids) > 100:
+                raise ValueError("Sync excede 100 tareas acumuladas; transaccion rechazada.")
+
+            for task in plan["tasks"]:
+                # Persist coordination metadata only, never raw prompts or secrets.
+                allowed = {"id", "owner", "reviewer", "state", "depends_on",
+                           "writer", "worktree", "allowed_paths", "write_scope",
+                           "priority", "contract_version"}
+                if not set(task) <= allowed:
+                    raise ValueError("Cola no acepta campos ajenos, contenido de proyecto ni prompts.")
+                fingerprint = sha256(json.dumps(task, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+                row = conn.execute("SELECT fingerprint FROM tasks WHERE project=? AND id=?",
+                                   (project, task["id"])).fetchone()
+                if row:
+                    if row["fingerprint"] != fingerprint:
+                        raise ValueError("Conflicto de definicion: " + task["id"])
+                    continue
+                conn.execute("INSERT INTO tasks VALUES (?,?,?,?,?,?,?,?)",
+                             (project, task["id"], json.dumps(task, ensure_ascii=False),
+                              fingerprint, "PENDING", None,
+                              str(task.get("contract_version", "1")), _now()))
+        else:
+            if not task_id or not ID.fullmatch(task_id):
+                raise ValueError("ID de tarea requerido.")
+            task_row = conn.execute("SELECT * FROM tasks WHERE project=? AND id=?",
+                                    (project, task_id)).fetchone()
+            if task_row is None:
+                raise ValueError("Tarea inexistente.")
+            state = task_row["state"]
+            if not event_key or len(event_key) > 128 or not re.fullmatch(r"[a-zA-Z0-9_.:-]+", event_key):
+                raise ValueError("Mutaciones requieren --event-key estable, sin espacios.")
+            desired_event = {
+                "start": "RUNNING", "verify": "VERIFIED",
+                "resume": "RESUMED", "reset": "RESET",
+            }.get(action, event)
+            request = {
+                "action": action, "task_id": task_id, "host_task_id": host_task_id,
+                "event": event, "summary": summary, "evidence_ref": evidence_ref,
+                "review_ref": review_ref, "test_report": test_report,
+            }
+            request_hash = sha256(
+                json.dumps(request, sort_keys=True, ensure_ascii=False).encode("utf-8")
+            ).hexdigest()
+            present = conn.execute(
+                "SELECT id,event,request_hash FROM events WHERE project=? AND event_key=?",
+                (project, event_key),
+            ).fetchone()
+            if present:
+                if (present["id"] == task_id and present["event"] == desired_event
+                        and present["request_hash"] == request_hash):
+                    conn.commit()
+                    return
+                raise ValueError("Colision idempotente: mismo event_key con otra peticion.")
+            tasks = _queue_tasks(conn, project)
+            by_id = {t["id"]: t for t in tasks}
+            target = by_id[task_id]
+            if action == "start":
+                if state != "PENDING" or not host_task_id or not host_task_id.strip():
+                    raise ValueError("start exige PENDING y un ID real devuelto por Kilo.")
+                if any(by_id[dep]["state"] != "VERIFIED" for dep in target.get("depends_on", [])):
+                    raise ValueError("Prerequisitos no verificados.")
+                max_tasks, max_writers, shared = _queue_config(conn, project)
+                running = [t for t in tasks if t["state"] == "RUNNING" or
+                           (t["state"] == "BLOCKED" and t.get("host_task_id"))]
+                if len(running) >= max_tasks or (target["writer"] and
+                   sum(t["writer"] for t in running) >= max_writers):
+                    raise ValueError("Capacidad concurrente agotada.")
+                if any(_writer_conflict(target, other, shared) for other in running):
+                    raise ValueError("Conflicto de rutas; no iniciar escritor.")
+                if (conn.execute("SELECT 1 FROM tasks WHERE project=? AND host_task_id=?",
+                                 (project, host_task_id)).fetchone()
+                        or any(host_task_id in t.get("retired_host_task_ids", [])
+                               for t in tasks)):
+                    raise ValueError("ID del host ya activo o retirado; exigir nueva sesion real.")
+                state = "RUNNING"
+            elif action == "event":
+                if event not in QUEUE_EVENTS:
+                    raise ValueError("Evento de progreso no admitido.")
+                if state != "RUNNING":
+                    raise ValueError("Progreso permitido solo para RUNNING.")
+                if event in ("DELIVERED", "MILESTONE") and not evidence_ref.strip():
+                    raise ValueError("Hito/entrega exige referencia de evidencia.")
+                if event == "DELIVERED":
+                    state = "REVIEW"
+                elif event == "BLOCKED":
+                    state = "BLOCKED"
+            elif action in ("resume", "reset"):
+                if state != "BLOCKED":
+                    raise ValueError("Solo se recuperan tareas BLOCKED.")
+                if (not host_task_id or host_task_id != task_row["host_task_id"]
+                        or not review_ref.strip() or not evidence_ref.strip()):
+                    raise ValueError("Recuperacion requiere ID original, revision humana y evidencia del host.")
+                if action == "resume":
+                    # Operator attests the SAME host session is alive; no new task dispatch.
+                    if any(by_id[dep]["state"] != "VERIFIED"
+                           for dep in target.get("depends_on", [])):
+                        raise ValueError("Prerequisitos pendientes en recuperacion.")
+                    max_tasks, max_writers, shared = _queue_config(conn, project)
+                    running = [t for t in tasks if t["id"] != task_id and
+                               (t["state"] == "RUNNING" or
+                                (t["state"] == "BLOCKED" and t.get("host_task_id")))]
+                    if (len(running) >= max_tasks or
+                            (target["writer"] and sum(t["writer"] for t in running) >= max_writers)
+                            or any(_writer_conflict(target, other, shared) for other in running)):
+                        raise ValueError("Recuperacion chocaria con trabajos activos.")
+                    state = "RUNNING"
+                else:
+                    # Operator attests the OLD host ended. Preserve its ID so it cannot be
+                    # claimed again as a fresh task, even under a different event_key.
+                    definition = json.loads(task_row["definition"])
+                    retired = definition.get("retired_host_task_ids", [])
+                    if host_task_id not in retired:
+                        retired.append(host_task_id)
+                    definition["retired_host_task_ids"] = retired
+                    conn.execute("UPDATE tasks SET definition=? WHERE project=? AND id=?",
+                                 (json.dumps(definition, ensure_ascii=False), project, task_id))
+                    state = "PENDING"
+            elif action == "verify":
+                if state != "REVIEW" or not review_ref.strip() or not test_report.strip():
+                    raise ValueError("verify requiere REVIEW, revision y test_report.")
+                state = "VERIFIED"
+                # The DAG validator requires retained review/test references after reload.
+                definition = json.loads(task_row["definition"])
+                definition["evidence"] = {"review_ref": review_ref, "test_report": test_report}
+                conn.execute("UPDATE tasks SET definition=? WHERE project=? AND id=?",
+                             (json.dumps(definition, ensure_ascii=False), project, task_id))
+                evidence_ref = f"review={review_ref};test={test_report}"
+            else:
+                raise ValueError("Accion de cola no permitida.")
+            conn.execute("UPDATE tasks SET state=?,host_task_id=?,updated_at=? WHERE project=? AND id=?",
+                         (state, (None if action == "reset" else
+                                   host_task_id if action == "start" else task_row["host_task_id"]),
+                          _now(), project, task_id))
+            conn.execute("INSERT INTO events VALUES (?,?,?,?,?,?,?,?)",
+                         (event_key, project, task_id, desired_event, summary[:500],
+                          evidence_ref[:500], _now(), request_hash))
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+
+
+def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
+    if not args.project or not QUEUE_PROJECT.fullmatch(args.project):
+        raise ValueError("Proyecto de cola invalido.")
+    mutate = args.queue_action != "report"
+    path = _queue_db_path(args.queue_db, mutate=mutate)
+    registry = args.registry or (Path.home() / ".config/kilo/harness/vx-unified-pack-v1.json")
+    if not registry.is_file():
+        # Source checkout fallback for tests and developer machines.
+        registry = Path(__file__).resolve().parents[1] / "registry/vx-unified-pack-v1.json"
+    reg = json.loads(registry.read_text(encoding="utf-8"))
+    if reg.get("schema") != "vx-unified-pack/1":
+        raise ValueError("La cola requiere el registro unificado VX.")
+    known = {a["id"] for a in reg["agents"]}
+    writable = {a["id"] for a in reg["agents"] if a.get("role") in ("lead", "builder")}
+    conn = _queue_open(path, mutate=mutate)
+    try:
+        if mutate:
+            plan = json.loads(args.plan.read_text(encoding="utf-8")) if args.plan and args.queue_action == "sync" else None
+            _queue_mutate(conn, project=args.project, action=args.queue_action,
+                          plan=plan, task_id=args.task_id, host_task_id=args.host_task_id,
+                          event=args.event, event_key=args.event_key, summary=args.summary or "",
+                          evidence_ref=args.evidence_ref or "", review_ref=args.review_ref or "",
+                          test_report=args.test_report or "", known=known, writable=writable)
+        return _queue_report(conn, args.project, known, writable)
+    finally:
+        conn.close()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida DAG de tareas de agente VX sin acciones.")
-    parser.add_argument("--plan", required=True, type=Path)
+    parser.add_argument("--plan", type=Path)
+    parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report"])
+    parser.add_argument("--queue-db", type=Path)
+    parser.add_argument("--project")
+    parser.add_argument("--task-id")
+    parser.add_argument("--host-task-id")
+    parser.add_argument("--event")
+    parser.add_argument("--event-key")
+    parser.add_argument("--summary")
+    parser.add_argument("--evidence-ref")
+    parser.add_argument("--review-ref")
+    parser.add_argument("--test-report")
     parser.add_argument("--registry", type=Path, default=None)
     args = parser.parse_args()
     try:
+        if args.queue_action:
+            print(json.dumps(queue_cli(args), ensure_ascii=False, sort_keys=True, indent=2))
+            return 0
+        if args.plan is None:
+            raise ValueError("Se requiere --plan para el analizador DAG.")
         global_unified = Path.home() / ".config/kilo/harness/vx-unified-pack-v1.json"
         local_legacy = Path(__file__).resolve().parent.parent / "registry" / "vx-agent-registry-v4.json"
         global_legacy = Path.home() / ".config/kilo/harness/vx-agent-registry-v4.json"

@@ -3,11 +3,17 @@ description: "Equipo unificado: un líder visible, especialistas ocultos y build
 agent: vx-dev-team
 ---
 
-# /vx-equipo — trabajo unificado por alcance
+# /vx-equipo — VX Dev Team, objetivo único y ejecución coordinada
 
 Tarea: $ARGUMENTS
 
 Actúa como `vx-dev-team`, **único líder visible**. No invocar `vx-integrador`, `vx-inspector`, `vx-researcher`, `vx-security-reviewer`, `vx-test-analyst` o `vx-frontend-adviser`: pertenecen al pack histórico y su sustitución ya está definida. No invocar comandos de selección V4 ni cargar registros históricos que puedan devolver esos IDs. Este comando **no instala ni activa** otros agentes.
+
+## VX Dev Team V2 — modo autónomo de equipo
+
+Este comando es el punto de entrada conversacional: basta con describir el objetivo en `$ARGUMENTS`. El líder **planea, decide, reparte, monitoriza hitos, verifica y continúa** sin pedir al usuario que administre roles, colas ni estados intermedios. Clasificar por complejidad: tareas simples directamente; para una meta compleja crear DAG, acordar contratos mínimos, identificar tareas sin dependencias y lanzar la wave segura con herramientas reales de Kilo. Antes de iniciar dos escritores demostrar rutas disjuntas; sin herramienta background ejecutar secuencial y explicarlo.
+
+Para una tarea prolongada, el líder usa la cola local del motor `vx_task_dag.py` (privada al usuario) si `bash: ask` lo permite. Publicar `MILESTONE/BLOCKED/DELIVERED` mediante Swarm cuando board_read/post funcionen; el Board no es despacho ni prueba de aceptación. Cuando llega `task_result`, verificar archivos y tests, marcar `VERIFIED`, liberar dependencias y procesar siguiente wave. Sin permisos adecuados degradar a ledger de sesión y handoff normal. No cambiar AutoApprove, MCP, runtime o permisos para evitar un bloqueo.
 
 ## Arranque inteligente del equipo (VX 1.4)
 
