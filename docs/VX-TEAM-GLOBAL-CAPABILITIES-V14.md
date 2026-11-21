@@ -2,6 +2,23 @@
 
 **Estado:** SOURCE candidato; falta CI, revisión independiente, merge y actualización de Kilo Desktop. No afirmar runtime paralelo ni instalación en el PC antes de comprobarlos.
 
+## Evolución VX Progress V1 — Core VX 1.5 (SOURCE 2026-11-21)
+
+**Propósito:** aprovechar las herramientas nativas Kilo para que el equipo actual comparta hitos, bloqueos e interfaces estables mientras desarrolla en paralelo, **sin un segundo líder, scheduler, MCP ni servidor de mensajería**. Se añade el contrato `vx-progress-event/1` a la skill `vx-agent-collaboration`, `vx-team-bootstrap`, el líder `vx-dev-team` y los seis builders existentes. Ninguna nueva Skill ni agente; no aumenta los 18/57 activos del manifiesto.
+
+**Herramientas verificadas en la documentación oficial Kilo:**
+- `task(background: true)`: subagente real que comparte el workspace y regresa el resultado al líder sin bloquearlo; **no crea worktree**. Si la tool no expone `background`, fallback foreground sin afirmar simultaneidad.
+- Kilo Swarm: `board_post` / `board_read` permite comunicar hitos entre sesión principal y descendientes `task`, no entre sesiones top-level separadas de Agent Manager. Los posts se almacenan pero no prueban entrega/lectura; nunca autorizan operaciones.
+- Agent Manager (extensión VS Code): worktrees/sesiones aisladas para ramas independientes. El líder Kilo Desktop mantiene `agent_manager: deny`; no se activa con este cambio.
+
+**Canales y estados:** el ledger de progreso vive únicamente en la sesión del líder. Eventos `STARTED`, `CONTRACT_READY`, `MILESTONE`, `BLOCKED`, `DELIVERED`, `CORRECTION`. El líder emite `VERIFIED` solo después de comprobar tool trace, diff y pruebas focalizadas. En laboratorio sin Git, `GIT_NOT_APPLICABLE`; sin ID real usar referencia local asignada y no inventar ID de Kilo. Evitar porcentajes o estimaciones de progreso sin medición.
+
+**Puerta de permisos actual:** `board_read: deny` y `board_post: deny` en el líder. Esta fase mantiene las ACL exactas, el modo Auto, Kilo Desktop y `kilo.jsonc` **sin cambios**. Mientras persista `deny`, `PROGRESS_CHANNEL_DENIED` y avances solo por `task_result` del hijo al líder; **no existe mensajería en tiempo real validada**. Para habilitar la pizarra posteriormente hace falta aprobar el cambio puntual de ACL, reinstalar el paquete actualizado y verificar las herramientas en sesiones reales.
+
+**Prueba focal posterior (no ejecutada todavía):** dos builders con archivos HTML/JSON distintos en un laboratorio; llamadas `task(background: true)` observadas y solapadas mientras el líder investiga un tercer archivo; al terminar, contrastar `task_result`, herramienta que escribió cada uno, ausencia de edición cruzada y verificación independiente. Solo después de aprobar `board_read/post`, añadir prueba con `MILESTONE` publicado, lectura del otro participante y evidencia de entrega/recepción separadas. No repetir RT-01/RT-02: eran foreground, y RT-02 carecía de traza de autoría del hijo.
+
+**Referencias:** https://kilo.ai/docs/automate/agent-manager · https://kilo.ai/docs/automate/agent-manager-workflows · https://kilo.ai/docs/automate/tools · https://kilo.ai/docs/customize/agent-permissions .
+
 ## Objetivo final
 
 Un único agente principal `vx-dev-team` clasifica tareas, carga la skill de arranque solo si hace falta, delega implementación de código a builders con permisos efectivos y mantiene actividad útil mientras dos subagentes independientes trabajan. Integrar los resultados sin modificar accidentalmente archivos compartidos y sin crear skills ligadas a marcas o repositorios.

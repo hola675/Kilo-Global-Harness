@@ -517,7 +517,8 @@
     "no_legacy_registry_required": true,
     "contextual_skills_install_only": true,
     "contextual_skills_not_auto_allowlisted": true,
-    "runtime_acl_change_requires_separate_review": true
+    "runtime_acl_change_requires_separate_review": true,
+    "no_board_acl_change": true
   },
   "postponed": [
     "26 Dev Team extension skills remain as source proposals, not installed by unified core",
@@ -671,7 +672,46 @@
       "scope_permissions": "R0_READ_R1_SCOPED_CODE_R2_GIT_R3_EXPLICIT_HIGH_RISK",
       "runtime_enforcement": "NOT_IMPLEMENTED_PLAN_ONLY",
       "file_lease_runtime_enforced": false,
-      "background_runtime_certified": false
+      "background_runtime_certified": false,
+      "progress_protocol": {
+        "schema": "vx-progress-event/1",
+        "version": "1.0.0",
+        "status": "SOURCE_CONTRACT_ONLY_BOARD_DENIED",
+        "events": [
+          "STARTED",
+          "CONTRACT_READY",
+          "MILESTONE",
+          "BLOCKED",
+          "DELIVERED",
+          "CORRECTION"
+        ],
+        "verified_emitter": "vx-dev-team only after tool trace and diff/test verification",
+        "event_fields": [
+          "task_id_or_local_ref",
+          "owner_agent",
+          "contract_version",
+          "event",
+          "work_scope",
+          "summary",
+          "next_or_blocker",
+          "evidence_ref",
+          "verification_state"
+        ],
+        "leader_ledger": "SESSION_ONLY",
+        "board_channel": "KILO_SWARM_IF_HOST_EXPOSES_AND_ACL_ALLOWS",
+        "current_leader_board_acl": "DENY",
+        "fallback": "TASK_RESULT",
+        "allow_real_time_claim_without_board": false,
+        "agent_manager_cross_session_board_shared": false,
+        "board_is_authorization": false,
+        "board_post_is_delivery_proof": false,
+        "no_periodic_polling": true,
+        "no_secrets_or_private_data": true,
+        "no_new_agents": true,
+        "no_new_skills": true,
+        "runtime_background_certified": false,
+        "runtime_board_certified": false
+      }
     },
     "capability_routing": [
       {
