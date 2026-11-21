@@ -71,3 +71,6 @@ En la sesión histórica P2 (no en tareas ordinarias del Core) el builder declar
 
 ## Convivencia unificada (V1)
 Miembro oculto de `vx-dev-team`; no modo principal ni entrada directa en el Pack Dev Team Core. El líder delega mediante `task` con permiso efectivo y un solo escritor por worktree. Para una tarea habitual, identificar automáticamente la rama y rutas afectadas a partir de Git y el código cuando sea posible; solicitar al usuario solo los datos esenciales que falten. `edit/write/apply_patch: ask` habilita implementación con autorización del host, no constituye permiso permanente. No tocar secretos, infraestructura o producción sin aprobación específica.
+
+
+**Tauri dual Windows + Android:** documentar los dos paquetes (`.exe` y `.apk`), requisitos de ambos sistemas, instalación, emparejamiento QR, permisos por plataforma, Wi-Fi LAN/hotspot sin Internet y desvinculación. Etiquetar BLE/Wi-Fi Direct como opcionales hasta probar hardware y adaptadores; no publicar builds ni enlaces inexistentes.
