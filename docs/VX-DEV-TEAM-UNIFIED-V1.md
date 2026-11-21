@@ -27,7 +27,7 @@ El operador inicia el líder visible **VX Dev Team** (ID interno `vx-dev-team`),
 
 **Nuevo permiso acotado autorizado:** `board_read: allow` y `board_post: allow` exclusivamente en `vx-dev-team` y seis builders. Los once especialistas de lectura no reciben Board por este cambio, ni se amplían `bash`, `edit`, `task`, `agent_manager`, MCP, AutoApprove o `kilo.jsonc`. Kilo Swarm comparte hitos solo dentro del árbol de la sesión; no es un sistema de despacho. Si el host no lo expone, `task_result` mantiene el flujo.
 
-**Cola y dependencia:** `scripts/vx_task_dag.py` del paquete se amplía con `--queue-action sync|report|start|event|verify`, metadatos SQLite privados e idempotencia. Se inicia una tarea solo cuando el líder ya ha invocado `task` real y puede registrar el ID observado. No hay daemon, scheduler ni cambios automáticos en Git. Un resultado no verificable no desbloquea dependencias. Manual completo: [VX Dev Team Autopilot V2](VX-DEV-TEAM-AUTOPILOT-V2.md).
+**Cola y dependencia:** `scripts/vx_task_dag.py` del paquete se amplía con `--queue-action sync|report|start|event|verify|resume|reset`, metadatos SQLite privados e idempotencia. Se inicia una tarea solo cuando el líder ya ha invocado `task` real y puede registrar el ID observado. No hay daemon, scheduler ni cambios automáticos en Git. Un resultado no verificable no desbloquea dependencias. Manual completo: [VX Dev Team Autopilot V2](VX-DEV-TEAM-AUTOPILOT-V2.md).
 
 **Estado:** fuente y pruebas a certificar por CI/revisión, posteriormente instalar en Kilo Windows y ejecutar RT-03/RT-04. Ni la instalación de archivos ni la mera existencia de un `board_post` constituyen prueba de background o de recepción por el compañero.
 
