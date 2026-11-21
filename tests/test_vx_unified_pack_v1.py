@@ -6,6 +6,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/vx_unified_pack.py"
@@ -233,6 +234,25 @@ class UnifiedPackV1Tests(unittest.TestCase):
                 self.assertEqual(dag._queue_report(conn, "sample", known, writers)["state_counts"]["VERIFIED"], 2)
             finally:
                 conn.close()
+
+    def test_vx_team_queue_installed_path_is_private_and_source_tree_is_protected(self):
+        # Simulate the installed harness root, not a Git repo.
+        with tempfile.TemporaryDirectory(prefix="vx-team-db-roots-") as temp:
+            harness = Path(temp) / ".config" / "kilo" / "harness"
+            script = harness / "scripts" / "vx_task_dag.py"
+            script.parent.mkdir(parents=True)
+            installed_db = harness / "state" / "queue.sqlite3"
+            with patch.object(dag, "__file__", str(script)):
+                self.assertEqual(dag._queue_db_path(installed_db, mutate=True), installed_db)
+                self.assertTrue(installed_db.parent.is_dir())
+            source = Path(temp) / "source-repo"
+            (source / "registry").mkdir(parents=True)
+            (source / "registry" / "vx-unified-pack-v1.json").write_text("{}", encoding="utf-8")
+            repo_script = source / "scripts" / "vx_task_dag.py"
+            repo_script.parent.mkdir()
+            with patch.object(dag, "__file__", str(repo_script)):
+                with self.assertRaises(ValueError):
+                    dag._queue_db_path(source / "state" / "queue.sqlite3", mutate=True)
 
     def test_vx_team_queue_rejects_untrusted_or_cycle_plan_and_outside_paths(self):
         pack = module.load_manifest()
