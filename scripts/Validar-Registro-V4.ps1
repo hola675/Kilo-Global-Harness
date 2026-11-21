@@ -71,11 +71,17 @@ foreach ($agent in $agents) {
       throw 'Dev Team V2-R requiere skills deny-by-default con allowlist exacta y delegacion allowlist.'
     }
   } elseif ($agent.role -eq 'builder') {
-    # Core unificado VX 1.4: skills de builders con denegacion por defecto y allowlist exacta.
-    # No convertir el antiguo permiso escalar "skill: allow" en requisito del runtime.
+    # Core VX 1.4: builders skill deny-by-default con nombres exactos.
     $skillsBlock = [regex]::Match($front, '(?m)^  skill:\s*\r?\n((?:    [^\r\n]*\r?\n)+)')
     if (!$skillsBlock.Success -or
-        $skillsBlock.Groups[1].Value -notmatch '(?m)^    "\*":\s*deny\s*
+        $skillsBlock.Groups[1].Value -notmatch '(?m)^    "\*":\s*deny\s*$' -or
+        $skillsBlock.Groups[1].Value -notmatch '(?m)^    "vx-[a-z0-9-]+":\s*allow\s*$' -or
+        $skillsBlock.Groups[1].Value -match '(?m)^    "\*":\s*allow\s*$') {
+      throw "Builder sin skills deny-by-default y allowlist exacta: $id."
+    }
+  } elseif ($front -notmatch '(?m)^  skill:\s*allow\s*$') {
+    throw "Agente sin carga controlada de skills: $id."
+  }
   if ($agent.role -eq 'coordinator' -and $id -ne 'vx-dev-team') {
     if ($front -notmatch '(?m)^  task:\s*$' -or
         $front -notmatch '(?m)^    "\*":\s*deny\s*$' -or
