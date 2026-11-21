@@ -1,6 +1,6 @@
 {
   "schema": "vx-unified-pack/1",
-  "version": "1.4.0-rc1",
+  "version": "1.5.0-rc1",
   "updated": "2026-11-21",
   "status": "SOURCE_CANDIDATE_NOT_INSTALLED",
   "scope": "ONE_GLOBAL_PACK_KILO_WINDOWS",
@@ -451,6 +451,30 @@
       "source": "skills/vx-industrial-control-safety/SKILL.md",
       "target": ".kilo/skills/vx-industrial-control-safety/SKILL.md",
       "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-version-governance",
+      "source": "skills/vx-version-governance/SKILL.md",
+      "target": ".kilo/skills/vx-version-governance/SKILL.md",
+      "layer": "CONTEXTUAL"
+    },
+    {
+      "id": "vx-context-routing",
+      "source": "skills/vx-context-routing/SKILL.md",
+      "target": ".kilo/skills/vx-context-routing/SKILL.md",
+      "layer": "CONTEXTUAL"
+    },
+    {
+      "id": "vx-technology-fit",
+      "source": "skills/vx-technology-fit/SKILL.md",
+      "target": ".kilo/skills/vx-technology-fit/SKILL.md",
+      "layer": "CONTEXTUAL"
+    },
+    {
+      "id": "vx-skill-quality",
+      "source": "skills/vx-skill-quality/SKILL.md",
+      "target": ".kilo/skills/vx-skill-quality/SKILL.md",
+      "layer": "CONTEXTUAL"
     }
   ],
   "managed_legacy": {
@@ -490,12 +514,16 @@
     "update_selected_commands": true,
     "retire_historical_p2_command": true,
     "install_support_files": true,
-    "no_legacy_registry_required": true
+    "no_legacy_registry_required": true,
+    "contextual_skills_install_only": true,
+    "contextual_skills_not_auto_allowlisted": true,
+    "runtime_acl_change_requires_separate_review": true
   },
   "postponed": [
     "26 Dev Team extension skills remain as source proposals, not installed by unified core",
     "VX Evolution independent runtime components and observer not activated",
-    "Legacy VX original role sources remain in Git and are not installed after migration"
+    "Legacy VX original role sources remain in Git and are not installed after migration",
+    "Four Core 1.5 contextual skills are installed as source files only; runtime permission.skill allowlists are unchanged pending separate explicit approval and effective host checks"
   ],
   "routing": {
     "lead_delegates_to": [
