@@ -243,8 +243,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Manifest de certificacion actual invalido.' }
           & ./scripts/Validar-Registro-V4.ps1
           $agent = Get-Content 'agents/vx-dev-team.md' -Raw -Encoding UTF8
-          if ($agent -notmatch 'displayName:\s*"vx-dev-team"' -or $agent -notmatch '#8B5CF6') {
-            throw 'Identidad visual vx-dev-team ausente.'
+          if ($agent -notmatch 'displayName:\s*"VX Dev Team"' -or $agent -notmatch '#8B5CF6') {
+            throw 'Identidad visual VX Dev Team ausente.'
           }
           Write-Host 'DEV TEAM CURRENT CERTIFICATION: CURRENT CONTRACT ONLY PASS'
 
