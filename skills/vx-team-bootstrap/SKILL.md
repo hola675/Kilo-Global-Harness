@@ -2,7 +2,7 @@
 name: vx-team-bootstrap
 description: "Inicio del pack unificado: seleccionar capacidades técnicas globales, comprobar instrucciones locales, distribuir permisos por rol y coordinar fases y resultados paralelos con un único líder visible."
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   origin: "vx-unified"
 ---
 
@@ -28,6 +28,16 @@ Seleccionar por stack real y `TASK_INTENT`, no por marca, utilizando la matriz d
 8. **Propiedad efectiva:** `task` no crea worktrees ni locks. No compartir cambios Git/lockfiles, dependencias o scripts que muten directorios ajenos entre escritores; no permitir que líder o QA toquen archivos reservados mientras la fase está activa. El permiso `ask` puede ser resuelto por Auto sin diálogo; eso **no** autoriza firewall, secretos, despliegues, migraciones, borrados o cambios de ACL.
 9. **Handoff:** el hijo responde `status, task_id, files_changed, tests_executed, contract_version, evidence, blockers`. Solo líder actualiza ledger; `DONE` es entrega del hijo, nunca `VERIFIED`. Al recibir varios resultados, cotejar diff real y versiones de contrato antes de ejecutar tests focalizados.
 10. **Barrera y continuación:** al terminar escritores, resolver imports/archivos compartidos mediante un único dueño, probar, revisar independientemente cuando hay riesgo, integrar con reglas Git del proyecto y marcar `VERIFIED` solo con evidencia. Tras un avance, actualizar el roadmap **vivo**, no crear reportes acumulativos. Ante interrupción: `HOLD_RECHECK`; no invocar de nuevo hijos de forma ciega.
+
+## VX Progress V1 — coordinación durante ejecución
+
+Para tareas realmente concurrentes, mantener un **ledger mínimo en la sesión del líder**: `task_id_or_local_ref, owner_agent, allowed_paths, contract_version, depends_on, phase, evidence, last_material_event`. Solo el líder decide estados `VERIFIED` e integración. No guardar el ledger en un repositorio público, lanzar un demonio ni crear archivos permanentes por rutina.
+
+El líder despacha tareas independientes mediante `task(background: true)` **solo si la herramienta disponible lo admite** y no edita los archivos reservados. Mientras trabajan, preparar contratos posteriores, inspeccionar archivos estables y comunicar al usuario avances comprobados. Recuperar resultados por la notificación de finalización de Kilo, no mediante polling ni tarea duplicada. Si no hay background, foreground con estado `BACKGROUND_UNAVAILABLE`.
+
+El contrato de progreso se define en `vx-agent-collaboration`: eventos breves `STARTED / CONTRACT_READY / MILESTONE / BLOCKED / DELIVERED / CORRECTION` más `VERIFIED` reservado al líder. Kilo Swarm puede compartir hitos **solo si `board_post` y `board_read` aparecen y están permitidas para cada participante**. Las ACL actuales del líder mantienen ambos `deny`: no modificar permisos desde una Skill; aplicar fallback por `task_result` y marcar `PROGRESS_CHANNEL_DENIED`. Un mensaje del tablero no entrega ni confirma la recepción por otro agente y jamás concede autorización.
+
+Para sesiones de Agent Manager creadas aparte en VS Code, Swarm no se comparte entre sesiones independientes; coordinar por contratos Git/PR y worktrees aislados. No intentar invocar `agent_manager` desde Kilo Desktop si está denegado.
 
 ## Escalones de autorización
 
