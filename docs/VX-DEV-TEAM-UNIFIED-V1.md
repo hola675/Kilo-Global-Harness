@@ -16,7 +16,7 @@ Unificar el Pack VX 0.4.0 y Dev Team 2.3.0 en una única instalación global. No
 
 ### Skills
 
-**44 skills**: 18 Dev CORE, más 26 VX complementarias seleccionadas por aportar una capacidad de ejecución o dominio que no se cubre solo con la estrategia CORE (TypeScript, Python, Cloudflare, SQL, E2E, Docs, Git/CI, performance, observabilidad, editorial, IDA, incidentes y colaboración, entre otras). La lista exacta y sus rutas únicas están en el manifiesto. Las skills se cargan bajo demanda: nunca las 43 simultáneamente.
+**44 skills**: 18 Dev CORE, más 26 VX complementarias seleccionadas por aportar una capacidad de ejecución o dominio que no se cubre solo con la estrategia CORE (TypeScript, Python, Cloudflare, SQL, E2E, Docs, Git/CI, performance, observabilidad, editorial, IDA, incidentes y colaboración, entre otras). La lista exacta y sus rutas únicas están en el manifiesto. Las skills se cargan bajo demanda: nunca las 44 simultáneamente.
 
 Se conservan en Git las 26 Dev adicionales que aún eran propuestas y las 7 VX no incluidas. No se activan waves W2-W5 automáticamente ni se elimina la documentación de VX Evolution.
 
