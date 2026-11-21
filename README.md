@@ -1,5 +1,7 @@
 # VECIDYA · Kilo Global Harness / VX Evolution
 
+> **Core VX 1.5 RC1 — instalador unificado actualizado (SOURCE):** el instalador `scripts/Instalar-DevTeam-Unificado.ps1` y su manifiesto incluyen ahora **18 agentes, 57 Skills, 3 comandos y 2 archivos de soporte**. Las cuatro Skills contextuales nuevas se copian a HOME, pero sus permisos `permission.skill` siguen **sin autorización automática**; activar esas ACL y certificar Kilo Desktop requiere una fase posterior. `Diagnostico` y `Simular` son solo lectura; no ejecutar `Aplicar` con drift sin comparar instrucciones/ACL y aprobar la sustitución de archivos instalados. [Guía de instalación Windows](docs/VX-DEV-TEAM-UNIFIED-V1.md).
+
 > **Core VX 1.5 — Skills contextuales y versionado preventivo (SOURCE / PR, no runtime):** +4 Skills originales y globales respecto a la baseline VX 1.4 de 53, para un catálogo previsto de **57 Skills**. Incorporan baseline Git y versión antes de cambios X/Y/Z, selección por contexto técnico, compatibilidad de dependencias y auditoría de Skills con casos negativos. Se integran mediante bootstrap y desarrollo existentes, sin crear subagentes adicionales ni Skills por proyecto. **No se amplían ACL**, no se toca `kilo.jsonc`, MCP, AutoApprove o scheduler, y no se considera instalado en Kilo Desktop. [Diseño y puertas de activación](docs/VX-CONTEXTUAL-SKILLS-GOVERNANCE-V1.md) · [Catálogo source](registry/vx-contextual-skills-v1.json).
 
 
