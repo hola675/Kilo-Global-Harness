@@ -143,7 +143,8 @@ foreach ($p in $profiles) {
 }
 if (!$profilesSeen.Contains('general')) { throw 'Falta perfil general.' }
 
-# Dev Team source actual: único primario visible + diez subagentes ocultos read-only.
+# Dev Team source actual: líder VX Dev Team visible y diez subagentes Dev ocultos read-only.
+# ACL Swarm V2: solo líder y seis builders; los especialistas Dev mantienen deny.
 if ($data.execution.dev_team_primary -ne 'vx-dev-team' -or
     $data.execution.dev_team_display_name -ne 'vx-dev-team' -or
     $data.execution.dev_team_runtime -ne 'active-v1') {
@@ -161,7 +162,622 @@ $devFrontMatch = [regex]::Match($devRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
 if (!$devFrontMatch.Success) { throw 'Frontmatter Dev Team invalido.' }
 $devFront = $devFrontMatch.Groups[1].Value
 foreach ($required in @(
-  '(?m)^displayName:\s*"vx-dev-team"\s*$',
+  '(?m)^displayName:\s*"VX Dev Team"\s*
+  '(?m)^color:\s*"#8B5CF6"\s*$',
+  '(?m)^\s{2}skill:\s*$',
+  '(?m)^\s{4}"\*":\s*deny\s*$',
+  '(?m)^\s{4}"vx-dev-project-policy":\s*allow\s*$',
+  '(?m)^\s{4}"vx-dev-team-handoff":\s*allow\s*$',
+  '(?m)^\s{2}task:\s*$',
+  '(?m)^\s{4}"\*":\s*deny\s*$',
+  '(?m)^\s{2}agent_manager:\s*deny\s*$',
+  '(?m)^\s{2}board_read:\s*allow\s*
+)) {
+  if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
+}
+$childIds = @(
+  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
+  'vx-dev-data','vx-dev-platform','vx-dev-reviewer','vx-dev-quality',
+  'vx-dev-security','vx-dev-research'
+)
+$childSkillMatrix = @{
+  'vx-dev-explorer'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
+  'vx-dev-research'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
+  'vx-dev-architect' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
+  'vx-dev-frontend'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
+  'vx-dev-backend'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
+  'vx-dev-data'      = @('vx-dev-data-migration')
+  'vx-dev-platform'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
+  'vx-dev-quality'   = @('vx-dev-test-strategy','vx-dev-accessibility')
+  'vx-dev-security'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
+  'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
+}
+foreach ($child in $childIds) {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
+}
+# Editorial solo via la allowlist task del lider; no aparece como modo.
+if ($devFront -notmatch '(?m)^\s{4}"vx-editorial-builder":\s*allow\s*$') {
+  throw 'Dev Team no puede delegar al subagente editorial.'
+}
+if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
+}
+
+$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
+$installedAgentDir = Join-Path $RaizFuentes 'agents'
+$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
+if (!$validateChildren) {
+  $validateChildren = $true
+  foreach ($child in $childIds) {
+    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
+      $validateChildren = $false
+      break
+    }
+  }
+}
+if ($validateChildren) {
+  foreach ($child in $childIds) {
+    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
+      $childFile = Join-Path $installedAgentDir ($child + '.md')
+    }
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
+    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
+    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
+    $childFront = $childFrontMatch.Groups[1].Value
+    foreach ($required in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}read:\s*deny\s*$',
+      '(?m)^\s{2}skill:\s*$',
+      '(?m)^\s{4}"\*":\s*deny\s*$',
+      '(?m)^\s{2}task:\s*deny\s*$',
+      '(?m)^\s{2}edit:\s*deny\s*$',
+      '(?m)^\s{2}write:\s*deny\s*$',
+      '(?m)^\s{2}apply_patch:\s*deny\s*$',
+      '(?m)^\s{2}bash:\s*deny\s*$',
+      '(?m)^\s{2}agent_manager:\s*deny\s*$',
+      '(?m)^\s{2}board_read:\s*deny\s*$',
+      '(?m)^\s{2}board_post:\s*deny\s*$'
+    )) {
+      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
+    }
+    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $child contiene permisos MCP automaticos."
+    }
+    foreach ($skill in $childSkillMatrix[$child]) {
+      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
+      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
+    }
+  }
+}
+
+if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+,
+  '(?m)^color:\s*"#8B5CF6"\s*$',
+  '(?m)^\s{2}skill:\s*$',
+  '(?m)^\s{4}"\*":\s*deny\s*$',
+  '(?m)^\s{4}"vx-dev-project-policy":\s*allow\s*$',
+  '(?m)^\s{4}"vx-dev-team-handoff":\s*allow\s*$',
+  '(?m)^\s{2}task:\s*$',
+  '(?m)^\s{4}"\*":\s*deny\s*$',
+  '(?m)^\s{2}agent_manager:\s*deny\s*$',
+  '(?m)^\s{2}board_read:\s*deny\s*$',
+  '(?m)^\s{2}board_post:\s*deny\s*$'
+)) {
+  if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
+}
+$childIds = @(
+  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
+  'vx-dev-data','vx-dev-platform','vx-dev-reviewer','vx-dev-quality',
+  'vx-dev-security','vx-dev-research'
+)
+$childSkillMatrix = @{
+  'vx-dev-explorer'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
+  'vx-dev-research'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
+  'vx-dev-architect' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
+  'vx-dev-frontend'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
+  'vx-dev-backend'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
+  'vx-dev-data'      = @('vx-dev-data-migration')
+  'vx-dev-platform'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
+  'vx-dev-quality'   = @('vx-dev-test-strategy','vx-dev-accessibility')
+  'vx-dev-security'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
+  'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
+}
+foreach ($child in $childIds) {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
+}
+# Editorial solo via la allowlist task del lider; no aparece como modo.
+if ($devFront -notmatch '(?m)^\s{4}"vx-editorial-builder":\s*allow\s*$') {
+  throw 'Dev Team no puede delegar al subagente editorial.'
+}
+if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
+}
+
+$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
+$installedAgentDir = Join-Path $RaizFuentes 'agents'
+$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
+if (!$validateChildren) {
+  $validateChildren = $true
+  foreach ($child in $childIds) {
+    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
+      $validateChildren = $false
+      break
+    }
+  }
+}
+if ($validateChildren) {
+  foreach ($child in $childIds) {
+    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
+      $childFile = Join-Path $installedAgentDir ($child + '.md')
+    }
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
+    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
+    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
+    $childFront = $childFrontMatch.Groups[1].Value
+    foreach ($required in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}read:\s*deny\s*$',
+      '(?m)^\s{2}skill:\s*$',
+      '(?m)^\s{4}"\*":\s*deny\s*$',
+      '(?m)^\s{2}task:\s*deny\s*$',
+      '(?m)^\s{2}edit:\s*deny\s*$',
+      '(?m)^\s{2}write:\s*deny\s*$',
+      '(?m)^\s{2}apply_patch:\s*deny\s*$',
+      '(?m)^\s{2}bash:\s*deny\s*$',
+      '(?m)^\s{2}agent_manager:\s*deny\s*$',
+      '(?m)^\s{2}board_read:\s*deny\s*$',
+      '(?m)^\s{2}board_post:\s*deny\s*$'
+    )) {
+      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
+    }
+    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $child contiene permisos MCP automaticos."
+    }
+    foreach ($skill in $childSkillMatrix[$child]) {
+      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
+      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
+    }
+  }
+}
+
+if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+,
+  '(?m)^\s{2}board_post:\s*allow\s*
+)) {
+  if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
+}
+$childIds = @(
+  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
+  'vx-dev-data','vx-dev-platform','vx-dev-reviewer','vx-dev-quality',
+  'vx-dev-security','vx-dev-research'
+)
+$childSkillMatrix = @{
+  'vx-dev-explorer'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
+  'vx-dev-research'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
+  'vx-dev-architect' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
+  'vx-dev-frontend'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
+  'vx-dev-backend'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
+  'vx-dev-data'      = @('vx-dev-data-migration')
+  'vx-dev-platform'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
+  'vx-dev-quality'   = @('vx-dev-test-strategy','vx-dev-accessibility')
+  'vx-dev-security'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
+  'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
+}
+foreach ($child in $childIds) {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
+}
+# Editorial solo via la allowlist task del lider; no aparece como modo.
+if ($devFront -notmatch '(?m)^\s{4}"vx-editorial-builder":\s*allow\s*$') {
+  throw 'Dev Team no puede delegar al subagente editorial.'
+}
+if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
+}
+
+$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
+$installedAgentDir = Join-Path $RaizFuentes 'agents'
+$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
+if (!$validateChildren) {
+  $validateChildren = $true
+  foreach ($child in $childIds) {
+    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
+      $validateChildren = $false
+      break
+    }
+  }
+}
+if ($validateChildren) {
+  foreach ($child in $childIds) {
+    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
+      $childFile = Join-Path $installedAgentDir ($child + '.md')
+    }
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
+    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
+    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
+    $childFront = $childFrontMatch.Groups[1].Value
+    foreach ($required in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}read:\s*deny\s*$',
+      '(?m)^\s{2}skill:\s*$',
+      '(?m)^\s{4}"\*":\s*deny\s*$',
+      '(?m)^\s{2}task:\s*deny\s*$',
+      '(?m)^\s{2}edit:\s*deny\s*$',
+      '(?m)^\s{2}write:\s*deny\s*$',
+      '(?m)^\s{2}apply_patch:\s*deny\s*$',
+      '(?m)^\s{2}bash:\s*deny\s*$',
+      '(?m)^\s{2}agent_manager:\s*deny\s*$',
+      '(?m)^\s{2}board_read:\s*deny\s*$',
+      '(?m)^\s{2}board_post:\s*deny\s*$'
+    )) {
+      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
+    }
+    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $child contiene permisos MCP automaticos."
+    }
+    foreach ($skill in $childSkillMatrix[$child]) {
+      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
+      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
+    }
+  }
+}
+
+if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+,
+  '(?m)^color:\s*"#8B5CF6"\s*$',
+  '(?m)^\s{2}skill:\s*$',
+  '(?m)^\s{4}"\*":\s*deny\s*$',
+  '(?m)^\s{4}"vx-dev-project-policy":\s*allow\s*$',
+  '(?m)^\s{4}"vx-dev-team-handoff":\s*allow\s*$',
+  '(?m)^\s{2}task:\s*$',
+  '(?m)^\s{4}"\*":\s*deny\s*$',
+  '(?m)^\s{2}agent_manager:\s*deny\s*$',
+  '(?m)^\s{2}board_read:\s*deny\s*$',
+  '(?m)^\s{2}board_post:\s*deny\s*$'
+)) {
+  if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
+}
+$childIds = @(
+  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
+  'vx-dev-data','vx-dev-platform','vx-dev-reviewer','vx-dev-quality',
+  'vx-dev-security','vx-dev-research'
+)
+$childSkillMatrix = @{
+  'vx-dev-explorer'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
+  'vx-dev-research'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
+  'vx-dev-architect' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
+  'vx-dev-frontend'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
+  'vx-dev-backend'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
+  'vx-dev-data'      = @('vx-dev-data-migration')
+  'vx-dev-platform'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
+  'vx-dev-quality'   = @('vx-dev-test-strategy','vx-dev-accessibility')
+  'vx-dev-security'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
+  'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
+}
+foreach ($child in $childIds) {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
+}
+# Editorial solo via la allowlist task del lider; no aparece como modo.
+if ($devFront -notmatch '(?m)^\s{4}"vx-editorial-builder":\s*allow\s*$') {
+  throw 'Dev Team no puede delegar al subagente editorial.'
+}
+if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
+}
+
+$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
+$installedAgentDir = Join-Path $RaizFuentes 'agents'
+$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
+if (!$validateChildren) {
+  $validateChildren = $true
+  foreach ($child in $childIds) {
+    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
+      $validateChildren = $false
+      break
+    }
+  }
+}
+if ($validateChildren) {
+  foreach ($child in $childIds) {
+    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
+      $childFile = Join-Path $installedAgentDir ($child + '.md')
+    }
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
+    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
+    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
+    $childFront = $childFrontMatch.Groups[1].Value
+    foreach ($required in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}read:\s*deny\s*$',
+      '(?m)^\s{2}skill:\s*$',
+      '(?m)^\s{4}"\*":\s*deny\s*$',
+      '(?m)^\s{2}task:\s*deny\s*$',
+      '(?m)^\s{2}edit:\s*deny\s*$',
+      '(?m)^\s{2}write:\s*deny\s*$',
+      '(?m)^\s{2}apply_patch:\s*deny\s*$',
+      '(?m)^\s{2}bash:\s*deny\s*$',
+      '(?m)^\s{2}agent_manager:\s*deny\s*$',
+      '(?m)^\s{2}board_read:\s*deny\s*$',
+      '(?m)^\s{2}board_post:\s*deny\s*$'
+    )) {
+      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
+    }
+    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $child contiene permisos MCP automaticos."
+    }
+    foreach ($skill in $childSkillMatrix[$child]) {
+      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
+      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
+    }
+  }
+}
+
+if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+
+)) {
+  if ($devFront -notmatch $required) { throw "Dev Team V2-R fuera de contrato: $required" }
+}
+$childIds = @(
+  'vx-dev-explorer','vx-dev-architect','vx-dev-frontend','vx-dev-backend',
+  'vx-dev-data','vx-dev-platform','vx-dev-reviewer','vx-dev-quality',
+  'vx-dev-security','vx-dev-research'
+)
+$childSkillMatrix = @{
+  'vx-dev-explorer'  = @('vx-dev-codebase-investigation','vx-dev-debug-triage')
+  'vx-dev-research'  = @('vx-dev-source-reconciliation','vx-dev-mcp-readonly')
+  'vx-dev-architect' = @('vx-dev-architecture-decision','vx-dev-mcp-readonly','vx-dev-project-policy')
+  'vx-dev-frontend'  = @('vx-dev-frontend-ux','vx-dev-accessibility','vx-dev-ui-state-system','vx-dev-debug-triage')
+  'vx-dev-backend'   = @('vx-dev-backend-contracts','vx-dev-debug-triage')
+  'vx-dev-data'      = @('vx-dev-data-migration')
+  'vx-dev-platform'  = @('vx-dev-platform-delivery','vx-dev-debug-triage')
+  'vx-dev-quality'   = @('vx-dev-test-strategy','vx-dev-accessibility')
+  'vx-dev-security'  = @('vx-dev-security-threat-review','vx-dev-supply-chain-review','vx-dev-mcp-security')
+  'vx-dev-reviewer'  = @('vx-dev-independent-review','vx-dev-project-policy')
+}
+foreach ($child in $childIds) {
+  $pat = '(?m)^\s{4}"' + [regex]::Escape($child) + '":\s*allow\s*$'
+  if ($devFront -notmatch $pat) { throw "Dev Team no puede delegar a $child." }
+}
+# Editorial solo via la allowlist task del lider; no aparece como modo.
+if ($devFront -notmatch '(?m)^\s{4}"vx-editorial-builder":\s*allow\s*$') {
+  throw 'Dev Team no puede delegar al subagente editorial.'
+}
+if ($devFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+  throw 'Dev Team no puede tener permisos MCP automaticos en V2-R.'
+}
+
+$runtimeAgentDir = Join-Path $RaizFuentes 'runtime/dev-team-v2r/agents'
+$installedAgentDir = Join-Path $RaizFuentes 'agents'
+$validateChildren = Test-Path -LiteralPath $runtimeAgentDir -PathType Container
+if (!$validateChildren) {
+  $validateChildren = $true
+  foreach ($child in $childIds) {
+    if (!(Test-Path -LiteralPath (Join-Path $installedAgentDir ($child + '.md')) -PathType Leaf)) {
+      $validateChildren = $false
+      break
+    }
+  }
+}
+if ($validateChildren) {
+  foreach ($child in $childIds) {
+    $childFile = Join-Path $runtimeAgentDir ($child + '.md')
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) {
+      $childFile = Join-Path $installedAgentDir ($child + '.md')
+    }
+    if (!(Test-Path -LiteralPath $childFile -PathType Leaf)) { throw "Falta subagente V2-R: $child" }
+    $childRaw = Get-Content -LiteralPath $childFile -Raw -Encoding UTF8
+    $childFrontMatch = [regex]::Match($childRaw,'\A---\r?\n([\s\S]*?)\r?\n---\r?\n')
+    if (!$childFrontMatch.Success) { throw "Frontmatter invalido en subagente V2-R: $child" }
+    $childFront = $childFrontMatch.Groups[1].Value
+    foreach ($required in @(
+      '(?m)^mode:\s*subagent\s*$',
+      '(?m)^hidden:\s*true\s*$',
+      '(?m)^\s{2}read:\s*deny\s*$',
+      '(?m)^\s{2}skill:\s*$',
+      '(?m)^\s{4}"\*":\s*deny\s*$',
+      '(?m)^\s{2}task:\s*deny\s*$',
+      '(?m)^\s{2}edit:\s*deny\s*$',
+      '(?m)^\s{2}write:\s*deny\s*$',
+      '(?m)^\s{2}apply_patch:\s*deny\s*$',
+      '(?m)^\s{2}bash:\s*deny\s*$',
+      '(?m)^\s{2}agent_manager:\s*deny\s*$',
+      '(?m)^\s{2}board_read:\s*deny\s*$',
+      '(?m)^\s{2}board_post:\s*deny\s*$'
+    )) {
+      if ($childFront -notmatch $required) { throw "Subagente $child no es read-only/oculto: $required" }
+    }
+    if ($childFront -match '(?m)^\s{2}"[a-z0-9-]+_\*":\s*(allow|ask)\s*$') {
+      throw "Subagente $child contiene permisos MCP automaticos."
+    }
+    foreach ($skill in $childSkillMatrix[$child]) {
+      $skillPat = '(?m)^\s{4}"' + [regex]::Escape($skill) + '":\s*allow\s*$'
+      if ($childFront -notmatch $skillPat) { throw "Subagente $child no permite skill aprobada: $skill" }
+    }
+  }
+}
+
+if (!$data.ContainsKey('pack') -or $data.pack.id -ne 'vx-development-team') { throw 'Pack VX ausente.' }
+if (@($data.pack.owned_agents).Count -ne $agents.Count) { throw 'Pack VX no enumera todos los agentes.' }
+foreach ($id in @($data.pack.owned_agents)) {
+  if (!$seen.Contains([string]$id)) { throw "Agente VX no registrado: $id" }
+}
+$skillBase = Join-Path $RaizFuentes 'skills'
+if (!(Test-Path -LiteralPath $skillBase -PathType Container)) {
+  $userRoot = Split-Path (Split-Path $RaizFuentes -Parent) -Parent
+  $skillBase = Join-Path $userRoot '.kilo/skills'
+}
+$seenPackSkills = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach ($entry in @($data.pack.owned_skills)) {
+  $skill = [string]$entry
+  if ($skill -notmatch '^vx-[a-z0-9-]+$' -or !$seenPackSkills.Add($skill)) { throw "Skill VX invalida: $skill" }
+  $file = Join-Path (Join-Path $skillBase $skill) 'SKILL.md'
+  if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Falta skill VX: $skill" }
+  $skillText = Get-Content -LiteralPath $file -Raw -Encoding UTF8
+  if ($skillText -notmatch ('(?m)^name:\s*' + [regex]::Escape($skill) + '\s*$')) {
+    throw "Nombre de skill VX no coincide: $skill"
+  }
+}
+$catalogPath = Join-Path $RaizFuentes 'registry/vx-mcp-catalog-v1.json'
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) {
+  $catalogPath = Join-Path $RaizFuentes 'harness/vx-mcp-catalog-v1.json'
+}
+if (!(Test-Path -LiteralPath $catalogPath -PathType Leaf)) { throw 'Catalogo MCP VX ausente.' }
+$catalog = Get-Content -LiteralPath $catalogPath -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
+if ($catalog.schema -ne 'vx-mcp-catalog/1' -or $catalog.policy.installation -ne 'approval-per-server') {
+  throw 'Catalogo MCP VX incompatible.'
+}
+foreach ($candidate in @($catalog.candidates)) {
+  if ($candidate.enabled_by_default -ne $false) { throw 'MCP con activacion automatica.' }
+}
+Write-Host "[PASS] Registro V4: $($agents.Count) agentes, $($profiles.Count) perfiles, $($seenPackSkills.Count) skills VX, catalogo MCP pasivo." -ForegroundColor Green
+,
   '(?m)^color:\s*"#8B5CF6"\s*$',
   '(?m)^\s{2}skill:\s*$',
   '(?m)^\s{4}"\*":\s*deny\s*$',
