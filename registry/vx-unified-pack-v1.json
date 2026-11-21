@@ -1,7 +1,7 @@
 {
   "schema": "vx-unified-pack/1",
-  "version": "1.0.0-rc1",
-  "updated": "2026-11-20",
+  "version": "1.1.0-rc1",
+  "updated": "2026-11-21",
   "status": "SOURCE_CANDIDATE_NOT_INSTALLED",
   "scope": "ONE_GLOBAL_PACK_KILO_WINDOWS",
   "primary": "vx-dev-team",
@@ -466,7 +466,21 @@
     "editorial": "vx-editorial-builder",
     "cloudflare": "vx-workers-adviser",
     "independent_review": "vx-dev-reviewer",
-    "security": "vx-dev-security"
+    "security": "vx-dev-security",
+    "parallel_background": {
+      "status": "SOURCE_PLAN_AND_HOST_CONDITIONAL",
+      "host": "Kilo Desktop task(background: true) only if tool exposes option",
+      "default_one_writer_per_worktree": true,
+      "allow_shared_workspace_exact_file_writers": true,
+      "max_background_tasks": 4,
+      "max_parallel_writers": 2,
+      "explicit_partition_required": true,
+      "shared_git_operations_forbidden": true,
+      "agent_manager_unavailable_on_desktop": true,
+      "live_file_leases_implemented": false,
+      "automatic_dispatch_enabled": false,
+      "barrier_before_integration": true
+    }
   },
   "test_policy": {
     "action": "ADD_UNIFIED_INSTALLER_SCOPE_AND_UPDATE_CURRENT_PERMISSIONS",
