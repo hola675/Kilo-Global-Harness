@@ -80,9 +80,17 @@ class DevTeamMCPCurrentContractTests(unittest.TestCase):
         sources.update({p.stem:p for p in CHILDREN.glob("vx-dev-*.md")})
         self.assertEqual(set(sources),ALL_AGENTS)
         for role,path in sources.items():
-            allowed=load_agent(path).permissions.namespaced_tools("allow")
+            doc=load_agent(path)
+            all_allowed=doc.permissions.namespaced_tools("allow")
+            # Kilo Swarm native tools contain "_" but are NOT MCP namespaces.
+            board_native={"board_read","board_post"}
+            allowed=all_allowed-board_native
             expected=set(self.caps["roles"][role]["current_mcp_exact"])
             self.assertEqual(allowed,expected,role)
+            if role=="vx-dev-team":
+                self.assertEqual(all_allowed & board_native, board_native)
+            else:
+                self.assertFalse(all_allowed & board_native)
 
     def test_baseline_keeps_docs_allowlist_and_deny_by_default_contract(self):
         self.assertEqual(
