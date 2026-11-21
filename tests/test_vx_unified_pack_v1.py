@@ -200,7 +200,9 @@ class UnifiedPackV1Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             dag.analyze(dict(base, allow_shared_worktree_exact_files="yes"), known, writers)
         for bad in ("../secret", "src/../secret", "C:\\secret", "src/*",
-                    "src//bad.py", "src/./bad.py", "src/bad.py/", "src/\x00bad.py"):
+                    "src//bad.py", "src/./bad.py", "src/bad.py/", "src/\x00bad.py",
+                    "src/api.py.", "src/directory. /item.ts", "src/CON", "src/nul.txt",
+                    "src/com1.log", "src/LPT9"):
             with self.subTest(bad=repr(bad)), self.assertRaises(ValueError):
                 tasks[1]["allowed_paths"] = [bad]
                 dag.analyze(base, known, writers)
