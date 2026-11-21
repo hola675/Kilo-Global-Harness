@@ -1,6 +1,6 @@
 # VX — Desarrollo escalonado y conectividad entre Windows y Android (V1.0)
 
-> **Alcance:** guía operativa del Pack Global, no instalador, motor de red ni aplicación ejecutable. Solo usar Tauri cuando el proyecto haya sido definido expresamente como **DESKTOP** y se decida ese motor. En cualquier otro proyecto conservar la plataforma y el framework vigentes. El contrato de pareja Windows+Android se aplica a productos Desktop cuando esa entrega multiplataforma forma parte del alcance acordado; nunca generar APK para páginas web/APIs ajenas.
+> **Alcance:** guía operativa del Pack Global, no instalador, motor de red ni aplicación ejecutable. Solo usar Tauri cuando el proyecto haya sido definido expresamente como **DESKTOP** y se decida ese motor. En cualquier otro proyecto conservar la plataforma y el framework vigentes. En nuevos productos DESKTOP la preferencia es Windows+Android **si móvil no está excluido**; cuando el operador especifica Windows-only, Android es `OUT_OF_SCOPE`, no un target fallido, y no se instalan herramientas Android por defecto. Nunca generar APK para páginas web/APIs ajenas.
 
 ## 1. Objetivo final y fases reales
 
