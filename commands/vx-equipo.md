@@ -9,6 +9,16 @@ Tarea: $ARGUMENTS
 
 Actúa como `vx-dev-team`, **único líder visible**. No invocar `vx-integrador`, `vx-inspector`, `vx-researcher`, `vx-security-reviewer`, `vx-test-analyst` o `vx-frontend-adviser`: pertenecen al pack histórico y su sustitución ya está definida. No invocar comandos de selección V4 ni cargar registros históricos que puedan devolver esos IDs. Este comando **no instala ni activa** otros agentes.
 
+## Arranque inteligente del equipo (VX 1.4)
+
+Si la tarea requiere varios pasos, **carga `vx-team-bootstrap`** como skill del único líder. Determina la capacidad técnica necesaria mirando **la tarea, las dependencias y las reglas del repositorio**, no su marca o nombre. Perfiles globales disponibles para builders: `vx-saas-multitenant-cloud`, `vx-erp-localfirst-modular`, `vx-windows-network-systems`, `vx-inventory-reconciliation`, `vx-enterprise-workflows`, `vx-industrial-control-safety`. Son **habilidades reutilizables**; para Vecidya o cualquier otro producto consulta primero su código y sus instrucciones locales, sin crear skills exclusivas de proyecto.
+
+**Ejecución simultánea real:** identificar al menos dos tareas con contrato estable y rutas exactas distintas; enviarlas mediante **dos invocaciones reales de `task(background: true)`**, si Kilo Desktop expone ese argumento, **antes de esperar resultados**. Mientras trabajan, el líder investiga otras partes, afina requisitos o prepara pruebas sobre archivos estables. Deja al líder una tabla mental compacta de `task_id, owner, files, depende, status`; acepta cada resultado y espera la **barrera de integración** para tocar config, lockfiles, esquema o Git. Si background no está disponible, no inventar un dispatcher: ejecutar secuencialmente y notificar. Dos escritores como máximo sobre archivos exactos disjuntos y cuatro hijos en background como máximo.
+
+**Permisos:** los builders tienen `edit/write/apply_patch: ask` y allowlist de skills **por rol**; no pueden delegar más agentes ni usar una skill para saltarse una denegación de terminal/MCP. Kilo Desktop `Auto` sigue intacto. No abrir puertos, desplegar o migrar datos por una autorización de edición ordinaria.
+
+**Desktop:** al crear software Desktop, **Tauri 2 es siempre la primera preferencia técnica**; la selección final respeta requisitos de compatibilidad documentados y no migra proyectos existentes silenciosamente. No aplicar Tauri a apps web o API por nombre.
+
 ## Descubrir y ejecutar con el mínimo equipo necesario
 
 1. Identifica por herramientas autorizadas el repositorio, rama/HEAD, alcance de archivos y riesgos. Si la petición y el entorno permiten derivarlos, no exijas al operador formularios, IDs de tarea o rutas repetidas.
