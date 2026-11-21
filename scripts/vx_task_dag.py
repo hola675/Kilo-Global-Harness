@@ -51,9 +51,9 @@ def _propose_background_wave(plan: dict[str, Any], tasks: list[dict[str, Any]],
                              ready: list[str]) -> dict[str, Any]:
     # Solo propuesta: Kilo Desktop ejecuta task(background=true) si lo admite.
     max_tasks = plan.get("max_background_tasks", 4)
-    max_writers = plan.get("max_parallel_writers", 2)
-    for field, value, upper in (("max_background_tasks", max_tasks, 8),
-                                 ("max_parallel_writers", max_writers, 4)):
+    max_writers = plan.get("max_parallel_writers", min(2, max_tasks) if type(max_tasks) is int else 2)
+    for field, value, upper in (("max_background_tasks", max_tasks, 4),
+                                 ("max_parallel_writers", max_writers, 2)):
         if type(value) is not int or not 1 <= value <= upper:
             raise ValueError(f"Limite invalido: {field}")
     if max_writers > max_tasks:
