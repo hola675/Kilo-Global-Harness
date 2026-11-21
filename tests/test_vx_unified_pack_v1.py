@@ -253,6 +253,15 @@ class UnifiedPackV1Tests(unittest.TestCase):
             with patch.object(dag, "__file__", str(repo_script)):
                 with self.assertRaises(ValueError):
                     dag._queue_db_path(source / "state" / "queue.sqlite3", mutate=True)
+            # A symlink from a neutral directory into a checkout must also fail.
+            alias = Path(temp) / "symlink-to-source"
+            try:
+                alias.symlink_to(source, target_is_directory=True)
+            except (OSError, NotImplementedError):
+                pass  # Windows runners may not grant SeCreateSymbolicLinkPrivilege.
+            else:
+                with self.assertRaises(ValueError):
+                    dag._queue_db_path(alias / "state" / "queue.sqlite3", mutate=True)
 
     def test_vx_team_queue_rejects_untrusted_or_cycle_plan_and_outside_paths(self):
         pack = module.load_manifest()
