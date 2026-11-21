@@ -219,8 +219,6 @@ function Assert-AgentSources {
       '(?m)^\s{2}apply_patch:\s*deny\s*$',
       '(?m)^\s{2}bash:\s*deny\s*$',
       '(?m)^\s{2}agent_manager:\s*deny\s*$',
-    '(?m)^\s{2}board_read:\s*allow\s*$',
-    '(?m)^\s{2}board_post:\s*allow\s*$',
       '(?m)^\s{2}board_read:\s*deny\s*$',
       '(?m)^\s{2}board_post:\s*deny\s*$'
     )) {
