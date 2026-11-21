@@ -83,13 +83,13 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertFalse(summary["runtime_verified"])
             self.assertFalse(summary["activation_performed"])
 
-    def test_progress_v1_source_only_contract_and_permission_gate(self):
-        """No false PASS for background/Swarm; reuse the live test suite."""
+    def test_progress_v2_swarm_allowlist_and_uncertified_host_gates(self):
+        """Swarm only for seven authorized roles; host execution remains unverified."""
         pack = module.load_manifest()
         progress = pack["routing"]["team_coordination"]["progress_protocol"]
         self.assertEqual(progress["schema"], "vx-progress-event/1")
-        self.assertEqual(progress["status"], "SOURCE_CONTRACT_ONLY_BOARD_DENIED")
-        self.assertEqual(progress["current_leader_board_acl"], "DENY")
+        self.assertEqual(progress["status"], "SOURCE_V2_BOARD_ACL_AUTHORIZED_HOST_NOT_CERTIFIED")
+        self.assertEqual(progress["current_leader_board_acl"], "ALLOW")
         self.assertEqual(progress["fallback"], "TASK_RESULT")
         self.assertTrue(progress["no_periodic_polling"])
         self.assertTrue(progress["no_secrets_or_private_data"])
@@ -97,7 +97,10 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertFalse(progress["runtime_background_certified"])
         self.assertFalse(progress["board_is_authorization"])
         self.assertFalse(progress["board_post_is_delivery_proof"])
-        self.assertTrue(pack["activation"]["no_board_acl_change"])
+        self.assertFalse(pack["activation"]["no_board_acl_change"])
+        self.assertTrue(pack["activation"]["board_acl_change_user_authorized"])
+        self.assertTrue(pack["activation"]["no_kilo_jsonc_change"])
+        self.assertTrue(pack["activation"]["no_mcp_change"])
         self.assertEqual(len(pack["agents"]), 18)
         self.assertEqual(len(pack["skills"]), 57)
         self.assertEqual(
@@ -107,11 +110,12 @@ class UnifiedPackV1Tests(unittest.TestCase):
         )
         lead = (ROOT / "agents/vx-dev-team.md").read_text(encoding="utf-8")
         lead_front = lead.split("---", 2)[1]
-        self.assertIn("  board_read: deny", lead_front)
-        self.assertIn("  board_post: deny", lead_front)
+        self.assertIn("  board_read: allow", lead_front)
+        self.assertIn("  board_post: allow", lead_front)
+        self.assertIn("displayName: \"VX Dev Team\"", lead_front)
         self.assertIn("  agent_manager: deny", lead_front)
-        self.assertIn("VX Progress V1", lead)
-        self.assertIn("PROGRESS_CHANNEL_DENIED", lead)
+        self.assertIn("VX Dev Team Autopilot V2", lead)
+        self.assertIn("PROGRESS_CHANNEL_UNAVAILABLE", lead)
         self.assertIn("RT-02", lead)
         for agent_id in (
             "vx-frontend-builder", "vx-backend-builder", "vx-data-builder",
@@ -124,8 +128,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
                 self.assertIn("  task: deny", front)
                 self.assertIn("  agent_manager: deny", front)
                 self.assertIn("  edit: ask", front)
-                self.assertNotIn("board_post: allow", front)
-                self.assertNotIn("board_read: allow", front)
+                self.assertIn("  board_post: allow", front)
+                self.assertIn("  board_read: allow", front)
                 self.assertIn("VX Progress V1", body)
                 self.assertIn("AUTHORSHIP_NOT_VERIFIED", body)
                 self.assertIn("PROGRESS_CHANNEL_DENIED", body)
@@ -133,16 +137,134 @@ class UnifiedPackV1Tests(unittest.TestCase):
         collaboration = (ROOT / "skills/vx-agent-collaboration/SKILL.md").read_text(encoding="utf-8")
         bootstrap = (ROOT / "skills/vx-team-bootstrap/SKILL.md").read_text(encoding="utf-8")
         handoff = (ROOT / "skills/vx-implementation-handoff/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn('version: "0.3.0"', collaboration)
-        self.assertIn('version: "1.3.0"', bootstrap)
+        self.assertIn('version: "0.4.0"', collaboration)
+        self.assertIn('version: "1.4.0"', bootstrap)
         for body in (collaboration, bootstrap, handoff):
             self.assertIn("board_post", body)
             self.assertIn("board_read", body)
             self.assertIn("task_result", body)
         doc = (ROOT / "docs/VX-TEAM-GLOBAL-CAPABILITIES-V14.md").read_text(encoding="utf-8")
         self.assertIn("SOURCE", doc)
-        self.assertIn("PROGRESS_CHANNEL_DENIED", doc)
+        self.assertIn("PROGRESS_CHANNEL_UNAVAILABLE", doc)
         self.assertIn("RT-02", doc)
+
+
+    def test_vx_team_queue_transactional_dependency_and_collision_gates(self):
+        """Private SQLite queue is durable metadata, not a Kilo task launcher."""
+        pack = module.load_manifest()
+        queue = pack["routing"]["team_coordination"]["task_queue"]
+        self.assertEqual(queue["schema"], "vx-team-queue/1")
+        self.assertFalse(queue["actual_dispatch_executed_by_queue"])
+        self.assertFalse(queue["daemon_or_scheduler_enabled"])
+        known = {a["id"] for a in pack["agents"]}
+        writers = {a["id"] for a in pack["agents"] if a["role"] in ("lead", "builder")}
+        tasks = [
+            {"id": "backend", "owner": "vx-backend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING", "depends_on": [],
+             "writer": True, "worktree": "lab", "write_scope": "EXACT_FILES",
+             "allowed_paths": ["src/backend.py"], "priority": 90},
+            {"id": "frontend", "owner": "vx-frontend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING", "depends_on": [],
+             "writer": True, "worktree": "lab", "write_scope": "EXACT_FILES",
+             "allowed_paths": ["src/frontend.py"], "priority": 70},
+            {"id": "qa", "owner": "vx-qa-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "depends_on": ["backend", "frontend"], "writer": False,
+             "worktree": "lab", "priority": 50},
+            {"id": "data", "owner": "vx-data-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING", "depends_on": [],
+             "writer": True, "worktree": "lab", "write_scope": "EXACT_FILES",
+             "allowed_paths": ["src/data.py"], "priority": 60},
+        ]
+        plan = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
+                "allow_shared_worktree_exact_files": True, "tasks": tasks}
+        def act(conn, action, *, task_id=None, host_task_id=None, event=None,
+                event_key=None, evidence_ref="", review_ref="", test_report="", plan_arg=None):
+            return dag._queue_mutate(
+                conn, project="sample", action=action, plan=plan_arg,
+                task_id=task_id, host_task_id=host_task_id, event=event,
+                event_key=event_key, summary="", evidence_ref=evidence_ref,
+                review_ref=review_ref, test_report=test_report,
+                known=known, writable=writers,
+            )
+        with tempfile.TemporaryDirectory(prefix="vx-team-private-queue-") as temp:
+            db = Path(temp) / "queue.sqlite3"
+            conn = dag._queue_open(db, mutate=True)
+            try:
+                act(conn, "sync", plan_arg=plan)
+                act(conn, "sync", plan_arg=plan)  # idempotent sync
+                report = dag._queue_report(conn, "sample", known, writers)
+                self.assertEqual(report["ready_queue"], ["backend", "frontend", "data"])
+                self.assertEqual(report["state_counts"]["PENDING"], 4)
+                self.assertFalse(report["runtime_trace_authenticated"])
+                with self.assertRaises(ValueError):
+                    act(conn, "start", task_id="qa", host_task_id="ses_qa", event_key="start-qa-early")
+                with self.assertRaises(ValueError):
+                    act(conn, "start", task_id="backend", event_key="start-no-id")
+                act(conn, "start", task_id="backend", host_task_id="ses_b", event_key="start-b")
+                act(conn, "start", task_id="backend", host_task_id="ses_b", event_key="start-b")
+                act(conn, "start", task_id="frontend", host_task_id="ses_f", event_key="start-f")
+                with self.assertRaises(ValueError):
+                    act(conn, "start", task_id="data", host_task_id="ses_d", event_key="start-d")
+                with self.assertRaises(ValueError):
+                    act(conn, "event", task_id="backend", event="DELIVERED", event_key="done-no-proof")
+                act(conn, "event", task_id="backend", event="MILESTONE",
+                    event_key="b-milestone", evidence_ref="trace:b1")
+                act(conn, "event", task_id="backend", event="DELIVERED",
+                    event_key="b-done", evidence_ref="trace:b2")
+                with self.assertRaises(ValueError):
+                    act(conn, "verify", task_id="backend", event_key="b-verify-empty")
+                act(conn, "verify", task_id="backend", event_key="b-verify",
+                    review_ref="review:1", test_report="tests:1")
+                report = dag._queue_report(conn, "sample", known, writers)
+                self.assertEqual(report["state_counts"]["VERIFIED"], 1)
+                self.assertTrue(any(t["id"] == "qa" for t in report["tasks"]))
+                self.assertNotIn("qa", report["ready_queue"])
+                act(conn, "event", task_id="frontend", event="DELIVERED",
+                    event_key="f-done", evidence_ref="trace:f")
+                act(conn, "verify", task_id="frontend", event_key="f-verify",
+                    review_ref="review:2", test_report="tests:2")
+                report = dag._queue_report(conn, "sample", known, writers)
+                self.assertIn("qa", report["ready_queue"])
+            finally:
+                conn.close()
+            conn = dag._queue_open(db, mutate=False)
+            try:
+                self.assertEqual(dag._queue_report(conn, "sample", known, writers)["state_counts"]["VERIFIED"], 2)
+            finally:
+                conn.close()
+
+    def test_vx_team_queue_rejects_untrusted_or_cycle_plan_and_outside_paths(self):
+        pack = module.load_manifest()
+        known = {a["id"] for a in pack["agents"]}
+        writable = {a["id"] for a in pack["agents"] if a["role"] in ("lead", "builder")}
+        task = {"id": "frontend", "owner": "vx-frontend-builder",
+                "reviewer": "vx-dev-reviewer", "state": "PENDING", "depends_on": [],
+                "writer": True, "worktree": "lab", "write_scope": "EXACT_FILES",
+                "allowed_paths": ["src/form.html"]}
+        with tempfile.TemporaryDirectory(prefix="vx-team-queue-negative-") as temp:
+            conn = dag._queue_open(Path(temp) / "queue.sqlite3", mutate=True)
+            try:
+                def sync(items):
+                    return dag._queue_mutate(
+                        conn, project="case", action="sync",
+                        plan={"schema":"vx-task-plan/1","mode":"PARALLEL_SAFE",
+                              "allow_shared_worktree_exact_files":True,"tasks":items},
+                        task_id=None,host_task_id=None,event=None,event_key=None,
+                        summary="",evidence_ref="",review_ref="",test_report="",
+                        known=known,writable=writable,
+                    )
+                with self.assertRaises(ValueError):
+                    sync([dict(task, prompt="secret raw user context")])
+                with self.assertRaises(ValueError):
+                    sync([dict(task, priority="urgent")])
+                with self.assertRaises(ValueError):
+                    sync([dict(task, allowed_paths=["../outside.md"])])
+                with self.assertRaises(ValueError):
+                    sync([dict(task, depends_on=["frontend"])])
+                sync([task])
+            finally:
+                conn.close()
 
     def test_exact_permissions_and_only_one_visible_primary(self):
         pack = module.load_manifest()
@@ -168,7 +290,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_generic_skills_boot_and_role_scoped_permissions_no_project_specific_profiles(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.5.0-rc1')
+        self.assertEqual(pack['version'], '1.6.0-rc1')
         generic = {
             'vx-team-bootstrap', 'vx-saas-multitenant-cloud',
             'vx-erp-localfirst-modular', 'vx-windows-network-systems',
@@ -360,7 +482,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_explicit_desktop_only_and_phased_connectivity_skills_are_integrated(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.5.0-rc1')
+        self.assertEqual(pack['version'], '1.6.0-rc1')
         desktop = pack['routing']['desktop']
         self.assertEqual(desktop['applies_to'], 'EXPLICITLY_SCOPED_NEW_DESKTOP_PRODUCT_ONLY')
         self.assertEqual(desktop['mobile_scope_rule'], 'DEFAULT_DUAL_UNLESS_EXPLICIT_WINDOWS_ONLY')
@@ -405,7 +527,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.5.0-rc1')
+        self.assertEqual(pack['version'], '1.6.0-rc1')
         tauri = [skill for skill in pack['skills'] if skill['id'] == 'vx-tauri-desktop']
         self.assertEqual(len(tauri), 1)
         self.assertEqual(tauri[0]['layer'], 'CAPABILITY')
@@ -426,7 +548,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_unified_parallel_desktop_contract_is_scoped_and_preserves_acl(self):
         pack = module.load_manifest()
-        self.assertEqual(pack["version"], "1.5.0-rc1")
+        self.assertEqual(pack["version"], "1.6.0-rc1")
         routing = pack["routing"]["parallel_background"]
         self.assertEqual(routing["max_parallel_writers"], 2)
         self.assertEqual(routing["max_background_tasks"], 4)
