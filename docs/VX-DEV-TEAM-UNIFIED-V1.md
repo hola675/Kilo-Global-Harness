@@ -191,3 +191,49 @@ En laboratorio aislado existente y **sin modificar instalaciones adicionales**, 
 ### Changelog
 
 - **V1.1 RC1 (2026-11-21):** delegación `task(background: true)` condicionada al host de Kilo Desktop, parent-work-while-children-run, dos writers con archivos exactos y disjuntos, DAG `PARALLEL_SAFE` plan-only, barrera de integración, fallback foreground y tests ampliados en la suite viva; ACL y AutoApprove intactos.
+
+
+## VX 1.2 — Contrato de aplicaciones hermanas Windows y Android (Tauri 2)
+
+**Política nueva:** cada **aplicación de escritorio nueva** de este equipo se diseña para **Windows `.exe` y Android `.apk`**, con núcleo, protocolo, modelos de negocio y tests compatibles, y UI diferenciada por plataforma. `.aab` se reserva a Google Play cuando se solicite. Si falta el toolchain o el hardware, no se cancela silenciosamente el target: registrar `PLATFORM_BLOCKED` con causa verificable y dejar las tareas/artefactos pendientes. Esta política no migra proyectos anteriores (Qt/PySide/Electron/industrial) sin encargo expreso.
+
+### Responsabilidades y empaquetado
+
+- **Líder:** mantiene contrato funcional único, mapas de UX Windows/Android, esquema de datos, ownership exacto por archivo y barrera de integración.
+- **Frontend:** usa UI compartida con adaptaciones para ratón/teclado/ventanas Windows y táctil/orientación/safe areas/teclado virtual/back Android.
+- **Backend Rust:** comandos locales Tauri, servicio Windows de enlace LAN y cliente Android usando contrato versionado de red. No confundir IPC interno con conexión PC–móvil.
+- **Data:** modelos, sincronización incremental, migraciones y conflictos solo si el producto los requiere.
+- **QA:** pruebas focalizadas de `.exe` y `.apk`, navegación táctil, permisos, IPC, pairing, cifrado, desconexiones, revocación y LAN sin Internet con dos dispositivos físicos. Tests simulados no certifican enlace Bluetooth.
+- **Editorial/Docs:** textos y procedimientos de emparejamiento, instalación, permisos, errores y soporte.
+
+Para ambos targets comprobar Rust MSVC/C++ Build Tools/WebView2 y Android Studio/SDK/NDK/JDK/targets Android según versión real. Comandos orientativos con la CLI instalada: `pnpm tauri build` para Windows; `pnpm tauri android build --apk` para Android; `--aab` solo si corresponde. No confundir ejecutable, instalador y paquetes firmados. Versionar artefactos/hashes cuando **existen**; no incluir llaves privadas ni certificados de firma en Git.
+
+### Comunicación local por Wi-Fi / Bluetooth
+
+1. **Preferido: Wi-Fi LAN/hotspot sin Internet.** Servicio nativo Rust en Windows para comunicación autenticada, cifrada y bidireccional; Android cliente por WebSocket/HTTPS. Descubrimiento mDNS/DNS-SD opcional con fallback de IP/QR manual. Pairing con QR temporal, confirmación física en PC, identidad propia por móvil y revocación. Sin abrir WAN/UPnP/firewall automáticamente.
+2. **Wi-Fi Direct:** Android ofrece APIs nativas de P2P, pero Windows y sus drivers pueden no soportar el mismo enlace. Requiere verificación de hardware, adaptadores y permisos (incluido `NEARBY_WIFI_DEVICES` para APIs correspondientes en Android 13+). Un hotspot puede mantener el mismo canal LAN como alternativa más práctica.
+3. **Bluetooth:** distinguir Bluetooth Classic y BLE/GATT; el plugin comunitario `tauri-plugin-blec` es **cliente** y no implementa de forma automática el periférico/servidor GATT. Exige roles compatibles, adaptadores nativos Rust/Kotlin cuando sean necesarios y permisos de cercanía (`BLUETOOTH_SCAN`, `BLUETOOTH_CONNECT` en Android 12+ según funcionalidad). BLE no es canal predeterminado para grandes transferencias; si no se probó, estado `BLE_NOT_VERIFIED`.
+4. **Seguridad:** TLS con identidad autenticada, tokens por dispositivo/expiración, protección ante replay, rate limits, validación del protocolo y revocación. Sin credenciales hardcodeadas, sin deshabilitar verificación TLS y sin exposición pública por defecto. Reintentos idempotentes y reconciliación visible de conflictos offline.
+
+### Plugins del catálogo oficial: incluir solo lo necesario
+
+Fuente solicitada: https://v2.tauri.app/es/plugin/ y compatibilidad por plataforma en https://v2.tauri.app/plugin/.
+
+- **Conectividad:** `websocket` (cliente, no servidor), `http-client` (cliente HTTP opcional), `deep-linking` (invitaciones) y `barcode-scanner` (QR Android cuando corresponda).
+- **Datos y seguridad:** `sql` (datos estructurados), `store` (preferencias no sensibles), `stronghold` (secretos solo tras validar versión/soporte), `file-system` (scopes mínimos), `log` (sin tokens).
+- **UX de plataforma:** `dialog`, `notifications`, `os-info`, `haptics`, `biometric` y `nfc` solo si los flujos requieren sus funciones.
+- **Excepciones:** `localhost` expone assets locales y no crea un servidor de dispositivos; `shell` no debe habilitarse para ganar conectividad. Plugins comunitarios BLE/red requieren auditoría de licencia/soporte/seguridad.
+
+Ni catálogo ni skill instalan plugins por su sola existencia. Las capacidades de Tauri se habilitan por ventana, plataforma y scopes mínimos mediante cambios autorizados. Las tareas independientes pueden ir en `task(background: true)` si la herramienta real de Kilo Desktop lo permite; dos escritores máximo sobre archivos exactos disjuntos y un responsable de archivos compartidos `tauri.conf.json`, Cargo/JS locks, capabilities, AndroidManifest y registro IPC.
+
+### Gate real de entrega dual
+
+El cierre del producto requiere un reporte separado de `windows_status`, `android_status`, `lan_pairing_status`, `ble_status` y `wifi_direct_status`, con estado `BUILT/TESTED/BLOCKED/NOT_EXECUTED` según evidencia. Para declarar un enlace seguro y sin Internet se necesitan dos dispositivos reales, pairing confirmado, intercambio bidireccional y prueba de desconexión. Si no hubo teléfono físico ni compilación Android, la tarea sigue **parcial** aunque el build de Windows pase.
+
+**Referencias verificadas:** https://v2.tauri.app/distribute/google-play/ · https://v2.tauri.app/distribute/windows-installer/ · https://v2.tauri.app/plugin/websocket/ · https://v2.tauri.app/security/capabilities/ · https://developer.android.com/develop/connectivity/wifi/wifi-direct · https://developer.android.com/develop/connectivity/bluetooth/bt-permissions · https://github.com/MnlPhlp/tauri-plugin-blec
+
+**Estado:** implementación documental/políticas/source del pack; **aún no certifica APK, EXE, BLE, Wi-Fi Direct o enlace LAN real** en el PC del operador.
+
+### Changelog
+
+- **V1.2 RC1 (2026-11-21):** skill `vx-tauri-desktop` v1.1.0, dos targets Windows/Android por defecto para nuevas apps de escritorio, selección fundamentada de plugins Tauri 2, conexión Wi-Fi LAN/hotspot local-first, Bluetooth/Wi-Fi Direct condicional, protocolo seguro de pairing y QA/entrega dual sin pruebas ficticias.
