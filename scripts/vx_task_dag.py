@@ -69,7 +69,8 @@ def _propose_background_wave(plan: dict[str, Any], tasks: list[dict[str, Any]],
     if type(allow_shared) is not bool:
         raise ValueError("allow_shared_worktree_exact_files debe ser booleano.")
     by_id = {t["id"]: t for t in tasks}
-    active = [t for t in tasks if t["state"] == "RUNNING"]
+    active = [t for t in tasks if t["state"] == "RUNNING" or
+              (t["state"] == "BLOCKED" and t.get("host_task_id"))]
     if len(active) > max_tasks:
         raise ValueError("RUNNING supera el limite de tareas de background.")
     active_writers = [t for t in active if t["writer"]]
@@ -104,7 +105,8 @@ def _propose_background_wave(plan: dict[str, Any], tasks: list[dict[str, Any]],
         "dispatch_state": "PROPOSED_NOT_DISPATCHED",
         "background_candidates": selected,
         "parallel_deferred": deferred,
-        "running_tasks_declared": [t["id"] for t in active],
+        "running_tasks_declared": [t["id"] for t in active if t["state"] == "RUNNING"],
+        "blocked_sessions_reserved": [t["id"] for t in active if t["state"] == "BLOCKED"],
         "file_lease_proposals": [
             {"id": task_id, "worktree": by_id[task_id]["worktree"],
              "allowed_paths": by_id[task_id]["allowed_paths"]}
@@ -456,7 +458,8 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
                 if any(by_id[dep]["state"] != "VERIFIED" for dep in target.get("depends_on", [])):
                     raise ValueError("Prerequisitos no verificados.")
                 max_tasks, max_writers, shared = _queue_config(conn, project)
-                running = [t for t in tasks if t["state"] == "RUNNING"]
+                running = [t for t in tasks if t["state"] == "RUNNING" or
+                           (t["state"] == "BLOCKED" and t.get("host_task_id"))]
                 if len(running) >= max_tasks or (target["writer"] and
                    sum(t["writer"] for t in running) >= max_writers):
                     raise ValueError("Capacidad concurrente agotada.")
@@ -491,7 +494,9 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
                            for dep in target.get("depends_on", [])):
                         raise ValueError("Prerequisitos pendientes en recuperacion.")
                     max_tasks, max_writers, shared = _queue_config(conn, project)
-                    running = [t for t in tasks if t["state"] == "RUNNING"]
+                    running = [t for t in tasks if t["id"] != task_id and
+                               (t["state"] == "RUNNING" or
+                                (t["state"] == "BLOCKED" and t.get("host_task_id")))]
                     if (len(running) >= max_tasks or
                             (target["writer"] and sum(t["writer"] for t in running) >= max_writers)
                             or any(_writer_conflict(target, other, shared) for other in running)):
