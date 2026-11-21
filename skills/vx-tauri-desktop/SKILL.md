@@ -2,13 +2,13 @@
 name: vx-tauri-desktop
 description: "Diseñar y desarrollar por defecto un par Tauri 2 Windows (.exe) + Android (.apk) con lógica compartida, UI adaptativa, plugins mínimos y conectividad local segura Wi-Fi/BLE/Wi-Fi Direct condicionada a compatibilidad."
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   origin: "vx-unified"
 ---
 
 # VX — Tauri 2: aplicaciones hermanas Windows + Android
 
-**Contrato vigente:** cuando el usuario solicite una NUEVA aplicación de escritorio, el equipo propone y desarrolla **dos versiones compatibles del mismo producto: Windows (`.exe`) y Android (`.apk`)**. No limitarse a una web responsive dentro de un instalador. Ambas comparten el dominio y el protocolo, pero **las pantallas y los controles se diseñan expresamente para cada dispositivo**. Si un requisito físico, licencia, hardware o regulación hace imposible una de las plataformas, registrar `PLATFORM_BLOCKED` con evidencia y alternativa; nunca fingir un ejecutable/APK compilado. Para un producto ya implementado en Qt/PySide/Electron/tecnología industrial, no migrar ni añadir Android silenciosamente sin petición de evolución/migración del producto. Este contrato **no se aplica a páginas web, APIs ni plugins de Kilo**.
+**Activación explícita:** NO usar Tauri para web, API, ERP web, scripts, herramientas genéricas ni software industrial salvo que el proyecto esté definido como aplicación DESKTOP. **Contrato vigente:** cuando el usuario solicite una NUEVA aplicación de escritorio, el equipo propone y desarrolla **dos versiones compatibles del mismo producto: Windows (`.exe`) y Android (`.apk`)**. No limitarse a una web responsive dentro de un instalador. Ambas comparten el dominio y el protocolo, pero **las pantallas y los controles se diseñan expresamente para cada dispositivo**. Si un requisito físico, licencia, hardware o regulación hace imposible una de las plataformas, registrar `PLATFORM_BLOCKED` con evidencia y alternativa; nunca fingir un ejecutable/APK compilado. Para un producto ya implementado en Qt/PySide/Electron/tecnología industrial, no migrar ni añadir Android silenciosamente sin petición de evolución/migración del producto. Este contrato **no se aplica a páginas web, APIs ni plugins de Kilo**.
 
 ## Entrega dual obligatoria (nuevos productos)
 
@@ -17,6 +17,12 @@ metadata:
 3. **Android:** comprobar Android Studio/SDK/NDK/JDK, variables y targets Rust para Android; preparar `tauri android init` cuando aplique y crear APK con `pnpm tauri android build --apk` (sintaxis exacta según CLI instalada). Añadir `.aab` únicamente para distribución Play cuando corresponda. El APK no equivale al AAB ni a una publicación. No generar claves privadas ni registrar secretos de firma en Git. Registrar ABI, minSdk y ruta/hash si se compiló.
 4. **Paridad del producto:** equivalencia de identidades, reglas, permisos de negocio, operaciones esenciales, formato de datos, protocolo y semántica de errores; no clonar píxel por píxel la UI Windows en Android. Diseñar un sistema de diseño común con variantes `desktop` y `mobile`: en Windows sidebar, tablas densas, atajos, multi-ventana; en Android navegación inferior, pantallas estrechas, controles táctiles, teclado virtual, áreas seguras, accesibilidad, orientación y botón Atrás. Todos los flujos principales deben ser utilizables sin ratón.
 5. **Modo local-first:** ambas versiones pueden seguir trabajando sin conectividad con almacenamiento local controlado y estados `DISCONNECTED / DISCOVERING / PAIRING / CONNECTED / SYNCING / CONFLICT / ERROR`. La ausencia de Internet NO debe impedir por defecto operar en la misma LAN; no prometer sincronización en segundo plano cuando Android la restrinja.
+
+**Habilidades complementarias (bajo demanda):** `vx-conectividad-dispositivos` define el diagnóstico y las dependencias LAN/Bluetooth/Wi-Fi Direct reutilizables en cualquier framework; `vx-desarrollo-escalonado` dirige la ejecución por fases con objetivo final continuo. El líder carga solo la segunda mediante su allowlist y delega la primera a un builder autorizado. **No auto-instalar** ambas por existir en el catálogo.
+
+**Permisos actuales de Android:** si el proyecto apunta a Android 17 (targetSdk 37+) y usa acceso a dispositivos de la LAN, revisar y solicitar `ACCESS_LOCAL_NETWORK` en ejecución según documentación Android; `NsdManager` y selectores del sistema pueden ofrecer vías mediadas. Los permisos de red local no se resuelven añadiendo simplemente `INTERNET`. Mantener rutas para Android 12/13 con reglas Bluetooth/Wi-Fi cercanos según SDK.
+
+**Dependencias sugeridas tras preflight, nunca globalmente:** servidor Windows Rust `axum`+`tokio`, TLS `rustls`/`axum-server` si corresponde; cliente Android `tauri-plugin-websocket` si permite validación de identidad/TLS requerida (alternativamente cliente Rust propio); QR Android `barcode-scanner`, DNS-SD Windows `mdns-sd` + Android `NsdManager` o plugin `tauri-plugin-dns-sd` comunitario auditado. BLE cliente `tauri-plugin-blec` comunitario no añade periférico/GATT y Wi-Fi Direct exige APIs nativas y hardware. El catálogo oficial de plugins no incluye un servidor integral de pairing PC↔Android. Si falla el descubrimiento, el fallback IP/QR permite usar la LAN; no depende de apps externas de terceros.
 
 ## Conexión entre el PC y el móvil: una arquitectura, varios transportes
 
