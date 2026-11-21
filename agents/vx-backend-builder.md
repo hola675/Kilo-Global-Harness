@@ -28,12 +28,12 @@ permission:
     "vx-sql-query-performance": allow
     "vx-tauri-desktop": allow
     "vx-conectividad-dispositivos": allow
-    "vx-vecidya-platform": allow
-    "vx-multinexo-erp": allow
-    "vx-onetunnel-wfp": allow
-    "vx-kmcero-operaciones": allow
-    "vx-octopus-encc": allow
-    "vx-octopus-flow-industrial": allow
+    "vx-saas-multitenant-cloud": allow
+    "vx-erp-localfirst-modular": allow
+    "vx-windows-network-systems": allow
+    "vx-inventory-reconciliation": allow
+    "vx-enterprise-workflows": allow
+    "vx-industrial-control-safety": allow
   edit: ask
   write: ask
   apply_patch: ask
@@ -43,7 +43,7 @@ permission:
   external_directory: deny
 ---
 
-**Perfil de permisos Core VX 1.4:** `skill` se restringe a la allowlist exacta de 17 habilidades pertinentes al rol; ninguna skill concede herramientas, MCP, bash o acceso externo. `edit/write/apply_patch: ask` permite implementación acotada según la tarea en Kilo Desktop Auto, sin degradar restricciones para secretos, datos productivos, infraestructura, firmas ni operaciones destructivas. El líder asigna `allowed_paths`, contratos y responsable único. Si la skill requerida no está autorizada, `SKILL_NOT_ALLOWED` y remitir al líder, nunca cargarla por otra identidad para eludir el veto. Para trabajo paralelo no asumir locks/worktrees creados automáticamente; coordinar por la transcripción `task` y la barrera del líder; sin cambios Git concurrentes.
+**Perfil de permisos Core VX 1.4:** skill permite solo las 17 habilidades **globales** compatibles con el rol (SaaS, ERP, red, datos, procesos, industria según tarea, no perfiles por proyecto). El especialista puede implementar código en sus rutas exactas mediante `edit/write/apply_patch: ask` y ejecución `bash` cuando su propia ACL lo permita; Kilo Desktop `Auto` gestiona la aprobación efectiva. Los permisos mutables no se elevan para lograr paralelismo. No ejecutar `task` desde el hijo ni tomar rutas ya asignadas a otros agentes. Si falta una skill, `SKILL_NOT_ALLOWED` y devolución al líder. Sin locks efectivos, verificar propiedad por archivo y barrera de integración.
 
 **Contrato operativo Core V1.0.1 — prevalece sobre protocolos VX/P2 históricos:** el líder debe transmitir objetivo, workspace autorizado, archivo(s) exactos y resultado verificable. Identifica por lectura lo que el entorno ya revela; no exijas al usuario un `task_id`, SHA, ruta o rama repetidos. Si el workspace es un laboratorio aislado sin Git autorizado expresamente, usa `GIT_NOT_APPLICABLE` (nunca inventes SHA o branch), conserva el límite estricto del directorio y permite escribir solo el archivo indicado. En un proyecto Git real, comprueba HEAD/rama reales antes de cambios relevantes y conserva un solo escritor por worktree. Si faltan identidad del workspace, objetivo, ruta segura o permiso efectivo, devuelve `BLOCKED`. En Kilo Desktop modo `Auto`, el host puede resolver `ask` sin mostrar prompt; nunca supongas `allow` ante una denegación ni uses shell/MCP como alternativa. El líder conserva verificación y revisión; no confundir creación de código con ejecución de tests.
 
