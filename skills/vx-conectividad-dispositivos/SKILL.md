@@ -2,13 +2,31 @@
 name: vx-conectividad-dispositivos
 description: "Diseñar conectividad local segura entre Windows/Android u otros dispositivos usando LAN, QR, mDNS, WebSocket, Bluetooth y Wi-Fi Direct por necesidad, sin presumir compatibilidad ni instalar dependencias automáticamente."
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   origin: "vx-unified"
 ---
 
 # VX — Conectividad local verificable entre dispositivos
 
 **Activación por necesidad real:** aplicar solo cuando la aplicación debe descubrir, emparejar, sincronizar o comunicarse con otro dispositivo (Windows, Android u otro), **sin exigir Tauri**. El framework del proyecto puede ser Tauri, .NET, Qt, nativo Android, web o servicio Rust; preservar el stack actual. Si la app es local sin enlace, no introducir plugins/red innecesarios.
+
+## Routing de transporte por requisito explícito (Core VX 1.5 SOURCE)
+
+Activar esta Skill **únicamente** si la tarea necesita comunicación entre dispositivos. `transport_selected` se deriva del requisito y soporte **observados**, no de la disponibilidad de un plugin. No seleccionar ni instalar todos los transportes a la vez.
+
+| Contexto verificable | Candidato de transporte | No activar de forma implícita |
+| --- | --- | --- |
+| PC y móvil en LAN común con control o sincronización | `LAN` sobre HTTPS/WSS; fallback IP manual | BLE, Wi-Fi Direct, VPN, SDK Android si no hay target Android |
+| Descubrir pares en una LAN ya elegida | `MDNS` solo como discovery; fallback IP/QR | asumir autenticación por discovery |
+| Emparejar visualmente un dispositivo | `QR_PAIRING` con token efímero y confirmación | guardar tokens permanentes o abrir firewall |
+| Sensor BLE con GATT y hardware verificado | `BLE` si Central/Peripheral están soportados | tratar plugin cliente como servidor, habilitar BLE sin hardware |
+| Conexión Wi-Fi Direct requerida sin punto de acceso | `WIFI_DIRECT` tras comprobar drivers/APIs en ambos extremos | exigir Windows/Android o habilitar Wi-Fi Direct solo por ser Desktop |
+| Diagnóstico de laboratorio con USB/ADB aprobado | `USB_DEBUG` fuera del producto final | incluir ADB como dependencia de producción |
+| Dispositivos separados sin red local compartida | `REMOTE` solo tras aprobación del modelo de conectividad | introducir VPN, relay o nube para un caso LAN |
+
+Antes de añadir dependencias registrar `PLATFORM_SCOPE`, `OBSERVED_STACK`, `transport_requested`, `transport_supported`, `hardware_evidence`, `security_gate`, `fallback` y `permission_gate`. `HARDWARE_NOT_VERIFIED` impide declarar la opción implementable en el host. Windows-only no arrastra Android; un sistema web/API sin enlace entre dispositivos no necesita esta Skill. Tauri no es requisito para conectividad.
+
+Para regresión, usar los casos `SHOULD_TRIGGER` / `SHOULD_NOT_TRIGGER` de `registry/vx-contextual-skills-v1.json` en pruebas de selección de Kilo; **son escenarios previstos, no una prueba de runtime completada**. Conservar `CONNECTED_VERIFIED` exclusivamente para intercambio real autorizado, cifrado y validado en los dispositivos objetivo.
 
 ## Decisión de transporte basada en capacidades
 
