@@ -2,13 +2,30 @@
 name: vx-desarrollo-escalonado
 description: "Organizar cualquier proyecto software por objetivo final, fases incrementales, dependencias, entregas comprobables y trabajo multiagente paralelo sin burocracia ni pruebas acumulativas."
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   origin: "vx-unified"
 ---
 
 # VX — Desarrollo escalonado con objetivo final continuo
 
 **Ámbito:** TODO proyecto de software autorizado (web, backend, ERP, móvil, desktop, industrial, herramientas, automatización). **No presupone Tauri** ni cambia de stack. La invoca `vx-dev-team` cuando la tarea requiere varios pasos, fases, dependencias o entregas continuas. Una tarea sencilla no necesita fases artificiales.
+
+## Selección del método de ingeniería (Core 1.5 SOURCE)
+
+Al entrar en una tarea de mutación, aplicar primero el gate `V0_BASELINE` de `vx-version-governance` (vía `vx-team-bootstrap` si la nueva Skill aún no está allowlistada). Un microcambio requiere versión/rama/estado verificable, **no** una ceremonia de planificación.
+
+| Intención | Secuencia proporcional |
+| --- | --- |
+| `BUGFIX` | reproducir → causa raíz → corrección mínima → prueba de regresión |
+| `FEATURE` | aceptación → contrato → vertical slice → incrementos |
+| `REFACTOR` | invariantes existentes → mínima refactorización → equivalencia |
+| `INTEGRATION` | contrato productor/consumidor → ownership → prueba de enlace |
+| `DATA_MIGRATION` | compatibilidad/backup → ensayo aislado → gate R3 si aplica |
+| `HOTFIX` | baseline/alcance → fix mínimo → smoke → análisis posterior |
+| `NEW_PRODUCT` | objetivo/plataformas → tecnología elegida justificadamente → fases |
+| `TECH_CHANGE` | conservar stack actual salvo justificación y autorización de cambio |
+
+Cada fase hereda `change_ids`, versión observada, decisiones y tests `UPDATE|REPLACE|ADD`; la decisión `RELEASE_VERSION` sucede en el gate de release, no en cada edición. La preferencia Tauri 2 **solo se evalúa para un nuevo producto explícitamente Desktop**. Mantener Qt/PySide6/.NET/Electron y plataformas existentes en proyectos ya iniciados salvo migración encargada. El listado anterior describe métodos, no lanza subagentes ni concede ACL.
 
 ## Fuente de verdad: una meta final, progreso verificable
 
