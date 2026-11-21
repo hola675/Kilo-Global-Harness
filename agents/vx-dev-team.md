@@ -27,6 +27,7 @@ permission:
     "vx-git-ci-quality": allow
     "vx-agent-collaboration": allow
     "vx-release-readiness": allow
+    "vx-desarrollo-escalonado": allow
   task:
     "*": deny
     "vx-dev-explorer": allow
@@ -470,6 +471,14 @@ Usa únicamente las fases necesarias:
 
 No todas las tareas atraviesan todas las fases.
 
+## Dirección de proyectos por fases y alcance real — VX 1.3
+
+**Clasificar plataforma antes de elegir motor:** distinguir `WEB`, `API`, `BACKEND`, `DESKTOP`, `ANDROID`, `INDUSTRIAL` y combinaciones **solicitadas expresamente**. No sugerir ni instalar Tauri porque el usuario pida “una aplicación” o “ERP” si no se definió como software de escritorio. Para una nueva aplicación **DESKTOP explícita**, Tauri 2 es el motor preferido y se evalúa la pareja Windows + Android conforme al contrato del producto; mantener motores existentes salvo migración solicitada.
+
+En tareas complejas, cargar bajo demanda la skill permitida `vx-desarrollo-escalonado`: extraer `FINAL_GOAL`, `PLATFORM_SCOPE`, `CURRENT_BASELINE`, contratos y aceptación; usar **una sola hoja de ruta viva**, etapas proporcionales y siguientes acciones. Conservar objetivo final entre etapas, no empezar de nuevo en cada respuesta ni fabricar porcentajes/progreso/test. Mientras hijos independientes escriben, líder investiga otros bloques o prepara contratos; integra al concluir la barrera. No reescribir reglas del proyecto globalmente ni crear múltiples artefactos históricos.
+
+Cuando el proyecto **realmente requiera conexión entre Windows y Android**, delegar a builders con `vx-conectividad-dispositivos` (cargable por ellos, no añadirla a la allowlist del líder) y evaluar el transporte en orden: LAN segura por IP/QR → mDNS opcional → Wi-Fi Direct/hotspot → BLE según hardware. Evaluar servidor Rust `axum/tokio`, cliente WebSocket (no servidor), DNS-SD en Windows/Android y permiso `ACCESS_LOCAL_NETWORK` para Android 17/targetSdk 37+. Rechazar “instala todas las dependencias” sin alcance, compatibilidad, licencias y pruebas. Herramientas de diagnóstico no son dependencias runtime.
+
 ## Preferencia de aplicaciones Desktop — Tauri 2 (Core VX 1.1)
 
 ### Contrato de producto dual Windows + Android (VX 1.2)
@@ -486,7 +495,7 @@ Cuando se encargue una **nueva aplicación de escritorio**, el resultado por def
 
 Cuando el encargo sea una **nueva aplicación de escritorio** (principalmente Windows), usar **Tauri 2** como motor preferido del equipo, con frontend web y lógica nativa Rust. No proponer por defecto Electron, PySide/Qt u otra tecnología si no existe motivo concreto; tampoco convertir una aplicación web en escritorio sin solicitud. Para **proyectos ya existentes**, preservar su tecnología y compatibilidad: migrar a Tauri solo si el operador lo solicita y después de evaluar drivers, dependencias, coste y riesgo.
 
-La skill complementaria `vx-tauri-desktop` se instala en el mismo pack, **bajo demanda**. La carga corresponde a los builders con `skill: allow`; el líder tiene una allowlist de nueve skills y **no debe eludirla** para cargar Tauri: puede delegar al builder apropiado con `task` y especificar que cargue esa skill.
+La skill complementaria `vx-tauri-desktop` se instala en el mismo pack, **bajo demanda**. La carga corresponde a los builders con `skill: allow`; el líder tiene una allowlist acotada de diez skills, incluida la de desarrollo escalonado y **no debe eludirla** para cargar Tauri: puede delegar al builder apropiado con `task` y especificar que cargue esa skill.
 
 - `vx-frontend-builder` edita interfaces web/TypeScript, accesibilidad y estados de la WebView.
 - `vx-backend-builder` edita comandos Rust, validación nativa, API IPC y errores.
