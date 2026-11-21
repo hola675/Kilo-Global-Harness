@@ -1,6 +1,6 @@
-# VX Dev Team Core Unificado — instalación V1.0 RC1
+# VX Dev Team Core Unificado — instalación V1.1 RC1
 
-**Fecha:** 2026-11-20. **Estado:** SOURCE / pendiente revisión CI y runtime local. **No instalado automáticamente.**
+**Fecha:** 2026-11-21. **Estado:** SOURCE V1.1 RC1, pendiente CI/revisión e instalación local de esta mejora. El Core V1.0 anterior fue probado en Kilo Desktop por el operador; no confundirlo con certificación del nuevo background paralelo. **No instalado automáticamente.**
 
 ## Decisión
 
@@ -16,7 +16,7 @@ Unificar el Pack VX 0.4.0 y Dev Team 2.3.0 en una única instalación global. No
 
 ### Skills
 
-**43 skills**: 18 Dev CORE, más 25 VX complementarias seleccionadas por aportar una capacidad de ejecución o dominio que no se cubre solo con la estrategia CORE (TypeScript, Python, Cloudflare, SQL, E2E, Docs, Git/CI, performance, observabilidad, editorial, IDA, incidentes y colaboración, entre otras). La lista exacta y sus rutas únicas están en el manifiesto. Las skills se cargan bajo demanda: nunca las 43 simultáneamente.
+**44 skills**: 18 Dev CORE, más 26 VX complementarias seleccionadas por aportar una capacidad de ejecución o dominio que no se cubre solo con la estrategia CORE (TypeScript, Python, Cloudflare, SQL, E2E, Docs, Git/CI, performance, observabilidad, editorial, IDA, incidentes y colaboración, entre otras). La lista exacta y sus rutas únicas están en el manifiesto. Las skills se cargan bajo demanda: nunca las 44 simultáneamente.
 
 Se conservan en Git las 26 Dev adicionales que aún eran propuestas y las 7 VX no incluidas. No se activan waves W2-W5 automáticamente ni se elimina la documentación de VX Evolution.
 
@@ -35,7 +35,7 @@ Se desinstalan solamente seis agentes VX anteriores: vx-integrador, vx-inspector
     pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Diagnostico
     pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Simular
 
-La respuesta debe indicar READY, 18 agentes y 43 skills, sin bloqueos ni cambios a configuración. Revisar el número de archivos a retirar antes de confirmar.
+La respuesta debe indicar READY, 18 agentes y 44 skills, sin bloqueos ni cambios a configuración. Revisar el número de archivos a retirar antes de confirmar.
 
 ### 2. Aplicación
 
@@ -85,7 +85,7 @@ Conservar salvaguardas necesarias: no elevar ACL por falta de herramienta, un es
 
 La instalación única gestiona también tres comandos globales: **/vx-equipo**, **/vx-dependencias** y **/vx-editorial**. Sus rutas apuntan al único líder `vx-dev-team`; los dos primeros ya no invocan al antiguo `vx-integrador`. El comando experimental histórico `/vx-p2` se retira del HOME con respaldo DPAPI porque seleccionaba directamente a `vx-docs-builder`, que ahora debe ser subagente oculto. El fuente `commands/vx-p2.md` permanece versionado para trazabilidad. Los demás comandos del usuario se conservan, sin borrados por nombre o coincidencias amplias.
 
-**Inventario final bajo gestión del instalador:** 18 agentes, 43 skills, 3 comandos y un bloque de política global VX. Se pueden retirar exactamente seis agentes, siete skills y un comando históricos, si existen; todo el material anterior cambiado se respalda antes de mutar. La existencia de otros comandos o recursos ajenos no convierte su funcionalidad en certificada.
+**Inventario final bajo gestión del instalador:** 18 agentes, 44 skills, 3 comandos y un bloque de política global VX. Se pueden retirar exactamente seis agentes, siete skills y un comando históricos, si existen; todo el material anterior cambiado se respalda antes de mutar. La existencia de otros comandos o recursos ajenos no convierte su funcionalidad en certificada.
 
 - V1.0 RC1 ajuste de seguridad: recuperacion explicita de respaldo `BACKED_UP` y bloqueo de colisiones por `name:` en skills ajenas globales; casos negativos agregados a la suite viva.
 
@@ -95,7 +95,7 @@ El instalador único distribuye además **dos archivos de soporte** sin abrir ot
 
 Si `kilo.jsonc` define en línea a cualquiera de los seis agentes legacy retirables (por ejemplo `vx-integrador`), la simulación devuelve `BLOCKED`: eliminar el archivo Markdown no elimina un agente inline. **No editar automáticamente `kilo.jsonc` ni deshabilitar configuración del usuario**; resolver esa colisión por el procedimiento de gestión explícito del host, con respaldo independiente. Comprobar la ausencia del segundo líder antes de aplicar el instalador.
 
-**Inventario completo administrado:** 18 agentes, 43 skills, tres comandos, dos archivos de soporte y un bloque global de política. El número máximo de archivos legacy retirables sigue siendo 14 (seis agentes, siete SKILL.md y un comando); otros recursos globales no se eliminan.
+**Inventario completo administrado:** 18 agentes, 44 skills, tres comandos, dos archivos de soporte y un bloque global de política. El número máximo de archivos legacy retirables sigue siendo 14 (seis agentes, siete SKILL.md y un comando); otros recursos globales no se eliminan.
 
 ## VX-RT-02C — Contrato adaptable para builders (V1.0.1)
 
@@ -106,3 +106,88 @@ Si `kilo.jsonc` define en línea a cualquiera de los seis agentes legacy retirab
 **Ensayo focalizado tras actualización global:** el operador comprobará primero que el archivo `vx-rt02c-frontend-builder.html` sigue ausente; invocará al líder `vx-dev-team` para asignar por `task` la creación exacta de ese único archivo al hijo `vx-frontend-builder`; no puede escribir el líder ni añadir herramientas de escape. La certificación exige evento `Created`/`Edited` dentro de la transcripción del hijo y comprobación independiente del contenido; si el host deniega escritura, `TOOL_UNAVAILABLE`/`BLOCKED_PERMISSION`. No repetir pruebas si la precondición dejó de cumplirse. No crear nuevos archivos de test en el repo; ampliar la suite viva `tests/test_vx_unified_pack_v1.py`.
 
 **Estado:** código propuesto hasta PR/CI/revisión/merge, actualización local del operador y evidencia de Kilo Desktop. No reclamar `BUILDER_WRITE_PASS` antes de esas pruebas.
+
+
+## VX 1.1 — Motor Desktop preferido: Tauri 2
+
+Para **nuevas aplicaciones de escritorio**, el motor propuesto por defecto es **Tauri 2**, con frontend HTML/CSS/TypeScript y núcleo nativo Rust. Se incluye la skill complementaria `vx-tauri-desktop` (44 skills en total), que se carga únicamente cuando existe una tarea de aplicación desktop, desde builders autorizados por su propia ACL; no convertir Tauri en requisito de toda aplicación web.
+
+**Delegación por especialidad:** Frontend Builder desarrolla pantallas y estado UI; Backend Builder implementa Rust/commands y validación IPC; Data Builder participa solo si hay almacenamiento local y migraciones reales; QA Builder cubre pruebas Rust, frontend y smoke Windows cuando las herramientas estén disponibles; Editorial/Docs se convocan según necesidad. El líder puede lanzar frontend y Rust en background si sus archivos son disjuntos. `src-tauri/tauri.conf.json`, capabilities, `Cargo.toml`, lockfiles, los puntos de registro y los artefactos generados se integran por un solo dueño después de la barrera. No permitir builds compartidos concurrentes sobre `target/`.
+
+**Prerrequisitos y seguridad:** comprobar versiones de Rust MSVC, WebView2, C++ Build Tools, Node/package manager e IPC/capabilities reales antes de compilar. Aplicar permisos mínimos por ventana y scopes, no activar shell/FS remotos ni publicar instaladores/actualizaciones sin petición. Para proyectos existentes en Qt/PySide/Electron/otros, mantener tecnología salvo solicitud expresa de migración tras evaluación de compatibilidad y coste.
+
+**Fuentes oficiales:** https://v2.tauri.app/concept/architecture/ · https://v2.tauri.app/security/capabilities/ · https://v2.tauri.app/start/prerequisites/
+
+## VX 1.1 — Delegación paralela de Kilo Desktop sin convertirlo en VS Code
+
+### Evidencia técnica y límite del host
+
+Kilo Desktop se apoya en el motor CLI de Kilo. Según la documentación oficial de Kilo, `task` permite `background: true`: una tarea independiente continúa en una sesión hija mientras la sesión padre sigue trabajando. El resultado llega después. **Esto debe verificarse en la versión concreta de Kilo Desktop del operador; SOURCE no es RUNTIME.**
+
+**No equivale a Agent Manager de VS Code:** `task` hereda el mismo directorio/worktree; no crea una rama o checkout aislado. `agent_manager` permanece denegado. Swarm/Board no se habilitan automáticamente ni se requiere para que `task` devuelva resultados.
+
+Documentación del proveedor:
+- https://kilo.ai/docs/automate/agent-manager
+- https://kilo.ai/docs/customize/custom-subagents
+- https://kilo.ai/docs/desktop/overview
+
+### Protocolo del líder
+
+1. Dividir la petición en contratos de resultados independientes y dependientes, **sin delegar por ritual**. Un simple arreglo puede resolverlo el líder.
+2. Determinar estado Git (incluido `GIT_UNBORN_HEAD`), permisos y rutas exactas. Asignar dueño por archivo y separar los cambios de archivos comunes (config, imports centrales, package-lock, tests/snapshots compartidos).
+3. Para subtareas que no dependen unas de otras, el líder usa realmente `task(background: true)` si aparece en la tool. **Máximo 4** background activos y **máximo 2** subagentes escritores. Si la tool no admite background, usar foreground y declararlo, sin simular paralelismo.
+4. **Por defecto un escritor por worktree.** En un mismo workspace pueden trabajar dos builders simultáneamente **solo** con `write_scope: EXACT_FILES`, listas `allowed_paths` literales y totalmente disjuntas, permiso de edición efectivo, sin escrituras sobre archivos compartidos y sin ninguna operación Git concurrente. Para cambios solapados, serializar. Para ramas/commits independientes, usar worktrees Git reales **verificados**, no suponer que `task` los abrió.
+5. Mientras los hijos trabajan, el líder puede analizar otros módulos, preparar contrato estable, revisar material ya terminado y delegar lectores independientes. No editar ni leer como definitivo un archivo todavía en escritura; no duplicar la tarea por falta de respuesta.
+6. Esperar finalización real, inspeccionar diff/rutas del hijo, comprobar pruebas y pedir revisión independiente según riesgo. El líder integra en un **punto de sincronización**; no hacer commits/PR antes de esa barrera.
+7. Si se corta una sesión, `HOLD_RECHECK`: comprobar el estado real antes de reanudar por `task_id` recuperable. No reiniciar a ciegas ni reescribir archivos de otro hijo.
+8. Mantener Kilo Desktop **Auto** como lo eligió el operador, sin cambiar permisos, modelos, MCP, `kilo.jsonc` ni HOME para conseguir concurrencia.
+
+### Planificador DAG (no despachador)
+
+El soporte instalado `scripts/vx_task_dag.py` conserva el `mode: STRICT` original y añade el opt-in `mode: PARALLEL_SAFE`. Lee únicamente un JSON local explícito; valida dependencias, rutas literales y capacidades declaradas. No usa red, no ejecuta agentes ni reserva archivos.
+
+Ejemplo de **dos implementaciones independientes** sobre el mismo workspace, editando archivos exclusivos y sin operaciones Git simultáneas (ejemplo ilustrativo, sustituir nombres/paths por el código real):
+
+```json
+{
+  "schema": "vx-task-plan/1",
+  "mode": "PARALLEL_SAFE",
+  "max_background_tasks": 4,
+  "max_parallel_writers": 2,
+  "allow_shared_worktree_exact_files": true,
+  "tasks": [
+    {
+      "id": "api-catalog",
+      "owner": "vx-backend-builder",
+      "reviewer": "vx-dev-reviewer",
+      "state": "PENDING",
+      "writer": true,
+      "worktree": "workspace-actual",
+      "write_scope": "EXACT_FILES",
+      "allowed_paths": ["src/backend/catalog.py"],
+      "depends_on": []
+    },
+    {
+      "id": "ui-profile",
+      "owner": "vx-frontend-builder",
+      "reviewer": "vx-dev-reviewer",
+      "state": "PENDING",
+      "writer": true,
+      "worktree": "workspace-actual",
+      "write_scope": "EXACT_FILES",
+      "allowed_paths": ["src/frontend/profile.tsx"],
+      "depends_on": []
+    }
+  ]
+}
+```
+
+El resultado `background_candidates` propone tareas paralelas, `parallel_deferred` explica bloqueos y `file_lease_proposals` enumera el ownership declarado. Los indicadores `file_leases_enforced: false`, `worktree_identity_verified: false`, `background_tool_verified: false` y `actions_executed: 0` **no cambian** al recibir un plan válido: el host y el líder deben demostrar la ejecución real. En modo compartido, una ruta glob, un solapamiento padre/hijo o ausencia de opt-in bloquea el segundo escritor. El DAG no certifica si las instrucciones del hijo se cumplen; el líder coteja cambios reales al terminar.
+
+### Validación runtime focalizada (una sola vez)
+
+En laboratorio aislado existente y **sin modificar instalaciones adicionales**, proponer dos tareas de edición de archivos sintéticos distintos con aceptación conocida y sin dependencia. Abrir en Kilo Desktop el líder `vx-dev-team`; verificar en el historial que se iniciaron dos hijos con `task(background: true)` y que el líder realizó una tercera actividad independiente mientras estaban activos. Comprobar los eventos de escritura dentro de cada hijo, que ninguna ruta se superpuso y que el padre esperó la barrera antes de probar. Si no se observan sesiones solapadas, registrar `BACKGROUND_RUNTIME_NOT_VERIFIED` y seguir operando foreground; **no crear más pruebas decorativas**.
+
+### Changelog
+
+- **V1.1 RC1 (2026-11-21):** delegación `task(background: true)` condicionada al host de Kilo Desktop, parent-work-while-children-run, dos writers con archivos exactos y disjuntos, DAG `PARALLEL_SAFE` plan-only, barrera de integración, fallback foreground y tests ampliados en la suite viva; ACL y AutoApprove intactos.

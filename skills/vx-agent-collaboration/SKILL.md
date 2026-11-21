@@ -14,11 +14,12 @@ metadata:
 
 ## Ejecución
 
-1. Distinguir task mismo árbol, Swarm de sesión y Agent Manager sesión independiente.
-2. Emitir un contrato proporcional: tarea, workspace, archivo(s), objetivo y aceptación. Derivar `task_id`/SHA/rama de Git solo cuando existan; laboratorio aislado no Git usa `GIT_NOT_APPLICABLE`, no bloquea por SHA inexistente.
-3. Divulgar solo interfaz con dependientes.
-4. Prevenir doble escritura.
-5. No inventar mensajes cruzando worktrees..
+1. **En Kilo Desktop**, usar `task` foreground si el resultado es requisito inmediato; `task(background: true)` si el trabajo independiente permite continuar al padre. El argumento debe existir realmente en la herramienta: no escribirlo como texto de la tarea ni fingir que se inició un hijo.
+2. Distinguir `task` (mismo workspace/worktree) de Agent Manager (sesiones/worktrees aislados **solo en la extensión VS Code**, no herramienta disponible aquí) y de Kilo Swarm (mensajes, no despachador). No elevar `agent_manager`, `board_read` ni `board_post` sin autorización explícita.
+3. Emitir contratos mínimos con objetivo, workspace, archivos exactos, dependencia y aceptación; inferir ID/SHA/rama reales cuando existan, o `GIT_UNBORN_HEAD` si Git no tiene primer commit.
+4. Limitar a cuatro hijos background activos y dos escritores con rutas exclusivas. En workspace compartido exigir contrato explícito `write_scope: EXACT_FILES`, `allowed_paths` sin solapamientos y propietario exclusivo por archivo; con globs, archivos compartidos, commits o dependencias sin verificar, serializar o trabajar en worktrees efectivamente aislados.
+5. El líder trabaja en paralelo en contratos, inspecciones, documentación fuera de las rutas reservadas o tareas independientes; no sustituye ni duplica la escritura del hijo.
+6. Esperar la finalización real del hijo; si se interrumpe, `HOLD_RECHECK` y reanudar por identificador solo si Kilo lo permite. Integrar cambios y pruebas en una barrera; no dar por VERIFIED el reporte del propio builder.
 
 ## Handoff y seguridad
 

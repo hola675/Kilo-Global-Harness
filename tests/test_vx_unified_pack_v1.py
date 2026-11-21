@@ -15,20 +15,24 @@ import sys
 sys.modules[SPEC.name] = module
 SPEC.loader.exec_module(module)
 
+DAG_SPEC = importlib.util.spec_from_file_location('vx_task_dag_concurrency_test', ROOT / 'scripts/vx_task_dag.py')
+dag = importlib.util.module_from_spec(DAG_SPEC)
+DAG_SPEC.loader.exec_module(dag)
+
 
 class UnifiedPackV1Tests(unittest.TestCase):
     def test_manifest_is_one_pack_no_duplicate_agent_or_skill(self):
         pack = module.load_manifest()
         self.assertEqual(pack["primary"], "vx-dev-team")
         self.assertEqual(len(pack["agents"]), 18)
-        self.assertEqual(len(pack["skills"]), 43)
+        self.assertEqual(len(pack["skills"]), 44)
         self.assertEqual(len(pack["commands"]), 3)
         self.assertEqual(len(pack["support_files"]), 2)
         self.assertEqual(len(pack["managed_legacy"]["commands"]), 1)
         self.assertEqual(sum(x["role"] == "lead" for x in pack["agents"]), 1)
         self.assertTrue(all(x["hidden"] for x in pack["agents"] if x["role"] != "lead"))
         self.assertEqual(sum(s["layer"] == "CORE" for s in pack["skills"]), 18)
-        self.assertEqual(sum(s["layer"] == "CAPABILITY" for s in pack["skills"]), 25)
+        self.assertEqual(sum(s["layer"] == "CAPABILITY" for s in pack["skills"]), 26)
         self.assertEqual(len(pack["managed_legacy"]["agents"]), 6)
         self.assertEqual(len(pack["managed_legacy"]["skills"]), 7)
         self.assertEqual(
@@ -96,6 +100,185 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertIn('**Responsable vigente:** `vx-dev-team`', collaboration)
         self.assertIn('`vx-dev-reviewer`', collaboration)
 
+    def test_parallel_dag_proposes_two_isolated_writers_without_dispatch(self):
+        known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
+        writers = {"vx-backend-builder", "vx-frontend-builder"}
+        tasks = [
+            {"id": "backend", "owner": "vx-backend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "writer": True, "worktree": "work/backend",
+             "allowed_paths": ["src/api/service.py"]},
+            {"id": "frontend", "owner": "vx-frontend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "writer": True, "worktree": "work/frontend",
+             "allowed_paths": ["src/ui/form.ts"]},
+        ]
+        report = dag.analyze({"schema": "vx-task-plan/1",
+                              "mode": "PARALLEL_SAFE", "tasks": tasks}, known, writers)
+        self.assertEqual(report["background_candidates"], ["backend", "frontend"])
+        self.assertEqual(report["file_lease_proposals"][0]["id"], "backend")
+        self.assertEqual(report["dispatch_state"], "PROPOSED_NOT_DISPATCHED")
+        self.assertFalse(report["file_leases_enforced"])
+        self.assertFalse(report["worktree_identity_verified"])
+        self.assertFalse(report["runtime_verified"])
+        self.assertEqual(report["actions_executed"], 0)
+        self.assertEqual(report["parallel_deferred"], [])
+
+        tasks[1]["depends_on"] = ["backend"]
+        dependent = dag.analyze({"schema": "vx-task-plan/1",
+                                 "mode": "PARALLEL_SAFE", "tasks": tasks}, known, writers)
+        self.assertEqual(dependent["background_candidates"], ["backend"])
+        self.assertEqual(dependent["blocked"][0]["id"], "frontend")
+
+    def test_parallel_dag_same_worktree_needs_explicit_disjoint_file_leases(self):
+        known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
+        writers = {"vx-backend-builder", "vx-frontend-builder"}
+        tasks = [
+            {"id": "backend", "owner": "vx-backend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "writer": True, "write_scope": "EXACT_FILES", "worktree": "shared",
+             "allowed_paths": ["src/api.py"]},
+            {"id": "frontend", "owner": "vx-frontend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "writer": True, "write_scope": "EXACT_FILES", "worktree": "shared",
+             "allowed_paths": ["src/ui.tsx"]},
+        ]
+        base = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE", "tasks": tasks}
+        default = dag.analyze(base, known, writers)
+        self.assertEqual(default["background_candidates"], ["backend"])
+        self.assertEqual(default["parallel_deferred"],
+                         [{"id": "frontend", "reason": "WORKTREE_WRITE_LOCK"}])
+        opted = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                            known, writers)
+        self.assertEqual(opted["background_candidates"], ["backend", "frontend"])
+        tasks[1]["allowed_paths"] = ["src/api.py"]
+        collision = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                                known, writers)
+        self.assertEqual(collision["background_candidates"], ["backend"])
+        self.assertEqual(collision["parallel_deferred"][0]["reason"], "OVERLAPPING_PATHS")
+        tasks[1]["allowed_paths"] = ["src/api.py/child"]
+        parent_child = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                                   known, writers)
+        self.assertEqual(parent_child["parallel_deferred"][0]["reason"], "OVERLAPPING_PATHS")
+        tasks[1]["allowed_paths"] = ["src/another.py"]
+        tasks[1].pop("write_scope")
+        ambiguous = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                                known, writers)
+        self.assertEqual(ambiguous["parallel_deferred"][0]["reason"],
+                         "WRITE_SCOPE_NOT_EXACT")
+        tasks[1]["write_scope"] = "EXACT_FILES"
+        tasks[0]["state"] = "RUNNING"
+        running = dag.analyze(dict(base, allow_shared_worktree_exact_files=True),
+                              known, writers)
+        self.assertEqual(running["running_tasks_declared"], ["backend"])
+        self.assertEqual(running["background_candidates"], ["frontend"])
+
+    def test_parallel_dag_fail_closed_on_invalid_paths_running_conflicts_and_budget(self):
+        known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
+        writers = {"vx-backend-builder", "vx-frontend-builder"}
+        tasks = [
+            {"id": "backend", "owner": "vx-backend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "RUNNING",
+             "writer": True, "write_scope": "EXACT_FILES", "worktree": "shared",
+             "allowed_paths": ["src/a.py"]},
+            {"id": "frontend", "owner": "vx-frontend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "RUNNING",
+             "writer": True, "write_scope": "EXACT_FILES", "worktree": "shared",
+             "allowed_paths": ["src/a.py"]},
+        ]
+        base = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
+                "allow_shared_worktree_exact_files": True, "tasks": tasks}
+        with self.assertRaises(ValueError):
+            dag.analyze(base, known, writers)
+        tasks[1]["allowed_paths"] = ["src/b.py"]
+        accepted = dag.analyze(base, known, writers)
+        self.assertEqual(accepted["running_writers_declared"], ["backend", "frontend"])
+        with self.assertRaises(ValueError):
+            dag.analyze(dict(base, max_parallel_writers=1), known, writers)
+        with self.assertRaises(ValueError):
+            dag.analyze(dict(base, max_background_tasks=0), known, writers)
+        with self.assertRaises(ValueError):
+            dag.analyze(dict(base, allow_shared_worktree_exact_files="yes"), known, writers)
+        for bad in ("../secret", "src/../secret", "C:\\secret", "src/*",
+                    "src//bad.py", "src/./bad.py", "src/bad.py/", "src/\x00bad.py",
+                    "src/api.py.", "src/directory. /item.ts", "src/CON", "src/nul.txt",
+                    "src/com1.log", "src/LPT9"):
+            with self.subTest(bad=repr(bad)), self.assertRaises(ValueError):
+                tasks[1]["allowed_paths"] = [bad]
+                dag.analyze(base, known, writers)
+        tasks[1]["allowed_paths"] = ["src/b.py"]
+        tasks[0]["state"] = "PENDING"
+        tasks[1]["state"] = "PENDING"
+        with self.assertRaises(ValueError):
+            dag.analyze(dict(base, mode="STRICT", tasks=[
+                dict(tasks[0], state="RUNNING"), dict(tasks[1], state="RUNNING")]),
+                known, writers)
+
+    def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
+        pack = module.load_manifest()
+        self.assertEqual(pack['version'], '1.1.0-rc1')
+        tauri = [skill for skill in pack['skills'] if skill['id'] == 'vx-tauri-desktop']
+        self.assertEqual(len(tauri), 1)
+        self.assertEqual(tauri[0]['layer'], 'CAPABILITY')
+        skill = (ROOT / tauri[0]['source']).read_text(encoding='utf-8')
+        self.assertIn('Tauri 2', skill)
+        self.assertIn('Rust', skill)
+        self.assertIn('capabilities', skill)
+        self.assertIn('No migrar', skill)
+        leader = (ROOT / 'agents/vx-dev-team.md').read_text(encoding='utf-8')
+        self.assertIn('Preferencia de aplicaciones Desktop', leader)
+        self.assertIn('vx-tauri-desktop', leader)
+        self.assertIn('task', leader)
+        policy = (ROOT / 'rules/AGENTS-global-managed.md').read_text(encoding='utf-8')
+        self.assertIn('tauri', policy.lower())
+        self.assertIn('vx-tauri-desktop', policy)
+        command = (ROOT / 'commands/vx-equipo.md').read_text(encoding='utf-8')
+        self.assertIn('Tauri 2', command)
+
+    def test_unified_parallel_desktop_contract_is_scoped_and_preserves_acl(self):
+        pack = module.load_manifest()
+        self.assertEqual(pack["version"], "1.1.0-rc1")
+        routing = pack["routing"]["parallel_background"]
+        self.assertEqual(routing["max_parallel_writers"], 2)
+        self.assertEqual(routing["max_background_tasks"], 4)
+        self.assertFalse(routing["automatic_dispatch_enabled"])
+        self.assertFalse(routing["live_file_leases_implemented"])
+        self.assertTrue(pack["routing"]["one_writer_per_worktree"])
+        lead = (ROOT / "agents/vx-dev-team.md").read_text(encoding="utf-8")
+        policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
+        command = (ROOT / "commands/vx-equipo.md").read_text(encoding="utf-8")
+        dependency = (ROOT / "commands/vx-dependencias.md").read_text(encoding="utf-8")
+        for text in (lead, policy, command):
+            self.assertIn("background: true", text)
+            self.assertIn("EXACT_FILES", text)
+            self.assertIn("Auto", text)
+        self.assertIn("PARALLEL_SAFE", dependency)
+        self.assertIn("PROPOSED_NOT_DISPATCHED", lead)
+        self.assertIn("Agent Manager", lead)
+        self.assertIn("  agent_manager: deny", lead)
+        self.assertIn("  edit: ask", lead)
+        self.assertIn("  write: ask", lead)
+        self.assertIn("  apply_patch: ask", lead)
+        self.assertIn("No hacer polling", lead)
+        builders = [a for a in pack["agents"] if a["role"] == "builder"]
+        self.assertEqual(len(builders), 6)
+        for builder in builders:
+            with self.subTest(agent=builder["id"]):
+                body = (ROOT / builder["source"]).read_text(encoding="utf-8")
+                front = body.split("---", 2)[1]
+                self.assertIn("background: true", body)
+                self.assertIn("EXACT_FILES", body)
+                self.assertIn("task: deny", front)
+                self.assertIn("agent_manager: deny", front)
+                self.assertIn("edit: ask", front)
+                self.assertIn("write: ask", front)
+                self.assertIn("apply_patch: ask", front)
+        for skill in ("vx-task-dependency-graph", "vx-agent-collaboration",
+                      "vx-implementation-handoff"):
+            text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
+            self.assertIn("background: true", text)
+            self.assertIn("EXACT_FILES", text)
+
     def test_simulation_is_readonly_and_preserves_third_party_assets(self):
         with tempfile.TemporaryDirectory(prefix="vx-unified-plan-") as folder:
             home = Path(folder)
@@ -110,7 +293,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(plan["status"], "READY")
             self.assertEqual(plan["agents"], 18)
             self.assertEqual(plan["hidden_agents"], 17)
-            self.assertEqual(plan["skills"], 43)
+            self.assertEqual(plan["skills"], 44)
             self.assertEqual(plan["commands"], 3)
             self.assertEqual(plan["support_files"], 2)
             self.assertEqual(plan["legacy_files_to_retire"], 1)

@@ -4,7 +4,7 @@
 
 ## Contrato de trabajo del equipo
 
-**Una sola rama permanente:** `main`. **Varias ramas `work/*` temporales pueden coexistir** cuando haya tareas realmente independientes y cada una tenga propietario y worktree o sesión de escritura aislados. **Un único escritor por worktree**: si varios agentes comparten el mismo árbol, solo uno escribe. Una rama no tiene dos agentes escritores simultáneos.
+**Una sola rama permanente:** `main`. **Varias ramas `work/*` temporales pueden coexistir** cuando haya tareas realmente independientes y cada una tenga propietario y worktree o sesión de escritura aislados. **Un solo escritor Git por worktree:** ninguna operación simultánea de branch/commit/merge/rebase/stash de varios agentes sobre el mismo checkout. Para *ediciones de código*, el Core V1.1 admite excepcionalmente dos builders en un workspace común solo en **archivos exactos disjuntos con ownership verificado**, sin operaciones Git hasta la barrera de integración. Esta excepción no autoriza ramas compartidas en conflicto ni constituye un lease de filesystem; ver `docs/VX-DEV-TEAM-UNIFIED-V1.md`.
 
 Cada tarea registra `task_id`, `owner_agent`, `repo`, `branch`, `base_main_sha`, `last_reconciled_main_sha`, `status`, `allowed_paths` y evidencia de CI. Estos metadatos no son credenciales ni permisos. Las sesiones y tareas se registrarán en un catálogo externo a Git cuando se habilite la orquestación; nunca añadir un registro efímero de equipos privados al repositorio público.
 
