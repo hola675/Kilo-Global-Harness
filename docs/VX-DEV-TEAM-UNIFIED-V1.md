@@ -195,7 +195,7 @@ En laboratorio aislado existente y **sin modificar instalaciones adicionales**, 
 
 ## VX 1.2 — Contrato de aplicaciones hermanas Windows y Android (Tauri 2)
 
-**Política nueva:** cada **aplicación de escritorio nueva** de este equipo se diseña para **Windows `.exe` y Android `.apk`**, con núcleo, protocolo, modelos de negocio y tests compatibles, y UI diferenciada por plataforma. `.aab` se reserva a Google Play cuando se solicite. Si falta el toolchain o el hardware, no se cancela silenciosamente el target: registrar `PLATFORM_BLOCKED` con causa verificable y dejar las tareas/artefactos pendientes. Esta política no migra proyectos anteriores (Qt/PySide/Electron/industrial) sin encargo expreso.
+**Política nueva:** cuando el usuario define una **aplicación de escritorio nueva**, el equipo propone Windows `.exe` y Android `.apk` **salvo que móvil esté explícitamente excluido**. Si el encargo se limita a Windows, Android es `OUT_OF_SCOPE`, no un build fallido. Si ambos targets están en alcance, comparten núcleo, protocolo y modelos y tienen UI diferenciada por plataforma. `.aab` se reserva a Google Play cuando se solicite. Si falta el toolchain o el hardware, no se cancela silenciosamente el target: registrar `PLATFORM_BLOCKED` con causa verificable y dejar las tareas/artefactos pendientes. Esta política no migra proyectos anteriores (Qt/PySide/Electron/industrial) sin encargo expreso.
 
 ### Responsabilidades y empaquetado
 
