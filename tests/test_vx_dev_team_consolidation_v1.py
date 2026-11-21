@@ -1009,5 +1009,74 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertIn("git ls-remote --heads origin",script)
         self.assertNotIn("kilo.jsonc -",script)
 
+    def test_contextual_skills_source_only_and_version_preflight(self):
+        # UPDATE de la suite viva: nuevos invariantes sin nuevo archivo test_vX.
+        import re
+        catalog = json.loads((ROOT / "registry" / "vx-contextual-skills-v1.json").read_text(encoding="utf-8"))
+        self.assertEqual(catalog["schema"], "vx-contextual-skills/1")
+        self.assertEqual(catalog["status"], "SOURCE_PROPOSED_NOT_RUNTIME_ACTIVATED")
+        self.assertEqual(catalog["baseline"]["documented_source_skills"], 53)
+        self.assertEqual(catalog["baseline"]["proposed_new_skills"], 4)
+        self.assertEqual(catalog["baseline"]["expected_source_skills_after_integration"], 57)
+        self.assertEqual(catalog["baseline"]["dev_team_baseline_source_skills"], 44)
+        policy = catalog["policy"]
+        for gate in (
+            "no_project_named_skills", "requires_explicit_runtime_approval",
+            "auto_install", "acl_changes", "autoapprove_changes",
+            "kilo_jsonc_changes", "mcp_changes", "scheduler_changes",
+            "host_runtime_verified",
+        ):
+            expected = gate in ("no_project_named_skills", "requires_explicit_runtime_approval")
+            self.assertIs(policy[gate], expected, gate)
+        entries = catalog["skills"]
+        self.assertEqual(len(entries), 4)
+        self.assertEqual(len({entry["id"] for entry in entries}), 4)
+        required_ids = {
+            "vx-version-governance", "vx-context-routing",
+            "vx-technology-fit", "vx-skill-quality",
+        }
+        self.assertEqual({entry["id"] for entry in entries}, required_ids)
+        for entry in entries:
+            skill_path = ROOT / entry["path"]
+            self.assertEqual(skill_path.parent.name, entry["id"])
+            contents = skill_path.read_text(encoding="utf-8")
+            self.assertTrue(contents.startswith("---\n"), entry["id"])
+            frontmatter = contents.split("---", 2)[1]
+            self.assertIn("name: " + entry["id"], frontmatter)
+            desc = re.search(r'^description: "([^"]+)"
+    unittest.main()
+, frontmatter, re.M)
+            self.assertIsNotNone(desc, entry["id"])
+            self.assertLessEqual(len(desc.group(1)), 1024)
+            self.assertRegex(entry["id"], r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+            self.assertLessEqual(len(entry["id"]), 64)
+            self.assertIn('version: "1.0.0"', frontmatter)
+            self.assertIn("compatibility:", frontmatter)
+            self.assertIn("##", contents)
+        leader_text = (ROOT / "agents" / "vx-dev-team.md").read_text(encoding="utf-8")
+        leader_permissions = leader_text.split("---", 2)[1]
+        self.assertIn('"vx-team-bootstrap": allow', leader_permissions)
+        self.assertIn('"*": deny', leader_permissions)
+        for skill_id in required_ids:
+            self.assertNotIn('"' + skill_id + '": allow', leader_permissions)
+        bootstrap = (ROOT / "skills" / "vx-team-bootstrap" / "SKILL.md").read_text(encoding="utf-8")
+        phased = (ROOT / "skills" / "vx-desarrollo-escalonado" / "SKILL.md").read_text(encoding="utf-8")
+        tauri = (ROOT / "skills" / "vx-tauri-desktop" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("## Gate V0", bootstrap)
+        self.assertIn("BASELINE_UNVERIFIED", bootstrap)
+        self.assertIn("BASE_SHA", phased)
+        self.assertIn("PySide6", phased)
+        self.assertIn("Windows-only", tauri)
+        self.assertIn("Tauri", (ROOT / "skills" / "vx-technology-fit" / "SKILL.md").read_text(encoding="utf-8"))
+        quality = (ROOT / "skills" / "vx-skill-quality" / "SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("SHOULD_TRIGGER", quality)
+        self.assertIn("SHOULD_NOT_TRIGGER", quality)
+        self.assertEqual(catalog["test_policy"]["action"], "UPDATE")
+        self.assertFalse(catalog["rollout"][1]["status"] == "RUNTIME_PASS")
+        # Las 44 skills Dev Team siguen separadas de las nuevas globales.
+        legacy = {p.parent.name for p in (ROOT / "runtime" / "dev-team-v2r" / "skills").glob("*/SKILL.md")}
+        self.assertEqual(len(legacy), 44)
+        self.assertFalse(required_ids & legacy)
+
 if __name__=="__main__":
     unittest.main()
