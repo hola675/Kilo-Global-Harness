@@ -365,6 +365,10 @@ class UnifiedPackV1Tests(unittest.TestCase):
                 self.assertIsNone(next(t for t in dag._queue_report(
                     conn, "restricted", known, writers)["tasks"]
                     if t["id"] == "aa")["host_task_id"])
+                # An old session ID must never be recycled after a reset.
+                with self.assertRaises(ValueError):
+                    mutate(conn, "restricted", "start", task_id="aa",
+                           host_id="ses_A", event_key="aa-illegal-restart")
                 mutate(conn, "restricted", "start", task_id="aa",
                        host_id="ses_NEW", event_key="aa-new-start")
                 bulk = {
