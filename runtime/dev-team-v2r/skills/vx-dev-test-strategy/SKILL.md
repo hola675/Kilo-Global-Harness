@@ -3,12 +3,16 @@ name: vx-dev-test-strategy
 description: "Diseña estrategia de pruebas y evidencia de aceptación sin ejecutar tests. Usar para convertir requisitos/cambios en invariantes, matriz de casos, oráculos, superficie de regresión y gates de CI."
 compatibility: "Read-only; Quality no ejecuta tests ni convierte tests escritos en PASS."
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   origin: "vx-dev-original"
   category: "quality"
 ---
 
 # VX Dev — Test Strategy
+
+## Cobertura de Skills por contexto (source)
+
+Al cambiar una Skill o su enrutamiento, usar la **suite viva** para probar `SHOULD_TRIGGER`, `SHOULD_NOT_TRIGGER`, permiso denegado y fallo de dependencia. Asegurar que un bug PySide6 no activa Tauri/Android, que una web no activa desktop y que ninguna Skill cargada crea un privilegio nuevo. Diseñar oráculos separados para `SOURCE`, `CI`, `ACL` y `RUNTIME`; no llamar PASS de runtime a una lectura de archivos. La opción `test_action` sigue siendo UPDATE, REPLACE o ADD: no construir una suite por release.
 
 ## Protocolo
 1. Extraer comportamiento observable e invariantes.

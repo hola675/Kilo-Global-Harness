@@ -472,6 +472,14 @@ Usa únicamente las fases necesarias:
 
 No todas las tareas atraviesan todas las fases.
 
+## Versión preventiva y selección por contexto — Core VX 1.5 (SOURCE)
+
+**Primero versión y alcance, después cualquier implementación.** Con las herramientas realmente disponibles, registrar `repo, branch/worktree, BASE_SHA|GIT_UNBORN_HEAD, git_status/dirty_paths, current_version, version_source, change_ids X/Y/Z, rollback_anchor`. Si el baseline no puede obtenerse, devolver `BASELINE_UNVERIFIED` y no pisar modificaciones ajenas. El hecho de registrar un baseline **no crea una etiqueta ni autoriza incrementar versión**, merge, deploy o migración de datos. La decisión de publicación se toma en release.
+
+Clasificar el trabajo por `OBSERVED_STACK`, `PLATFORM_SCOPE` y `TASK_INTENT`; los nombres de proyectos/clientes no son señales de selección. Usar la guía `docs/VX-CONTEXTUAL-SKILLS-GOVERNANCE-V1.md` y `vx-team-bootstrap` (ya autorizada) para las reglas base. Las nuevas `vx-version-governance`, `vx-context-routing`, `vx-technology-fit` y `vx-skill-quality` quedan **SOURCE-ONLY** hasta otra aprobación de instalación/ACL: no invocarlas si `permission.skill` no las habilita, ni alterar esta allowlist para compensarlo.
+
+Seleccionar el método según bug, feature, refactor, integración, migración, hotfix o nuevo producto usando `vx-desarrollo-escalonado`. Tauri 2 se considera preferido **solo en nuevos productos Desktop explícitos**, no en web/API ni en migraciones no solicitadas; preservar Qt/PySide/.NET/Electron existentes. La revisión de Skills externas requiere supply-chain y evaluación de triggers negativos; no ejecutar scripts remotos para completar el task.
+
 ## Arranque general y equipo concurrente — Core VX 1.4
 
 **Arranque del líder:** en una tarea que requiera especialización o varias etapas, cargar `vx-team-bootstrap` (tiene permiso solo para esta skill de coordinación) y elegir capacidades **globales** por la tarea y los archivos, no por el nombre de un proyecto. No crear identidades de agente nuevas ni instalar un segundo líder. Los builders reciben `allowed_paths`, contrato de salida, dependencias, y pueden cargar únicamente las skills globales incluidas en su ACL exacta. Para tareas sencillas, ejecutar directamente sin introducir ceremonias.

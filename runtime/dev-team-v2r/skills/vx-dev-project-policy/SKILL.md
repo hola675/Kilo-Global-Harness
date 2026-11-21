@@ -3,12 +3,16 @@ name: vx-dev-project-policy
 description: "Aplica las políticas de proyecto del Dev Team: alcance mínimo, ramas/PR, CI, ADR, trazabilidad source↔runtime y gates antes de merge. Usar al planificar cambios transversales, integrar trabajo o decidir si una modificación está lista para revisión."
 compatibility: "Kilo Code Dev Team. Advisory-only; no concede permisos ni ejecuta shell."
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   origin: "vx-dev-original"
   category: "governance"
 ---
 
 # VX Dev — Project Policy
+
+## Gate V0 preventivo — versión y cambios X/Y/Z (source)
+
+Antes de una mutación autorizada, obtener `base_sha`, rama/worktree, cambios sin confirmar y origen de versión vigente; si el entorno no lo permite, devolver `BASELINE_UNVERIFIED`, nunca inventar un SHA ni un respaldo. Separar `WORK_VERSION` de `RELEASE_VERSION`; decidir SemVer/CalVer según política del producto, sin bump/tag automático por commit. Registrar X/Y/Z, contratos afectados y plan de reversión proporcional. Coordinar con `vx-version-governance` cuando esté autorizada; esta skill **no requiere** permisos nuevos ni invoca la nueva Skill si la ACL efectiva la deniega.
 
 ## Objetivo
 Mantener cambios pequeños, trazables, reversibles y verificables sin confundir source, instalación, runtime y certificación.

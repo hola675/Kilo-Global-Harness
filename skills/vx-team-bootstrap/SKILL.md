@@ -2,13 +2,19 @@
 name: vx-team-bootstrap
 description: "Inicio del pack unificado: seleccionar capacidades técnicas globales, comprobar instrucciones locales, distribuir permisos por rol y coordinar fases y resultados paralelos con un único líder visible."
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   origin: "vx-unified"
 ---
 
 # VX — Inicio, sincronización y gobierno del equipo
 
 **Solo `vx-dev-team` es principal visible.** Esta skill gobierna la primera decisión de cada tarea; no lanza automáticamente procesos, subagentes, Git, MCP ni cambios de permiso. Las skills no elevan la ACL del host. El modo Auto sigue siendo elección del operador; `ask` permanece en escritura y shell según rol.
+
+## Gate V0 — versión y contexto antes de implementar (Core 1.5 SOURCE)
+
+Antes de cualquier mutación, incluso para microcambios, el líder registra `BASE_SHA` o `GIT_UNBORN_HEAD`, rama/worktree, paths sucios, origen de la versión y alcance X/Y/Z. Si no puede observar la base, comunica `BASELINE_UNVERIFIED`; no toca rutas con modificaciones ajenas. No crear tags, version bumps ni releases por rutina: distinguir cambio de código de publicación. **La política se aplica desde este bootstrap ya allowlistado**, aunque `vx-version-governance` aún no tenga `permission.skill` en runtime.
+
+Seleccionar por stack real y `TASK_INTENT`, no por marca, utilizando la matriz de `vx-context-routing` como **referencia source**, no como invocación concedida. Prioridad: permisos efectivos → petición expresa → reglas locales estrictas → stack existente → política global. `vx-technology-fit` se consulta solo cuando hay elección tecnológica real; `vx-skill-quality` solo al revisar Skills. **No editar ACL para cargar estas nuevas Skills**, no cambiar `kilo.jsonc` ni instalar nada en HOME hasta autorización aparte.
 
 ## Inicio proporcional y mínimo
 

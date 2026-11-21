@@ -9,6 +9,12 @@ description: "Dirigir tareas complejas de desarrollo autónomo de extremo a extr
 
 En tareas complejas, seguir `DISCOVER → PLAN → BUILD → VERIFY → REVIEW → GIT CLOSE → REPORT`.
 
+## Política contextual y versionado preventivo — Core 1.5 SOURCE
+
+Antes de `BUILD` en cualquier repositorio: observar HEAD, branch, worktree, `git status`, origen de versión y cambios X/Y/Z (o registrar `BASELINE_UNVERIFIED` si una herramienta no lo permite). Conservar rutas sucias y trabajo ajeno. No confundir `WORK_VERSION` con `RELEASE_VERSION`, no crear tags por cada cambio ni ejecutar migraciones/despliegues sin autorización. El protocolo detallado está en `vx-version-governance`; la regla mínima vive en `vx-team-bootstrap` ya permitido y **no requiere ampliar ACL** para aplicarse.
+
+Clasificar producto por `OBSERVED_STACK` + `PLATFORM_SCOPE` + `TASK_INTENT`, nunca por nombre de cliente. El catálogo `registry/vx-contextual-skills-v1.json` registra `vx-context-routing`, `vx-technology-fit` y `vx-skill-quality` como referencia source inactiva. Solo cargar Skills realmente visibles/autorizadas para el agente, sin intentar eludir `skill: deny`. El método específico (bug, feature, refactor, integración, migración, hotfix) se decide en `vx-desarrollo-escalonado`; para una consulta de lectura no activar gate de mutaciones.
+
 ## Enrutamiento
 
 - Error reproducible: `systematic-debugging`. Si hay pruebas automatizables, `test-driven-development`.

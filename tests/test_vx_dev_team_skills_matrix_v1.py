@@ -93,8 +93,21 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertEqual(legacy["total"], 31)
         self.assertEqual(len(prior), 31)
         self.assertTrue(prior <= actual, "No perder skills del inventario histórico")
-        self.assertEqual(actual - prior, {"vx-editorial-claridad", "vx-tauri-desktop", "vx-conectividad-dispositivos", "vx-desarrollo-escalonado", "vx-team-bootstrap", "vx-saas-multitenant-cloud", "vx-erp-localfirst-modular", "vx-windows-network-systems", "vx-inventory-reconciliation", "vx-enterprise-workflows", "vx-industrial-control-safety"})
-        self.assertEqual(len(actual), 42)
+        contextual = json.loads((ROOT / "registry" / "vx-contextual-skills-v1.json").read_text(encoding="utf-8"))
+        self.assertEqual(contextual["status"], "SOURCE_PROPOSED_NOT_RUNTIME_ACTIVATED")
+        contextual_ids = {entry["id"] for entry in contextual["skills"]}
+        self.assertEqual(len(contextual_ids), 4)
+        previous_extensions = {
+            "vx-editorial-claridad", "vx-tauri-desktop",
+            "vx-conectividad-dispositivos", "vx-desarrollo-escalonado",
+            "vx-team-bootstrap", "vx-saas-multitenant-cloud",
+            "vx-erp-localfirst-modular", "vx-windows-network-systems",
+            "vx-inventory-reconciliation", "vx-enterprise-workflows",
+            "vx-industrial-control-safety",
+        }
+        self.assertFalse(prior & contextual_ids)
+        self.assertEqual(actual - prior, previous_extensions | contextual_ids)
+        self.assertEqual(len(actual), 42 + len(contextual_ids))
         self.assertEqual(legacy["status"], "REFERENCE_ONLY_NOT_RUNTIME_PACK")
 
     def test_v1_declares_18_original_skills_and_all_still_exist(self):

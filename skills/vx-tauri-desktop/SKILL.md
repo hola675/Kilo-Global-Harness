@@ -2,9 +2,13 @@
 name: vx-tauri-desktop
 description: "Diseñar y desarrollar por defecto un par Tauri 2 Windows (.exe) + Android (.apk) con lógica compartida, UI adaptativa, plugins mínimos y conectividad local segura Wi-Fi/BLE/Wi-Fi Direct condicionada a compatibilidad."
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
   origin: "vx-unified"
 ---
+
+## Condición contextual previa (Core 1.5 SOURCE)
+
+La descripción de esta Skill **solo aplica después de confirmar** que la tarea es de un producto expresamente Desktop y que Tauri 2 fue adoptado para ese producto. Es una preferencia para nuevos Desktop, no una orden de migrar software existente, APIs, webs, sistemas industriales ni apps Qt/PySide6. El usuario determina `PLATFORM_SCOPE`; si se especifica Windows-only, no introducir Android ni SDK móvil. Antes de cambiar dependencias registrar baseline/versiones y contrastar `vx-technology-fit` cuando la nueva Skill esté permitida; no ampliar ACL para usarla.
 
 # VX — Tauri 2: aplicaciones hermanas Windows + Android
 
