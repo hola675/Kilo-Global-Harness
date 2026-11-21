@@ -1,6 +1,6 @@
 {
   "schema": "vx-unified-pack/1",
-  "version": "1.3.0-rc1",
+  "version": "1.4.0-rc1",
   "updated": "2026-11-21",
   "status": "SOURCE_CANDIDATE_NOT_INSTALLED",
   "scope": "ONE_GLOBAL_PACK_KILO_WINDOWS",
@@ -409,6 +409,48 @@
       "source": "skills/vx-desarrollo-escalonado/SKILL.md",
       "target": ".kilo/skills/vx-desarrollo-escalonado/SKILL.md",
       "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-team-bootstrap",
+      "source": "skills/vx-team-bootstrap/SKILL.md",
+      "target": ".kilo/skills/vx-team-bootstrap/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-vecidya-platform",
+      "source": "skills/vx-vecidya-platform/SKILL.md",
+      "target": ".kilo/skills/vx-vecidya-platform/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-multinexo-erp",
+      "source": "skills/vx-multinexo-erp/SKILL.md",
+      "target": ".kilo/skills/vx-multinexo-erp/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-onetunnel-wfp",
+      "source": "skills/vx-onetunnel-wfp/SKILL.md",
+      "target": ".kilo/skills/vx-onetunnel-wfp/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-kmcero-operaciones",
+      "source": "skills/vx-kmcero-operaciones/SKILL.md",
+      "target": ".kilo/skills/vx-kmcero-operaciones/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-octopus-encc",
+      "source": "skills/vx-octopus-encc/SKILL.md",
+      "target": ".kilo/skills/vx-octopus-encc/SKILL.md",
+      "layer": "CAPABILITY"
+    },
+    {
+      "id": "vx-octopus-flow-industrial",
+      "source": "skills/vx-octopus-flow-industrial/SKILL.md",
+      "target": ".kilo/skills/vx-octopus-flow-industrial/SKILL.md",
+      "layer": "CAPABILITY"
     }
   ],
   "managed_legacy": {
@@ -502,7 +544,7 @@
     "desktop": {
       "preferred_engine": "Tauri 2",
       "applies_to": "EXPLICITLY_SCOPED_NEW_DESKTOP_PRODUCT_ONLY",
-      "migration_of_existing_apps": "ONLY_WITH_EXPLICIT_REQUEST",
+      "migration_of_existing_apps": "ONLY_WITH_EXPLICIT_REQUEST_AND_PROJECT_RULES",
       "frontend_owner": "vx-frontend-builder",
       "native_rust_owner": "vx-backend-builder",
       "qa_owner": "vx-qa-builder",
@@ -548,7 +590,122 @@
       "obsolete_tests_replaced_not_accumulated": true,
       "default_no_stack_migration": true,
       "automatic_dependency_installation": false
-    }
+    },
+    "startup": {
+      "skill": "vx-team-bootstrap",
+      "trigger": "PER_USER_TASK_MINIMAL",
+      "primary_only": "vx-dev-team",
+      "initial_project_detection": "EXACT_GIT_REMOTE_OR_EXPLICIT_PROJECT",
+      "project_rules_precedence": "LOCAL_PROJECT_RULES_STRICTER_FIRST",
+      "project_skill_loading": "LAZY_BY_BUILDER_EXACT_ALLOWLIST",
+      "no_auto_dispatch": true,
+      "no_auto_install": true,
+      "no_scheduler": true,
+      "initial_safe_actions": [
+        "read",
+        "glob",
+        "grep"
+      ],
+      "effective_permission_host_required": true
+    },
+    "team_coordination": {
+      "schema": "vx-team-task-ledger/1",
+      "owner": "vx-dev-team",
+      "ledger_location": "LEADER_SESSION_ONLY_UNLESS_EXPLICIT_USER_AUTHORIZATION",
+      "phase_statuses": [
+        "PENDING",
+        "RUNNING",
+        "DELIVERED",
+        "INTEGRATING",
+        "VERIFIED",
+        "BLOCKED",
+        "FAILED"
+      ],
+      "task_contract": [
+        "task_id",
+        "owner",
+        "allowed_paths",
+        "depends_on",
+        "base_sha_or_unborn",
+        "contract_version",
+        "acceptance",
+        "evidence"
+      ],
+      "max_background_tasks": 4,
+      "max_parallel_writers": 2,
+      "shared_worktree_files": "EXACT_DISJOINT_ONLY",
+      "git_ops_concurrency": "ONE_PER_WORKTREE",
+      "no_cross_agent_task_stealing": true,
+      "barrier_before_shared_files": true,
+      "scope_permissions": "R0_READ_R1_SCOPED_CODE_R2_GIT_R3_EXPLICIT_HIGH_RISK",
+      "runtime_enforcement": "NOT_IMPLEMENTED_PLAN_ONLY"
+    },
+    "project_profiles": [
+      {
+        "id": "vecidya",
+        "match_repository": "hola675/Vecidya",
+        "activation": "EXACT_REPO",
+        "skill": "vx-vecidya-platform",
+        "product_root": "vecidya-platform",
+        "library_root": "vecidya-crystal-depth",
+        "canonical": [
+          "AGENTS.md",
+          "vecidya-platform/docs/GOVERNANCE.md",
+          "vecidya-platform/docs/STATUS.md",
+          "vecidya-platform/docs/PROJECT_STATE.md"
+        ],
+        "guard": "VECIDYA_WORKTREE_AND_NO_PROD_DEPLOY"
+      },
+      {
+        "id": "multinexo",
+        "match_repository": "hola675/Multinexo-Vecidya-ERP",
+        "activation": "EXACT_REPO",
+        "skill": "vx-multinexo-erp",
+        "canonical": [
+          "README.md",
+          "docs/05-reference/DEPLOYMENT-PROFILES.md",
+          "docs/04-quality/PRE-IMPLEMENTATION-GATE.md"
+        ],
+        "guard": "G0_OPEN_NO_STACK_FORCING"
+      },
+      {
+        "id": "onetunnel",
+        "match_repository": "hola675/1VPN-Desktop-Lab",
+        "activation": "EXACT_REPO",
+        "skill": "vx-onetunnel-wfp",
+        "canonical": [
+          "AGENTS.md",
+          "README.md",
+          "docs/DRIVER-SIGNING-HANDOFF.md"
+        ],
+        "guard": "UNSIGNED_DRIVER_NEVER_INSTALL"
+      },
+      {
+        "id": "kmcero",
+        "match_repository": "hola675/KMCero",
+        "activation": "EXACT_REPO",
+        "skill": "vx-kmcero-operaciones",
+        "canonical": [
+          "README.md",
+          "docs/PRODUCTO-Y-OPERACION.md"
+        ],
+        "guard": "NOT_TPV_LAB_ONLY"
+      },
+      {
+        "id": "octopus-encc",
+        "activation": "EXPLICIT_PROJECT_NAME_ONLY",
+        "skill": "vx-octopus-encc",
+        "canonical": [],
+        "guard": "REPOSITORY_AND_STACK_UNVERIFIED"
+      },
+      {
+        "id": "octopus-flow",
+        "activation": "EXPLICIT_PROJECT_NAME_ONLY",
+        "skill": "vx-octopus-flow-industrial",
+        "canonical": [],
+        "guard": "INDUSTRIAL_HARDWARE_AND_METROLOGY_GATE"
+      }
+    ]
   },
   "test_policy": {
     "action": "ADD_UNIFIED_INSTALLER_SCOPE_AND_UPDATE_CURRENT_PERMISSIONS",
@@ -564,7 +721,8 @@
     "vx-git-ci-quality",
     "vx-agent-collaboration",
     "vx-release-readiness",
-    "vx-desarrollo-escalonado"
+    "vx-desarrollo-escalonado",
+    "vx-team-bootstrap"
   ],
   "commands": [
     {
@@ -594,5 +752,90 @@
       "source": "registry/vx-unified-pack-v1.json",
       "target": ".config/kilo/harness/vx-unified-pack-v1.json"
     }
-  ]
+  ],
+  "builder_skill_allowlists": {
+    "vx-frontend-builder": [
+      "vx-dev-frontend-ux",
+      "vx-dev-accessibility",
+      "vx-dev-ui-state-system",
+      "vx-typescript-engineering",
+      "vx-frontend-quality",
+      "vx-e2e-browser-testing",
+      "vx-tauri-desktop",
+      "vx-conectividad-dispositivos",
+      "vx-vecidya-platform",
+      "vx-multinexo-erp",
+      "vx-onetunnel-wfp",
+      "vx-kmcero-operaciones",
+      "vx-octopus-encc",
+      "vx-octopus-flow-industrial"
+    ],
+    "vx-backend-builder": [
+      "vx-dev-backend-contracts",
+      "vx-dev-security-threat-review",
+      "vx-api-contract-design",
+      "vx-typescript-engineering",
+      "vx-python-engineering",
+      "vx-data-contracts",
+      "vx-cloudflare-worker-runtime",
+      "vx-cloudflare-storage-messaging",
+      "vx-sql-query-performance",
+      "vx-tauri-desktop",
+      "vx-conectividad-dispositivos",
+      "vx-vecidya-platform",
+      "vx-multinexo-erp",
+      "vx-onetunnel-wfp",
+      "vx-kmcero-operaciones",
+      "vx-octopus-encc",
+      "vx-octopus-flow-industrial"
+    ],
+    "vx-data-builder": [
+      "vx-dev-data-migration",
+      "vx-data-contracts",
+      "vx-sql-query-performance",
+      "vx-cloudflare-storage-messaging",
+      "vx-conectividad-dispositivos",
+      "vx-vecidya-platform",
+      "vx-multinexo-erp",
+      "vx-kmcero-operaciones",
+      "vx-octopus-encc",
+      "vx-octopus-flow-industrial"
+    ],
+    "vx-qa-builder": [
+      "vx-dev-test-strategy",
+      "vx-test-regression",
+      "vx-dev-accessibility",
+      "vx-e2e-browser-testing",
+      "vx-performance-measurement",
+      "vx-tauri-desktop",
+      "vx-conectividad-dispositivos",
+      "vx-vecidya-platform",
+      "vx-multinexo-erp",
+      "vx-onetunnel-wfp",
+      "vx-kmcero-operaciones",
+      "vx-octopus-encc",
+      "vx-octopus-flow-industrial"
+    ],
+    "vx-docs-builder": [
+      "vx-docs-traceability",
+      "vx-editorial-claridad",
+      "vx-dev-architecture-decision",
+      "vx-vecidya-platform",
+      "vx-multinexo-erp",
+      "vx-onetunnel-wfp",
+      "vx-kmcero-operaciones",
+      "vx-octopus-encc",
+      "vx-octopus-flow-industrial"
+    ],
+    "vx-editorial-builder": [
+      "vx-editorial-claridad",
+      "vx-dev-accessibility",
+      "vx-vecidya-platform",
+      "vx-multinexo-erp",
+      "vx-onetunnel-wfp",
+      "vx-kmcero-operaciones",
+      "vx-octopus-encc",
+      "vx-octopus-flow-industrial"
+    ]
+  }
 }
