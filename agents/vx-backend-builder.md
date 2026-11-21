@@ -34,6 +34,7 @@ permission:
     "vx-inventory-reconciliation": allow
     "vx-enterprise-workflows": allow
     "vx-industrial-control-safety": allow
+    "vx-implementation-handoff": allow
   edit: ask
   write: ask
   apply_patch: ask
