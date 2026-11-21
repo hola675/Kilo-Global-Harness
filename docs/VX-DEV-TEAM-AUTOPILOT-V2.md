@@ -95,9 +95,20 @@ python -I $Engine --queue-action event --project laboratorio --task-id backend -
 python -I $Engine --queue-action verify --project laboratorio --task-id backend --event-key backend-verified --review-ref review_REAL --test-report tests_REAL
 ```
 
+**Límites persistidos:** `sync` almacena los límites específicos del plan (`max_background_tasks`, `max_parallel_writers`, `allow_shared_worktree_exact_files`) y los aplica también a `report/start/resume`. Un segundo `sync` que cambie esos límites se rechaza; máximo 100 tareas acumuladas por proyecto. Las claves idempotentes solo admiten reintentos con contenido **idéntico**. Los paths SQLite se resuelven para impedir symlinks hacia checkout Git; la consulta `report` usa una URI de solo lectura correctamente escapada, incluso con `#` y espacios.
+
+**Recuperación de bloqueo (solo después de comprobar el host):**
+
+```powershell
+# Si el hijo original sigue activo bajo ses_REAL:
+python -I $Engine --queue-action resume --project laboratorio --task-id backend --host-task-id ses_REAL --event-key backend-resume-1 --review-ref review_host_live --evidence-ref task_trace_live
+# O, exclusivamente si ses_REAL terminó: permitir replanificación, no despachar automáticamente:
+python -I $Engine --queue-action reset --project laboratorio --task-id backend --host-task-id ses_REAL --event-key backend-reset-1 --review-ref review_host_ended --evidence-ref task_trace_ended
+```
+
 **Semántica:** `sync` valida un DAG acíclico, prioridades y rutas; importa solo tareas nuevas `PENDING` y rechaza definición contradictoria. `report` es solo lectura: muestra `ready_queue` priorizada, bloqueos, capacidad y estado declarado. `start` **solo registra** una tarea cuando el líder ya observó el ID de Kilo; rechaza dependencias sin verificar, dos escritores que colisionen y exceder límites. `event` registra un hito idempotente; `DELIVERED` pasa a `REVIEW`; `verify` requiere referencias de revisión/prueba y libera dependencias para la siguiente wave. Una referencia textual no autentica una traza real.
 
-**Interrupciones:** una tarea `RUNNING` conservada tras reinicio exige comprobar transcripción y estado real del host; no reiniciar por suposiciones ni lanzar escritor duplicado. Las tareas `BLOCKED` no se desbloquean automáticamente. Sin un Kilo activo, la cola no ejecuta ninguna tarea. El líder puede recuperar el estado para continuar al abrir de nuevo la sesión si dispone de los IDs válidos. No programar watchers ni cron ni activar un servicio en segundo plano.
+**Interrupciones:** una tarea `RUNNING` conservada tras reinicio exige comprobar transcripción y estado real del host; no reiniciar por suposiciones ni lanzar escritor duplicado. Una tarea `BLOCKED` admite dos transiciones **manuales con evidencias**, nunca automáticas: `resume` si la **misma** sesión Kilo sigue realmente activa, o `reset` si se ha verificado que esa sesión terminó y es seguro registrar una futura invocación `task` nueva. Ambas exigen `--host-task-id` original, `--review-ref`, `--evidence-ref` y `--event-key`. El reset borra el identificador anterior, pero NO lanza un subagente. Sin un Kilo activo, la cola no ejecuta ninguna tarea. El líder puede recuperar el estado para continuar al abrir de nuevo la sesión si dispone de los IDs válidos. No programar watchers ni cron ni activar un servicio en segundo plano.
 
 ## Calidad, seguridad y economía de contexto
 
