@@ -25,14 +25,14 @@ class UnifiedPackV1Tests(unittest.TestCase):
         pack = module.load_manifest()
         self.assertEqual(pack["primary"], "vx-dev-team")
         self.assertEqual(len(pack["agents"]), 18)
-        self.assertEqual(len(pack["skills"]), 46)
+        self.assertEqual(len(pack["skills"]), 53)
         self.assertEqual(len(pack["commands"]), 3)
         self.assertEqual(len(pack["support_files"]), 2)
         self.assertEqual(len(pack["managed_legacy"]["commands"]), 1)
         self.assertEqual(sum(x["role"] == "lead" for x in pack["agents"]), 1)
         self.assertTrue(all(x["hidden"] for x in pack["agents"] if x["role"] != "lead"))
         self.assertEqual(sum(s["layer"] == "CORE" for s in pack["skills"]), 18)
-        self.assertEqual(sum(s["layer"] == "CAPABILITY" for s in pack["skills"]), 28)
+        self.assertEqual(sum(s["layer"] == "CAPABILITY" for s in pack["skills"]), 35)
         self.assertEqual(len(pack["managed_legacy"]["agents"]), 6)
         self.assertEqual(len(pack["managed_legacy"]["skills"]), 7)
         self.assertEqual(
@@ -216,7 +216,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_explicit_desktop_only_and_phased_connectivity_skills_are_integrated(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.3.0-rc1')
+        self.assertEqual(pack['version'], '1.4.0-rc1')
         desktop = pack['routing']['desktop']
         self.assertEqual(desktop['applies_to'], 'EXPLICITLY_SCOPED_NEW_DESKTOP_PRODUCT_ONLY')
         self.assertEqual(desktop['mobile_scope_rule'], 'DEFAULT_DUAL_UNLESS_EXPLICIT_WINDOWS_ONLY')
@@ -261,7 +261,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.3.0-rc1')
+        self.assertEqual(pack['version'], '1.4.0-rc1')
         tauri = [skill for skill in pack['skills'] if skill['id'] == 'vx-tauri-desktop']
         self.assertEqual(len(tauri), 1)
         self.assertEqual(tauri[0]['layer'], 'CAPABILITY')
@@ -282,7 +282,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_unified_parallel_desktop_contract_is_scoped_and_preserves_acl(self):
         pack = module.load_manifest()
-        self.assertEqual(pack["version"], "1.3.0-rc1")
+        self.assertEqual(pack["version"], "1.4.0-rc1")
         routing = pack["routing"]["parallel_background"]
         self.assertEqual(routing["max_parallel_writers"], 2)
         self.assertEqual(routing["max_background_tasks"], 4)
@@ -338,7 +338,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(plan["status"], "READY")
             self.assertEqual(plan["agents"], 18)
             self.assertEqual(plan["hidden_agents"], 17)
-            self.assertEqual(plan["skills"], 46)
+            self.assertEqual(plan["skills"], 53)
             self.assertEqual(plan["commands"], 3)
             self.assertEqual(plan["support_files"], 2)
             self.assertEqual(plan["legacy_files_to_retire"], 1)
