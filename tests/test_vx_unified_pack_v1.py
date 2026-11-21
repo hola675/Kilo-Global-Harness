@@ -247,7 +247,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertIn('"vx-desarrollo-escalonado": allow', leader)
         self.assertIn('No sugerir ni instalar Tauri', leader)
         policy = (ROOT / 'rules/AGENTS-global-managed.md').read_text(encoding='utf-8')
-        self.assertIn('PAREJA WINDOWS+ANDROID', policy)
+        self.assertIn('MOTOR DESKTOP VX 1.3', policy)
         tauri = (ROOT / ids['vx-tauri-desktop']['source']).read_text(encoding='utf-8')
         self.assertIn('Windows', tauri)
         self.assertIn('Android', tauri)
