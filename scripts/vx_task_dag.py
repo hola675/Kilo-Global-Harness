@@ -28,7 +28,7 @@ def _parts_for_exact_path(path: str) -> tuple[str, ...]:
     if any(part in ("", ".", "..") or part != part.rstrip(" .") for part in segments):
         raise ValueError("Ruta Windows con segmentos ambiguos o punto/espacio final.")
     # Win32 trata estos nombres como dispositivos, incluso con extension.
-    if any(re.match(r"^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\\..*)?$", part, re.I)
+    if any(re.match(r"^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\..*)?$", part, re.I)
            for part in segments):
         raise ValueError("Nombre de dispositivo reservado en Windows.")
     return tuple(part.casefold() for part in segments)
