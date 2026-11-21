@@ -252,7 +252,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.1.0-rc1')
+        self.assertEqual(pack['version'], '1.3.0-rc1')
         tauri = [skill for skill in pack['skills'] if skill['id'] == 'vx-tauri-desktop']
         self.assertEqual(len(tauri), 1)
         self.assertEqual(tauri[0]['layer'], 'CAPABILITY')
@@ -273,7 +273,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_unified_parallel_desktop_contract_is_scoped_and_preserves_acl(self):
         pack = module.load_manifest()
-        self.assertEqual(pack["version"], "1.1.0-rc1")
+        self.assertEqual(pack["version"], "1.3.0-rc1")
         routing = pack["routing"]["parallel_background"]
         self.assertEqual(routing["max_parallel_writers"], 2)
         self.assertEqual(routing["max_background_tasks"], 4)
