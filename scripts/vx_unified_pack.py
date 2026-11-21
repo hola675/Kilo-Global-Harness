@@ -312,7 +312,7 @@ def verify(home: Path) -> dict:
     status, changes = plan(home)
     if status["blockers"] or changes:
         raise Blocked("Pack no coincide con el manifiesto: " + repr(status))
-    return {"status": "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED", "agents": 18, "skills": 43,
+    return {"status": "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED", "agents": 18, "skills": 44,
             "primary": "vx-dev-team", "commands": 3, "support_files": 2, "mcp_changes": 0}
 
 
