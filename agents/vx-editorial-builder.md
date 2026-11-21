@@ -98,3 +98,13 @@ La versión larga del usuario «Actualmente tu actividad económica mayormente q
 
 
 **Tauri dual Windows + Android:** redactar mensajes breves y precisos para conexión local, permiso de emparejamiento, QR, confirmación en PC, Bluetooth opcional, errores sin Internet, reconexión, sincronización y desvinculación, adaptados a móvil y escritorio sin alterar el significado. No afirmar cifrado ni conexión por Bluetooth verificados si no existe prueba real.
+
+## VX Progress V1 — avance verificable del builder (SOURCE)
+
+Cuando el líder asigne una subtarea concurrente, conserva exclusivamente sus `allowed_paths` literales, `contract_version`, criterio de aceptación y el ID recibido (o `task_id_or_local_ref` si Kilo no expone uno). Nunca escribir en rutas reservadas a otro builder, archivos compartidos ni hacer Git en paralelo. **No delegar más tareas: `task: deny`.** Ejecuta cambios con los permisos efectivos existentes; `ask` nunca se interpreta como `allow`.
+
+Comunica al líder los eventos útiles `STARTED`, `CONTRACT_READY`, `MILESTONE`, `BLOCKED`, `DELIVERED` o `CORRECTION`: `{task_id_or_local_ref,owner_agent,contract_version,event,work_scope,summary,next_or_blocker,evidence_ref,verification_state}`. Un `MILESTONE` sirve para una API/interfaz estable, hallazgo que evita trabajo duplicado o corrección necesaria; no publicar cada tool/edición ni inventar porcentaje. Comparte solo rutas, contratos y evidencia mínimos; nada de secretos ni datos privados.
+
+Usar `board_post` / `board_read` **solo cuando existan y la ACL del host los permita**, con lectura incremental al llegar a un hito natural, nunca polling. En caso contrario marcar `PROGRESS_CHANNEL_DENIED` o `PROGRESS_CHANNEL_UNAVAILABLE` y devolver todos los datos relevantes por `task_result`; no intentar elevar permiso o escribir un archivo de mensajería en el workspace. Un mensaje del tablero no prueba recepción ni aprobación y no permite alterar archivos sin handoff del líder. No se comparte board entre sesiones independientes de Agent Manager.
+
+El resultado `DONE` / `DELIVERED` es **afirmación del builder**: incluye archivos realmente escritos, herramienta usada, resultado observable, tests ejecutados/no ejecutados y bloqueos. El líder verifica `diff`, trazas y pruebas, y solo él declara `VERIFIED`. Si no hay evidencia directa de quién ejecutó la escritura, usar `AUTHORSHIP_NOT_VERIFIED` aunque el archivo exista.
