@@ -1043,9 +1043,7 @@ class ConsolidationV1Tests(unittest.TestCase):
             self.assertTrue(contents.startswith("---\n"), entry["id"])
             frontmatter = contents.split("---", 2)[1]
             self.assertIn("name: " + entry["id"], frontmatter)
-            desc = re.search(r'^description: "([^"]+)"
-    unittest.main()
-, frontmatter, re.M)
+            desc = re.search(r'^description: "([^"]+)"', frontmatter, re.M)
             self.assertIsNotNone(desc, entry["id"])
             self.assertLessEqual(len(desc.group(1)), 1024)
             self.assertRegex(entry["id"], r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
