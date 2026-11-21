@@ -462,9 +462,11 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
                     raise ValueError("Capacidad concurrente agotada.")
                 if any(_writer_conflict(target, other, shared) for other in running):
                     raise ValueError("Conflicto de rutas; no iniciar escritor.")
-                if conn.execute("SELECT 1 FROM tasks WHERE project=? AND host_task_id=?",
-                                (project, host_task_id)).fetchone():
-                    raise ValueError("ID del host asignado a otra tarea.")
+                if (conn.execute("SELECT 1 FROM tasks WHERE project=? AND host_task_id=?",
+                                 (project, host_task_id)).fetchone()
+                        or any(host_task_id in t.get("retired_host_task_ids", [])
+                               for t in tasks)):
+                    raise ValueError("ID del host ya activo o retirado; exigir nueva sesion real.")
                 state = "RUNNING"
             elif action == "event":
                 if event not in QUEUE_EVENTS:
@@ -496,7 +498,15 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
                         raise ValueError("Recuperacion chocaria con trabajos activos.")
                     state = "RUNNING"
                 else:
-                    # Operator attests the OLD host task ended; next start needs a NEW real host id.
+                    # Operator attests the OLD host ended. Preserve its ID so it cannot be
+                    # claimed again as a fresh task, even under a different event_key.
+                    definition = json.loads(task_row["definition"])
+                    retired = definition.get("retired_host_task_ids", [])
+                    if host_task_id not in retired:
+                        retired.append(host_task_id)
+                    definition["retired_host_task_ids"] = retired
+                    conn.execute("UPDATE tasks SET definition=? WHERE project=? AND id=?",
+                                 (json.dumps(definition, ensure_ascii=False), project, task_id))
                     state = "PENDING"
             elif action == "verify":
                 if state != "REVIEW" or not review_ref.strip() or not test_report.strip():
