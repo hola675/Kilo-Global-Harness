@@ -510,7 +510,7 @@
       "skill": "vx-tauri-desktop",
       "toolchain_installation": "EXPLICIT_PERMISSION_ONLY",
       "automatic_rewrite": false,
-      "delivery_contract": "PAIRED_WINDOWS_EXE_AND_ANDROID_APK_FOR_NEW_DESKTOP_PRODUCTS",
+      "delivery_contract": "DUAL_WINDOWS_EXE_ANDROID_APK_UNLESS_MOBILE_EXPLICITLY_EXCLUDED",
       "target_platforms": [
         "windows",
         "android"
@@ -535,7 +535,10 @@
       "delivery_skill": "vx-desarrollo-escalonado",
       "android_local_network_permission": "ACCESS_LOCAL_NETWORK_TARGET_SDK_37_PLUS",
       "device_pairing_strategy": "LAN_FIRST_WIFI_HOTSPOT_WITH_MANUAL_IP_QR_MDNS_OPTIONAL",
-      "dependencies_add_automatically": false
+      "dependencies_add_automatically": false,
+      "mobile_scope_rule": "DEFAULT_DUAL_UNLESS_EXPLICIT_WINDOWS_ONLY",
+      "explicit_windows_only_android_status": "OUT_OF_SCOPE",
+      "android_connection_required_only_when_android_in_scope": true
     },
     "phased_development": {
       "scope": "ALL_SOFTWARE_PROJECTS_WHEN_MULTIPHASE",
