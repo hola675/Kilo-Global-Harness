@@ -25,7 +25,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         pack = module.load_manifest()
         self.assertEqual(pack["primary"], "vx-dev-team")
         self.assertEqual(len(pack["agents"]), 18)
-        self.assertEqual(len(pack["skills"]), 53)
+        self.assertEqual(len(pack["skills"]), 57)
         self.assertEqual(len(pack["commands"]), 3)
         self.assertEqual(len(pack["support_files"]), 2)
         self.assertEqual(len(pack["managed_legacy"]["commands"]), 1)
@@ -33,6 +33,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertTrue(all(x["hidden"] for x in pack["agents"] if x["role"] != "lead"))
         self.assertEqual(sum(s["layer"] == "CORE" for s in pack["skills"]), 18)
         self.assertEqual(sum(s["layer"] == "CAPABILITY" for s in pack["skills"]), 35)
+        self.assertEqual(sum(s["layer"] == "CONTEXTUAL" for s in pack["skills"]), 4)
         self.assertEqual(len(pack["managed_legacy"]["agents"]), 6)
         self.assertEqual(len(pack["managed_legacy"]["skills"]), 7)
         self.assertEqual(
@@ -46,6 +47,41 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertTrue(pack["activation"]["no_kilo_jsonc_change"])
         self.assertTrue(pack["activation"]["no_mcp_change"])
         self.assertTrue(pack["activation"]["no_third_party_change"])
+
+    def test_contextual_skills_are_installed_but_not_auto_authorized(self):
+        pack = module.load_manifest()
+        registered = {item["id"]: item for item in pack["skills"]}
+        contextual = {
+            "vx-version-governance", "vx-context-routing",
+            "vx-technology-fit", "vx-skill-quality",
+        }
+        self.assertEqual(
+            {item["id"] for item in pack["skills"] if item["layer"] == "CONTEXTUAL"},
+            contextual,
+        )
+        self.assertTrue(pack["activation"]["contextual_skills_install_only"])
+        self.assertTrue(pack["activation"]["contextual_skills_not_auto_allowlisted"])
+        self.assertTrue(pack["activation"]["runtime_acl_change_requires_separate_review"])
+        assigned = set(pack["lead_skill_allowlist"])
+        for scope in pack["builder_skill_allowlists"].values():
+            assigned.update(scope)
+        self.assertFalse(assigned & contextual, "New Skills must remain deny-by-default")
+        for id in contextual:
+            self.assertEqual(registered[id]["source"], f"skills/{id}/SKILL.md")
+            self.assertEqual(registered[id]["target"], f".kilo/skills/{id}/SKILL.md")
+            self.assertTrue((ROOT / registered[id]["source"]).is_file())
+        with tempfile.TemporaryDirectory(prefix="vx-install-contextual-") as folder:
+            home = Path(folder)
+            summary, changes = module.plan(home)
+            self.assertEqual(summary["status"], "READY")
+            self.assertEqual(summary["skills"], 57)
+            targets = {path for path, _, _ in changes}
+            for id in contextual:
+                self.assertIn(f".kilo/skills/{id}/SKILL.md", targets)
+            self.assertEqual(summary["config_changes"], 0)
+            self.assertEqual(summary["mcp_changes"], 0)
+            self.assertFalse(summary["runtime_verified"])
+            self.assertFalse(summary["activation_performed"])
 
     def test_exact_permissions_and_only_one_visible_primary(self):
         pack = module.load_manifest()
@@ -71,7 +107,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_generic_skills_boot_and_role_scoped_permissions_no_project_specific_profiles(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.4.0-rc1')
+        self.assertEqual(pack['version'], '1.5.0-rc1')
         generic = {
             'vx-team-bootstrap', 'vx-saas-multitenant-cloud',
             'vx-erp-localfirst-modular', 'vx-windows-network-systems',
@@ -263,7 +299,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_explicit_desktop_only_and_phased_connectivity_skills_are_integrated(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.4.0-rc1')
+        self.assertEqual(pack['version'], '1.5.0-rc1')
         desktop = pack['routing']['desktop']
         self.assertEqual(desktop['applies_to'], 'EXPLICITLY_SCOPED_NEW_DESKTOP_PRODUCT_ONLY')
         self.assertEqual(desktop['mobile_scope_rule'], 'DEFAULT_DUAL_UNLESS_EXPLICIT_WINDOWS_ONLY')
@@ -308,7 +344,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.4.0-rc1')
+        self.assertEqual(pack['version'], '1.5.0-rc1')
         tauri = [skill for skill in pack['skills'] if skill['id'] == 'vx-tauri-desktop']
         self.assertEqual(len(tauri), 1)
         self.assertEqual(tauri[0]['layer'], 'CAPABILITY')
@@ -329,7 +365,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_unified_parallel_desktop_contract_is_scoped_and_preserves_acl(self):
         pack = module.load_manifest()
-        self.assertEqual(pack["version"], "1.4.0-rc1")
+        self.assertEqual(pack["version"], "1.5.0-rc1")
         routing = pack["routing"]["parallel_background"]
         self.assertEqual(routing["max_parallel_writers"], 2)
         self.assertEqual(routing["max_background_tasks"], 4)
@@ -385,7 +421,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(plan["status"], "READY")
             self.assertEqual(plan["agents"], 18)
             self.assertEqual(plan["hidden_agents"], 17)
-            self.assertEqual(plan["skills"], 53)
+            self.assertEqual(plan["skills"], 57)
             self.assertEqual(plan["commands"], 3)
             self.assertEqual(plan["support_files"], 2)
             self.assertEqual(plan["legacy_files_to_retire"], 1)
