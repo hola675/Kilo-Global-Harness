@@ -42,7 +42,7 @@ def load_manifest() -> dict:
         raise Blocked("Manifest unificado no reconocido.")
     agents, skills, commands, support = (pack["agents"], pack["skills"],
                                         pack["commands"], pack["support_files"])
-    if len(agents) != 18 or len(skills) != 43 or len(commands) != 3 or len(support) != 2:
+    if len(agents) != 18 or len(skills) != 44 or len(commands) != 3 or len(support) != 2:
         raise Blocked("Inventario unificado inesperado.")
     for items, kind in ((agents, "agents"), (skills, "skills"),
                         (commands, "commands"), (support, "support")):
