@@ -272,8 +272,12 @@ def _queue_db_path(path: Path | None, *, mutate: bool) -> Path:
     path = path.expanduser()
     # Project files, including a repository's .kilo, are never coordination state.
     root = Path(__file__).resolve().parents[1]
-    source_repo = (root / "registry" / "vx-unified-pack-v1.json").is_file()
-    if (source_repo and (path == root or root in path.parents)) or path.is_symlink():
+    # Detect any enclosing source checkout, even when imported by another module.
+    inside_source = any(
+        (ancestor / "registry" / "vx-unified-pack-v1.json").is_file()
+        for ancestor in path.parents
+    )
+    if inside_source or path.is_symlink():
         raise ValueError("Prohibido guardar la cola en el repo o bajo symlink.")
     if mutate:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -411,6 +415,11 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
                 if state != "REVIEW" or not review_ref.strip() or not test_report.strip():
                     raise ValueError("verify requiere REVIEW, revision y test_report.")
                 state = "VERIFIED"
+                # The DAG validator requires retained review/test references after reload.
+                definition = json.loads(task_row["definition"])
+                definition["evidence"] = {"review_ref": review_ref, "test_report": test_report}
+                conn.execute("UPDATE tasks SET definition=? WHERE project=? AND id=?",
+                             (json.dumps(definition, ensure_ascii=False), project, task_id))
                 evidence_ref = f"review={review_ref};test={test_report}"
             else:
                 raise ValueError("Accion de cola no permitida.")
