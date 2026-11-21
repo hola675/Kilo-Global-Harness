@@ -778,7 +778,8 @@
       "vx-windows-network-systems",
       "vx-inventory-reconciliation",
       "vx-enterprise-workflows",
-      "vx-industrial-control-safety"
+      "vx-industrial-control-safety",
+      "vx-implementation-handoff"
     ],
     "vx-backend-builder": [
       "vx-dev-backend-contracts",
@@ -797,7 +798,8 @@
       "vx-windows-network-systems",
       "vx-inventory-reconciliation",
       "vx-enterprise-workflows",
-      "vx-industrial-control-safety"
+      "vx-industrial-control-safety",
+      "vx-implementation-handoff"
     ],
     "vx-data-builder": [
       "vx-dev-data-migration",
