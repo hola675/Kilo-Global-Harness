@@ -3,7 +3,6 @@
 from __future__ import annotations
 import argparse
 import json
-import os
 import re
 import sqlite3
 from datetime import datetime, timezone
@@ -271,14 +270,18 @@ def _queue_db_path(path: Path | None, *, mutate: bool) -> Path:
         raise ValueError("La cola requiere ruta absoluta .sqlite3.")
     path = path.expanduser()
     # Project files, including a repository's .kilo, are never coordination state.
-    root = Path(__file__).resolve().parents[1]
-    # Detect any enclosing source checkout, even when imported by another module.
+    # Resolve the complete path: ancestor symlinks/junctions must not escape the gate.
+    resolved = path.resolve(strict=False)
+    if resolved != path.absolute():
+        raise ValueError("Prohibido acceder a la cola por symlink o junction.")
     inside_source = any(
         (ancestor / "registry" / "vx-unified-pack-v1.json").is_file()
-        for ancestor in path.parents
+        or (ancestor / ".git").exists()
+        for ancestor in (resolved, *resolved.parents)
     )
-    if inside_source or path.is_symlink():
-        raise ValueError("Prohibido guardar la cola en el repo o bajo symlink.")
+    # Installed HOME contains vx-unified-pack-v1.json but not registry/.
+    if inside_source:
+        raise ValueError("Prohibido guardar la cola en un checkout Git.")
     if mutate:
         path.parent.mkdir(parents=True, exist_ok=True)
     elif not path.is_file():
@@ -291,7 +294,7 @@ def _queue_open(path: Path, *, mutate: bool) -> sqlite3.Connection:
         conn = sqlite3.connect(str(path), timeout=10)
         conn.executescript("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;" + QUEUE_DDL)
     else:
-        conn = sqlite3.connect(f"file:{path.as_posix()}?mode=ro", uri=True, timeout=10)
+        conn = sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=10)
     conn.row_factory = sqlite3.Row
     return conn
 
