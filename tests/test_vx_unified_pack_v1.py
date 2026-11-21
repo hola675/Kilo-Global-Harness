@@ -15,6 +15,10 @@ import sys
 sys.modules[SPEC.name] = module
 SPEC.loader.exec_module(module)
 
+DAG_SPEC = importlib.util.spec_from_file_location('vx_task_dag_concurrency_test', ROOT / 'scripts/vx_task_dag.py')
+dag = importlib.util.module_from_spec(DAG_SPEC)
+DAG_SPEC.loader.exec_module(dag)
+
 
 class UnifiedPackV1Tests(unittest.TestCase):
     def test_manifest_is_one_pack_no_duplicate_agent_or_skill(self):
@@ -97,7 +101,6 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertIn('`vx-dev-reviewer`', collaboration)
 
     def test_parallel_dag_proposes_two_isolated_writers_without_dispatch(self):
-        import vx_task_dag as dag
         known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
         writers = {"vx-backend-builder", "vx-frontend-builder"}
         tasks = [
@@ -128,7 +131,6 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertEqual(dependent["blocked"][0]["id"], "frontend")
 
     def test_parallel_dag_same_worktree_needs_explicit_disjoint_file_leases(self):
-        import vx_task_dag as dag
         known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
         writers = {"vx-backend-builder", "vx-frontend-builder"}
         tasks = [
@@ -172,7 +174,6 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertEqual(running["background_candidates"], ["frontend"])
 
     def test_parallel_dag_fail_closed_on_invalid_paths_running_conflicts_and_budget(self):
-        import vx_task_dag as dag
         known = {"vx-backend-builder", "vx-frontend-builder", "vx-dev-reviewer"}
         writers = {"vx-backend-builder", "vx-frontend-builder"}
         tasks = [
