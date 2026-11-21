@@ -2,7 +2,7 @@
 name: vx-team-bootstrap
 description: "Inicio del pack unificado: seleccionar capacidades técnicas globales, comprobar instrucciones locales, distribuir permisos por rol y coordinar fases y resultados paralelos con un único líder visible."
 metadata:
-  version: "1.3.0"
+  version: "1.4.0"
   origin: "vx-unified"
 ---
 
@@ -35,9 +35,17 @@ Para tareas realmente concurrentes, mantener un **ledger mínimo en la sesión d
 
 El líder despacha tareas independientes mediante `task(background: true)` **solo si la herramienta disponible lo admite** y no edita los archivos reservados. Mientras trabajan, preparar contratos posteriores, inspeccionar archivos estables y comunicar al usuario avances comprobados. Recuperar resultados por la notificación de finalización de Kilo, no mediante polling ni tarea duplicada. Si no hay background, foreground con estado `BACKGROUND_UNAVAILABLE`.
 
-El contrato de progreso se define en `vx-agent-collaboration`: eventos breves `STARTED / CONTRACT_READY / MILESTONE / BLOCKED / DELIVERED / CORRECTION` más `VERIFIED` reservado al líder. Kilo Swarm puede compartir hitos **solo si `board_post` y `board_read` aparecen y están permitidas para cada participante**. Las ACL actuales del líder mantienen ambos `deny`: no modificar permisos desde una Skill; aplicar fallback por `task_result` y marcar `PROGRESS_CHANNEL_DENIED`. Un mensaje del tablero no entrega ni confirma la recepción por otro agente y jamás concede autorización.
+El contrato de progreso se define en `vx-agent-collaboration`: eventos breves `STARTED / CONTRACT_READY / MILESTONE / BLOCKED / DELIVERED / CORRECTION` más `VERIFIED` reservado al líder. Kilo Swarm puede compartir hitos **solo si `board_post` y `board_read` aparecen y están permitidas para cada participante**. El líder y los seis builders tienen en el nuevo source `board_read/post: allow`, sin afectar a los lectores; si el host no ofrece Board, fallback `task_result` con estado `PROGRESS_CHANNEL_UNAVAILABLE`. Un mensaje del tablero no entrega ni confirma la recepción por otro agente y jamás concede autorización.
 
 Para sesiones de Agent Manager creadas aparte en VS Code, Swarm no se comparte entre sesiones independientes; coordinar por contratos Git/PR y worktrees aislados. No intentar invocar `agent_manager` desde Kilo Desktop si está denegado.
+
+## VX Dev Team V2 — un solo objetivo y gestión de cola
+
+Un usuario solo indica **qué producto, problema o resultado quiere**. El líder deriva `FINAL_GOAL`, stack, riesgos y aceptación del repositorio y la petición; descompone en tareas concretas con `depends_on` y responsables. No obliga a rellenar formularios ni solicita datos que ya pueda observar. Ordena primero prerequisitos e interfaces compartidas y después lanza 1–2 builders independientes en background cuando el host los admita; el resto queda en cola hasta recibir evidencia. La carga simultánea no justifica crear tareas falsas.
+
+**Persistencia opcional por complejidad:** para tareas que crucen sesiones o tengan numerosas dependencias, usar el mismo `vx_task_dag.py` instalado por el pack: `--queue-action sync|report|start|event|verify`; nunca registrar prompts completos o secretos en el archivo SQLite privado. `report` devuelve estados declarados y `ready_queue` por prioridad, no arranca un worker. `start` se registra solo después de un ID de Kilo observado al invocar `task`. El líder comunica hitos con Swarm cuando exista; no tratar un `board_post` como confirmación de lectura ni usarlo para elevar privilegios. Sin Board o sin permiso de bash, continuar en memoria con `task_result`.
+
+**Autonomía realista:** dentro de la sesión activa tomar decisiones de reparto, seguir con trabajo independiente, analizar cambios, actualizar progreso al llegar eventos, verificar entrega y despachar la siguiente wave. Cuando Kilo Desktop se cierre, no prometer actividad en segundo plano: la cola durable conserva estado, pero no ejecuta tareas sin un host. No programar watchers, cron ni redes externas para simular una capacidad faltante.
 
 ## Escalones de autorización
 
