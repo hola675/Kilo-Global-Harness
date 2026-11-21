@@ -417,39 +417,39 @@
       "layer": "CAPABILITY"
     },
     {
-      "id": "vx-vecidya-platform",
-      "source": "skills/vx-vecidya-platform/SKILL.md",
-      "target": ".kilo/skills/vx-vecidya-platform/SKILL.md",
+      "id": "vx-saas-multitenant-cloud",
+      "source": "skills/vx-saas-multitenant-cloud/SKILL.md",
+      "target": ".kilo/skills/vx-saas-multitenant-cloud/SKILL.md",
       "layer": "CAPABILITY"
     },
     {
-      "id": "vx-multinexo-erp",
-      "source": "skills/vx-multinexo-erp/SKILL.md",
-      "target": ".kilo/skills/vx-multinexo-erp/SKILL.md",
+      "id": "vx-erp-localfirst-modular",
+      "source": "skills/vx-erp-localfirst-modular/SKILL.md",
+      "target": ".kilo/skills/vx-erp-localfirst-modular/SKILL.md",
       "layer": "CAPABILITY"
     },
     {
-      "id": "vx-onetunnel-wfp",
-      "source": "skills/vx-onetunnel-wfp/SKILL.md",
-      "target": ".kilo/skills/vx-onetunnel-wfp/SKILL.md",
+      "id": "vx-windows-network-systems",
+      "source": "skills/vx-windows-network-systems/SKILL.md",
+      "target": ".kilo/skills/vx-windows-network-systems/SKILL.md",
       "layer": "CAPABILITY"
     },
     {
-      "id": "vx-kmcero-operaciones",
-      "source": "skills/vx-kmcero-operaciones/SKILL.md",
-      "target": ".kilo/skills/vx-kmcero-operaciones/SKILL.md",
+      "id": "vx-inventory-reconciliation",
+      "source": "skills/vx-inventory-reconciliation/SKILL.md",
+      "target": ".kilo/skills/vx-inventory-reconciliation/SKILL.md",
       "layer": "CAPABILITY"
     },
     {
-      "id": "vx-octopus-encc",
-      "source": "skills/vx-octopus-encc/SKILL.md",
-      "target": ".kilo/skills/vx-octopus-encc/SKILL.md",
+      "id": "vx-enterprise-workflows",
+      "source": "skills/vx-enterprise-workflows/SKILL.md",
+      "target": ".kilo/skills/vx-enterprise-workflows/SKILL.md",
       "layer": "CAPABILITY"
     },
     {
-      "id": "vx-octopus-flow-industrial",
-      "source": "skills/vx-octopus-flow-industrial/SKILL.md",
-      "target": ".kilo/skills/vx-octopus-flow-industrial/SKILL.md",
+      "id": "vx-industrial-control-safety",
+      "source": "skills/vx-industrial-control-safety/SKILL.md",
+      "target": ".kilo/skills/vx-industrial-control-safety/SKILL.md",
       "layer": "CAPABILITY"
     }
   ],
@@ -580,7 +580,10 @@
       "dependencies_add_automatically": false,
       "mobile_scope_rule": "DEFAULT_DUAL_UNLESS_EXPLICIT_WINDOWS_ONLY",
       "explicit_windows_only_android_status": "OUT_OF_SCOPE",
-      "android_connection_required_only_when_android_in_scope": true
+      "android_connection_required_only_when_android_in_scope": true,
+      "preferred_engine_for_explicit_desktop": "TAURI_2",
+      "selection": "TAURI_FIRST_EVALUATION_FOR_EACH_DESKTOP_SCOPE",
+      "automatic_migration_of_existing_desktop_apps": false
     },
     "phased_development": {
       "scope": "ALL_SOFTWARE_PROJECTS_WHEN_MULTIPHASE",
@@ -595,9 +598,9 @@
       "skill": "vx-team-bootstrap",
       "trigger": "PER_USER_TASK_MINIMAL",
       "primary_only": "vx-dev-team",
-      "initial_project_detection": "EXACT_GIT_REMOTE_OR_EXPLICIT_PROJECT",
+      "initial_project_detection": "USER_TASK_PLUS_LOCAL_REPOSITORY_EVIDENCE",
       "project_rules_precedence": "LOCAL_PROJECT_RULES_STRICTER_FIRST",
-      "project_skill_loading": "LAZY_BY_BUILDER_EXACT_ALLOWLIST",
+      "project_skill_loading": "LAZY_BY_CAPABILITY_AND_BUILDER_EXACT_ALLOWLIST",
       "no_auto_dispatch": true,
       "no_auto_install": true,
       "no_scheduler": true,
@@ -638,72 +641,79 @@
       "no_cross_agent_task_stealing": true,
       "barrier_before_shared_files": true,
       "scope_permissions": "R0_READ_R1_SCOPED_CODE_R2_GIT_R3_EXPLICIT_HIGH_RISK",
-      "runtime_enforcement": "NOT_IMPLEMENTED_PLAN_ONLY"
+      "runtime_enforcement": "NOT_IMPLEMENTED_PLAN_ONLY",
+      "file_lease_runtime_enforced": false,
+      "background_runtime_certified": false
     },
-    "project_profiles": [
+    "capability_routing": [
       {
-        "id": "vecidya",
-        "match_repository": "hola675/Vecidya",
-        "activation": "EXACT_REPO",
-        "skill": "vx-vecidya-platform",
-        "product_root": "vecidya-platform",
-        "library_root": "vecidya-crystal-depth",
-        "canonical": [
-          "AGENTS.md",
-          "vecidya-platform/docs/GOVERNANCE.md",
-          "vecidya-platform/docs/STATUS.md",
-          "vecidya-platform/docs/PROJECT_STATE.md"
+        "id": "saas_web",
+        "signals": [
+          "SSR",
+          "React",
+          "API_WEB",
+          "MULTITENANT",
+          "EDGE",
+          "SaaS"
         ],
-        "guard": "VECIDYA_WORKTREE_AND_NO_PROD_DEPLOY"
+        "skill": "vx-saas-multitenant-cloud",
+        "requires": "VERIFIED_STACK_OR_EXPLICIT_DOMAIN"
       },
       {
-        "id": "multinexo",
-        "match_repository": "hola675/Multinexo-Vecidya-ERP",
-        "activation": "EXACT_REPO",
-        "skill": "vx-multinexo-erp",
-        "canonical": [
-          "README.md",
-          "docs/05-reference/DEPLOYMENT-PROFILES.md",
-          "docs/04-quality/PRE-IMPLEMENTATION-GATE.md"
+        "id": "erp_localfirst",
+        "signals": [
+          "ERP",
+          "INVENTORY_MODULAR",
+          "OFFLINE_SYNC",
+          "MULTI_SITE"
         ],
-        "guard": "G0_OPEN_NO_STACK_FORCING"
+        "skill": "vx-erp-localfirst-modular",
+        "requires": "EXPLICIT_DOMAIN_OR_REPO_ARCHITECTURE"
       },
       {
-        "id": "onetunnel",
-        "match_repository": "hola675/1VPN-Desktop-Lab",
-        "activation": "EXACT_REPO",
-        "skill": "vx-onetunnel-wfp",
-        "canonical": [
-          "AGENTS.md",
-          "README.md",
-          "docs/DRIVER-SIGNING-HANDOFF.md"
+        "id": "windows_network",
+        "signals": [
+          "WINDOWS_NETWORK",
+          "WFP",
+          "PROXY",
+          "SOCKS5",
+          "VPN_CLIENT"
         ],
-        "guard": "UNSIGNED_DRIVER_NEVER_INSTALL"
+        "skill": "vx-windows-network-systems",
+        "requires": "VERIFIED_NETWORK_SCOPE"
       },
       {
-        "id": "kmcero",
-        "match_repository": "hola675/KMCero",
-        "activation": "EXACT_REPO",
-        "skill": "vx-kmcero-operaciones",
-        "canonical": [
-          "README.md",
-          "docs/PRODUCTO-Y-OPERACION.md"
+        "id": "operations_reconciliation",
+        "signals": [
+          "STOCK",
+          "CUSTODY",
+          "TPV_IMPORT",
+          "RECONCILIATION"
         ],
-        "guard": "NOT_TPV_LAB_ONLY"
+        "skill": "vx-inventory-reconciliation",
+        "requires": "VERIFIED_OPERATIONAL_CONTRACT"
       },
       {
-        "id": "octopus-encc",
-        "activation": "EXPLICIT_PROJECT_NAME_ONLY",
-        "skill": "vx-octopus-encc",
-        "canonical": [],
-        "guard": "REPOSITORY_AND_STACK_UNVERIFIED"
+        "id": "enterprise_workflow",
+        "signals": [
+          "APPROVALS",
+          "MEETING_ACTIONS",
+          "BUSINESS_DOCUMENTS",
+          "HR_WORKFLOWS"
+        ],
+        "skill": "vx-enterprise-workflows",
+        "requires": "VERIFIED_BUSINESS_PROCESS"
       },
       {
-        "id": "octopus-flow",
-        "activation": "EXPLICIT_PROJECT_NAME_ONLY",
-        "skill": "vx-octopus-flow-industrial",
-        "canonical": [],
-        "guard": "INDUSTRIAL_HARDWARE_AND_METROLOGY_GATE"
+        "id": "industrial_control",
+        "signals": [
+          "PLC",
+          "PCC",
+          "INDUSTRIAL_CONTROL",
+          "METROLOGY"
+        ],
+        "skill": "vx-industrial-control-safety",
+        "requires": "VERIFIED_INDUSTRIAL_SCOPE"
       }
     ]
   },
@@ -763,12 +773,12 @@
       "vx-e2e-browser-testing",
       "vx-tauri-desktop",
       "vx-conectividad-dispositivos",
-      "vx-vecidya-platform",
-      "vx-multinexo-erp",
-      "vx-onetunnel-wfp",
-      "vx-kmcero-operaciones",
-      "vx-octopus-encc",
-      "vx-octopus-flow-industrial"
+      "vx-saas-multitenant-cloud",
+      "vx-erp-localfirst-modular",
+      "vx-windows-network-systems",
+      "vx-inventory-reconciliation",
+      "vx-enterprise-workflows",
+      "vx-industrial-control-safety"
     ],
     "vx-backend-builder": [
       "vx-dev-backend-contracts",
@@ -782,12 +792,12 @@
       "vx-sql-query-performance",
       "vx-tauri-desktop",
       "vx-conectividad-dispositivos",
-      "vx-vecidya-platform",
-      "vx-multinexo-erp",
-      "vx-onetunnel-wfp",
-      "vx-kmcero-operaciones",
-      "vx-octopus-encc",
-      "vx-octopus-flow-industrial"
+      "vx-saas-multitenant-cloud",
+      "vx-erp-localfirst-modular",
+      "vx-windows-network-systems",
+      "vx-inventory-reconciliation",
+      "vx-enterprise-workflows",
+      "vx-industrial-control-safety"
     ],
     "vx-data-builder": [
       "vx-dev-data-migration",
@@ -795,11 +805,11 @@
       "vx-sql-query-performance",
       "vx-cloudflare-storage-messaging",
       "vx-conectividad-dispositivos",
-      "vx-vecidya-platform",
-      "vx-multinexo-erp",
-      "vx-kmcero-operaciones",
-      "vx-octopus-encc",
-      "vx-octopus-flow-industrial"
+      "vx-saas-multitenant-cloud",
+      "vx-erp-localfirst-modular",
+      "vx-inventory-reconciliation",
+      "vx-enterprise-workflows",
+      "vx-industrial-control-safety"
     ],
     "vx-qa-builder": [
       "vx-dev-test-strategy",
@@ -809,33 +819,33 @@
       "vx-performance-measurement",
       "vx-tauri-desktop",
       "vx-conectividad-dispositivos",
-      "vx-vecidya-platform",
-      "vx-multinexo-erp",
-      "vx-onetunnel-wfp",
-      "vx-kmcero-operaciones",
-      "vx-octopus-encc",
-      "vx-octopus-flow-industrial"
+      "vx-saas-multitenant-cloud",
+      "vx-erp-localfirst-modular",
+      "vx-windows-network-systems",
+      "vx-inventory-reconciliation",
+      "vx-enterprise-workflows",
+      "vx-industrial-control-safety"
     ],
     "vx-docs-builder": [
       "vx-docs-traceability",
       "vx-editorial-claridad",
       "vx-dev-architecture-decision",
-      "vx-vecidya-platform",
-      "vx-multinexo-erp",
-      "vx-onetunnel-wfp",
-      "vx-kmcero-operaciones",
-      "vx-octopus-encc",
-      "vx-octopus-flow-industrial"
+      "vx-saas-multitenant-cloud",
+      "vx-erp-localfirst-modular",
+      "vx-windows-network-systems",
+      "vx-inventory-reconciliation",
+      "vx-enterprise-workflows",
+      "vx-industrial-control-safety"
     ],
     "vx-editorial-builder": [
       "vx-editorial-claridad",
       "vx-dev-accessibility",
-      "vx-vecidya-platform",
-      "vx-multinexo-erp",
-      "vx-onetunnel-wfp",
-      "vx-kmcero-operaciones",
-      "vx-octopus-encc",
-      "vx-octopus-flow-industrial"
+      "vx-saas-multitenant-cloud",
+      "vx-erp-localfirst-modular",
+      "vx-windows-network-systems",
+      "vx-inventory-reconciliation",
+      "vx-enterprise-workflows",
+      "vx-industrial-control-safety"
     ]
   }
 }
