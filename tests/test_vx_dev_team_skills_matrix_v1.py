@@ -93,8 +93,8 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertEqual(legacy["total"], 31)
         self.assertEqual(len(prior), 31)
         self.assertTrue(prior <= actual, "No perder skills del inventario histórico")
-        self.assertEqual(actual - prior, {"vx-editorial-claridad", "vx-tauri-desktop", "vx-conectividad-dispositivos", "vx-desarrollo-escalonado"})
-        self.assertEqual(len(actual), 35)
+        self.assertEqual(actual - prior, {"vx-editorial-claridad", "vx-tauri-desktop", "vx-conectividad-dispositivos", "vx-desarrollo-escalonado", "vx-team-bootstrap", "vx-saas-multitenant-cloud", "vx-erp-localfirst-modular", "vx-windows-network-systems", "vx-inventory-reconciliation", "vx-enterprise-workflows", "vx-industrial-control-safety"})
+        self.assertEqual(len(actual), 42)
         self.assertEqual(legacy["status"], "REFERENCE_ONLY_NOT_RUNTIME_PACK")
 
     def test_v1_declares_18_original_skills_and_all_still_exist(self):
