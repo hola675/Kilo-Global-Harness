@@ -1,6 +1,6 @@
-# VX Dev Team Core Unificado — instalación V1.0 RC1
+# VX Dev Team Core Unificado — instalación V1.1 RC1
 
-**Fecha:** 2026-11-20. **Estado:** SOURCE / pendiente revisión CI y runtime local. **No instalado automáticamente.**
+**Fecha:** 2026-11-21. **Estado:** SOURCE V1.1 RC1, pendiente CI/revisión e instalación local de esta mejora. El Core V1.0 anterior fue probado en Kilo Desktop por el operador; no confundirlo con certificación del nuevo background paralelo. **No instalado automáticamente.**
 
 ## Decisión
 
@@ -106,3 +106,78 @@ Si `kilo.jsonc` define en línea a cualquiera de los seis agentes legacy retirab
 **Ensayo focalizado tras actualización global:** el operador comprobará primero que el archivo `vx-rt02c-frontend-builder.html` sigue ausente; invocará al líder `vx-dev-team` para asignar por `task` la creación exacta de ese único archivo al hijo `vx-frontend-builder`; no puede escribir el líder ni añadir herramientas de escape. La certificación exige evento `Created`/`Edited` dentro de la transcripción del hijo y comprobación independiente del contenido; si el host deniega escritura, `TOOL_UNAVAILABLE`/`BLOCKED_PERMISSION`. No repetir pruebas si la precondición dejó de cumplirse. No crear nuevos archivos de test en el repo; ampliar la suite viva `tests/test_vx_unified_pack_v1.py`.
 
 **Estado:** código propuesto hasta PR/CI/revisión/merge, actualización local del operador y evidencia de Kilo Desktop. No reclamar `BUILDER_WRITE_PASS` antes de esas pruebas.
+
+
+## VX 1.1 — Delegación paralela de Kilo Desktop sin convertirlo en VS Code
+
+### Evidencia técnica y límite del host
+
+Kilo Desktop se apoya en el motor CLI de Kilo. Según la documentación oficial de Kilo, `task` permite `background: true`: una tarea independiente continúa en una sesión hija mientras la sesión padre sigue trabajando. El resultado llega después. **Esto debe verificarse en la versión concreta de Kilo Desktop del operador; SOURCE no es RUNTIME.**
+
+**No equivale a Agent Manager de VS Code:** `task` hereda el mismo directorio/worktree; no crea una rama o checkout aislado. `agent_manager` permanece denegado. Swarm/Board no se habilitan automáticamente ni se requiere para que `task` devuelva resultados.
+
+Documentación del proveedor:
+- https://kilo.ai/docs/automate/agent-manager
+- https://kilo.ai/docs/customize/custom-subagents
+- https://kilo.ai/docs/desktop/overview
+
+### Protocolo del líder
+
+1. Dividir la petición en contratos de resultados independientes y dependientes, **sin delegar por ritual**. Un simple arreglo puede resolverlo el líder.
+2. Determinar estado Git (incluido `GIT_UNBORN_HEAD`), permisos y rutas exactas. Asignar dueño por archivo y separar los cambios de archivos comunes (config, imports centrales, package-lock, tests/snapshots compartidos).
+3. Para subtareas que no dependen unas de otras, el líder usa realmente `task(background: true)` si aparece en la tool. **Máximo 4** background activos y **máximo 2** subagentes escritores. Si la tool no admite background, usar foreground y declararlo, sin simular paralelismo.
+4. **Por defecto un escritor por worktree.** En un mismo workspace pueden trabajar dos builders simultáneamente **solo** con `write_scope: EXACT_FILES`, listas `allowed_paths` literales y totalmente disjuntas, permiso de edición efectivo, sin escrituras sobre archivos compartidos y sin ninguna operación Git concurrente. Para cambios solapados, serializar. Para ramas/commits independientes, usar worktrees Git reales **verificados**, no suponer que `task` los abrió.
+5. Mientras los hijos trabajan, el líder puede analizar otros módulos, preparar contrato estable, revisar material ya terminado y delegar lectores independientes. No editar ni leer como definitivo un archivo todavía en escritura; no duplicar la tarea por falta de respuesta.
+6. Esperar finalización real, inspeccionar diff/rutas del hijo, comprobar pruebas y pedir revisión independiente según riesgo. El líder integra en un **punto de sincronización**; no hacer commits/PR antes de esa barrera.
+7. Si se corta una sesión, `HOLD_RECHECK`: comprobar el estado real antes de reanudar por `task_id` recuperable. No reiniciar a ciegas ni reescribir archivos de otro hijo.
+8. Mantener Kilo Desktop **Auto** como lo eligió el operador, sin cambiar permisos, modelos, MCP, `kilo.jsonc` ni HOME para conseguir concurrencia.
+
+### Planificador DAG (no despachador)
+
+El soporte instalado `scripts/vx_task_dag.py` conserva el `mode: STRICT` original y añade el opt-in `mode: PARALLEL_SAFE`. Lee únicamente un JSON local explícito; valida dependencias, rutas literales y capacidades declaradas. No usa red, no ejecuta agentes ni reserva archivos.
+
+Ejemplo de **dos implementaciones independientes** sobre el mismo workspace, editando archivos exclusivos y sin operaciones Git simultáneas (ejemplo ilustrativo, sustituir nombres/paths por el código real):
+
+```json
+{
+  "schema": "vx-task-plan/1",
+  "mode": "PARALLEL_SAFE",
+  "max_background_tasks": 4,
+  "max_parallel_writers": 2,
+  "allow_shared_worktree_exact_files": true,
+  "tasks": [
+    {
+      "id": "api-catalog",
+      "owner": "vx-backend-builder",
+      "reviewer": "vx-dev-reviewer",
+      "state": "PENDING",
+      "writer": true,
+      "worktree": "workspace-actual",
+      "write_scope": "EXACT_FILES",
+      "allowed_paths": ["src/backend/catalog.py"],
+      "depends_on": []
+    },
+    {
+      "id": "ui-profile",
+      "owner": "vx-frontend-builder",
+      "reviewer": "vx-dev-reviewer",
+      "state": "PENDING",
+      "writer": true,
+      "worktree": "workspace-actual",
+      "write_scope": "EXACT_FILES",
+      "allowed_paths": ["src/frontend/profile.tsx"],
+      "depends_on": []
+    }
+  ]
+}
+```
+
+El resultado `background_candidates` propone tareas paralelas, `parallel_deferred` explica bloqueos y `file_lease_proposals` enumera el ownership declarado. Los indicadores `file_leases_enforced: false`, `worktree_identity_verified: false`, `background_tool_verified: false` y `actions_executed: 0` **no cambian** al recibir un plan válido: el host y el líder deben demostrar la ejecución real. En modo compartido, una ruta glob, un solapamiento padre/hijo o ausencia de opt-in bloquea el segundo escritor. El DAG no certifica si las instrucciones del hijo se cumplen; el líder coteja cambios reales al terminar.
+
+### Validación runtime focalizada (una sola vez)
+
+En laboratorio aislado existente y **sin modificar instalaciones adicionales**, proponer dos tareas de edición de archivos sintéticos distintos con aceptación conocida y sin dependencia. Abrir en Kilo Desktop el líder `vx-dev-team`; verificar en el historial que se iniciaron dos hijos con `task(background: true)` y que el líder realizó una tercera actividad independiente mientras estaban activos. Comprobar los eventos de escritura dentro de cada hijo, que ninguna ruta se superpuso y que el padre esperó la barrera antes de probar. Si no se observan sesiones solapadas, registrar `BACKGROUND_RUNTIME_NOT_VERIFIED` y seguir operando foreground; **no crear más pruebas decorativas**.
+
+### Changelog
+
+- **V1.1 RC1 (2026-11-21):** delegación `task(background: true)` condicionada al host de Kilo Desktop, parent-work-while-children-run, dos writers con archivos exactos y disjuntos, DAG `PARALLEL_SAFE` plan-only, barrera de integración, fallback foreground y tests ampliados en la suite viva; ACL y AutoApprove intactos.
