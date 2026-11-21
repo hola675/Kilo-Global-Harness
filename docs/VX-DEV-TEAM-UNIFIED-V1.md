@@ -251,4 +251,4 @@ Guía práctica de qué añadir **solo por proyecto** y cómo validar dependenci
 
 ### Changelog
 
-- **V1.3 RC1 (2026-11-21):** Tauri solo para proyectos explícitos Desktop; conectividad independiente del framework con fases/diagnóstico y dependencias condicionales; meta final, fases, gates, Android 17 LAN y 46 skills. Sin instalación ni permisos globales nuevos.
+- **V1.3 RC1 (2026-11-21):** Tauri solo para proyectos explícitos Desktop; conectividad independiente del framework con fases/diagnóstico y dependencias condicionales; meta final, fases, gates, Android 17 LAN y 46 skills. Sin instalación local, sin nuevos permisos de escritura/shell/MCP; solo se añade un ID advisory-only al permiso `skill` del líder.
