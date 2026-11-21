@@ -93,7 +93,7 @@ class DevTeamSkillsMatrixV1Tests(unittest.TestCase):
         self.assertEqual(legacy["total"], 31)
         self.assertEqual(len(prior), 31)
         self.assertTrue(prior <= actual, "No perder skills del inventario histórico")
-        self.assertEqual(actual - prior, {"vx-editorial-claridad"})
+        self.assertEqual(actual - prior, {"vx-editorial-claridad", "vx-tauri-desktop"})
         self.assertEqual(len(actual), 32)
         self.assertEqual(legacy["status"], "REFERENCE_ONLY_NOT_RUNTIME_PACK")
 
