@@ -10,6 +10,8 @@ metadata:
 
 **Activación explícita:** NO usar Tauri para web, API, ERP web, scripts, herramientas genéricas ni software industrial salvo que el proyecto esté definido como aplicación DESKTOP. **Contrato vigente:** cuando el usuario solicite una NUEVA aplicación de escritorio, el equipo propone y desarrolla **dos versiones compatibles del mismo producto: Windows (`.exe`) y Android (`.apk`)**. No limitarse a una web responsive dentro de un instalador. Ambas comparten el dominio y el protocolo, pero **las pantallas y los controles se diseñan expresamente para cada dispositivo**. Si un requisito físico, licencia, hardware o regulación hace imposible una de las plataformas, registrar `PLATFORM_BLOCKED` con evidencia y alternativa; nunca fingir un ejecutable/APK compilado. Para un producto ya implementado en Qt/PySide/Electron/tecnología industrial, no migrar ni añadir Android silenciosamente sin petición de evolución/migración del producto. Este contrato **no se aplica a páginas web, APIs ni plugins de Kilo**.
 
+**No migrar** aplicaciones existentes en Qt/PySide/Electron, soluciones industriales ni un ERP web sin una solicitud expresa y análisis de compatibilidad. La compatibilidad con Android no concede permiso para cambiar el motor de otro proyecto.
+
 ## Entrega dual obligatoria (nuevos productos)
 
 1. Una sola línea funcional/versionado y contratos compartidos: modelo de dominio, reglas, validaciones, protocolo de emparejamiento, DTO/JSON Schema, errores tipados, migraciones compatibles y tests de contrato. Preferir **un workspace de producto y dos targets de Tauri 2**; compartir Rust y TypeScript cuando sea viable y separar las diferencias por plataforma. No imponer dos repositorios, ni duplicar lógica por defecto.
