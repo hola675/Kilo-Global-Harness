@@ -216,14 +216,15 @@ def analyze(plan: dict[str, Any], known_agents: set[str],
             else:
                 blocked.append({"id": name, "waiting_for": [], "reason": "manual_block"})
                 unblock_candidates.append(name)
-    parallel = (_propose_background_wave(plan, tasks, ready)
+    prioritized_ready = sorted(ready, key=lambda name: (-by_id[name].get("priority", 0), topo.index(name), name))
+    parallel = (_propose_background_wave(plan, tasks, prioritized_ready)
                 if plan["mode"] == PARALLEL_MODE else {})
     return {
         "schema": "vx-task-dag-report/1",
         "mode": plan["mode"],
         "topological_order": topo,
         "ready": ready,
-        "ready_queue": sorted(ready, key=lambda name: (-by_id[name].get("priority", 0), topo.index(name), name)),
+        "ready_queue": prioritized_ready,
         "blocked": blocked,
         "unblock_candidates": unblock_candidates,
         "verified_tasks_declared_only": [t["id"] for t in tasks if t["state"] == "VERIFIED"],
