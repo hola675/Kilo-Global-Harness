@@ -25,14 +25,14 @@ class UnifiedPackV1Tests(unittest.TestCase):
         pack = module.load_manifest()
         self.assertEqual(pack["primary"], "vx-dev-team")
         self.assertEqual(len(pack["agents"]), 18)
-        self.assertEqual(len(pack["skills"]), 44)
+        self.assertEqual(len(pack["skills"]), 46)
         self.assertEqual(len(pack["commands"]), 3)
         self.assertEqual(len(pack["support_files"]), 2)
         self.assertEqual(len(pack["managed_legacy"]["commands"]), 1)
         self.assertEqual(sum(x["role"] == "lead" for x in pack["agents"]), 1)
         self.assertTrue(all(x["hidden"] for x in pack["agents"] if x["role"] != "lead"))
         self.assertEqual(sum(s["layer"] == "CORE" for s in pack["skills"]), 18)
-        self.assertEqual(sum(s["layer"] == "CAPABILITY" for s in pack["skills"]), 26)
+        self.assertEqual(sum(s["layer"] == "CAPABILITY" for s in pack["skills"]), 28)
         self.assertEqual(len(pack["managed_legacy"]["agents"]), 6)
         self.assertEqual(len(pack["managed_legacy"]["skills"]), 7)
         self.assertEqual(
@@ -67,7 +67,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
                         self.assertEqual(doc.permissions.scalar(tool), "ask")
                 else:
                     self.assertEqual(doc.permissions.scalar("edit"), "deny")
-        self.assertEqual(len(pack["lead_skill_allowlist"]), 9)
+        self.assertEqual(len(pack["lead_skill_allowlist"]), 10)
 
     def test_adaptive_builder_contracts_support_isolated_non_git_lab_without_acl_elevation(self):
         pack = module.load_manifest()
@@ -214,6 +214,42 @@ class UnifiedPackV1Tests(unittest.TestCase):
                 dict(tasks[0], state="RUNNING"), dict(tasks[1], state="RUNNING")]),
                 known, writers)
 
+    def test_explicit_desktop_only_and_phased_connectivity_skills_are_integrated(self):
+        pack = module.load_manifest()
+        self.assertEqual(pack['version'], '1.3.0-rc1')
+        desktop = pack['routing']['desktop']
+        self.assertEqual(desktop['applies_to'], 'EXPLICITLY_SCOPED_NEW_DESKTOP_PRODUCT_ONLY')
+        self.assertFalse(desktop['dependencies_add_automatically'])
+        self.assertEqual(desktop['android_local_network_permission'],
+                         'ACCESS_LOCAL_NETWORK_TARGET_SDK_37_PLUS')
+        self.assertFalse(pack['routing']['phased_development']['automatic_dependency_installation'])
+        self.assertTrue(pack['routing']['phased_development']['final_goal_required'])
+        ids = {s['id']: s for s in pack['skills']}
+        self.assertIn('vx-conectividad-dispositivos', ids)
+        self.assertIn('vx-desarrollo-escalonado', ids)
+        self.assertIn('vx-desarrollo-escalonado', pack['lead_skill_allowlist'])
+        self.assertNotIn('vx-conectividad-dispositivos', pack['lead_skill_allowlist'])
+        for skill_id in ('vx-conectividad-dispositivos', 'vx-desarrollo-escalonado'):
+            with self.subTest(skill=skill_id):
+                entry = ids[skill_id]
+                self.assertEqual(entry['layer'], 'CAPABILITY')
+                body = (ROOT / entry['source']).read_text(encoding='utf-8')
+                self.assertIn(f'name: {skill_id}', body)
+                self.assertIn('No instalar', body) if skill_id == 'vx-conectividad-dispositivos' else self.assertIn('FINAL_GOAL', body)
+        connectivity = (ROOT / ids['vx-conectividad-dispositivos']['source']).read_text(encoding='utf-8')
+        for token in ('NsdManager', 'mdns-sd', 'ACCESS_LOCAL_NETWORK',
+                      'tauri-plugin-blec', 'Wi-Fi Direct', 'SECURE_PAIRING_NOT_VERIFIED'):
+            self.assertIn(token, connectivity)
+        leader = (ROOT / 'agents/vx-dev-team.md').read_text(encoding='utf-8')
+        self.assertIn('"vx-desarrollo-escalonado": allow', leader)
+        self.assertIn('No sugerir ni instalar Tauri', leader)
+        policy = (ROOT / 'rules/AGENTS-global-managed.md').read_text(encoding='utf-8')
+        self.assertIn('PAREJA WINDOWS+ANDROID', policy)
+        tauri = (ROOT / ids['vx-tauri-desktop']['source']).read_text(encoding='utf-8')
+        self.assertIn('Windows', tauri)
+        self.assertIn('Android', tauri)
+        self.assertIn('ACCESS_LOCAL_NETWORK', tauri)
+
     def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
         pack = module.load_manifest()
         self.assertEqual(pack['version'], '1.1.0-rc1')
@@ -293,7 +329,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(plan["status"], "READY")
             self.assertEqual(plan["agents"], 18)
             self.assertEqual(plan["hidden_agents"], 17)
-            self.assertEqual(plan["skills"], 44)
+            self.assertEqual(plan["skills"], 46)
             self.assertEqual(plan["commands"], 3)
             self.assertEqual(plan["support_files"], 2)
             self.assertEqual(plan["legacy_files_to_retire"], 1)
