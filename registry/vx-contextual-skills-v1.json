@@ -1,0 +1,130 @@
+{
+  "schema": "vx-contextual-skills/1",
+  "version": "1.0.0",
+  "updated": "2026-11-21",
+  "status": "SOURCE_PROPOSED_NOT_RUNTIME_ACTIVATED",
+  "baseline": {
+    "pack": "VX CORE 1.4 RC1",
+    "documented_source_skills": 53,
+    "proposed_new_skills": 4,
+    "expected_source_skills_after_integration": 57,
+    "dev_team_baseline_source_skills": 44,
+    "dev_team_layer_is_separate": true
+  },
+  "policy": {
+    "scope": "global-contextual-only",
+    "no_project_named_skills": true,
+    "format": "Agent Skills SKILL.md",
+    "host": "Kilo Desktop / Kilo Code",
+    "runtime_skill_root": "~/.kilo/skills",
+    "read_only_advisory": true,
+    "requires_explicit_runtime_approval": true,
+    "auto_install": false,
+    "acl_changes": false,
+    "autoapprove_changes": false,
+    "kilo_jsonc_changes": false,
+    "mcp_changes": false,
+    "scheduler_changes": false,
+    "host_runtime_verified": false
+  },
+  "skills": [
+    {
+      "id": "vx-version-governance",
+      "path": "skills/vx-version-governance/SKILL.md",
+      "category": "governance",
+      "trigger": "before a mutation of software/config/dependency",
+      "negative": "read-only lookup",
+      "version": "1.0.0"
+    },
+    {
+      "id": "vx-context-routing",
+      "path": "skills/vx-context-routing/SKILL.md",
+      "category": "routing",
+      "trigger": "choose context-aware capabilities",
+      "negative": "project-name-based selection",
+      "version": "1.0.0"
+    },
+    {
+      "id": "vx-technology-fit",
+      "path": "skills/vx-technology-fit/SKILL.md",
+      "category": "technology",
+      "trigger": "adopting a dependency or new stack",
+      "negative": "simple fix without technology change",
+      "version": "1.0.0"
+    },
+    {
+      "id": "vx-skill-quality",
+      "path": "skills/vx-skill-quality/SKILL.md",
+      "category": "skill-engineering",
+      "trigger": "writing/updating/importing skills",
+      "negative": "ordinary feature implementation",
+      "version": "1.0.0"
+    }
+  ],
+  "integration": {
+    "canonical_router": "skills/vx-team-bootstrap/SKILL.md",
+    "work_strategy": "skills/vx-desarrollo-escalonado/SKILL.md",
+    "preexisting_governance": "runtime/dev-team-v2r/skills/vx-dev-project-policy/SKILL.md",
+    "existing_acl_source": "agents/vx-dev-team.md",
+    "source_only_loading_note": "Source references are not a permission.skill grant; existing allowed bootstrap retains equivalent policy guidance",
+    "trigger_tests": "tests/test_vx_dev_team_consolidation_v1.py"
+  },
+  "test_policy": {
+    "action": "UPDATE",
+    "reason": "Extend living consolidation suite with distinct context-routing and source-only invariants; do not add a historical suite",
+    "source_checks_required": true,
+    "runtime_checks_deferred": true
+  },
+  "external_references": [
+    {
+      "url": "https://kilo.ai/docs/customize/skills",
+      "purpose": "Kilo skills format and discovery"
+    },
+    {
+      "url": "https://agentskills.io/specification",
+      "purpose": "Agent Skills portable specification"
+    },
+    {
+      "url": "https://github.com/Kilo-Org/skills",
+      "purpose": "Kilo canonical skill examples"
+    },
+    {
+      "url": "https://github.com/obra/superpowers",
+      "purpose": "worktrees plans review and verification practices"
+    },
+    {
+      "url": "https://github.com/anthropics/skills",
+      "purpose": "evals and skill authoring"
+    },
+    {
+      "url": "https://github.com/vercel-labs/agent-skills",
+      "purpose": "framework-specific conditional practices"
+    },
+    {
+      "url": "https://github.com/NVIDIA/SkillSpector",
+      "purpose": "optional third-party static risk scanner"
+    }
+  ],
+  "rollout": [
+    {
+      "phase": "SOURCE",
+      "gate": "PR + focused CI + review",
+      "status": "IMPLEMENTATION_IN_PROGRESS"
+    },
+    {
+      "phase": "RUNTIME_SYNC",
+      "gate": "operator approval, backup, source/runtime SHA reconciliation",
+      "status": "NOT_AUTHORIZED"
+    },
+    {
+      "phase": "ACL",
+      "gate": "exact per-role permission.skill diff and permission enforcement",
+      "status": "NOT_AUTHORIZED"
+    },
+    {
+      "phase": "CERTIFICATION",
+      "gate": "Kilo Windows fresh reload and positive/negative tests",
+      "status": "NOT_EXECUTED"
+    }
+  ]
+}
