@@ -183,13 +183,15 @@ function Assert-AgentSources {
 
   $leader = Get-Content -LiteralPath $approvedAgents['vx-dev-team.md'] -Raw -Encoding UTF8
   foreach ($required in @(
-    '(?m)^displayName:\s*"vx-dev-team"\s*$',
+    '(?m)^displayName:\s*"VX Dev Team"\s*$',
     '(?m)^mode:\s*primary\s*$',
     '(?m)^color:\s*"#8B5CF6"\s*$',
     '(?m)^\s{2}skill:\s*$',
     '(?m)^\s{4}"\*":\s*deny\s*$',
     '(?m)^\s{2}task:\s*$',
-    '(?m)^\s{2}agent_manager:\s*deny\s*$'
+    '(?m)^\s{2}agent_manager:\s*deny\s*$',
+    '(?m)^\s{2}board_read:\s*allow\s*$',
+    '(?m)^\s{2}board_post:\s*allow\s*$'
   )) {
     if ($leader -notmatch $required) { throw "Dev Team V2-R invalido: $required" }
   }
@@ -217,6 +219,8 @@ function Assert-AgentSources {
       '(?m)^\s{2}apply_patch:\s*deny\s*$',
       '(?m)^\s{2}bash:\s*deny\s*$',
       '(?m)^\s{2}agent_manager:\s*deny\s*$',
+    '(?m)^\s{2}board_read:\s*allow\s*$',
+    '(?m)^\s{2}board_post:\s*allow\s*$',
       '(?m)^\s{2}board_read:\s*deny\s*$',
       '(?m)^\s{2}board_post:\s*deny\s*$'
     )) {
