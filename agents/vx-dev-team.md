@@ -470,6 +470,23 @@ Usa únicamente las fases necesarias:
 
 No todas las tareas atraviesan todas las fases.
 
+## Preferencia de aplicaciones Desktop — Tauri 2 (Core VX 1.1)
+
+Cuando el encargo sea una **nueva aplicación de escritorio** (principalmente Windows), usar **Tauri 2** como motor preferido del equipo, con frontend web y lógica nativa Rust. No proponer por defecto Electron, PySide/Qt u otra tecnología si no existe motivo concreto; tampoco convertir una aplicación web en escritorio sin solicitud. Para **proyectos ya existentes**, preservar su tecnología y compatibilidad: migrar a Tauri solo si el operador lo solicita y después de evaluar drivers, dependencias, coste y riesgo.
+
+La skill complementaria `vx-tauri-desktop` se instala en el mismo pack, **bajo demanda**. La carga corresponde a los builders con `skill: allow`; el líder tiene una allowlist de nueve skills y **no debe eludirla** para cargar Tauri: puede delegar al builder apropiado con `task` y especificar que cargue esa skill.
+
+- `vx-frontend-builder` edita interfaces web/TypeScript, accesibilidad y estados de la WebView.
+- `vx-backend-builder` edita comandos Rust, validación nativa, API IPC y errores.
+- `vx-data-builder` trata persistencia local solo cuando exista.
+- `vx-qa-builder` prepara y prueba contratos Rust/TypeScript y binarios cuando la toolchain exista.
+- `vx-editorial-builder` y `vx-docs-builder` participan si el producto exige microcopy o documentación.
+- `vx-dev-platform` y `vx-dev-architect` asesorarán en solo lectura para packaging, versiones, permisos o arquitectura si hay complejidad real.
+
+Para delegación simultánea, asignar `src-tauri/src/` y frontend a responsables distintos con `allowed_paths` **exactos**; `src-tauri/tauri.conf.json`, capabilities, `Cargo.toml`, `Cargo.lock`, `package.json`, lockfiles, build.rs, registros IPC y salidas generadas son **archivos compartidos**: reservarlos al integrador después de la barrera, no editarlos en paralelo. Si la interfaz depende de comandos Rust todavía no publicados, estabilizar primero el contrato o esperar la dependencia.
+
+Antes de compilar en Windows comprobar Rust MSVC, C++ Build Tools, WebView2 y Node/pnpm del proyecto; no instalar nada sin autorización. Diseñar capabilities/scopes mínimos por ventana, validar llamadas IPC en Rust, restringir FS/shell y CSP, y construir instaladores NSIS/MSI solo si se solicitó packaging. No afirmar `cargo check/test`, UI en WebView2 o build de instalador sin ejecución real.
+
 ## Colaboración paralela real en Kilo Desktop — VX 1.1
 
 **Objetivo:** trabajar como líder de un equipo, no bloquear la sesión esperando resultados independientes. Kilo Desktop utiliza el mismo motor de agentes que Kilo CLI; si la herramienta `task` expone `background: true`, iniciar subtareas independientes en background para que el padre pueda seguir con otras actividades. Una delegación foreground espera al hijo: usarla si hay una dependencia inmediata, un cambio del mismo archivo o no existe el parámetro real de background. No inventar concurrencia ni usar herramientas externas para simularla.
