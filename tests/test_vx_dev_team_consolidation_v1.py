@@ -1076,5 +1076,98 @@ class ConsolidationV1Tests(unittest.TestCase):
         self.assertEqual(len(legacy), 44)
         self.assertFalse(required_ids & legacy)
 
+    def test_contextual_trigger_contract_covers_allowed_and_denied_paths(self):
+        # Oraculos SOURCE reproducibles. NO ejecuta el modelo/host Kilo.
+        catalog = json.loads(
+            (ROOT / "registry" / "vx-contextual-skills-v1.json").read_text(encoding="utf-8")
+        )
+        cases = catalog["evaluation_cases"]
+        self.assertEqual(catalog["test_policy"]["case_count"], len(cases))
+        self.assertEqual(catalog["test_policy"]["runtime_execution"], "NOT_EXECUTED")
+        self.assertEqual(
+            catalog["test_policy"]["evaluation_type"],
+            "SCENARIO_CONTRACT_ONLY_NOT_KILO_MODEL_EXECUTION",
+        )
+        self.assertGreaterEqual(len(cases), 10)
+        self.assertEqual(len(cases), len({case["id"] for case in cases}))
+        required_scenarios = {
+            "PY_SIDE_LOGIN", "WEB_VALIDATION", "DESKTOP_NEW_WINDOWS",
+            "READ_ONLY_DOCS", "EXTERNAL_SKILL_AUDIT", "INDUSTRIAL_PLC",
+            "LAN_PC_PHONE", "BLE_GATT_SENSOR", "ERP_LOCALFIRST",
+            "DENIED_SKILL_RUNTIME", "SOURCE_RUNTIME_DRIFT",
+        }
+        self.assertEqual({case["id"] for case in cases}, required_scenarios)
+        standard_transports = {
+            "LAN", "MDNS", "QR_PAIRING", "BLE", "WIFI_DIRECT",
+            "USB_DEBUG", "REMOTE",
+        }
+        for case in cases:
+            with self.subTest(case=case["id"]):
+                self.assertTrue(case["prompt"].strip())
+                self.assertTrue(case["intent"])
+                self.assertTrue(case["platform_scope"])
+                self.assertTrue(case["forbidden_actions"])
+                expected = set(case["expected_skills"])
+                forbidden = set(case["forbidden_skills"])
+                self.assertEqual(len(expected), len(case["expected_skills"]))
+                self.assertEqual(len(forbidden), len(case["forbidden_skills"]))
+                self.assertFalse(expected & forbidden)
+                transports = set(case["expected_transports"])
+                excluded = set(case["forbidden_transports"])
+                self.assertTrue(transports <= standard_transports)
+                self.assertTrue(excluded <= standard_transports)
+                self.assertFalse(transports & excluded)
+                for skill in expected | forbidden:
+                    self.assertTrue(
+                        (ROOT / "skills" / skill / "SKILL.md").exists()
+                        or (ROOT / "runtime" / "dev-team-v2r" / "skills" / skill / "SKILL.md").exists(),
+                        (case["id"], skill),
+                    )
+                if case["mutation"]:
+                    self.assertIn("vx-version-governance", expected)
+                else:
+                    self.assertNotIn("vx-version-governance", expected)
+                if case["intent"] == "DEVICE_CONNECTIVITY":
+                    self.assertIn("vx-conectividad-dispositivos", expected)
+                    self.assertEqual(len(transports), 1)
+                else:
+                    self.assertFalse(transports)
+                if case["platform_scope"] in ("WEB", "ERP_LOCAL", "DESKTOP_EXISTING"):
+                    self.assertNotIn("vx-tauri-desktop", expected)
+                if case["intent"] == "ACL_DENIED":
+                    self.assertIn("invoke_denied_skill", case["forbidden_actions"])
+                    self.assertFalse(expected)
+
+        source_skill = (
+            ROOT / "runtime" / "dev-team-v2r" / "skills"
+            / "vx-dev-source-reconciliation" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        transport_skill = (
+            ROOT / "skills" / "vx-conectividad-dispositivos" / "SKILL.md"
+        ).read_text(encoding="utf-8")
+        for token in (
+            "SOURCE_RUNTIME_UNVERIFIED", "HASH_DRIFT",
+            "VX_CORE_SOURCE", "DEV_TEAM_SOURCE", "KILO_HOST_RUNTIME",
+            "mutations_performed:false",
+        ):
+            self.assertIn(token, source_skill)
+        for token in (
+            "Routing de transporte por requisito explícito",
+            "LAN", "MDNS", "QR_PAIRING", "BLE",
+            "WIFI_DIRECT", "USB_DEBUG", "REMOTE",
+            "HARDWARE_NOT_VERIFIED", "CONNECTED_VERIFIED",
+        ):
+            self.assertIn(token, transport_skill)
+        self.assertIn('version: "1.1.0"', source_skill)
+        self.assertIn('version: "1.1.0"', transport_skill)
+        self.assertIn(
+            "runtime/dev-team-v2r/skills/vx-dev-source-reconciliation/SKILL.md",
+            catalog["integration"]["source_reconciliation"],
+        )
+        self.assertIn(
+            "skills/vx-conectividad-dispositivos/SKILL.md",
+            catalog["integration"]["transport_routing"],
+        )
+
 if __name__=="__main__":
     unittest.main()
