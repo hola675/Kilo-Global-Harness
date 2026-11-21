@@ -83,6 +83,67 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertFalse(summary["runtime_verified"])
             self.assertFalse(summary["activation_performed"])
 
+    def test_progress_v1_source_only_contract_and_permission_gate(self):
+        """No false PASS for background/Swarm; reuse the live test suite."""
+        pack = module.load_manifest()
+        progress = pack["routing"]["team_coordination"]["progress_protocol"]
+        self.assertEqual(progress["schema"], "vx-progress-event/1")
+        self.assertEqual(progress["status"], "SOURCE_CONTRACT_ONLY_BOARD_DENIED")
+        self.assertEqual(progress["current_leader_board_acl"], "DENY")
+        self.assertEqual(progress["fallback"], "TASK_RESULT")
+        self.assertTrue(progress["no_periodic_polling"])
+        self.assertTrue(progress["no_secrets_or_private_data"])
+        self.assertFalse(progress["runtime_board_certified"])
+        self.assertFalse(progress["runtime_background_certified"])
+        self.assertFalse(progress["board_is_authorization"])
+        self.assertFalse(progress["board_post_is_delivery_proof"])
+        self.assertTrue(pack["activation"]["no_board_acl_change"])
+        self.assertEqual(len(pack["agents"]), 18)
+        self.assertEqual(len(pack["skills"]), 57)
+        self.assertEqual(
+            progress["events"],
+            ["STARTED", "CONTRACT_READY", "MILESTONE", "BLOCKED",
+             "DELIVERED", "CORRECTION"],
+        )
+        lead = (ROOT / "agents/vx-dev-team.md").read_text(encoding="utf-8")
+        lead_front = lead.split("---", 2)[1]
+        self.assertIn("  board_read: deny", lead_front)
+        self.assertIn("  board_post: deny", lead_front)
+        self.assertIn("  agent_manager: deny", lead_front)
+        self.assertIn("VX Progress V1", lead)
+        self.assertIn("PROGRESS_CHANNEL_DENIED", lead)
+        self.assertIn("RT-02", lead)
+        for agent_id in (
+            "vx-frontend-builder", "vx-backend-builder", "vx-data-builder",
+            "vx-qa-builder", "vx-docs-builder", "vx-editorial-builder",
+        ):
+            with self.subTest(agent=agent_id):
+                body = (ROOT / "agents" / f"{agent_id}.md").read_text(encoding="utf-8")
+                front = body.split("---", 2)[1]
+                self.assertIn('  "*": deny', front)
+                self.assertIn("  task: deny", front)
+                self.assertIn("  agent_manager: deny", front)
+                self.assertIn("  edit: ask", front)
+                self.assertNotIn("board_post: allow", front)
+                self.assertNotIn("board_read: allow", front)
+                self.assertIn("VX Progress V1", body)
+                self.assertIn("AUTHORSHIP_NOT_VERIFIED", body)
+                self.assertIn("PROGRESS_CHANNEL_DENIED", body)
+                self.assertIn("task_result", body)
+        collaboration = (ROOT / "skills/vx-agent-collaboration/SKILL.md").read_text(encoding="utf-8")
+        bootstrap = (ROOT / "skills/vx-team-bootstrap/SKILL.md").read_text(encoding="utf-8")
+        handoff = (ROOT / "skills/vx-implementation-handoff/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn('version: "0.3.0"', collaboration)
+        self.assertIn('version: "1.3.0"', bootstrap)
+        for body in (collaboration, bootstrap, handoff):
+            self.assertIn("board_post", body)
+            self.assertIn("board_read", body)
+            self.assertIn("task_result", body)
+        doc = (ROOT / "docs/VX-TEAM-GLOBAL-CAPABILITIES-V14.md").read_text(encoding="utf-8")
+        self.assertIn("SOURCE", doc)
+        self.assertIn("PROGRESS_CHANNEL_DENIED", doc)
+        self.assertIn("RT-02", doc)
+
     def test_exact_permissions_and_only_one_visible_primary(self):
         pack = module.load_manifest()
         from dev_team_agent_parser_support import load_agent
