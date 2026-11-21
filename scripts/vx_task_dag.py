@@ -278,16 +278,16 @@ def _queue_db_path(path: Path | None, *, mutate: bool) -> Path:
     # Project files, including a repository's .kilo, are never coordination state.
     # Resolve the complete path: ancestor symlinks/junctions must not escape the gate.
     resolved = path.resolve(strict=False)
-    if resolved != path.absolute():
-        raise ValueError("Prohibido acceder a la cola por symlink o junction.")
+    # Windows HOME/TEMP can legitimately traverse a junction. Reject only
+    # source checkouts, checking BOTH supplied and resolved paths, or a direct file symlink.
+    roots = (path.absolute(), resolved)
     inside_source = any(
         (ancestor / "registry" / "vx-unified-pack-v1.json").is_file()
         or (ancestor / ".git").exists()
-        for ancestor in (resolved, *resolved.parents)
+        for candidate in roots for ancestor in (candidate, *candidate.parents)
     )
-    # Installed HOME contains vx-unified-pack-v1.json but not registry/.
-    if inside_source:
-        raise ValueError("Prohibido guardar la cola en un checkout Git.")
+    if inside_source or path.is_symlink():
+        raise ValueError("Prohibido guardar la cola dentro de un checkout Git o por symlink de archivo.")
     if mutate:
         path.parent.mkdir(parents=True, exist_ok=True)
     elif not path.is_file():
