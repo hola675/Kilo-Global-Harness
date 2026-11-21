@@ -1,6 +1,6 @@
 {
   "schema": "vx-unified-pack/1",
-  "version": "1.1.0-rc1",
+  "version": "1.2.0-rc1",
   "updated": "2026-11-21",
   "status": "SOURCE_CANDIDATE_NOT_INSTALLED",
   "scope": "ONE_GLOBAL_PACK_KILO_WINDOWS",
@@ -497,7 +497,27 @@
       "shared_tauri_config_owner": "LEADER_AFTER_BARRIER",
       "skill": "vx-tauri-desktop",
       "toolchain_installation": "EXPLICIT_PERMISSION_ONLY",
-      "automatic_rewrite": false
+      "automatic_rewrite": false,
+      "delivery_contract": "PAIRED_WINDOWS_EXE_AND_ANDROID_APK_FOR_NEW_DESKTOP_PRODUCTS",
+      "target_platforms": [
+        "windows",
+        "android"
+      ],
+      "windows_artifact": ".exe",
+      "android_artifact": ".apk",
+      "play_store_artifact_optional": ".aab",
+      "shared_domain_protocol": true,
+      "responsive_platform_specific_ui": true,
+      "preferred_transport": "AUTHENTICATED_ENCRYPTED_LOCAL_LAN_OR_HOTSPOT",
+      "offline_internet_not_required": true,
+      "bluetooth_ble": "CONDITIONAL_HARDWARE_AND_PLUGIN_VERIFICATION",
+      "wifi_direct": "CONDITIONAL_ANDROID_WINDOWS_ADAPTER_VERIFICATION",
+      "mandatory_pairing_and_revocation": true,
+      "plugin_policy": "OFFICIAL_CATALOG_ON_DEMAND_CAPABILITY_ALLOWLIST",
+      "plugin_reference": "https://v2.tauri.app/es/plugin/",
+      "runtime_pairing_certified": false,
+      "build_artifacts_must_be_verified": true,
+      "no_automatic_installation": true
     }
   },
   "test_policy": {
