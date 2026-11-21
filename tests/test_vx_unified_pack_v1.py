@@ -219,6 +219,9 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertEqual(pack['version'], '1.3.0-rc1')
         desktop = pack['routing']['desktop']
         self.assertEqual(desktop['applies_to'], 'EXPLICITLY_SCOPED_NEW_DESKTOP_PRODUCT_ONLY')
+        self.assertEqual(desktop['mobile_scope_rule'], 'DEFAULT_DUAL_UNLESS_EXPLICIT_WINDOWS_ONLY')
+        self.assertEqual(desktop['explicit_windows_only_android_status'], 'OUT_OF_SCOPE')
+        self.assertTrue(desktop['android_connection_required_only_when_android_in_scope'])
         self.assertFalse(desktop['dependencies_add_automatically'])
         self.assertEqual(desktop['android_local_network_permission'],
                          'ACCESS_LOCAL_NETWORK_TARGET_SDK_37_PLUS')
@@ -249,6 +252,12 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertIn('Windows', tauri)
         self.assertIn('Android', tauri)
         self.assertIn('ACCESS_LOCAL_NETWORK', tauri)
+        self.assertIn('WINDOWS_ONLY', tauri)
+        self.assertIn('OUT_OF_SCOPE', tauri)
+        self.assertIn('WINDOWS_ONLY', leader)
+        self.assertIn('WINDOWS_ONLY', policy)
+        command = (ROOT / 'commands/vx-equipo.md').read_text(encoding='utf-8')
+        self.assertIn('OUT_OF_SCOPE', command)
 
     def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
         pack = module.load_manifest()
