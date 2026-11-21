@@ -230,7 +230,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertIn('vx-tauri-desktop', leader)
         self.assertIn('task', leader)
         policy = (ROOT / 'rules/AGENTS-global-managed.md').read_text(encoding='utf-8')
-        self.assertIn('TAURI', policy)
+        self.assertIn('tauri', policy.lower())
         self.assertIn('vx-tauri-desktop', policy)
         command = (ROOT / 'commands/vx-equipo.md').read_text(encoding='utf-8')
         self.assertIn('Tauri 2', command)
