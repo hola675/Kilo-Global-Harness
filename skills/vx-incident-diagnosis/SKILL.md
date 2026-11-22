@@ -3,6 +3,7 @@ name: vx-incident-diagnosis
 description: "Usar para investigar incidentes sin efectos destructivos cuando una tarea mencione incidente, error, caida, regresion. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.2.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 
