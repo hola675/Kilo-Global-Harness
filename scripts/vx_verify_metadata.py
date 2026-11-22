@@ -56,10 +56,10 @@ def check(path: str, kind: str, harness_version: str) -> list[str]:
 
 
 def main() -> int:
+    global ROOT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT, help="Raíz del checkout (por defecto, este repositorio)")
     args = parser.parse_args()
-    global ROOT
     ROOT = args.root.resolve()
     try:
         manifest = json.loads((ROOT / "registry" / "vx-unified-pack-v1.json").read_text(encoding="utf-8"))
