@@ -1,4 +1,4 @@
-# component_version: 1.1.0
+# component_version: 1.2.0
 # last_modified: 2026-11-22
 """Instalador vigente VX Dev Team Core 1.6: transaccional, conservador y reversible.
 
