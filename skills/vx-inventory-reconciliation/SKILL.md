@@ -3,6 +3,7 @@ name: vx-inventory-reconciliation
 description: "Gestionar combustible, almacenes e inventario físico/contable, conciliaciones de TPV externo, asientos, cierres, importaciones y evidencia offline sin crear transacciones inventadas."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 
