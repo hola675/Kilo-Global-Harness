@@ -1,9 +1,9 @@
 ---
 name: vx-incident-diagnosis
-description: "Usar para investigar incidentes sin efectos destructivos cuando una tarea mencione incidente, error, caida, regresion. Exigir evidencia real y no cambiar permisos."
+description: "Usar al investigar incidentes operativos, degradación, caída o regresión en servicio con logs, impacto, mitigación y causa; no activar para errores normales de programación sin incidente operativo."
 metadata:
-  version: "0.2.0"
-  last_modified: "2026-11-21"
+  version: "0.2.1"
+  last_modified: "2026-11-22"
   origin: "vx-original"
 ---
 
