@@ -414,7 +414,7 @@ def apply(home: Path) -> Path:
             raise Blocked("Configuración del host cambió.")
         try:
             queue.queue_state_provision(home / QUEUE_REL)
-            queue_after = digest(_queue_snapshot(home))
+            queue_after = queue.queue_state_fingerprint(_queue_snapshot(home))
         except (OSError, ValueError, __import__("sqlite3").DatabaseError) as exc:
             raise Blocked("Aprovisionamiento SQLite falló.") from exc
         verify(home)
@@ -460,8 +460,8 @@ def restore(home: Path, directory: Path, *, partial: bool = False,
     # Bloquear ANTES de mutar archivos si hubo escrituras de cola posteriores.
     needs_queue_rollback = False
     if managed_queue:
-        current_hash = digest(_queue_snapshot(home))
-        before_hash = digest(state_before)
+        current_hash = queue.queue_state_fingerprint(_queue_snapshot(home))
+        before_hash = queue.queue_state_fingerprint(state_before)
         after_hash = (expected_queue_after if expected_queue_after is not None
                       else receipt.get("queue_after_sha256"))
         if current_hash != before_hash:
@@ -481,7 +481,7 @@ def restore(home: Path, directory: Path, *, partial: bool = False,
             queue.queue_state_restore(home / QUEUE_REL, state_before)
         except (OSError, ValueError, __import__("sqlite3").DatabaseError) as exc:
             raise Blocked("No fue posible restaurar snapshot SQLite; revisar respaldo.") from exc
-        if digest(_queue_snapshot(home)) != digest(state_before):
+        if queue.queue_state_fingerprint(_queue_snapshot(home)) != queue.queue_state_fingerprint(state_before):
             raise Blocked("SQLite restaurada no coincide con respaldo original.")
     _receipt(directory, "RESTORED")
 
