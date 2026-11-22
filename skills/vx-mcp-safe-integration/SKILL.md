@@ -1,8 +1,8 @@
 ---
 name: vx-mcp-safe-integration
-description: "Usar al conectar, evaluar o cambiar servidores y herramientas MCP, scopes, trust boundaries y permisos, preservando configuración activa; no activar por cualquier consulta normal a una herramienta ya autorizada."
+description: "Usar al conectar, evaluar o cambiar servidores y herramientas MCP, scopes, límites de confianza y permisos; no activar por una consulta normal a un MCP autorizado."
 metadata:
-  version: "0.2.1"
+  version: "0.2.2"
   last_modified: "2026-11-22"
   origin: "vx-original"
 ---
