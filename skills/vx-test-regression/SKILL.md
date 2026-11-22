@@ -1,9 +1,9 @@
 ---
-# last_modified: "2026-11-22"
 name: vx-test-regression
 description: "Usar al escribir, actualizar, sustituir o depurar pruebas automatizadas de un cambio concreto; elegir UPDATE, REPLACE o ADD por invariante, fixtures aislados y ejecución focalizada. No activar para diseñar estrategia sin implementar tests."
 metadata:
   version: "0.2.1"
+  last_modified: "2026-11-22"
 ---
 
 # VX Test Regression
