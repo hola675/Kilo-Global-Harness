@@ -35,7 +35,7 @@ Este documento es una **política global de uso del Harness**, no un agente ejec
 - Tras delegar, el líder puede avanzar en trabajo independiente fuera de archivos reservados. No afirmar que un hijo terminó hasta recibir evidencia real de `task_result` y comprobar resultados.
 - Los seis builders pueden editar solo conforme a la ACL del host (normalmente `ask`); especialistas read-only no escriben ni delegan. `board_post/board_read` son opcionales y publicar no equivale a entregar ni recibir.
 - El motor `vx_task_dag.py` mantiene estado SQLite: `report/audit/handoff/inbox` son consultas, **no ejecución ni mensajería autenticada**; `sync/start/event/verify/resume/reset` son mutaciones que requieren `--actor vx-dev-team` más autorización efectiva del host. El argumento actor no autentica identidad.
-- `DELIVERED` no es `VERIFIED`; revisar diff, trazas y pruebas antes de integrar. No reciclar IDs de sesiones, duplicar escritores ni asumir recuperación de una sesión sin verificarla.
+- Si una tarea queda `BLOCKED`, mantener su reserva hasta revisión y recuperación explícita. `DELIVERED` no es `VERIFIED`; revisar diff, trazas y pruebas antes de integrar. No reciclar IDs de sesiones, duplicar escritores ni asumir recuperación de una sesión sin verificarla.
 - No modificar `kilo.jsonc`, AutoApprove, MCP, modelos, credenciales ni ACL para desbloquear tareas sin autorización específica.
 
 ## Referencias de capacidades y compatibilidad (no son un agente)
