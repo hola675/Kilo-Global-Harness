@@ -1,132 +1,30 @@
-# VX — Reconciliación continua del equipo con main V1
+# VX Dev Team · Git y conciliación con main
 
-**Fecha:** 2026-11-19 · **Versión:** 1.3.0 · **Estado:** SOURCE / DISEÑO OPERATIVO. No hay daemon, webhook, scheduler, ajuste de ACL ni cambios en HOME activos.
+**Vigencia:** Core VX 1.6.0-rc1. Este procedimiento lo aplica el líder mediante Git y herramientas realmente autorizadas; **no hay watchdog, hook, scheduler, listener o módulo de reconciliación automática** en el Core mínimo.
 
-## Contrato de trabajo del equipo
+## Contrato
 
-**Una sola rama permanente:** `main`. **Varias ramas `work/*` temporales pueden coexistir** cuando haya tareas realmente independientes y cada una tenga propietario y worktree o sesión de escritura aislados. **Un solo escritor Git por worktree:** ninguna operación simultánea de branch/commit/merge/rebase/stash de varios agentes sobre el mismo checkout. Para *ediciones de código*, el Core V1.1 admite excepcionalmente dos builders en un workspace común solo en **archivos exactos disjuntos con ownership verificado**, sin operaciones Git hasta la barrera de integración. Esta excepción no autoriza ramas compartidas en conflicto ni constituye un lease de filesystem; ver `docs/VX-DEV-TEAM-UNIFIED-V1.md`.
+- `main` es la única rama permanente. Crear una rama `work/<tarea>` temporal por objetivo no trivial y eliminarla solo después de constatar el merge.
+- Cada worktree tiene **un propietario Git**. Nunca ejecutar checkout, pull, commit, merge, rebase o stash simultáneamente desde dos agentes sobre el mismo directorio.
+- Dos builders pueden editar *archivos exactos, literales y disjuntos* bajo `write_scope: EXACT_FILES` en un único workspace **sin operaciones Git concurrentes**, si la herramienta y el líder pueden garantizar esos límites. Los conflictos, lockfiles y migraciones exigen serialización.
+- `task(background: true)` no crea una rama ni worktree. `board_post` comunica información y no prueba una actualización Git ni un lock.
+- Todos los archivos sin guardar y modificaciones ajenas deben preservarse; prohibidos `reset --hard`, force-push, auto-stash y resolución destructiva de conflictos.
 
-Cada tarea registra `task_id`, `owner_agent`, `repo`, `branch`, `base_main_sha`, `last_reconciled_main_sha`, `status`, `allowed_paths` y evidencia de CI. Estos metadatos no son credenciales ni permisos. Las sesiones y tareas se registrarán en un catálogo externo a Git cuando se habilite la orquestación; nunca añadir un registro efímero de equipos privados al repositorio público.
+## Cuando main avanza
 
-## Evento MAIN_ADVANCED (diseño para ejecución automática)
+1. El líder observa el SHA de `origin/main` con herramientas reales. No interpretar cambios de estado sin prueba como un `MAIN_ADVANCED`.
+2. Identifica solo ramas activas afectadas y pausa a sus escritores al llegar a una barrera segura.
+3. Si hay cambios locales o sesiones de escritura sin cerrar, detener y registrar `BLOCKED`; no sincronizar a la fuerza.
+4. El propietario de cada worktree actualiza su base con el `main` verificado, resuelve conflictos con revisión y reejecuta las pruebas correspondientes.
+5. El líder verifica el resultado y, si ha cambiado un contrato compartido, emite handoffs dirigidos a consumidores afectados. No recrea tareas idénticas ante mensajes duplicados.
+6. Fusionar por PR después de PASS y revisión; comprobar que `main` contiene el cambio y retirar exclusivamente la rama propia.
 
-Cuando se detecta que `origin/main` cambió de SHA **A** a SHA **B** tras un merge confirmado:
+## Estado y recuperación
 
-1. Validar que **B** existe realmente en el remoto autorizado. No ejecutar sync en auditorías read-only.
-2. Publicar un evento idempotente `MAIN_ADVANCED(repo,B)`; si llegan varios eventos, **agrupar por el SHA de main más reciente**.
-3. Consultar tareas activas `ACTIVE` / `IN_REVIEW` en ramas `work/*` del mismo repositorio. No incluir `main`, ramas cerradas ni tareas ajenas.
-4. Emitir una tarea `RECONCILE_REQUIRED` por rama activa y SHA objetivo. **Enrutar al agente propietario de esa rama**, nunca a todos los agentes indiscriminadamente. Un evento repetido no duplica trabajo.
-5. El agente entra en **punto seguro**: termina la escritura actual, pausa nuevas mutaciones y valida worktree, ownership, estado Git, tip remoto y ausencia de merge/rebase previo.
-6. Si el worktree está limpio y la rama sigue siendo la suya, concilia **su rama** con el `origin/main` actualizado mediante un merge Git normal, sin rebase de commits compartidos ni force push. No modifica `main` desde la rama activa. Antes de operar, verifica otra vez que B sea el objetivo vigente; si avanzó, replanifica.
-7. Si hay cambios sin guardar, conflictos, branch moved, PR incompatible, ownership dudoso, worktrees compartidos o permisos insuficientes, marca `PAUSED_NEEDS_REVIEW`. No hace `stash`, `reset`, `checkout --ours/theirs`, resolución automática de conflictos ni borrados.
-8. Tras reconciliar, ejecuta **solo** los tests afectados por cambios en `main` y por su tarea, revisión de diff y contratos; registra SHA conciliado y evidencia antes de `RESUME`. Si `main` vuelve a avanzar, repite el ciclo desde el nuevo SHA; no retiene un objetivo obsoleto.
-9. En la integración final: `main` actual → PR → CI real → revisión independiente → merge → verificar el SHA remoto → archivar/eliminar **únicamente** la rama de esa tarea cuando no haya trabajo pendiente. El merge provoca otro evento `MAIN_ADVANCED` para las demás ramas activas.
-10. No crear una nueva rama para reconciliar otra rama existente. Un conflicto bloquea esa tarea, no el progreso seguro de tareas independientes.
+El ledger de sesión o `scripts/vx_task_dag.py` registra tareas, dependencias y eventos, **no lanza comandos Git ni modelos**. Una sesión `BLOCKED` con `host_task_id` conserva sus archivos y plaza de concurrencia; `reset` requiere prueba de que el host terminó. La cola SQLite es local y no ofrece un scheduler.
 
-**Semántica:** la señal es automática cuando exista un detector autorizado; reconciliar puede ser automático **solo** con worktree limpio, propietario autorizado, lease de branch y pruebas de seguridad verificadas. Reanudar trabajo depende del agente y de las evidencias, nunca de un merge a ciegas.
+Los prototipos antiguos `tools/vx_team_git_reconciliation.py`, `vx_team_git_queue_store.py` y `vx_team_git_worktrees.py` no pertenecen al Core actual. Sus algoritmos experimentales y casos de prueba permanecen en Git history, no en la instalación vigente.
 
-## Máquina de estados
+Ver [handoff](VX-TEAM-CAPABILITY-HANDOFF-V1.md), [Autopilot](VX-DEV-TEAM-AUTOPILOT-V2.md) y [política global](../rules/AGENTS-global-managed.md).
 
-`ACTIVE → RECONCILE_REQUIRED → WAIT_SAFEPOINT → RECONCILING → VERIFYING → ACTIVE`
-
-Ramas de error: `PAUSED_NEEDS_REVIEW`, `CONFLICT_PAUSED`, `BLOCKED_PERMISSION`, `STALE_TARGET_REPLAN`; salida: `IN_REVIEW → MERGED → ARCHIVED → CLOSED`. No anunciar `RECONCILED` cuando `git merge`, tests o revisión fallen.
-
-## Permisos y límites
-
-- Los subagentes **Dev Team 2.3.0** siguen read-only; reciben contexto de `MAIN_ADVANCED` solo para reevaluar, no hacen `git merge`, `bash` ni ediciones.
-- `vx-dev-team` y los builders VX tienen `edit/bash: ask` en el source. `ask` **no es** `allow`: no delegar los comandos a un lector ni cambiar ACL para que «no bloquee».
-- La futura ejecución automática A2 requiere identidad de agente, autorización por repositorio/rama/comando, permisos efectivos comprobados, separación de worktrees, leases, casos positivos/negativos y rollback. La mutación de ramas remotas y el merge a `main` siguen sujetos a permisos de GitHub y revisiones.
-- No usar ramas auxiliares para eludir una denegación. No tocar producción, HOME, credenciales, scheduler, ACL/MCP ni `kilo.jsonc`.
-- La detección y la planificación están disponibles como **lógica fuente inerte** en `tools/vx_team_git_reconciliation.py`; no monitoriza ni despacha tareas por sí sola. La integración con watcher, agentes y orquestador queda `NOT_ACTIVATED`.
-
-## Oráculos y certificación
-
-| Invariante | Prueba obligatoria al habilitar ejecutor |
-| --- | --- |
-| `MAIN_ADVANCED` con dos ramas activas | exactamente una tarea por rama y SHA; excluir cerradas |
-| Evento repetido | cero tareas duplicadas |
-| `main` avanza dos veces | reconciliar con la última revisión y descartar la anterior |
-| Worktree sucio o uso por otro agente | pausa sin mutaciones |
-| Conflicto real | no auto-resolver ni reanudar |
-| SHA remoto cambió durante ejecución | no escribir a un tip obsoleto; replanificar |
-| Permiso `deny` / `ask` no satisfecho | jamás concederse permiso o cambiar herramienta |
-| PR fusionada | borrar solo la rama propia, tras verificar integración y archivar si hace falta |
-| CI / smoke runtime | evidencia diferenciada; SOURCE PASS no certifica agente instalado |
-
-**Estado actual:** PLAN_ONLY. La suite existente `tests/test_vx_dev_team_consolidation_v1.py` prueba el planificador sin crear un gate o una suite histórica adicional. El futuro ejecutor se prueba en un repositorio Git sintético antes de cualquier activación real.
-
-## A0/A1 — Observación bajo demanda y cola simulada V1.1
-
-El código fuente incorpora un **observador Git ejecutable una sola vez** y un **modelo de cola idempotente en memoria**, sin habilitar ningún watcher, daemon ni ejecutor de merges.
-
-- `observe_origin_main`: lee `origin`, consulta `refs/heads/main` con `git ls-remote`, comprueba existencia local de ambos commits y valida `git merge-base --is-ancestor`. Desactiva expresamente las descargas implícitas de objetos de clones parciales (`GIT_NO_LAZY_FETCH=1`) y locks opcionales (`GIT_OPTIONAL_LOCKS=0`); no ejecuta `fetch`, `merge`, `push` ni modifica refs.
-- La diferencia de SHA se clasifica como `MAIN_ADVANCED_VERIFIED` solo cuando está demostrada la relación de ancestro. Si el commit remoto aún no existe localmente, devuelve `MAIN_CHANGED_ANCESTRY_UNVERIFIED`; si hubo divergencia, `MAIN_DIVERGED_BLOCKED`. **Ninguno permite crear trabajo de reconciliación**.
-- `coalesce_pending_queue`: conserva una sola entrada pendiente por `(repo, branch)`, admite varios agentes en ramas independientes y descarta duplicados. Solo reemplaza planes pendientes cuando el SHA anterior de la cola coincide con `previous_main_sha` del evento; si las notificaciones llegan desordenadas, devuelve `MAIN_EVENT_ORDER_UNVERIFIED` en vez de retroceder a un SHA viejo. **No sustituye** una tarea `RECONCILING` o `VERIFYING`, y bloquea cambios de propietario.
-- Cuando una tarea deja de aparecer activa, su entrada pendiente pasa a `HOLD_RECHECK`. Si reaparece, podrá obtener un nuevo plan, pero sigue sin autorizar ningún comando Git.
-- El sistema no persiste cola ni recupera sesiones tras cortes eléctricos: **la cola durable, identidad de agente, watcher y despacho siguen pendientes** en la issue #86.
-
-### Ejecución de solo lectura en Windows
-
-El siguiente ejemplo consulta Git de manera explícita, una vez, sin modificar ramas ni estados:
-
-```powershell
-Set-Location D:\Proyectos\Kilo-Global-Harness
-python .\tools\vx_team_git_reconciliation.py --observe-main `
-  --repo hola675/Kilo-Global-Harness `
-  --repo-dir . `
-  --previous-main <SHA_DE_MAIN_OBSERVADO_ANTES>
-```
-
-Opcionalmente pasar `--tasks <archivo-json-local>` para planificar ramas activas y `--queue <archivo-json-local>` para calcular una nueva propuesta de cola. El primer archivo debe contener `{"tasks": [...]}` y el segundo `{"queue": [...]}`. Ambos deben permanecer **fuera del repositorio público** porque pueden describir tareas y agentes del operador. El comando solo imprime JSON; **no crea, escribe, notifica, programa ni ejecuta nada**.
-
-Para una observación con SHA nuevo que el Git local todavía no tiene, no se ejecutará el plan: una fase de sincronización Git autorizada debe traer el objeto y repetir la comprobación de ascendencia. Nunca deducir que un SHA de mayor valor hexadecimal es más reciente.
-
-**Certificación:** los tests focalizados pertenecen a la suite existente `tests/test_vx_dev_team_consolidation_v1.py` (`UPDATE`). Las pruebas de contrato no acreditan el funcionamiento real del detector bajo proxy Windows, de la futura cola persistente o de las ACL de Kilo.
-
-## A0 — Inventario de worktrees y recuperación simulada V1.2
-
-Nuevo módulo source-only: `tools/vx_team_git_worktrees.py`. **No instala componentes ni observa automáticamente** las sesiones Kilo.
-
-**Inventario estructural:** recibe un catálogo privado JSON de tareas (fuera del repositorio), compara el repositorio esperado con la URL literal de `origin`, analiza `git worktree list --porcelain -z` y coteja cada rama `work/*` con el worktree declarado. **Verifica además el `--git-common-dir`, `symbolic-ref HEAD` y el directorio raíz efectivos de cada worktree**, porque una ruta registrada puede haber sido reemplazada por otro repositorio. Rechaza ramas ausentes, múltiples propietarios activos, worktrees bloqueados o eliminables, rutas contradictorias, tareas de otros repositorios y datos incompletos. Su salida no imprime las rutas absolutas de los worktrees. Usa `GIT_OPTIONAL_LOCKS=0` y `GIT_NO_LAZY_FETCH=1`.
-
-**Limitación de seguridad:** una coincidencia entre catálogo y worktree **NO autentica al dueño**, no acredita permisos Kilo, no verifica limpieza de archivos, ni concede un lease de rama. Por tanto toda tarea queda en `STRUCTURE_MATCH_ONLY` y `can_reconcile=false`; la autorización del ejecutor continúa bloqueada.
-
-**Recuperación simulada tras interrupción:** `plan_interruption_recovery(queue)` crea una copia de la cola en memoria y cambia todos los trabajos `PENDING`, `PAUSED`, `RECONCILING` o `VERIFYING` a `HOLD_RECHECK`, con `execute=false`. También preserva tareas de otros repositorios sin ejecutarlas y bloquea duplicados o SHAs inválidos. Nunca reanuda automáticamente una tarea que estaba escribiendo o resolviendo una fusión. Al no existir aún almacenamiento local persistente, este método **solo certifica la lógica de recuperación, no la capacidad real de sobrevivir a un apagón**.
-
-Ejemplo de invocación, una vez, **solo lectura**, usando archivos privados preparados por el operador:
-
-```powershell
-Set-Location D:\Proyectos\Kilo-Global-Harness
-py -3 .\tools\vx_team_git_worktrees.py `
-  --repo hola675/Kilo-Global-Harness `
-  --repo-dir . `
-  --tasks "$env:LOCALAPPDATA\VX\team-tasks.json"
-```
-
-El esquema mínimo de cada tarea activa es `{repo, task_id, owner_agent, branch, worktree_path, status}`. `worktree_path` debe ser absoluto; `status` puede ser `ACTIVE` o `IN_REVIEW`. Un catálogo inexistente no se crea automáticamente. Para simular recuperación, añadir opcionalmente `--queue <archivo-privado-json>` con `{ "queue": [...] }`. No se escriben ni cambian tales archivos.
-
-**Certificación viva:** se actualiza la prueba existente `tests/test_vx_dev_team_consolidation_v1.py`, con repositorio temporal Git real y dos worktrees independientes, ruta equivocada, propietario duplicado, worktree bloqueado, remoto no reconocido y cola repetida o interrumpida. La historia permanece en Git, sin otra suite por versión.
-
-**Fases siguientes:** (1) catálogo persistente en ruta privada solo tras autorización específica; (2) autenticación real owner↔sesión↔worktree y snapshot de herramientas Kilo; (3) inspección de limpieza/locks efectiva; (4) cola durable y recuperación con ensayos sintéticos Windows; (5) despacho de eventos `MAIN_ADVANCED`, con aprobación explícita y rollback. Ninguna se considera activada por esta versión.
-
-## A1 — Prototipo transaccional SQLite en sandbox V1.3
-
-Se incorpora `tools/vx_team_git_queue_store.py` como **librería de pruebas aislada**, sin CLI ni autoarranque. Esta fase desarrolla almacenamiento real únicamente cuando un test llama explícitamente a `SandboxQueue` con un subdirectorio preexistente del directorio temporal del sistema; el constructor **no** crea bases. El almacenamiento real del operador continúa **desactivado**.
-
-**Transacción:** SQLite usa `journal_mode=WAL`, `synchronous=FULL` y `BEGIN IMMEDIATE`. Conserva un `repo_heads` por repositorio y una única fila por `(repo,branch)`. Solo acepta eventos cuyo observador declaró `MAIN_ADVANCED_VERIFIED`, con `planning_allowed=true` y un plan `PLAN_ONLY` idéntico, sin tareas bloqueadas, `execute=false`. Bloquea eventos de SHA fuera de orden con un compare-and-swap transaccional; una repetición del mismo evento es idempotente. Aunque una fila se almacene, **no hay despacho ni merge Git**.
-
-**Continuidad:** las propuestas pendientes se renuevan al avance verificado de `main` cuando coinciden con la última base, sin tocar registros `RECONCILING`, `VERIFYING` o `HOLD_RECHECK`. Una modificación silenciosa del propietario es bloqueada. El evento puede avanzar el SHA general de `main` aunque determinadas ramas requieran revisión; esto no habilita esas ramas.
-
-**Recuperación tras interrupción:** al reabrir la base de pruebas, `recovery_hold()` cambia todos los trabajos a `HOLD_RECHECK` de forma transaccional y repetible. Ninguna entrada vuelve a `PENDING` por una nueva actualización de `main` sin una fase independiente de autenticación y validación de worktree. Los snapshots muestran explícitamente `execute=false`, `can_dispatch=false` y `can_merge=false`.
-
-**Límites:** no se persisten secretos, rutas de worktrees ni datos reales de usuario en este prototipo; exclusivamente identificadores sintéticos de fixtures. No se almacena automáticamente nada bajo HOME de Kilo ni se modifica `kilo.jsonc`, ACL o MCP. Para producción siguen pendientes un almacén privado autorizado, identidad real de agentes/sesiones, limpieza Git, handles de tareas, leases de branch, protección de `main`, ejecución focalizada y recuperación de fallos a mitad de merge. El WAL de test no implica certificación de tolerancia a apagones físicos.
-
-**Test certification:** la misma suite viva `tests/test_vx_dev_team_consolidation_v1.py` prueba reapertura real, idempotencia concurrente, SHA desordenado, rollback ante entrada inválida, bloqueo por cambio de propietario y recuperación sin ejecutar. Se actualiza esta suite (`TEST_ACTION=UPDATE`), sin conservar suites redundantes por versión.
-
-## Pendientes para activación posterior
-
-1. Terminar reconciliación source↔runtime (agentes 6/11; skills CORE 2/18 coincidían en último preflight).
-2. Capturar permisos reales de Kilo, herramientas de Git/Agent Manager, ownership de ramas y callbacks de finalización.
-3. Desarrollar detector de cambios de `main`, cola idempotente de tareas por rama y mecanismo de pausa/reanudación, sin acceso a producción.
-4. Probar eventos concurrentes, conflictos, power loss y recuperación en Windows.
-5. Presentar el diff de ACL y solicitar aprobación independiente explícita del operador para habilitar automatización.
+**Regla final:** registrar `SOURCE_PASS`, `INSTALLED_FILES_MATCH` y `HOST_RUNTIME_PASS` por separado; no inventar sincronización automática, autorización o autoría.
