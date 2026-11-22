@@ -38,6 +38,13 @@ Este documento es una **política global de uso del Harness**, no un agente ejec
 - `DELIVERED` no es `VERIFIED`; revisar diff, trazas y pruebas antes de integrar. No reciclar IDs de sesiones, duplicar escritores ni asumir recuperación de una sesión sin verificarla.
 - No modificar `kilo.jsonc`, AutoApprove, MCP, modelos, credenciales ni ACL para desbloquear tareas sin autorización específica.
 
+## Referencias de capacidades y compatibilidad (no son un agente)
+
+- **VX Dev Team V2.1**: la política global aplica controles de gobernanza, mientras que la definición del líder conserva el comportamiento y routing del equipo.
+- **MOTOR DESKTOP VX 1.3**: para nuevas aplicaciones Desktop explícitamente solicitadas, `vx-tauri-desktop` es una Skill contextual; Tauri 2 no se impone a todos los proyectos. `WINDOWS_ONLY` excluye Android solo si el alcance lo indica expresamente.
+- En tareas paralelas del modo VX, `task(background: true)` depende de herramientas del host. Dos escritores solo con `write_scope: EXACT_FILES` disjuntos; no ampliar `AutoApprove` ni interpretar `Auto` como autorización para cambios de alto riesgo.
+- Versión del pack de referencia: Core 1.6.1-rc1. La versión individual de esta política es independiente.
+
 ## Instalación, evidencia y cierre
 
 - El instalador unificado gestiona **solo el bloque VX** de `~/.config/kilo/AGENTS.md`, preservando el resto del archivo y los agentes existentes; no crea un modo `AGENTS` ni sustituye el agente activo.
