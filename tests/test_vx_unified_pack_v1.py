@@ -1070,6 +1070,21 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(status["status"], "READY")
             receipt = module.apply(home)
             self.assertTrue(receipt.is_dir())
+            report_path = receipt / "install-report.json"
+            markdown_path = receipt / "install-report.md"
+            self.assertTrue(report_path.is_file())
+            self.assertTrue(markdown_path.is_file())
+            audit = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(audit["schema"], "vx-install-report/1")
+            self.assertEqual(audit["receipt_status"], "INSTALLED")
+            self.assertEqual(audit["database"]["operation"], "CREATED")
+            self.assertEqual(audit["database"]["current"]["status"], "READY")
+            self.assertEqual(audit["counts"]["REMOVED"], 2)
+            self.assertTrue(any(x["path"] == ".config/kilo/AGENTS.md"
+                                and x["action"] == "CREATED" for x in audit["files"]))
+            self.assertEqual(len(audit["scripts"]), 6)
+            self.assertEqual(sum(x["installed_globally"] for x in audit["scripts"]), 1)
+            self.assertIn("## Inventario por archivo", markdown_path.read_text(encoding="utf-8"))
             self.assertEqual(module.verify(home)["status"], "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED")
             self.assertEqual(dag.queue_state_report(home / module.QUEUE_REL)["status"], "READY")
             self.assertFalse(retired.exists())
@@ -1285,6 +1300,43 @@ class SkillDescriptionRoutingTests(unittest.TestCase):
         self.assertIn("sin ejecutar tests", strategy.split("---", 2)[1])
         self.assertIn("UPDATE/REPLACE/ADD", implementation.split("---", 2)[1])
 
+
+class InstallerReportAuditTests(unittest.TestCase):
+    def test_metadata_versions_and_absent_versions_are_explicit(self):
+        self.assertEqual(
+            module._declared_metadata(b"# component_version: 1.4.2\\n# last_modified: 2026-11-22\\n",
+                                      "vx-script.py"),
+            {"version": "1.4.2", "modified": "2026-11-22"})
+        self.assertEqual(
+            module._declared_metadata(b"---\\nmetadata:\\n  version: \\"0.5.0\\"\\n---\\n",
+                                      "SKILL.md")["version"], "0.5.0")
+        self.assertIsNone(module._declared_metadata(b"sin version", "old.md")["version"])
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser solo Windows")
+    def test_retrospective_report_from_existing_backup_without_installing(self):
+        with tempfile.TemporaryDirectory(prefix="vx-report-legacy-") as tmp:
+            home = Path(tmp)
+            old_agent = home / ".config/kilo/agents/vx-dev-team.md"
+            old_agent.parent.mkdir(parents=True)
+            old_agent.write_text("# component_version: 0.9.0\\nOld version\\n",
+                                 encoding="utf-8")
+            status, changes = module.plan(home)
+            self.assertEqual(status["status"], "READY")
+            backup = module._backup(home, changes)
+            before_agent = old_agent.read_bytes()
+            report = module.save_installation_report(home, backup)
+            self.assertEqual(old_agent.read_bytes(), before_agent)
+            self.assertFalse((home / module.QUEUE_REL).exists())
+            self.assertEqual(report["receipt_status"], "BACKED_UP")
+            self.assertEqual(report["database"]["before"]["status"], "ABSENT")
+            self.assertTrue(any(item["path"].endswith("/vx-dev-team.md")
+                                and item["previous_version"] == "0.9.0"
+                                for item in report["files"]))
+            self.assertTrue((backup / "install-report.json").is_file())
+            first_bytes = (backup / "install-report.json").read_bytes()
+            again = module.save_installation_report(home, backup)
+            self.assertEqual(first_bytes, (backup / "install-report.json").read_bytes())
+            self.assertEqual(again, report)
 
 class SQLiteInstallerProvisionTests(unittest.TestCase):
     def test_state_preflight_is_readonly_and_migration_idempotent(self):
