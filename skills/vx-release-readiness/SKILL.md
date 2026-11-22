@@ -1,9 +1,9 @@
 ---
 name: vx-release-readiness
-description: "Usar para preparar entrega y rollback sin desplegar cuando una tarea mencione release, deploy, staging, rollback. Exigir evidencia real y no cambiar permisos."
+description: "Usar al evaluar preparación de una entrega, versión, despliegue o rollback con checks y evidencia; no activar para cambios sin intención de publicar."
 metadata:
-  version: "0.2.0"
-  last_modified: "2026-11-21"
+  version: "0.2.1"
+  last_modified: "2026-11-22"
   origin: "vx-original"
 ---
 
