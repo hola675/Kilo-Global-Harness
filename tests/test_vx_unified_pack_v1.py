@@ -1238,8 +1238,10 @@ class GlobalPolicyAlignmentTests(unittest.TestCase):
         policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
         guide = (ROOT / "docs/VX-DEV-TEAM-AUTOPILOT-V2.md").read_text(encoding="utf-8")
         autonomy = (ROOT / "docs/VX-DEV-TEAM-AUTONOMY-161.md").read_text(encoding="utf-8")
-        self.assertIn("Core 1.6.1-rc1", policy)
-        self.assertIn("AGENTS.md completo", policy)
+        self.assertIn("Gobernanza y uso del Kilo Global Harness", policy)
+        self.assertIn("No sustituir al agente activo", policy)
+        self.assertIn("no crea un modo", policy)
+        self.assertIn("solo el bloque VX", policy)
         self.assertIn("--queue-action inbox", policy)
         self.assertIn("--queue-action handoff", policy)
         for action in ("sync", "start", "event", "verify", "resume", "reset"):
