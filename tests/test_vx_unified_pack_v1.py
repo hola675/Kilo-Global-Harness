@@ -1233,6 +1233,23 @@ class QueueActorGateTests(unittest.TestCase):
             self.assertFalse(path.exists())
 
 
+class TestAuditFirstPolicyTests(unittest.TestCase):
+    def test_static_audit_precedes_execution_and_has_no_fixed_test_cap(self):
+        skill = (ROOT / "skills/vx-test-regression/SKILL.md").read_text(encoding="utf-8")
+        for marker in ("AUDIT_FIRST", "OPTIMIZATION_REQUIRED", "complejidad", "SPEED_UNVERIFIED", "equivalencia", "Vecidya"):
+            self.assertIn(marker, skill)
+        self.assertIn("no ejecutar pruebas antes", skill.lower())
+        self.assertIn("No establecer máximo fijo", skill)
+
+    def test_strategy_is_readonly_and_ci_preflight_does_not_run_suites(self):
+        strategy = (ROOT / "runtime/dev-team-v2r/skills/vx-dev-test-strategy/SKILL.md").read_text(encoding="utf-8")
+        ci = (ROOT / "skills/vx-git-ci-quality/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("Diagnóstico estático previo", strategy)
+        self.assertIn("sin ejecutar código", strategy)
+        self.assertIn("Preflight estático de CI", ci)
+        self.assertIn("No lanzar CI para auditar CI", ci)
+
+
 class SkillDescriptionRoutingTests(unittest.TestCase):
     def test_all_skills_have_contextual_descriptions(self):
         skill_paths = list((ROOT / "skills").glob("*/SKILL.md")) + list((ROOT / "runtime/dev-team-v2r/skills").glob("*/SKILL.md"))
@@ -1256,7 +1273,7 @@ class SkillDescriptionRoutingTests(unittest.TestCase):
         strategy = (ROOT / "runtime/dev-team-v2r/skills/vx-dev-test-strategy/SKILL.md").read_text(encoding="utf-8")
         implementation = (ROOT / "skills/vx-test-regression/SKILL.md").read_text(encoding="utf-8")
         self.assertIn("sin ejecutar tests", strategy.split("---", 2)[1])
-        self.assertIn("escribir, actualizar, sustituir", implementation.split("---", 2)[1])
+        self.assertIn("UPDATE/REPLACE/ADD", implementation.split("---", 2)[1])
 
 
 class GlobalPolicyAlignmentTests(unittest.TestCase):
