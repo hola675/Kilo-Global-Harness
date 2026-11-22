@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 displayName: "Dev Research"
 description: "Read-only technical research specialist. Use for project documentation, ADRs, standards, dependency/version questions and authoritative external documentation through the explicitly allowed Context7 and Microsoft Learn tools."
 mode: subagent
