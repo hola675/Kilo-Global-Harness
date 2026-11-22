@@ -3,6 +3,7 @@ name: vx-enterprise-workflows
 description: "Modelar gestión documental estructurada, planes, acuerdos, aprobaciones escalonadas, informes, RRHH, auditoría y dashboards empresariales por roles."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 

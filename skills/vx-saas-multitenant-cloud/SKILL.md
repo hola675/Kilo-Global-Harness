@@ -3,6 +3,7 @@ name: vx-saas-multitenant-cloud
 description: "Arquitectura e implementación SaaS multiorganización: SSR, edge, autenticación, RBAC/ABAC, Cloudflare, bases de datos y rendimiento sin comprometer aislamiento ni despliegues."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 

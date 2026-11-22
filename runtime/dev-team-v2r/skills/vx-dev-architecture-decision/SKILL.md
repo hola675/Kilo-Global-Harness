@@ -4,6 +4,7 @@ description: "Diseña decisiones arquitectónicas implementables con opciones, t
 compatibility: "Read-only; no implementa ni concede permisos."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "architecture"
 ---

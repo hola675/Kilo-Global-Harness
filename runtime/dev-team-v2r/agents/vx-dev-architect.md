@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.1
+# last_modified: 2026-11-21
 displayName: "Dev Architect"
 description: "Read-only architecture specialist. Use to turn verified evidence and requirements into boundaries, options, contracts, tradeoffs and an implementable change plan."
 mode: subagent

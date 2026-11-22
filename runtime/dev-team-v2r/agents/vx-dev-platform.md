@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 displayName: "Dev Platform"
 description: "Read-only platform/runtime specialist. Use for build systems, CI/CD, Docker, packaging, runtime configuration, bindings, observability wiring and deployment risk analysis without deploying or changing infrastructure."
 mode: subagent

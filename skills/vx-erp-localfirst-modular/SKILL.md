@@ -3,6 +3,7 @@ name: vx-erp-localfirst-modular
 description: "Diseñar ERP y sistemas administrativos modulares local-first: dominio, perfiles de despliegue, SQLite/PostgreSQL, sincronización resiliente, multitenancy y contratos contables."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 

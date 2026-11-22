@@ -4,6 +4,7 @@ description: "Revisa seguridad de una integración MCP desde source/configuraci�
 compatibility: "Análisis defensivo read-only; no conecta, instala ni explota servidores MCP."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "mcp-security"
 ---

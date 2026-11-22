@@ -4,6 +4,7 @@ description: "Analiza build, runtime, configuración, CI/CD, observabilidad, rel
 compatibility: "Read-only; no despliega, ejecuta shell ni cambia infraestructura."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "platform"
 ---

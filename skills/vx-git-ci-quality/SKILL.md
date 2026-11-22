@@ -3,6 +3,7 @@ name: vx-git-ci-quality
 description: "Usar para diseñar ci y gates de github actions cuando una tarea mencione git, github, ci, actions. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.2.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 

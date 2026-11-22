@@ -4,6 +4,7 @@ description: "Diseña estrategia de pruebas y evidencia de aceptación sin ejecu
 compatibility: "Read-only; Quality no ejecuta tests ni convierte tests escritos en PASS."
 metadata:
   version: "1.1.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "quality"
 ---

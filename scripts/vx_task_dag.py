@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# component_version: 1.1.0
+# last_modified: 2026-11-22
 """VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
 import argparse
@@ -542,6 +544,10 @@ def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
     if not args.project or not QUEUE_PROJECT.fullmatch(args.project):
         raise ValueError("Proyecto de cola invalido.")
     mutate = args.queue_action != "report"
+    # Declaración de rol, NO autenticación: la protección real depende de ACL del
+    # proceso/host. No permitir mutaciones accidentales desde otros roles.
+    if mutate and getattr(args, "actor", None) != "vx-dev-team":
+        raise ValueError("Mutación de cola reservada al líder: --actor vx-dev-team.")
     path = _queue_db_path(args.queue_db, mutate=mutate)
     registry = args.registry or (Path.home() / ".config/kilo/harness/vx-unified-pack-v1.json")
     if not registry.is_file():
@@ -569,6 +575,7 @@ def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida DAG de tareas de agente VX sin acciones.")
     parser.add_argument("--plan", type=Path)
+    parser.add_argument("--actor", help="Rol declarado; no autentica identidad del proceso")
     parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report"])
     parser.add_argument("--queue-db", type=Path)
     parser.add_argument("--project")

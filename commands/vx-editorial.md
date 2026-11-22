@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 description: Redactar, revisar y simplificar textos con claridad, precisión y lenguaje accesible
 agent: vx-dev-team
 ---

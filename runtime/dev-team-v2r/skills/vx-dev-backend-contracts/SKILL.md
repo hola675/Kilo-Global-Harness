@@ -4,6 +4,7 @@ description: "Analiza contratos backend y comportamiento de servicios/APIs: vali
 compatibility: "Read-only; no modifica código, schema físico ni producción."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "backend"
 ---

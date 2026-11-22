@@ -3,6 +3,7 @@ name: vx-task-dependency-graph
 description: "Usar para construir dag acíclico de tareas y orden de integración cuando una tarea mencione dependencia, dag, paralelo, worktree. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.2.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 

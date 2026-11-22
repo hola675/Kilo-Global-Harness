@@ -3,6 +3,7 @@ name: vx-agent-collaboration
 description: "Usar para coordinar task/swarm y agent manager con evidencia cuando una tarea mencione agentes, delegacion, swarm, agent manager. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.5.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 

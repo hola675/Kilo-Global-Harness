@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 description: "Valida un DAG de tareas del Core unificado sin lanzar agentes ni cambiar el sistema."
 agent: vx-dev-team
 ---

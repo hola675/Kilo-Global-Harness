@@ -3,6 +3,7 @@ name: vx-windows-network-systems
 description: "Desarrollo seguro de software Windows con red, proxy, VPN autorizada, SOCKS/HTTPS, firewalls, WFP y drivers: diagnóstico por capas, pruebas reales, firma y rollback."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 

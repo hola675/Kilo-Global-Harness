@@ -4,6 +4,7 @@ description: "Mapea un codebase con evidencia: entrypoints, símbolos, consumido
 compatibility: "Read-only; diseñado para vx-dev-explorer con glob/grep y LSP opcional."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "discovery"
 ---

@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.1
+# last_modified: 2026-11-21
 displayName: "Dev Backend"
 description: "Read-only backend specialist. Use for APIs, services, domain logic, application auth, validation, integration contracts, jobs and backend failure behavior."
 mode: subagent

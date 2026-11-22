@@ -2,7 +2,7 @@ name: Validar VX Dev Team Core
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, 'work/**']
 permissions:
   contents: read
 jobs:
@@ -29,8 +29,14 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          python -I -m compileall -q scripts/vx_pack_bootstrap.py scripts/vx_pack_coexist_v023.py scripts/vx_unified_pack.py scripts/vx_task_dag.py tools/dev_team_agent_parser.py tests/test_vx_unified_pack_v1.py
+          python -I -m compileall -q scripts/vx_pack_bootstrap.py scripts/vx_pack_coexist_v023.py scripts/vx_unified_pack.py scripts/vx_task_dag.py scripts/vx_verify_metadata.py tools/dev_team_agent_parser.py tests/test_vx_unified_pack_v1.py
           if ($LASTEXITCODE -ne 0) { throw 'Error compilando Core actual.' }
+      - name: Verificar versiones individuales y fechas
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I scripts/vx_verify_metadata.py
+          if ($LASTEXITCODE -ne 0) { throw 'Metadatos VX inválidos.' }
       - name: Core 1.6 - contratos, permisos, DAG, SQLite, DPAPI y rollback
         shell: pwsh
         run: |

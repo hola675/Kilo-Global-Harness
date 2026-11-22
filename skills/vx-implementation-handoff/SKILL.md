@@ -1,6 +1,9 @@
 ---
+# last_modified: 2026-11-21
 name: vx-implementation-handoff
 description: "Usar en una tarea de programación VX autorizada con implementador frontend/backend; delimitar archivos, contrato de API, worktree, pruebas y entrega al integrador. No usar en preguntas rápidas ni en auditorías solo lectura."
+metadata:
+  version: "0.1.0"
 ---
 
 # VX Implementation Handoff V0.1

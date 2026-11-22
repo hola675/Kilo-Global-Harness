@@ -3,6 +3,7 @@ name: vx-ida-mcp-reverse-engineering
 description: "Investigar binarios autorizados con IDA Pro 9.4+ mediante MCP oficial de Hex-Rays desde Kilo Code: funciones, xrefs, pseudocódigo, datos y diagnóstico HCLI, con privilegios mínimos y evidencia verificable."
 metadata:
   version: "0.2.1"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 

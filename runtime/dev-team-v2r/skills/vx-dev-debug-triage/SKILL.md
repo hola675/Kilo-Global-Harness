@@ -4,6 +4,7 @@ description: "Diagnostica bugs, regresiones y fallos de build/integración antes
 compatibility: "Read-only; no ejecuta shell ni modifica código."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "debugging"
 ---

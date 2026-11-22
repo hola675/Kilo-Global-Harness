@@ -3,6 +3,7 @@ name: vx-performance-measurement
 description: "Usar para medir rendimiento con línea base verificable cuando una tarea mencione rendimiento, latencia, performance, lighthouse. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.2.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 

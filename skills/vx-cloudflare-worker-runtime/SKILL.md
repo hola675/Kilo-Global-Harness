@@ -3,6 +3,7 @@ name: vx-cloudflare-worker-runtime
 description: "Usar para programar workers con compatibilidad real cuando una tarea mencione cloudflare, workers, worker, wrangler. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.2.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 

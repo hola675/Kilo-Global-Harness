@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 description: Especialista de arquitectura y diagnostico Cloudflare Workers, KV, R2, D1, Durable Objects, queues y bindings; propone pruebas en DEV/STAGING sin escribir ni desplegar.
 mode: subagent
 hidden: true

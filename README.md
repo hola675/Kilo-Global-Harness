@@ -6,7 +6,7 @@
 
 | Elemento | Fuente vigente | Estado |
 | --- | --- | --- |
-| Versión del Core | `registry/vx-unified-pack-v1.json` | **1.6.0-rc1** |
+| Versión del Core | `registry/vx-unified-pack-v1.json` | **1.6.1-rc1** |
 | Coordinador | `agents/vx-dev-team.md` | Un solo líder visible, **VX Dev Team** (ID `vx-dev-team`) |
 | Agentes | `agents/` y `runtime/dev-team-v2r/agents/` | **18**: líder + 17 subagentes ocultos |
 | Skills | `skills/` y `runtime/dev-team-v2r/skills/` | **57** seleccionadas por el manifiesto; instalación local por verificar |

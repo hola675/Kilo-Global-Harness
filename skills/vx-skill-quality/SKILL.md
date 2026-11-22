@@ -4,6 +4,7 @@ description: "Diseñar, mejorar y auditar Agent Skills globales Kilo sin duplica
 compatibility: "Agent Skills; Kilo Code y Kilo Desktop. Auditoría documental y pruebas autorizadas, sin auto-instalación de terceros."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
   category: "skill-engineering"
 ---

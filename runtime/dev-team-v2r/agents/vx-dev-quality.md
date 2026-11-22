@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 displayName: "Dev Quality"
 description: "Read-only quality specialist. Use to derive acceptance criteria, invariants, test matrices, regression surfaces, test oracles and a verification plan from the requested behavior and available evidence."
 mode: subagent

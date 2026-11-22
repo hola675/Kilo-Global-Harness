@@ -4,6 +4,7 @@ description: "Control preventivo y reversible de versiones ANTES de implementar,
 compatibility: "Agent Skills; Kilo Code y Kilo Desktop Windows. Solo instrucciones: respeta ACL, lectura y aprobaciones del host."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
   category: "governance"
 ---

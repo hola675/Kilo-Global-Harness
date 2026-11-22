@@ -1,6 +1,9 @@
 ---
+# last_modified: 2026-11-21
 name: vx-engineering-harness
 description: "Dirigir tareas complejas de desarrollo autónomo de extremo a extremo en Kilo: diagnóstico, arquitectura, implementación, Git work branch, pruebas, revisión, integración a main y cierre verificable; activar para tareas de programación multi-etapa o coordinación de agentes, no para preguntas rápidas."
+metadata:
+  version: "4.3.0"
 ---
 
 # VX Engineering Harness V4.3 (origen V3)

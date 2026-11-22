@@ -4,6 +4,7 @@ description: "Procedimiento seguro para usar MCP documentales/read-only en Resea
 compatibility: "Kilo Code Dev Team; solo MCP ya allowlistados por el agente."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "mcp"
 ---

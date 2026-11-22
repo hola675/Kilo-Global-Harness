@@ -3,6 +3,7 @@ name: vx-team-bootstrap
 description: "Inicio del pack unificado: seleccionar capacidades técnicas globales, comprobar instrucciones locales, distribuir permisos por rol y coordinar fases y resultados paralelos con un único líder visible."
 metadata:
   version: "1.5.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 

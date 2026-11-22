@@ -1,6 +1,9 @@
 ---
+# last_modified: 2026-11-21
 name: vx-debugging-root-cause
 description: "Usar para defectos reproducibles, fallos de builds/tests, errores de integración o regresiones; investigar causa raíz con hipótesis verificables antes de cambiar código. No usar para crear funciones nuevas sin error observado."
+metadata:
+  version: "0.1.0"
 ---
 
 # VX Debugging Root Cause V0.1

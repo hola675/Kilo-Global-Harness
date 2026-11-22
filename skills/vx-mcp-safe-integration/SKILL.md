@@ -3,6 +3,7 @@ name: vx-mcp-safe-integration
 description: "Usar para evaluar mcp sin tocar conexiones activas cuando una tarea mencione mcp, serena, context7, github connector. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.2.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 
