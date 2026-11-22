@@ -4,6 +4,7 @@
 """VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
 import argparse
+from contextlib import closing
 import json
 import re
 import sqlite3
@@ -289,7 +290,7 @@ def queue_state_report(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {"status": "ABSENT", "schema_version": 0}
     path = _queue_db_path(path, mutate=False)
-    with sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=5) as conn:
+    with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=5)) as conn:
         health = conn.execute("PRAGMA integrity_check").fetchone()
         if health is None or health[0] != "ok":
             raise ValueError("SQLite no supera PRAGMA integrity_check.")
