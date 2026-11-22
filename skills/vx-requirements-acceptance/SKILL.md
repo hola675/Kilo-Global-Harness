@@ -4,8 +4,6 @@ description: "Usar para aclarar requisitos ambiguos, delimitar alcance y transfo
 metadata:
   version: "1.0.1"
   last_modified: "2026-11-22"
-metadata:
-  version: "0.2.0"
   origin: "vx-original"
 ---
 
