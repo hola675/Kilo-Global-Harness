@@ -1102,6 +1102,48 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertNotIn("Instalar-DevTeam-Only.ps1 -Modo Aplicar", wrapper)
 
 
+class QueueHandoffTests(unittest.TestCase):
+    def test_handoff_contracts_are_bounded_and_do_not_dispatch(self):
+        pack = module.load_manifest()
+        known = {a["id"] for a in pack["agents"]}
+        writable = {a["id"] for a in pack["agents"] if a["role"] in ("lead", "builder")}
+        tasks = [
+            {"id": "frontend", "owner": "vx-frontend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "depends_on": [], "writer": True, "worktree": "wt-frontend",
+             "allowed_paths": ["src/ui.py"], "priority": 80},
+            {"id": "backend", "owner": "vx-backend-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "depends_on": [], "writer": True, "worktree": "wt-backend",
+             "allowed_paths": ["src/api.py"], "priority": 70},
+            {"id": "docs", "owner": "vx-docs-builder",
+             "reviewer": "vx-dev-reviewer", "state": "PENDING",
+             "depends_on": ["frontend"], "writer": True,
+             "worktree": "wt-docs", "allowed_paths": ["docs/guide.md"]},
+        ]
+        plan = {"schema": "vx-task-plan/1", "mode": "PARALLEL_SAFE",
+                "max_background_tasks": 4, "max_parallel_writers": 2,
+                "tasks": tasks}
+        with tempfile.TemporaryDirectory(prefix="vx-handoff-") as folder:
+            conn = dag._queue_open(Path(folder) / "queue.sqlite3", mutate=True)
+            try:
+                dag._queue_mutate(
+                    conn, project="sample", action="sync", plan=plan,
+                    task_id=None, host_task_id=None, event=None, event_key=None,
+                    summary="", evidence_ref="", review_ref="", test_report="",
+                    known=known, writable=writable)
+                result = dag._queue_handoff(conn, "sample", known, writable)
+                self.assertEqual([x["task_id"] for x in result["contracts"]],
+                                 ["frontend", "backend"])
+                self.assertTrue(all(x["requires_host_approval"] for x in result["contracts"]))
+                self.assertFalse(result["host_dispatched"])
+                self.assertEqual(result["actions_executed"], 0)
+                self.assertEqual(dag._queue_report(conn, "sample", known, writable)
+                                 ["state_counts"]["PENDING"], 3)
+            finally:
+                conn.close()
+
+
 class QueueAuditTests(unittest.TestCase):
     def test_audit_is_readonly_and_filters_by_project_and_task(self):
         with tempfile.TemporaryDirectory(prefix="vx-queue-audit-") as folder:
