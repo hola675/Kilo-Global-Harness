@@ -1,0 +1,41 @@
+name: VX temporary cleanup of already merged branches
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/vx-merged-branch-cleanup-once.yml'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    if: github.repository == 'hola675/Kilo-Global-Harness' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Confirm merged PRs and unchanged heads before deleting four branches
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          refs=(
+            '101|work/unified-installer-core-v15-57-skills-20261121|9794a8a9f3c31b9c28638e7562621e8041fe7584'
+            '102|work/core-vx-progress-swarm-protocol-20261121|a65f25db9fc4f46a4b2b9fc359e4406466e94601'
+            '103|work/vx-dev-team-live-swarm-queue-v2-20261121|3bc5ff605741a6ceca60956d26a95e9476db81b7'
+            '104|work/vx-dev-team-v21-global-policy-concurrency-20261121|052b58bf6cbcba29c98a04af50e3c4919966cb13'
+          )
+          for entry in "${refs[@]}"; do
+            IFS='|' read -r number branch expected <<< "$entry"
+            pr_json="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$number")"
+            test "$(jq -r .merged <<< "$pr_json")" = "true"
+            test "$(jq -r .base.ref <<< "$pr_json")" = "main"
+            test "$(jq -r .head.ref <<< "$pr_json")" = "$branch"
+            test "$(jq -r .head.sha <<< "$pr_json")" = "$expected"
+            actual="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/$branch" --jq .object.sha)"
+            test "$actual" = "$expected"
+            echo "Deleting verified merged branch: $branch"
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/git/refs/heads/$branch"
+          done
+          remaining="$(gh api --paginate "repos/$GITHUB_REPOSITORY/branches?per_page=100" --jq '.[].name')"
+          printf 'Remaining remote branches:\n%s\n' "$remaining"
+          test "$remaining" = "main"
