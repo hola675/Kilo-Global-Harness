@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# component_version: 1.4.0
+# component_version: 1.5.0
 # last_modified: 2026-11-22
 """VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
