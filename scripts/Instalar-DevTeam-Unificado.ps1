@@ -6,9 +6,12 @@
   VX Dev Team Core unificado 1.6.1-rc1 — único instalador global vigente.
 .DESCRIPTION
   Diagnostico/Simular: solo lectura; Aplicar: backup DPAPI CurrentUser,
-  actualización de 18 agentes y 57 Skills, scripts, comandos y SQLite local,\n  reemplazo íntegro de AGENTS.md global\n  con respaldo recuperable, retiro EXPLÍCITO de hasta 14 ficheros
+  actualización de 18 agentes, 57 Skills, scripts, comandos y SQLite local,
+  reemplazo íntegro de AGENTS.md global con respaldo recuperable;
+  retiro EXPLÍCITO de hasta 14 ficheros
   legacy gestionados por VX. No cambia kilo.jsonc, MCP o recursos de terceros.
-  SQLite: migración aditiva versionada, validación de integridad y snapshot DPAPI.\n  Verificar no equivale a certificar permisos efectivos en Kilo.
+  SQLite: migración aditiva versionada, validación de integridad y snapshot DPAPI.
+  Verificar no equivale a certificar permisos efectivos en Kilo.
 #>
 [CmdletBinding()]
 param(
@@ -42,6 +45,13 @@ function Assert-KiloClosed {
     $running = @(Get-Process -Name 'Code','VSCodium','kilo-desktop' -ErrorAction SilentlyContinue)
     if ($running.Count -gt 0) { throw 'Cierra todas las ventanas VS Code/VSCodium/Kilo Desktop antes de aplicar o restaurar.' }
 }
+function Show-CheckoutPreflight {
+    $root = Split-Path $PSScriptRoot -Parent
+    Write-Host '[VX] Checkout actual y worktrees (solo inventario, sin limpieza automatica):' -ForegroundColor Cyan
+    & git -C $root status --short
+    & git -C $root worktree list --porcelain
+    if ($LASTEXITCODE -ne 0) { throw 'No se pudo inventariar el checkout/worktrees.' }
+}
 function Assert-CurrentMain {
     $root = Split-Path $PSScriptRoot -Parent
     $branch = (& git -C $root branch --show-current | Out-String).Trim()
@@ -54,8 +64,8 @@ function Assert-CurrentMain {
 }
 
 switch ($Modo) {
-    'Diagnostico' { Invoke-Pack 'diagnose'; return }
-    'Simular' { Invoke-Pack 'simulate'; return }
+    'Diagnostico' { Show-CheckoutPreflight; Invoke-Pack 'diagnose'; return }
+    'Simular' { Show-CheckoutPreflight; Invoke-Pack 'simulate'; return }
     'Verificar' { Invoke-Pack 'verify'; return }
     'Restaurar' {
         Assert-KiloClosed
@@ -73,6 +83,7 @@ switch ($Modo) {
             throw 'Aplicar requiere -ConfirmarInstalacion y -ConfirmarRetirarVXLegacy.'
         }
         Assert-KiloClosed
+        Show-CheckoutPreflight
         Assert-CurrentMain
         Invoke-Pack 'apply' @('--confirm-install')
         Invoke-Pack 'verify'
