@@ -1,8 +1,8 @@
 ---
 name: vx-incident-diagnosis
-description: "Usar al investigar incidentes operativos, degradación, caída o regresión en servicio con logs, impacto, mitigación y causa; no activar para errores normales de programación sin incidente operativo."
+description: "Usar al investigar incidentes operativos, degradación o caída en servicio con logs, impacto, mitigación y causa; no activar para errores normales sin incidente."
 metadata:
-  version: "0.2.1"
+  version: "0.2.2"
   last_modified: "2026-11-22"
   origin: "vx-original"
 ---
