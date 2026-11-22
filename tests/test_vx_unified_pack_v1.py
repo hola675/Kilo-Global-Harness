@@ -1081,7 +1081,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual(audit["database"]["current"]["status"], "READY")
             self.assertEqual(audit["counts"]["REMOVED"], 2)
             self.assertTrue(any(x["path"] == ".config/kilo/AGENTS.md"
-                                and x["action"] == "CREATED" for x in audit["files"]))
+                                and x["action"] == "REPLACED" for x in audit["files"]))
             self.assertEqual(len(audit["scripts"]), 6)
             self.assertEqual(sum(x["installed_globally"] for x in audit["scripts"]), 1)
             self.assertIn("## Inventario por archivo", markdown_path.read_text(encoding="utf-8"))
