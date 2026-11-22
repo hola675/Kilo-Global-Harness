@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 description: "Equipo unificado: un líder visible, especialistas ocultos y builders por demanda; sin selectors ni plugins históricos."
 agent: vx-dev-team
 ---
