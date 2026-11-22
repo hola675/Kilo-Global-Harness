@@ -1,5 +1,5 @@
 # VX Dev Team — Contrato de autonomía y colaboración
-<!-- version: 1.6.1-rc1; updated: 2026-11-21; status: PROPOSED_SOURCE_NOT_INSTALLED -->
+<!-- document_revision: 1; updated: 2026-11-21; status: PROPOSED_SOURCE_NOT_INSTALLED -->
 
 ## Objetivo
 Aumentar autonomía operativa sin ampliar permisos indiscriminadamente: el líder toma decisiones rutinarias, selecciona equipo mínimo, reparte archivos exactos y verifica resultados. Ningún texto de política eleva las ACL efectivas de Kilo.
@@ -58,6 +58,11 @@ Edición `ask` únicamente sobre archivos literales asignados; `task: deny`. Boa
 Prerequisitos: Windows, PowerShell 7, Python con sqlite3 y DPAPI CurrentUser, Git, checkout limpio de `main`; Kilo cerrado para aplicar. Ejecutar `Diagnostico`, `Simular`, `Aplicar`, `Verificar` con el instalador unificado existente. Mantener copia cifrada y restauración. Comprobar runtime aparte: herramientas disponibles, permisos efectivos, skill loading, task background, Board, SQLite y dos escritores sin colisión.
 
 ## Versionado y trazabilidad
-- Política: `version` SemVer, `updated` ISO 8601, `status`, changelog; agente/skill/script mantiene cabecera equivalente cuando se modifique.
+- La versión global del Harness procede exclusivamente de `registry/vx-unified-pack-v1.json`; el `displayName` del líder en el selector de modos debe mostrar esa versión publicada.
+- Cada agente (incluido el líder) mantiene su propia versión SemVer y última fecha de modificación en **dos comentarios YAML dentro del frontmatter**: `# component_version:` y `# last_modified:`. Estos comentarios no añaden claves al esquema de Kilo.
+- No incluir historial, bloques de evolución ni changelogs en las definiciones de agentes. El único historial resumido por sección está en `registry/AGENTS-VERSIONS.md`; Git conserva el detalle.
+- La versión individual del líder **no** se muestra en el selector de modos. Modificar un agente no implica subir la versión global ni renombrar el líder.
+- La versión del Harness solo cambia por decisión explícita de release y tras validación; entonces se sincroniza el nombre visible del líder con el manifiesto.
+- Para Skills, scripts y políticas: un registro resumido por sección y metadatos mínimos compatibles con su formato, sin contaminación de contenido operativo.
 - Un cambio documental no modifica automáticamente la versión del manifiesto distribuido. Solo subir Core tras actualizar assets y pasar CI + pruebas Windows.
 - Changelog 1.6.1-rc1 (2026-11-21): contrato de autonomía, responsabilidades de 18 agentes, acceso a SQLite, límites de concurrencia y checklist de certificación; **solo documento propuesto**.
