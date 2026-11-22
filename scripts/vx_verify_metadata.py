@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-# component_version: 1.0.0
+# component_version: 1.0.1
 # last_modified: 2026-11-22
 """Verificación de metadatos VX sin dependencias externas ni escrituras."""
 from __future__ import annotations
 
 import argparse
+from datetime import date
 import json
 import re
 import sys
@@ -50,6 +51,13 @@ def check(path: str, kind: str, harness_version: str) -> list[str]:
             errors.append(f"{path}: versión individual ausente o inválida")
         if not modified or not DATE.fullmatch(modified.group(1)):
             errors.append(f"{path}: última fecha ausente o inválida")
+        else:
+            try:
+                recorded = date.fromisoformat(modified.group(1))
+                if recorded > date.today():
+                    errors.append(f"{path}: fecha futura no permitida")
+            except ValueError:
+                errors.append(f"{path}: fecha calendario inválida")
     except (OSError, UnicodeError, ValueError) as exc:
         errors.append(str(exc))
     return errors
