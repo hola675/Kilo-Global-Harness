@@ -16,7 +16,20 @@ SemVer por archivo: PATCH corrección compatible; MINOR nueva capacidad compatib
 | vx-dev-backend | runtime/dev-team-v2r/agents/vx-dev-backend.md | 1.0.1 | 2026-11-21 | Cabecera YAML compatible con versión y fecha; líder con versión visible |
 | vx-dev-data | runtime/dev-team-v2r/agents/vx-dev-data.md | 1.0.1 | 2026-11-21 | Cabecera YAML compatible con versión y fecha; líder con versión visible |
 
-Los restantes doce agentes se incorporarán al inventario cuando se inspeccionen sus versiones y cambios. No declarar fechas ni versiones ficticias.
+| vx-dev-platform | runtime/dev-team-v2r/agents/vx-dev-platform.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-dev-reviewer | runtime/dev-team-v2r/agents/vx-dev-reviewer.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-dev-quality | runtime/dev-team-v2r/agents/vx-dev-quality.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-dev-security | runtime/dev-team-v2r/agents/vx-dev-security.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-dev-research | runtime/dev-team-v2r/agents/vx-dev-research.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-frontend-builder | agents/vx-frontend-builder.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-backend-builder | agents/vx-backend-builder.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-data-builder | agents/vx-data-builder.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-qa-builder | agents/vx-qa-builder.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-docs-builder | agents/vx-docs-builder.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-editorial-builder | agents/vx-editorial-builder.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+| vx-workers-adviser | agents/vx-workers-adviser.md | 1.0.0 | 2026-11-21 | Inicio de seguimiento individual; cabecera YAML compacta |
+
+La versión 1.0.0 de los doce agentes incorporados indica el inicio del seguimiento individual, no reconstruye su historial anterior.
 
 ## Cambios de esta sección
 - 2026-11-21: v1.0.1 de seis agentes: dos comentarios de metadatos en el frontmatter YAML y versión global del Harness en el selector del líder; sin historial en archivos operativos.
