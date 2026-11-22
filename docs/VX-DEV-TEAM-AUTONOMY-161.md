@@ -87,3 +87,9 @@ Prerequisitos: Windows, PowerShell 7, Python con sqlite3 y DPAPI CurrentUser, Gi
 - La selección admite hasta cuatro tareas y dos escritores; las dependencias pendientes y conflictos de rutas se difieren. No se inician sesiones ni se emiten permisos del host.
 - Flujo operativo: líder consulta `handoff`, solicita al host `task` por cada candidato permitido, registra `start` con ID real, recibe `task_result`, registra `event`, exige revisión/pruebas y finalmente `verify`. Una propuesta nunca se considera trabajo realizado.
 - Los 6 agentes builder siguen sujetos a `ask` para mutaciones; el intercambio de contratos no equivale a una herramienta de mensajería directa ni confirma ejecución simultánea.
+
+## Bandeja de intercambio para los seis builders
+- `python scripts/vx_task_dag.py --queue-action inbox --project NOMBRE --agent vx-frontend-builder` obtiene las tareas asignadas al agente, su revisor, estado, dependencias y último evento.
+- Admite igualmente `vx-backend-builder`, `vx-data-builder`, `vx-qa-builder`, `vx-docs-builder` y `vx-editorial-builder`; el revisor puede consultar sus tareas pendientes de revisión.
+- No devuelve resúmenes ni referencias de evidencia; los eventos `DELIVERED`, `BLOCKED` y `VERIFIED` siguen el contrato transaccional existente.
+- El argumento `--agent` filtra una vista; **no autentica** al solicitante ni constituye buzón privado. El líder debe distribuir la información a través del host autorizado.
