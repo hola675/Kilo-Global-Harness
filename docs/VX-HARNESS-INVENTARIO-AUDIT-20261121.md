@@ -6,7 +6,7 @@
 
 ## Estado autorizado y conteos
 
-- **Árbol inventariado:** **415 archivos** (tras retirar el snapshot histórico de raíz `AUDITORIA-DETALLADA.md`).
+- **Árbol inventariado:** **416 archivos** (tras retirar el snapshot histórico de raíz `AUDITORIA-DETALLADA.md`).
 - **Assets del pack:** **80 rutas** = 18 agentes + 57 Skills + 3 comandos + 2 soportes.
 - **Un solo modo visible:** `vx-dev-team` (nombre VX Dev Team); 17 hijos ocultos, siete roles con Swarm sujeto a host.
 - **No cambios en runtime del usuario:** ni HOME, ni `kilo.jsonc`, ni MCP, permisos, AutoApprove o bases privadas.
@@ -205,7 +205,7 @@
 - `skills/vx-self-improvement/SKILL.md` — FUERA_MANIFIESTO
 - `skills/vx-supply-chain-review/SKILL.md` — FUERA_MANIFIESTO
 
-### 09 DOCUMENTACIÓN — vigente, temática o histórica (79)
+### 09 DOCUMENTACIÓN — vigente, temática o histórica (80)
 
 - `README.md` — DOCUMENTACION
 - `docs/ARQUITECTURA.md` — DOCUMENTACION
@@ -286,6 +286,7 @@
 - `docs/VX-VALIDACION-LOCAL-V4.6.3-20261114.md` — DOCUMENTACION
 - `docs/investigacion/HARNESSES-Y-AGENTES-2026-11-13.md` — DOCUMENTACION
 - `docs/investigacion/ORQUESTACION-MULTIAGENTE-V4.md` — DOCUMENTACION
+- `docs/VX-HARNESS-INVENTARIO-AUDIT-20261121.md` — DOCUMENTACION
 
 ### 01 ACTIVOS — instalados desde manifiesto (80)
 
