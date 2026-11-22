@@ -272,6 +272,12 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
         "primary": pack["primary"], "commands": len(pack["commands"]),
         "support_files": len(pack["support_files"]),
         "files_to_update": sum(after is not None for _, _, after in changes),
+        "files_to_create": sum(old is None and after is not None for _, old, after in changes),
+        "files_to_replace": sum(old is not None and after is not None for _, old, after in changes),
+        "managed_legacy_candidates": sorted(
+            rel for rel, _, after in changes if after is None),
+        "project_files_mutated": 0, "third_party_files_mutated": 0,
+        "existing_queue_data_policy": "PRESERVE_MIGRATE_NO_RESET",
         "legacy_files_to_retire": sum(after is None for _, _, after in changes),
         "unchanged_selected": len(pack["agents"]) + len(pack["skills"]) + len(pack["commands"]) + len(pack["support_files"]) -
             sum(after is not None and rel != ".config/kilo/AGENTS.md" for rel, _, after in changes),
