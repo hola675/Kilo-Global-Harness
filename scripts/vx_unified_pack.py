@@ -1,3 +1,5 @@
+# component_version: 1.1.0
+# last_modified: 2026-11-22
 """Instalador vigente VX Dev Team Core 1.6: transaccional, conservador y reversible.
 
 Solo gestiona IDs exactos del manifiesto; nunca modifica kilo.jsonc, MCP ni terceros.
@@ -14,6 +16,7 @@ import json
 import os
 from pathlib import Path
 import re
+import sqlite3
 import sys
 import uuid
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -26,6 +29,11 @@ sys.modules[SPEC.name] = legacy
 SPEC.loader.exec_module(legacy)
 vx = legacy.vx
 Blocked = vx.Blocked
+QUEUE_SPEC = importlib.util.spec_from_file_location("vx_unified_queue_state", HERE / "vx_task_dag.py")
+queue = importlib.util.module_from_spec(QUEUE_SPEC)
+sys.modules[QUEUE_SPEC.name] = queue
+QUEUE_SPEC.loader.exec_module(queue)
+QUEUE_REL = ".config/kilo/harness/state/vx-team-queue.sqlite3"
 MANIFEST = ROOT / "registry/vx-unified-pack-v1.json"
 SCHEMA = "vx-unified-snapshot/1"
 RECEIPT = "vx-unified-receipt/1"
@@ -54,7 +62,14 @@ def digest(blob: bytes | None) -> str | None:
     return sha256(blob).hexdigest() if blob is not None else None
 
 
+def assert_runtime() -> None:
+    if (sys.version_info < (3, 11)
+            or not hasattr(sqlite3.Connection, "serialize")
+            or not hasattr(sqlite3.Connection, "deserialize")):
+        raise Blocked("Python 3.11+ con SQLite serialize/deserialize requerido.")
+
 def load_manifest() -> dict:
+    assert_runtime()
     pack = json.loads(MANIFEST.read_text(encoding="utf-8"))
     if pack.get("schema") != "vx-unified-pack/1" or pack.get("primary") != "vx-dev-team":
         raise Blocked("Manifest unificado no reconocido.")
@@ -219,7 +234,7 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
                                                      *pack["managed_legacy"]["skills"],
                                                      *pack["managed_legacy"]["commands"]]]
     global_target = home / ".config/kilo/AGENTS.md"
-    target_paths.append(global_target)
+    target_paths.extend([global_target, home / QUEUE_REL])
     _check_paths(home, target_paths)
     before_rules = global_target.read_text(encoding="utf-8-sig") if global_target.is_file() else ""
     rules = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
@@ -247,6 +262,15 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
         total += len(rule_before or b"")
     if any(len(old or b"") > vx.MAX_FILE_BYTES for _, old, _ in changes) or total > vx.MAX_BACKUP_BYTES:
         warnings.append("Backup excede límites.")
+    try:
+        state = queue.queue_state_report(home / QUEUE_REL)
+        state_status = state["status"]
+        database = home / QUEUE_REL
+        if database.exists() and database.stat().st_size > vx.MAX_BACKUP_BYTES - total:
+            warnings.append("Cola SQLite demasiado grande para respaldo DPAPI seguro.")
+    except (OSError, ValueError, sqlite3.DatabaseError) as exc:
+        state_status = "BLOCKED"
+        warnings.append("Estado SQLite no verificable: " + str(exc))
     if len({row[0] for row in changes}) != len(changes):
         raise Blocked("Objetivo duplicado de escritura y retiro.")
     summary = {
@@ -256,17 +280,39 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
         "primary": pack["primary"], "commands": len(pack["commands"]),
         "support_files": len(pack["support_files"]),
         "files_to_update": sum(after is not None for _, _, after in changes),
+        "files_to_create": sum(old is None and after is not None for _, old, after in changes),
+        "files_to_replace": sum(old is not None and after is not None for _, old, after in changes),
+        "managed_legacy_candidates": sorted(
+            rel for rel, _, after in changes if after is None),
+        "project_files_mutated": 0, "third_party_files_mutated": 0,
+        "existing_queue_data_policy": "PRESERVE_MIGRATE_NO_RESET",
         "legacy_files_to_retire": sum(after is None for _, _, after in changes),
         "unchanged_selected": len(pack["agents"]) + len(pack["skills"]) + len(pack["commands"]) + len(pack["support_files"]) -
             sum(after is not None and rel != ".config/kilo/AGENTS.md" for rel, _, after in changes),
-        "blockers": sorted(set(warnings)), "runtime_verified": False,
+        "blockers": sorted(set(warnings)), "state_status": state_status,
+        "state_schema_target": queue.QUEUE_DB_VERSION, "runtime_verified": False,
         "config_changes": 0, "mcp_changes": 0, "activation_performed": False,
     }
     return summary, changes
 
 
+def _queue_snapshot(home: Path) -> bytes | None:
+    dest = home / QUEUE_REL
+    _check_paths(home, [dest])
+    if dest.exists() and dest.stat().st_size > vx.MAX_BACKUP_BYTES:
+        raise Blocked("Cola SQLite supera límite de respaldo: conservar sin modificar.")
+    try:
+        blob = queue.queue_state_snapshot(dest)
+    except (__import__("sqlite3").DatabaseError, OSError, ValueError) as exc:
+        raise Blocked("No se puede respaldar SQLite de forma consistente.") from exc
+    if blob is not None and len(blob) > vx.MAX_BACKUP_BYTES:
+        raise Blocked("Snapshot consistente SQLite supera límite de respaldo.")
+    return blob
+
+
 def _backup(home: Path, rows: list[tuple[str, bytes | None, bytes | None]]) -> Path:
     manifest = []
+    queue_before = _queue_snapshot(home)
     memory = BytesIO()
     with ZipFile(memory, "w", ZIP_DEFLATED) as z:
         for idx, (rel, before, after) in enumerate(rows):
@@ -274,7 +320,13 @@ def _backup(home: Path, rows: list[tuple[str, bytes | None, bytes | None]]) -> P
                              "entry": str(idx) if before is not None else None})
             if before is not None:
                 z.writestr("old/" + str(idx), before)
-        z.writestr("manifest.json", json.dumps({"schema": SCHEMA, "files": manifest}, sort_keys=True))
+        if queue_before is not None:
+            z.writestr("queue/original.sqlite3", queue_before)
+        z.writestr("manifest.json", json.dumps({
+            "schema": SCHEMA, "files": manifest,
+            "queue": {"present": queue_before is not None,
+                      "sha256": digest(queue_before)}
+        }, sort_keys=True))
     payload = vx.dpapi(memory.getvalue())
     root = home / BACKUP_DIR
     _check_paths(home, [root])
@@ -303,7 +355,10 @@ def _unseal(home: Path, directory: Path):
         if data.get("schema") != SCHEMA:
             raise Blocked("Esquema de backup no válido.")
         rows = data["files"]
+        state_info = data.get("queue")
         expected = {"manifest.json"} | {"old/" + row["entry"] for row in rows if row["entry"] is not None}
+        if state_info is not None and state_info["present"]:
+            expected.add("queue/original.sqlite3")
         if set(z.namelist()) != expected or len(rows) != receipt.get("count"):
             raise Blocked("Backup contiene entradas inesperadas.")
         old = {}
@@ -313,22 +368,32 @@ def _unseal(home: Path, directory: Path):
                 if digest(previous) != row["before"]:
                     raise Blocked("Contenido previo inválido.")
                 old[row["relative"]] = previous
-        return rows, old, receipt
+        state_before = z.read("queue/original.sqlite3") if state_info and state_info["present"] else None
+        if state_info is not None and digest(state_before) != state_info["sha256"]:
+            raise Blocked("Snapshot SQLite alterado.")
+        return rows, old, receipt, state_info is not None, state_before
 
 
-def _receipt(directory: Path, state: str):
+def _receipt(directory: Path, state: str, *, queue_after: str | None = None):
     path = directory / "receipt.json"
     obj = json.loads(path.read_text(encoding="utf-8"))
     obj["state"] = state
+    if state == "INSTALLED":
+        obj["queue_after_sha256"] = queue_after
+        obj["queue_after_recorded"] = True
     vx.write_atomic(path, (json.dumps(obj, indent=2) + "\n").encode("utf-8"))
 
 
-def verify(home: Path) -> dict:
+def verify(home: Path, *, check_state: bool = True) -> dict:
     status, changes = plan(home)
     if status["blockers"] or changes:
         raise Blocked("Pack no coincide con el manifiesto: " + repr(status))
+    if check_state and status["state_status"] != "READY":
+        raise Blocked("Cola SQLite no aprovisionada o requiere migración.")
     return {"status": "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED", "agents": 18, "skills": 57,
-            "primary": "vx-dev-team", "commands": 3, "support_files": 2, "mcp_changes": 0}
+            "primary": "vx-dev-team", "commands": 3, "support_files": 2,
+            "state_status": status["state_status"], "state_schema_version": queue.QUEUE_DB_VERSION
+            if status["state_status"] == "READY" else 0, "mcp_changes": 0}
 
 
 def apply(home: Path) -> Path:
@@ -337,14 +402,17 @@ def apply(home: Path) -> Path:
     status, rows = plan(home)
     if status["blockers"]:
         raise Blocked("Simulación bloqueada: " + repr(status["blockers"]))
-    if not rows:
-        raise Blocked("Pack ya sincronizado: nada que instalar.")
+    if not rows and status["state_status"] == "READY":
+        raise Blocked("Pack y cola SQLite ya sincronizados: nada que instalar.")
     config_before = _configs(home)
+    queue_before = digest(_queue_snapshot(home))
     folder = _backup(home, rows)
+    queue_after = None
     try:
         newer, recheck = plan(home)
-        if newer["blockers"] or rows != recheck or config_before != _configs(home):
-            raise Blocked("HOME cambió durante el respaldo; cancelar.")
+        if (newer["blockers"] or rows != recheck or config_before != _configs(home)
+                or queue_before != digest(_queue_snapshot(home))):
+            raise Blocked("HOME o SQLite cambió durante el respaldo; cancelar.")
         for rel, before, after in rows:
             target = _target(home, rel)
             _check_paths(home, [target])
@@ -352,24 +420,31 @@ def apply(home: Path) -> Path:
             if current != before:
                 raise Blocked("Destino cambió durante la instalación: " + rel)
             if after is None:
-                target.unlink()  # Exact legacy manifest-owned SKILL.md or agent only.
+                target.unlink()  # Solo legacy exacto autorizado.
             else:
                 vx.write_atomic(target, after)
-        verify(home)
+        verify(home, check_state=False)
         if config_before != _configs(home):
             raise Blocked("Configuración del host cambió.")
-        _receipt(folder, "INSTALLED")
+        try:
+            queue.queue_state_provision(home / QUEUE_REL)
+            queue_after = queue.queue_state_fingerprint(_queue_snapshot(home))
+        except (OSError, ValueError, __import__("sqlite3").DatabaseError) as exc:
+            raise Blocked("Aprovisionamiento SQLite falló.") from exc
+        verify(home)
+        _receipt(folder, "INSTALLED", queue_after=queue_after)
     except Exception:
         try:
-            restore(home, folder, partial=True)
+            restore(home, folder, partial=True, expected_queue_after=queue_after)
         except Exception as error:
             raise Blocked("Rollback bloqueado; revisar respaldo privado: " + str(folder)) from error
         raise
     return folder
 
 
-def restore(home: Path, directory: Path, *, partial: bool = False):
-    rows, original, receipt = _unseal(home, directory)
+def restore(home: Path, directory: Path, *, partial: bool = False,
+            expected_queue_after: str | None = None):
+    rows, original, receipt, managed_queue, state_before = _unseal(home, directory)
     if receipt["state"] == "RESTORED":
         raise Blocked("Este respaldo ya fue restaurado.")
     if receipt["state"] not in ("INSTALLED", "BACKED_UP"):
@@ -396,6 +471,17 @@ def restore(home: Path, directory: Path, *, partial: bool = False):
         if digest(current) not in (row["after"], row["before"]):
             raise Blocked("Destino editado después de instalar; no restaurar a ciegas: " + rel)
         jobs.append((dest, current, original.get(rel)))
+    # Bloquear ANTES de mutar archivos si hubo escrituras de cola posteriores.
+    needs_queue_rollback = False
+    if managed_queue:
+        current_hash = queue.queue_state_fingerprint(_queue_snapshot(home))
+        before_hash = queue.queue_state_fingerprint(state_before)
+        after_hash = (expected_queue_after if expected_queue_after is not None
+                      else receipt.get("queue_after_sha256"))
+        if current_hash != before_hash:
+            if after_hash is None or current_hash != after_hash:
+                raise Blocked("SQLite cambió después de instalar; proteger tareas existentes.")
+            needs_queue_rollback = True
     for dest, current, previous in jobs:
         if current == previous:
             continue
@@ -404,6 +490,13 @@ def restore(home: Path, directory: Path, *, partial: bool = False):
                 dest.unlink()
         else:
             vx.write_atomic(dest, previous)
+    if needs_queue_rollback:
+        try:
+            queue.queue_state_restore(home / QUEUE_REL, state_before)
+        except (OSError, ValueError, __import__("sqlite3").DatabaseError) as exc:
+            raise Blocked("No fue posible restaurar snapshot SQLite; revisar respaldo.") from exc
+        if queue.queue_state_fingerprint(_queue_snapshot(home)) != queue.queue_state_fingerprint(state_before):
+            raise Blocked("SQLite restaurada no coincide con respaldo original.")
     _receipt(directory, "RESTORED")
 
 

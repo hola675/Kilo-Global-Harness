@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-# component_version: 1.4.0
+# component_version: 1.5.0
 # last_modified: 2026-11-22
 """VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
 import argparse
+from contextlib import closing
 import json
 import re
 import sqlite3
@@ -267,6 +268,146 @@ CREATE TABLE IF NOT EXISTS project_config (
 CREATE INDEX IF NOT EXISTS events_task ON events(project,id);
 """
 
+
+
+# Versionado de estado local independiente del pack. Las migraciones solo agregan
+# estructuras conocidas; nunca borran tareas/eventos ni tablas ajenas.
+QUEUE_DB_VERSION = 1
+QUEUE_TABLE_COLUMNS = {
+    "tasks": {"project", "id", "definition", "fingerprint", "state",
+              "host_task_id", "contract_version", "updated_at"},
+    "events": {"event_key", "project", "id", "event", "summary",
+               "evidence_ref", "observed_at", "request_hash"},
+    "project_config": {"project", "max_background_tasks", "max_parallel_writers",
+                       "allow_shared_worktree_exact_files"},
+}
+
+
+def queue_state_report(path: Path) -> dict[str, Any]:
+    """Auditoría SQLite estrictamente de lectura; no crea directorios ni DB."""
+    if path.is_symlink() or (path.exists() and not path.is_file()):
+        raise ValueError("Destino SQLite no es archivo regular.")
+    if not path.exists():
+        return {"status": "ABSENT", "schema_version": 0}
+    path = _queue_db_path(path, mutate=False)
+    with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=5)) as conn:
+        health = conn.execute("PRAGMA integrity_check").fetchone()
+        if health is None or health[0] != "ok":
+            raise ValueError("SQLite no supera PRAGMA integrity_check.")
+        version = int(conn.execute("PRAGMA user_version").fetchone()[0])
+        if version not in (0, QUEUE_DB_VERSION):
+            raise ValueError("Versión SQLite desconocida o superior: no migrar.")
+        objects = {row[0]: row[1] for row in conn.execute(
+            "SELECT name, type FROM sqlite_master WHERE name NOT LIKE 'sqlite_%'")}
+        known = set(QUEUE_TABLE_COLUMNS)
+        existing = set(objects)
+        if version == 0 and existing and not existing.intersection(known):
+            raise ValueError("SQLite existente no pertenece a la cola VX.")
+        for table, required in QUEUE_TABLE_COLUMNS.items():
+            if table not in objects:
+                if version == QUEUE_DB_VERSION:
+                    raise ValueError("Esquema SQLite versionado incompleto: " + table)
+                continue
+            if objects[table] != "table":
+                raise ValueError("Objeto de cola no es tabla: " + table)
+            columns = {row[1] for row in conn.execute(
+                'PRAGMA table_info("' + table + '")')}
+            if not required.issubset(columns):
+                raise ValueError("Columnas SQLite incompatibles: " + table)
+        if version == QUEUE_DB_VERSION:
+            if objects.get("events_task") != "index":
+                raise ValueError("Índice de eventos ausente.")
+            index_columns = [r[2] for r in conn.execute(
+                'PRAGMA index_info("events_task")')]
+            if index_columns != ["project", "id"]:
+                raise ValueError("Índice de eventos incompatible.")
+        return {"status": "READY" if version == QUEUE_DB_VERSION else "MIGRATION_REQUIRED",
+                "schema_version": version}
+
+
+def queue_state_provision(path: Path) -> dict[str, Any]:
+    """Migración aditiva idempotente 0->1; DDL + versión en una transacción."""
+    previous = queue_state_report(path)
+    if previous["status"] == "READY":
+        return previous
+    safe_path = _queue_db_path(path, mutate=True)
+    conn = sqlite3.connect(str(safe_path), timeout=5, isolation_level=None)
+    try:
+        conn.execute("PRAGMA busy_timeout=5000")
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("PRAGMA synchronous=FULL")
+        conn.executescript("BEGIN IMMEDIATE;\n" + QUEUE_DDL +
+                           "\nPRAGMA user_version = 1;\nCOMMIT;")
+    except Exception:
+        if conn.in_transaction:
+            conn.execute("ROLLBACK")
+        raise
+    finally:
+        conn.close()
+    verified = queue_state_report(safe_path)
+    if verified["status"] != "READY":
+        raise ValueError("No se pudo certificar la migración SQLite.")
+    return verified
+
+
+def queue_state_snapshot(path: Path) -> bytes | None:
+    """Snapshot consistente de WAL en memoria: el instalador lo sella con DPAPI."""
+    if not path.exists():
+        return None
+    queue_state_report(path)
+    source = sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=5)
+    target = sqlite3.connect(":memory:")
+    try:
+        source.backup(target, pages=128, sleep=0.05)
+        blob = bytearray(target.serialize())
+        # sqlite3.backup conserva la marca WAL del encabezado (offsets 18/19).
+        # La imagen ya consolidada se normaliza SOLO en memoria; :memory:
+        # no puede deserializar una imagen marcada como WAL.
+        if len(blob) < 100 or blob[:16] != b"SQLite format 3\x00":
+            raise ValueError("Snapshot SQLite no válido.")
+        if (blob[18], blob[19]) == (2, 2):
+            blob[18:20] = b"\x01\x01"
+        return bytes(blob)
+    finally:
+        target.close()
+        source.close()
+
+
+
+def queue_state_fingerprint(blob: bytes | None) -> str | None:
+    """Igualdad semántica: esquema, datos y versión; evita hashes de páginas WAL."""
+    if blob is None:
+        return None
+    from hashlib import sha256
+    conn = sqlite3.connect(":memory:")
+    try:
+        conn.deserialize(blob)
+        version = conn.execute("PRAGMA user_version").fetchone()[0]
+        statements = "\n".join(conn.iterdump())
+        return sha256((str(version) + "\n" + statements).encode("utf-8")).hexdigest()
+    finally:
+        conn.close()
+
+
+def queue_state_restore(path: Path, blob: bytes | None) -> None:
+    """Restaura snapshot SQLite por API backup; None retira DB nueva sin datos."""
+    if blob is None:
+        if path.is_file():
+            path.unlink()
+        for suffix in ("-wal", "-shm"):
+            sidecar = Path(str(path) + suffix)
+            if sidecar.is_file():
+                sidecar.unlink()
+        return
+    source = sqlite3.connect(":memory:")
+    destination = sqlite3.connect(str(path), timeout=5)
+    try:
+        source.deserialize(blob)
+        source.backup(destination, pages=128, sleep=0.05)
+    finally:
+        destination.close()
+        source.close()
+    queue_state_report(path)
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")

@@ -6,10 +6,10 @@ Cada script/comando conserva versión individual y fecha en comentarios compatib
 
 | Componente | Versión | Fecha | Resumen |
 |---|---|---|---|
-| scripts/Instalar-DevTeam-Unificado.ps1 | 1.0.1 | 2026-11-22 | Identifica candidato 1.6.1; mantiene gates de instalación |
-| scripts/vx_unified_pack.py | 1.0.0 | 2026-11-21 | Cabecera de seguimiento; lógica intacta |
+| scripts/Instalar-DevTeam-Unificado.ps1 | 1.0.3 | 2026-11-22 | Instala pack integral: agentes, skills, comandos, scripts y aprovisionamiento SQLite seguro |
+| scripts/vx_unified_pack.py | 1.1.0 | 2026-11-22 | Backup DPAPI de SQLite WAL, migraciones verificadas y restauración protegida |
 | scripts/vx_verify_metadata.py | 1.0.2 | 2026-11-22 | Valida fechas reales, duplicados, rutas y estructura; conectado a CI Windows |
-| scripts/vx_task_dag.py | 1.4.0 | 2026-11-22 | Auditoría, contratos handoff y bandeja de coordinación por agente, sin despacho |
+| scripts/vx_task_dag.py | 1.5.0 | 2026-11-22 | Estado SQLite versionado; integridad, migración aditiva y snapshot consistente |
 | commands/vx-equipo.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 | commands/vx-dependencias.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 | commands/vx-editorial.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
