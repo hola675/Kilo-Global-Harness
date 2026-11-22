@@ -1329,6 +1329,13 @@ class SQLiteInstallerProvisionTests(unittest.TestCase):
             with closing(sqlite3.connect(path)) as db:
                 db.executescript(dag.QUEUE_DDL)  # Legacy: user_version=0.
                 db.execute("INSERT INTO project_config VALUES ('demo',4,2,0)")
+                db.execute(
+                    "INSERT INTO tasks VALUES (?,?,?,?,?,?,?,?)",
+                    ("demo", "pending-task", "{}", "fingerprint", "PENDING", None, "1", "2026-11-22"))
+                db.execute(
+                    "INSERT INTO events VALUES (?,?,?,?,?,?,?,?)",
+                    ("existing-event", "demo", "pending-task", "STARTED",
+                     "Trabajo en curso", "audit-ref", "2026-11-22", "request-hash"))
                 db.commit()
             before = dag.queue_state_snapshot(path)
             self.assertEqual(dag.queue_state_report(path)["status"], "MIGRATION_REQUIRED")
@@ -1339,6 +1346,8 @@ class SQLiteInstallerProvisionTests(unittest.TestCase):
             self.assertEqual(dag.queue_state_report(path)["status"], "READY")
             with closing(sqlite3.connect(path)) as db:
                 self.assertEqual(db.execute("SELECT COUNT(*) FROM project_config").fetchone()[0], 1)
+                self.assertEqual(db.execute("SELECT COUNT(*) FROM tasks").fetchone()[0], 1)
+                self.assertEqual(db.execute("SELECT COUNT(*) FROM events").fetchone()[0], 1)
             module.restore(home, receipt)
             self.assertEqual(dag.queue_state_report(path)["status"], "MIGRATION_REQUIRED")
             self.assertEqual(dag.queue_state_fingerprint(dag.queue_state_snapshot(path)),
