@@ -1236,7 +1236,7 @@ class QueueActorGateTests(unittest.TestCase):
 class TestAuditFirstPolicyTests(unittest.TestCase):
     def test_static_audit_precedes_execution_and_has_no_fixed_test_cap(self):
         skill = (ROOT / "skills/vx-test-regression/SKILL.md").read_text(encoding="utf-8")
-        for marker in ("AUDIT_FIRST", "OPTIMIZATION_REQUIRED", "COMPLEXITY", "SPEED_UNVERIFIED", "equivalencia", "Vecidya"):
+        for marker in ("AUDIT_FIRST", "OPTIMIZATION_REQUIRED", "complejidad", "SPEED_UNVERIFIED", "equivalencia", "Vecidya"):
             self.assertIn(marker, skill)
         self.assertIn("no ejecutar pruebas antes", skill.lower())
         self.assertIn("No establecer máximo fijo", skill)
