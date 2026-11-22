@@ -3,6 +3,7 @@ name: vx-sql-query-performance
 description: "Usar para revisar sql e índices con mediciones cuando una tarea mencione sql, indice, index, query. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.2.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 
