@@ -1,9 +1,9 @@
 ---
-# last_modified: "2026-11-22"
 name: vx-engineering-harness
 description: "Usar para coordinar desarrollo multi-etapa con análisis, implementación, pruebas, revisión e integración Git; no activar para consultas rápidas ni tareas triviales."
 metadata:
   version: "4.3.1"
+  last_modified: "2026-11-22"
 ---
 
 # VX Engineering Harness V4.3 (origen V3)
