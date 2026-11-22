@@ -2,7 +2,7 @@
 name: vx-git-ci-quality
 description: "Usar al crear, corregir u optimizar workflows CI/CD, GitHub Actions y gates de calidad; verificar triggers, permisos, propiedad de suites, evidencias y regresiones. No activar por simples operaciones Git sin cambios de CI."
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
   last_modified: "2026-11-22"
   origin: "vx-original"
 ---
@@ -12,6 +12,13 @@ metadata:
 **Activación:** Usar para diseñar ci y gates de github actions cuando una tarea mencione git, github, ci, actions. Exigir evidencia real y no cambiar permisos.
 
 **Responsable sugerido:** `vx-qa-builder`. **Revisor independiente:** `vx-inspector`. **Prerequisitos de conocimiento:** `vx-test-regression`.
+
+## Preflight estático de CI — antes de ejecutar workflows
+
+- Leer YAML, scripts, matrices, filtros de rutas y dependencias; construir grafo de gates y detectar suites repetidas, dobles ejecuciones en jobs, setups duplicados y tests sin propietario. **No lanzar CI para auditar CI**.
+- Obtener duraciones históricas de jobs si ya existen, sin disparar nuevas ejecuciones. Presupuesto de feedback de PR y release configurable por proyecto; si no hay mediciones, estado `SPEED_UNKNOWN`.
+- Si el grafo es excesivo o redundante, optimizar triggers, selección por impacto, cachés seguras y propiedad de suites; mantener gates obligatorios y cobertura de riesgos. Los cambios de CI se validan con checks del PR tras la auditoría, no con supresión de controles.
+- No afirmar mejora de rendimiento hasta medir before/after en ejecuciones comparables. Separar tiempo total del workflow, tiempo de CPU y latencia al primer fallo.
 
 ## Propiedad y ciclo de vida de tests
 
