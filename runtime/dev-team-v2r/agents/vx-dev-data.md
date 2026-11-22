@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.1
+# last_modified: 2026-11-21
 displayName: "Dev Data"
 description: "Read-only data specialist. Use for persistence models, schemas, SQL/query behavior, constraints, indexes, migrations, data invariants and consistency risks."
 mode: subagent
