@@ -1102,6 +1102,42 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertNotIn("Instalar-DevTeam-Only.ps1 -Modo Aplicar", wrapper)
 
 
+class QueueInboxTests(unittest.TestCase):
+    def test_inbox_scopes_owner_reviewer_and_hides_evidence(self):
+        with tempfile.TemporaryDirectory(prefix="vx-inbox-") as folder:
+            conn = dag._queue_open(Path(folder) / "queue.sqlite3", mutate=True)
+            try:
+                for project, name, owner, reviewer, state in (
+                    ("p1", "taskone", "vx-frontend-builder", "vx-dev-reviewer", "REVIEW"),
+                    ("p1", "tasktwo", "vx-backend-builder", "vx-dev-reviewer", "BLOCKED"),
+                    ("p2", "taskthree", "vx-frontend-builder", "vx-dev-reviewer", "REVIEW"),
+                ):
+                    definition = {"id": name, "owner": owner, "reviewer": reviewer,
+                                  "state": "PENDING", "depends_on": [], "writer": True,
+                                  "worktree": name, "allowed_paths": [f"src/{name}.py"]}
+                    conn.execute("INSERT INTO tasks VALUES (?,?,?,?,?,?,?,?)",
+                                 (project, name, json.dumps(definition), "fingerprint",
+                                  state, None, "1", "2026-11-22"))
+                    conn.execute("INSERT INTO events VALUES (?,?,?,?,?,?,?,?)",
+                                 (name, project, name, "DELIVERED", "private summary",
+                                  "private evidence", "2026-11-22T00:00:00Z", "hash"))
+                conn.commit()
+                known = {"vx-frontend-builder", "vx-backend-builder", "vx-dev-reviewer"}
+                result = dag._queue_inbox(conn, "p1", "vx-frontend-builder", known)
+                self.assertEqual([i["task_id"] for i in result["items"]], ["taskone"])
+                self.assertFalse(result["items"][0]["requires_review"])
+                self.assertFalse(result["authenticated"])
+                self.assertNotIn("private", json.dumps(result))
+                reviewer = dag._queue_inbox(conn, "p1", "vx-dev-reviewer", known)
+                self.assertEqual(len(reviewer["items"]), 2)
+                self.assertTrue(reviewer["items"][0]["requires_review"])
+                self.assertTrue(reviewer["items"][1]["blocked"])
+                with self.assertRaisesRegex(ValueError, "no declarado"):
+                    dag._queue_inbox(conn, "p1", "unknown", known)
+            finally:
+                conn.close()
+
+
 class QueueHandoffTests(unittest.TestCase):
     def test_handoff_contracts_are_bounded_and_do_not_dispatch(self):
         pack = module.load_manifest()
