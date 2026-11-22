@@ -4,6 +4,7 @@ description: "Evaluar antes de adoptar o cambiar framework, SDK, biblioteca, her
 compatibility: "Agent Skills; Kilo Code y Kilo Desktop Windows. No instala ni modifica dependencias automáticamente."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
   category: "technology"
 ---
