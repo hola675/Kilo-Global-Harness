@@ -1102,5 +1102,47 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertNotIn("Instalar-DevTeam-Only.ps1 -Modo Aplicar", wrapper)
 
 
+class MetadataContractTests(unittest.TestCase):
+    """Pruebas focalizadas: el validador no modifica fuentes ni acepta fechas falsas."""
+
+    def test_metadata_manifest_current_checkout(self):
+        result = subprocess.run(
+            [sys.executable, "-I", str(ROOT / "scripts/vx_verify_metadata.py")],
+            cwd=ROOT, capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_metadata_rejects_impossible_dates_and_manifest_escape(self):
+        spec = importlib.util.spec_from_file_location(
+            "vx_metadata_under_test", ROOT / "scripts/vx_verify_metadata.py")
+        validator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(validator)
+        with tempfile.TemporaryDirectory(prefix="vx-metadata-") as folder:
+            root = Path(folder)
+            (root / "agents").mkdir()
+            (root / "registry").mkdir()
+            agent = root / "agents/vx-dev-team.md"
+            agent.write_text(
+                "---\\n# component_version: 1.0.0\\n# last_modified: 2026-02-30\\n"
+                'displayName: "VX Dev Team v1.6.0-rc1"\\n---\\n',
+                encoding="utf-8")
+            old_root = validator.ROOT
+            try:
+                validator.ROOT = root
+                errors = validator.check("agents/vx-dev-team.md", "agents", "1.6.0-rc1")
+                self.assertTrue(any("calendario" in error for error in errors), errors)
+                manifest = {
+                    "version": "1.6.0-rc1",
+                    "agents": [{"source": "../outside.md"}],
+                    "skills": [], "commands": [],
+                }
+                (root / "registry/vx-unified-pack-v1.json").write_text(
+                    json.dumps(manifest), encoding="utf-8")
+                with patch.object(sys, "argv", ["vx_verify_metadata.py", "--root", str(root)]):
+                    self.assertEqual(validator.main(), 1)
+            finally:
+                validator.ROOT = old_root
+
+
 if __name__ == "__main__":
     unittest.main()
