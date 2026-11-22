@@ -1,6 +1,9 @@
 ---
+# last_modified: 2026-11-21
 name: vx-docs-traceability
 description: "Usar al escribir documentación técnica, README, ADR, changelog, contratos y manuales para alinear texto con código, pruebas, decisiones y versiones reales; no inventar funciones implementadas."
+metadata:
+  version: "0.1.0"
 ---
 
 # VX Docs Traceability V0.1
