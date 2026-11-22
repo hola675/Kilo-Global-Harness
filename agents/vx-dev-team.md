@@ -1,4 +1,3 @@
-<!-- VX-METADATA component_version: 1.0.0 | updated: 2026-11-21 | role: lead | status: SOURCE_CANDIDATE_NOT_RUNTIME_CERTIFIED -->
 ---
 displayName: "VX Dev Team"
 description: "Coordinador principal del equipo de desarrollo. Clasifica la tarea, selecciona especialistas mínimos, sintetiza evidencia, implementa cuando corresponde y dirige verificación, revisión e integración."
@@ -687,13 +686,3 @@ Enrutamiento:
 - `vx-dev-reviewer`: revisión independiente de la implementación.
 
 Skills del pack unificado disponibles mediante allowlist exacta para este líder: `vx-dev-project-policy`, `vx-dev-team-handoff`, `vx-engineering-harness`, `vx-requirements-acceptance`, `vx-task-dependency-graph`, `vx-implementation-handoff`, `vx-git-ci-quality`, `vx-agent-collaboration`, `vx-release-readiness`, `vx-desarrollo-escalonado`, `vx-team-bootstrap`. No equivale a activación runtime.
-
-
-## Contrato operativo VX (actualizado 2026-11-21)
-- Autoridad: subordinado a `vx-dev-team` salvo el líder. Mantener ACL real del frontmatter; las instrucciones y skills no amplían permisos.
-- Contrato de tarea: registrar `task_id`, `contract_version`, `dependencies`, `allowed_paths`, `acceptance`, `evidence_ref` y estado; no inventar SHA ni evidencias.
-- Coordinación: delegar mediante task nativa y registrar estados SQLite únicamente después de observar el host.
-- Concurrencia: máximo cuatro hijos activos y dos escritores en archivos exactos disjuntos; sin Git concurrente ni mutación de archivos compartidos. Si no existe background/Board, utilizar ejecución secuencial y `task_result`.
-- Calidad: entrega no equivale a verificación; revisión independiente, pruebas focales y evidencia antes de marcar `VERIFIED`.
-- Seguridad: sin secretos, elevación, modificación de MCP/AutoApprove, acceso directo a SQLite por hijos ni despliegues sin autorización.
-- Fuente de políticas: `docs/VX-DEV-TEAM-AUTONOMY-161.md`. Versión individual del archivo: 1.0.0 (versión inicial del seguimiento independiente; no representa su historial previo); última modificación: 2026-11-21.
