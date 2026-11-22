@@ -1,9 +1,9 @@
 ---
 name: vx-python-engineering
-description: "Usar para implementar python reproducible cuando una tarea mencione python, pytest, unittest, typing. Exigir evidencia real y no cambiar permisos."
+description: "Usar al implementar, revisar o depurar código Python, paquetes, typing y pruebas pytest/unittest; no activar por menciones incidentales."
 metadata:
-  version: "0.2.0"
-  last_modified: "2026-11-21"
+  version: "0.2.1"
+  last_modified: "2026-11-22"
   origin: "vx-original"
 ---
 
