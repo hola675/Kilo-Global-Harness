@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.1
+# last_modified: 2026-11-21
 displayName: "Dev Frontend"
 description: "Read-only frontend specialist. Use for UI flows, component boundaries, client state, interaction states, accessibility, responsive behavior and frontend/API integration risks."
 mode: subagent
