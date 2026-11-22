@@ -1233,6 +1233,21 @@ class QueueActorGateTests(unittest.TestCase):
             self.assertFalse(path.exists())
 
 
+class GlobalPolicyAlignmentTests(unittest.TestCase):
+    def test_managed_global_policy_and_sqlite_examples_are_current(self):
+        policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
+        guide = (ROOT / "docs/VX-DEV-TEAM-AUTOPILOT-V2.md").read_text(encoding="utf-8")
+        autonomy = (ROOT / "docs/VX-DEV-TEAM-AUTONOMY-161.md").read_text(encoding="utf-8")
+        self.assertIn("Core 1.6.1-rc1", policy)
+        self.assertIn("AGENTS.md completo", policy)
+        self.assertIn("--queue-action inbox", policy)
+        self.assertIn("--queue-action handoff", policy)
+        for action in ("sync", "start", "event", "verify", "resume", "reset"):
+            self.assertNotIn(f"--queue-action {action} --project", guide)
+            self.assertIn(f"--queue-action {action} --actor vx-dev-team --project", guide)
+        self.assertIn("`report`, `audit`, `handoff` e `inbox` son lecturas", autonomy)
+
+
 class MetadataContractTests(unittest.TestCase):
     """Pruebas focalizadas: el validador no modifica fuentes ni acepta fechas falsas."""
 
