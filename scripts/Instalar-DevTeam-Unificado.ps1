@@ -1,5 +1,5 @@
 #Requires -Version 7.0
-# component_version: 1.0.3
+# component_version: 1.0.4
 # last_modified: 2026-11-22
 <#
 .SYNOPSIS
@@ -11,11 +11,13 @@
   retiro EXPLÍCITO de hasta 14 ficheros
   legacy gestionados por VX. No cambia kilo.jsonc, MCP o recursos de terceros.
   SQLite: migración aditiva versionada, validación de integridad y snapshot DPAPI.
+  Aplicar genera automaticamente informe JSON+Markdown en carpeta del respaldo.
+  Informe lee el respaldo sin reinstalar, migrar ni cambiar datos de usuario.
   Verificar no equivale a certificar permisos efectivos en Kilo.
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Diagnostico','Simular','Aplicar','Verificar','Restaurar')]
+    [ValidateSet('Diagnostico','Simular','Aplicar','Verificar','Restaurar','Informe')]
     [string]$Modo = 'Diagnostico',
     [string]$RaizUsuario = $HOME,
     [switch]$ConfirmarInstalacion,
@@ -67,6 +69,12 @@ switch ($Modo) {
     'Diagnostico' { Show-CheckoutPreflight; Invoke-Pack 'diagnose'; return }
     'Simular' { Show-CheckoutPreflight; Invoke-Pack 'simulate'; return }
     'Verificar' { Invoke-Pack 'verify'; return }
+    'Informe' {
+        $reportArgs = @()
+        if ($CarpetaRespaldo) { $reportArgs = @('--backup-folder',$CarpetaRespaldo) }
+        Invoke-Pack 'report' $reportArgs
+        return
+    }
     'Restaurar' {
         Assert-KiloClosed
         if (!$ConfirmarRestauracion -or !$CarpetaRespaldo -or

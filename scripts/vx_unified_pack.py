@@ -1,4 +1,4 @@
-# component_version: 1.1.0
+# component_version: 1.2.0
 # last_modified: 2026-11-22
 """Instalador vigente VX Dev Team Core 1.6: transaccional, conservador y reversible.
 
@@ -432,6 +432,7 @@ def apply(home: Path) -> Path:
         except (OSError, ValueError, __import__("sqlite3").DatabaseError) as exc:
             raise Blocked("Aprovisionamiento SQLite falló.") from exc
         verify(home)
+        save_installation_report(home, folder, state="INSTALLED", after_hash=queue_after)
         _receipt(folder, "INSTALLED", queue_after=queue_after)
     except Exception:
         try:
@@ -500,9 +501,223 @@ def restore(home: Path, directory: Path, *, partial: bool = False,
     _receipt(directory, "RESTORED")
 
 
+
+def _declared_metadata(data: bytes | None, path: str) -> dict:
+    if data is None:
+        return {"version": None, "modified": None}
+    head = data[:65536].decode("utf-8-sig", errors="replace")
+    if path.endswith(".json"):
+        try:
+            obj = json.loads(head)
+            if isinstance(obj, dict):
+                return {"version": obj.get("version"), "modified": obj.get("updated")}
+        except (ValueError, UnicodeError):
+            pass
+    version = re.search(r"(?m)^\s*(?:#\s*component_version|<!--\s*component_version|version)\s*:\s*['\"]?([\w.+-]+)", head)
+    modified = re.search(r"last_modified\s*:\s*(\d{4}-\d{2}-\d{2})", head)
+    return {"version": version.group(1) if version else None,
+            "modified": modified.group(1) if modified else None}
+
+
+def _db_inventory(data: bytes | None) -> dict:
+    if data is None:
+        return {"status": "ABSENT", "schema_version": 0, "rows": {}}
+    conn = sqlite3.connect(":memory:")
+    try:
+        conn.deserialize(data)
+        if conn.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
+            raise Blocked("SQLite no supera comprobación de integridad.")
+        v = int(conn.execute("PRAGMA user_version").fetchone()[0])
+        names = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        counts = {t: conn.execute('SELECT COUNT(*) FROM "' + t + '"').fetchone()[0]
+                  for t in ("tasks", "events", "project_config") if t in names}
+        return {"status": "READY" if v == queue.QUEUE_DB_VERSION else "LEGACY",
+                "schema_version": v, "rows": counts}
+    finally:
+        conn.close()
+
+
+def installation_report(home: Path, folder: Path, *,
+                        state: str | None = None, after_hash: str | None = None) -> dict:
+    """Solo metadatos de la instalación; no exporta ficheros antiguos ni filas SQL."""
+    rows, original, receipt, tracked, db_before = _unseal(home, folder)
+    pack = load_manifest()
+    categories = {kind: {item["target"] for item in pack[kind]}
+                  for kind in ("agents", "skills", "commands", "support_files")}
+    selected = {item["target"]: item["source"]
+                for kind in categories for item in pack[kind]}
+    selected[".config/kilo/AGENTS.md"] = "rules/AGENTS-global-managed.md"
+    changes = {item["relative"]: item for item in rows}
+    result = []
+    for rel in sorted(set(selected) | set(changes)):
+        record = changes.get(rel)
+        source = selected.get(rel)
+        destination = _target(home, rel)
+        _check_paths(home, [destination])
+        current = destination.read_bytes() if destination.is_file() else None
+        current_sha = digest(current)
+        expected = record["after"] if record else None
+        old = original.get(rel)
+        previous = _declared_metadata(old, rel)
+        if record is None:
+            action = "UNCHANGED"
+            condition = "PRESENT" if current is not None else "MISSING"
+        else:
+            action = ("REMOVED" if expected is None else
+                      "CREATED" if record["before"] is None else "REPLACED")
+            condition = ("REMOVED" if current is None else "REAPPEARED") if expected is None else (
+                "MATCH" if current_sha == expected else "MISSING" if current is None else "CHANGED_AFTER")
+        new = current if current_sha == expected and expected is not None else None
+        if new is None and expected is not None and source is not None:
+            candidate = ROOT / source
+            if candidate.is_file():
+                content = candidate.read_bytes()
+                if digest(content) == expected:
+                    new = content
+        installed = _declared_metadata(new if record else current, rel)
+        category = ("global_policy" if rel == ".config/kilo/AGENTS.md" else
+                    "managed_legacy" if rel in APPROVED_LEGACY_RETIREMENTS else
+                    next((kind for kind, paths in categories.items() if rel in paths), "unknown"))
+        result.append({
+            "path": rel, "source": source, "category": category,
+            "action": action, "current_state": condition,
+            "previous_version": previous["version"] if record else None,
+            "previous_modified": previous["modified"] if record else None,
+            "installed_version": installed["version"],
+            "installed_modified": installed["modified"],
+            "previous_sha256": record["before"] if record else None,
+            "installed_sha256": expected, "current_sha256": current_sha,
+        })
+    scripts = []
+    roles = {
+        "Instalar-DevTeam-Unificado.ps1": "ENTRYPOINT_IN_CHECKOUT",
+        "vx_unified_pack.py": "INSTALLER_IN_CHECKOUT",
+        "vx_pack_coexist_v023.py": "DEPENDENCY_IN_CHECKOUT",
+        "vx_pack_bootstrap.py": "DEPENDENCY_IN_CHECKOUT",
+        "vx_task_dag.py": "SUPPORT_INSTALLED_IN_KILO",
+        "vx_verify_metadata.py": "CI_VALIDATOR_IN_CHECKOUT",
+    }
+    for name, role in roles.items():
+        path = HERE / name
+        blob = path.read_bytes() if path.is_file() else None
+        scripts.append({"path": "scripts/" + name, "role": role,
+                        "version": _declared_metadata(blob, name)["version"],
+                        "source_exists": blob is not None,
+                        "source_sha256": digest(blob),
+                        "installed_globally": role == "SUPPORT_INSTALLED_IN_KILO"})
+    if tracked:
+        before = _db_inventory(db_before)
+        try:
+            now = _queue_snapshot(home)
+            current = _db_inventory(now)
+            actual_hash = queue.queue_state_fingerprint(now)
+            reference = after_hash if after_hash is not None else receipt.get("queue_after_sha256")
+            current["matches_recorded_installation"] = (
+                actual_hash == reference if reference is not None else None)
+        except (Blocked, sqlite3.DatabaseError, OSError, ValueError) as exc:
+            current = {"status": "UNVERIFIABLE", "error_type": type(exc).__name__}
+        db_action = ("CREATED" if before["status"] == "ABSENT" and current["status"] == "READY" else
+                     "MIGRATED" if before["status"] == "LEGACY" and current["status"] == "READY" else
+                     "PRESERVED" if before["status"] == "READY" and current["status"] == "READY" else
+                     "NOT_CONFIRMED")
+    else:
+        before = current = {"status": "NOT_RECORDED"}
+        db_action = "UNKNOWN"
+    counts = {name: sum(item["action"] == name for item in result)
+              for name in ("CREATED", "REPLACED", "REMOVED", "UNCHANGED")}
+    return {"schema": "vx-install-report/1",
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "backup": str(folder), "receipt_status": state or receipt["state"],
+            "harness_version": pack.get("version"),
+            "runtime_verified": False,
+            "counts": counts, "files": result, "scripts": scripts,
+            "database": {"operation": db_action, "before": before, "current": current},
+            "not_modified": ["project files", "Git branches", "Git worktrees",
+                             "kilo.jsonc", "MCP", "third-party resources"]}
+
+
+def _report_markdown(report: dict) -> str:
+    tick = chr(96)
+    lines = ["# Informe de actualización / instalación del Harness", "",
+             "Versión del pack: " + str(report["harness_version"]),
+             "Recibo: " + report["receipt_status"],
+             "Respaldo DPAPI: " + tick + report["backup"] + tick, "",
+             "## Resumen", ""]
+    for key, count in report["counts"].items():
+        lines.append("- " + key + ": " + str(count))
+    lines += ["- SQLite: " + report["database"]["operation"], "",
+              "## Inventario por archivo", "",
+              "| Operación | Tipo | Archivo destino | Versión anterior | Versión instalada | Estado actual |",
+              "|---|---|---|---|---|---|"]
+    for row in report["files"]:
+        values = [row["action"], row["category"], row["path"],
+                  row["previous_version"] or "No declarada",
+                  row["installed_version"] or "No declarada", row["current_state"]]
+        lines.append("| " + " | ".join(str(v).replace("|", "/") for v in values) + " |")
+    lines += ["", "## Inventario de scripts", "",
+              "| Script | Ejecución | Versión | ¿Instalado globalmente? |",
+              "|---|---|---|---|"]
+    for row in report["scripts"]:
+        lines.append("| " + " | ".join([
+            row["path"], row["role"], row["version"] or "No declarada",
+            "Sí" if row["installed_globally"] else "No"]) + " |")
+    lines += ["", "## SQLite (solo conteos, sin contenido de tareas)", "",
+              tick * 3 + "json",
+              json.dumps(report["database"], ensure_ascii=False, indent=2),
+              tick * 3, "",
+              "## Precisión del informe", "",
+              "- Los hashes distinguen archivos reemplazados de los que cambiaron después.",
+              "- Los scripts del checkout no se presentan como instalados en Kilo.",
+              "- No se incluyen credenciales, datos de tareas ni archivos anteriores.",
+              "- La coincidencia de archivos no certifica permisos, herramientas ni subagentes en Kilo.",
+              ""]
+    return "\n".join(lines)
+
+
+def save_installation_report(home: Path, folder: Path, *,
+                             state: str | None = None,
+                             after_hash: str | None = None) -> dict:
+    report_path = folder / "install-report.json"
+    markdown_path = folder / "install-report.md"
+    _check_paths(home, [report_path, markdown_path])
+    # Un informe previo describe un instante histórico: nunca reescribirlo.
+    if report_path.is_file() and markdown_path.is_file():
+        return json.loads(report_path.read_text(encoding="utf-8"))
+    report = installation_report(home, folder, state=state, after_hash=after_hash)
+    vx.write_atomic(report_path, (json.dumps(report, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
+    vx.write_atomic(markdown_path, _report_markdown(report).encode("utf-8"))
+    return report
+
+
+def find_latest_backup(home: Path) -> Path:
+    root = home / BACKUP_DIR
+    _check_paths(home, [root])
+    if not root.is_dir():
+        raise Blocked("No hay backups VX para el informe.")
+    options = sorted((d for d in root.glob("vx-unified-*")
+                      if d.is_dir() and not d.is_symlink() and
+                      (d / "receipt.json").is_file()), reverse=True)
+    if not options:
+        raise Blocked("No hay recibos de instalación VX.")
+    return options[0]
+
+
+def report_summary(report: dict) -> dict:
+    folder = Path(report["backup"])
+    return {"schema": "vx-install-summary/1",
+            "backup": str(folder),
+            "report_markdown": str(folder / "install-report.md"),
+            "report_json": str(folder / "install-report.json"),
+            "harness_version": report["harness_version"],
+            "receipt_status": report["receipt_status"],
+            "counts": report["counts"], "database": report["database"],
+            "scripts": len(report["scripts"]), "runtime_verified": False}
+
+
+
 def main():
     parser = argparse.ArgumentParser(description="VX Dev Team Core unificado: solo HOME global.")
-    parser.add_argument("--mode", choices=["diagnose","simulate","apply","verify","restore"], default="diagnose")
+    parser.add_argument("--mode", choices=["diagnose","simulate","apply","verify","restore","report"], default="diagnose")
     parser.add_argument("--home", type=Path, required=True)
     parser.add_argument("--confirm-install", action="store_true")
     parser.add_argument("--confirm-restore", action="store_true")
@@ -522,6 +737,12 @@ def main():
             raise Blocked("Requiere --confirm-install.")
         folder = apply(home)
         print("INSTALACIÓN SOURCE COMPLETA (RUNTIME SIN CERTIFICAR); BACKUP DPAPI: " + str(folder))
+        report = save_installation_report(home, folder)
+        print(json.dumps(report_summary(report), ensure_ascii=False, indent=2))
+    elif args.mode == "report":
+        folder = args.backup_folder or find_latest_backup(home)
+        report = save_installation_report(home, folder)
+        print(json.dumps(report_summary(report), ensure_ascii=False, indent=2))
     else:
         if not args.confirm_restore or not args.backup_folder:
             raise Blocked("Restaurar requiere --confirm-restore y --backup-folder.")

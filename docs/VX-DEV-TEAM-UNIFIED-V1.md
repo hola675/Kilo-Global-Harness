@@ -44,6 +44,18 @@ pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Verificar
 
 `Aplicar` exige `main` sincronizada, árbol limpio, Kilo cerrado, backup cifrado DPAPI CurrentUser y lista exacta de los **14 paths históricos** que puede retirar de HOME. No borra recursos de terceros, no toca `kilo.jsonc`, credenciales, MCP ni AutoApprove. Toda ruta reemplazada queda incluida en el respaldo de restauración; también el estado SQLite anterior, en un snapshot consistente. Las migraciones SQLite son versionadas, conservadoras, idempotentes y verificadas mediante integridad. Si la versión es desconocida o la base no se puede validar, se bloquea sin sobrescribirla.
 
+## Informe automático de cada instalación y actualización
+
+Al ejecutar **Aplicar**, el motor guarda en la carpeta privada de respaldo DPAPI tanto `install-report.json` como `install-report.md`. En la salida de consola presenta las rutas, conteos y situación de SQLite. El informe detalla para cada archivo administrado: creado, reemplazado, eliminado o sin cambios; versión y fecha declaradas antes y después (o «No declarada»); hashes y coincidencia con lo instalado. Distingue el script `vx_task_dag.py` instalado en Kilo de scripts que solo se ejecutan en el checkout, e incluye conteos agregados de tablas SQLite sin exportar tareas.
+
+El modo `Informe` **no reinstala, no migra y no borra**; reconstruye un informe para respaldos anteriores que aún no tenían reportes. Si existe uno, lo conserva sin reescribir el historial:
+
+```powershell
+pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Informe -CarpetaRespaldo 'C:\Users\Admin\.config\kilo-harness-backups\vx-unified-20261122-152634-3933e6fb'
+```
+
+Sin `-CarpetaRespaldo` elige el recibo más reciente. Los informes no demuestran por sí mismos que Kilo habilite las herramientas y permisos del agente. Solo se reportan elementos del manifiesto y sus rutas aprobadas; nunca se limpia trabajo de proyecto por inferencia.
+
 ## Restauración
 
 Conservar privada la carpeta `vx-unified-...` que informa el motor. Si una instalación genera errores, consultar antes de restaurar modificaciones posteriores en los destinos:
