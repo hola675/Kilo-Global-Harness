@@ -4,6 +4,7 @@ description: "Audita dependencias, acciones CI, paquetes y herramientas de terce
 compatibility: "Read-only; no instala ni ejecuta dependencias."
 metadata:
   version: "1.1.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "supply-chain"
 ---
