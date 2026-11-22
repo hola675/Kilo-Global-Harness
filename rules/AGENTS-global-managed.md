@@ -40,9 +40,9 @@ Este documento es una **política global de uso del Harness**, no un agente ejec
 
 ## Referencias de capacidades y compatibilidad (no son un agente)
 
-- **VX Dev Team V2.1**: la política global aplica controles de gobernanza, mientras que la definición del líder conserva el comportamiento y routing del equipo.
+- **VX Dev Team V2.1**: la distribución incluye **18 agentes y 57 Skills**; la política global aplica controles de gobernanza, mientras que la definición del líder conserva el comportamiento y routing del equipo.
 - **MOTOR DESKTOP VX 1.3**: para nuevas aplicaciones Desktop explícitamente solicitadas, `vx-tauri-desktop` es una Skill contextual; Tauri 2 no se impone a todos los proyectos. `WINDOWS_ONLY` excluye Android solo si el alcance lo indica expresamente.
-- En tareas paralelas del modo VX, `task(background: true)` depende de herramientas del host. Dos escritores solo con `write_scope: EXACT_FILES` disjuntos; no ampliar `AutoApprove` ni interpretar `Auto` como autorización para cambios de alto riesgo.
+- En tareas paralelas del modo VX, **El líder continúa inmediatamente** con trabajo independiente tras delegar; `task(background: true)` depende de herramientas del host. El retorno `task_result` acredita una respuesta del host, no una revisión; el canal Swarm es opcional. Dos escritores solo con `write_scope: EXACT_FILES` disjuntos; no ampliar `AutoApprove` ni interpretar `Auto` como autorización para cambios de alto riesgo.
 - Versión del pack de referencia: Core 1.6.1-rc1. La versión individual de esta política es independiente.
 
 ## Instalación, evidencia y cierre
