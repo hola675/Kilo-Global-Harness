@@ -1,36 +1,50 @@
-# Arquitectura de Kilo Global Harness V3
+# Arquitectura vigente · Kilo Global Harness / VX Dev Team
+
+**Fuente de verdad:** `registry/vx-unified-pack-v1.json` (Core VX **1.6.0-rc1**). Esta guía sustituye el diagrama V3 del equipo `vx-integrador/vx-inspector`, que permanece únicamente en el historial de Git y en mecanismos legacy de compatibilidad.
 
 ## Capas
 
-1. **Kilo runtime**: configuración global preexistente `~/.config/kilo/kilo.jsonc`, credenciales y modelos seleccionados por el usuario; el harness no los copia ni reescribe.
-2. **Política mínima universal**: sección delimitada `VX-HARNESS-V3` dentro de `~/.config/kilo/AGENTS.md`. Diseño para pocos tokens en cada conversación.
-3. **Orquestación bajo demanda**: `~/.kilo/skills/vx-engineering-harness` y `~/.config/kilo/rules/vx-global-harness-v3.md`.
-4. **Workflows**: Markdown global `~/.config/kilo/commands/vx-*.md` con objetivos acotados: plan, implementación, depuración, validación, diff, Git, retrospectiva, MCP, modelos y estado.
-5. **Agentes especializados**: `vx-integrador` (primary) y `vx-inspector` (subagent readonly). No sobrescriben los 21 agentes existentes. `vx-inspector` restringe edición y Bash, pero su eficacia debe verificarse en runtime.
-6. **MCP**: conservar conexiones existentes. `codebase-memory-mcp` para grafos verificables; memoria explícita para decisiones; documentación oficial según stack. MCP configurado no implica conectado.
-7. **Git**: cambios normales autónomos permitidos por el encargo del usuario; `main` única rama duradera, ramas `work/*` temporales, protección de CI/revisión y eliminación de la rama propia SOLO después de verificar merge.
+1. **Kilo runtime del operador:** cliente Kilo Desktop/Kilo Code con su `kilo.jsonc`, credenciales, modelos, permisos efectivos y MCP. El Harness no reescribe esos recursos y ningún source test acredita su estado.
+2. **Política global administrada:** `rules/AGENTS-global-managed.md`, copiada dentro de un bloque delimitado de `~/.config/kilo/AGENTS.md` por el instalador unificado. No hay un segundo AGENTS por proyecto generado por VX.
+3. **Líder:** `agents/vx-dev-team.md` se instala como **VX Dev Team**, único modo principal visible. Selecciona Skills permitidas y coordina tareas dependientes, revisión, Git y reportes.
+4. **Subagentes:** diez roles Dev en `runtime/dev-team-v2r/agents/`, seis builders en `agents/` y `vx-workers-adviser`. **17 ocultos** subordinados al líder. Los especialistas de lectura no escriben ni delegan.
+5. **Skills:** 57 fuentes seleccionadas entre `skills/` y `runtime/dev-team-v2r/skills/`. Se copian globalmente y se cargan solo con permiso `skill` efectivo. Catálogos de propuestas no amplían la allowlist.
+6. **Comandos del pack:** únicamente `/vx-equipo`, `/vx-dependencias` y `/vx-editorial`. Los comandos legacy del repositorio son código de compatibilidad/documentación opcional, no parte del pack actual.
+7. **Control de dependencias:** `scripts/vx_task_dag.py` con DAG y cola SQLite opcional en HOME privada. La cola persiste metadatos de coordinación; no despacha, bloquea físicamente archivos, ejecuta worktrees ni deja tareas trabajando al cerrar Kilo.
+8. **Ejecución y progreso:** herramientas nativas `task` y, cuando estén disponibles, `board_read/board_post` de Kilo Swarm. `task(background: true)` comparte workspace, no crea worktree. El líder puede continuar leyendo/diseñando fuera de rutas reservadas; dos escritores simultáneos solo con rutas exactas disjuntas y ACL reales.
+9. **Git/CI:** un integrador por worktree, PR sobre `main`, pruebas focalizadas, revisión por riesgo y limpieza de rama verificada. `.github/workflows/validar-harness.yml` valida archivos fuente y contratos Windows, no autoría de subagentes runtime.
 
-## Global-only y multi-repositorio
+## Cadena de ejecución comprobable
 
-- `D:\Proyectos\Kilo-Global-Harness` es solamente fuente del instalador y documentación versionada, no directorio de ejecución de configuración.
-- Cualquier repositorio abierto en VS Code utiliza los mismos agentes, skills y comandos globales.
-- No crear ni sincronizar carpetas de configuración Kilo por repositorio.
-- Leer archivos de proyecto `README.md`, `package.json`, etc. es correcto; prohibición solo afecta a archivos de configuración local del agente.
-- Kilo puede cargar `AGENTS.md` y configuración local que un repositorio ya contenga, de acuerdo con precedencia del producto. El harness no puede impedirlo sin un mecanismo de restricción en el cliente; revisar si aparece una contradicción.
+```text
+Petición → VX Dev Team (único líder visible)
+          ├─ PLAN / DAG / fuentes e instrucciones globales
+          ├─ task → lectores read-only (si ayuda)
+          ├─ task(background:true) → builder A [archivos exactos]
+          ├─ task(background:true) → builder B [otros archivos]
+          ├─ trabajo propio seguro del líder (fuera de reservas)
+          ├─ eventos Swarm si el host lo permite
+          └─ task_result → verificación independiente
+                            ↓
+                    integración y CI
+                            ↓
+                       PR → main
+```
 
-## Política de recursos
+El planificador **no es un scheduler de modelos**. Un mensaje Swarm no confirma que otro agente lo leyera ni autoriza un cambio. Un resultado de builder no es evidencia suficiente de autoría: comprobar trazas de escritura y diff cuando el objetivo lo requiere.
 
-- Reducir duplicación de instrucciones; 1 skill principal por tarea, subagentes con resúmenes.
-- No usar `steps=10000000` como supuesto presupuesto de tokens. Un ajuste numérico es decisión independiente que requiere revisar agentes y versiones reales.
-- Memoria: verificar índice y cobertura antes de confiar en grafo; no persistir datos confidenciales.
-- Congelar versiones MCP operativas; actualizaciones de skills auditadas en lote, sin tareas de actualización automáticas.
-- Control de producción: deploys reales, migraciones destructivas, IAM/firewall y borrados ajenos NO se autorizan por AutoApprove.
+## Instalación y reversión
 
-## Fuentes de referencia
+Utilizar exclusivamente `scripts/Instalar-DevTeam-Unificado.ps1` para el paquete Core actual. Su backend `scripts/vx_unified_pack.py` conserva pruebas de compatibilidad, validación de propiedad, backup DPAPI y restauración controlada. **No ejecutar simultáneamente** los instaladores históricos V3/V4, DevTeam-Only, VX 0.2.2 ni convivencia VX 0.2.3 para administrar este mismo perfil global.
 
-- https://kilo.ai/docs/getting-started/settings
-- https://kilo.ai/docs/customize/agents-md
-- https://kilo.ai/docs/customize/agent-permissions
-- https://kilo.ai/docs/customize/custom-subagents
-- https://kilo.ai/docs/customize/skills
-- https://kilo.ai/docs/customize/workflows
+Los scripts/registries antiguos pueden permanecer en source mientras sean necesarios para CI, recuperación o investigación; su existencia no los convierte en agentes activos. El control de retiro está en [inventario archivo por archivo](VX-HARNESS-INVENTARIO-AUDIT-20261121.md).
+
+## Configuración y seguridad
+
+- Toda instalación global escribe solo assets VX permitidos dentro del HOME del usuario, con confirmación/backup; nunca en repositorios de clientes.
+- Sin autoelevación de ACL, AutoApprove, MCP, modelos, tokens, secretos o infraestructura.
+- `agent_manager` permanece denegado al líder Desktop. Los worktrees se preparan solo cuando existe una herramienta autorizada y el repositorio lo exige.
+- Los roles `board_read/post: allow` son exactamente el líder y seis builders, condicionados a que esas herramientas existan en el host.
+- `SOURCE_PASS`, `INSTALLED_FILES_MATCH` y `HOST_RUNTIME_PASS` son estados distintos.
+
+Ver [guía operativa](VX-DEV-TEAM-AUTOPILOT-V2.md), [manifiesto](../registry/vx-unified-pack-v1.json) y [política global](../rules/AGENTS-global-managed.md).
