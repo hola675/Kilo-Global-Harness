@@ -365,6 +365,22 @@ def queue_state_snapshot(path: Path) -> bytes | None:
         source.close()
 
 
+
+def queue_state_fingerprint(blob: bytes | None) -> str | None:
+    """Igualdad semántica: esquema, datos y versión; evita hashes de páginas WAL."""
+    if blob is None:
+        return None
+    from hashlib import sha256
+    conn = sqlite3.connect(":memory:")
+    try:
+        conn.deserialize(blob)
+        version = conn.execute("PRAGMA user_version").fetchone()[0]
+        statements = "\n".join(conn.iterdump())
+        return sha256((str(version) + "\n" + statements).encode("utf-8")).hexdigest()
+    finally:
+        conn.close()
+
+
 def queue_state_restore(path: Path, blob: bytes | None) -> None:
     """Restaura snapshot SQLite por API backup; None retira DB nueva sin datos."""
     if blob is None:
