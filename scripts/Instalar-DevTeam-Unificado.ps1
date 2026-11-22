@@ -1,10 +1,10 @@
 #Requires -Version 7.0
 <#
 .SYNOPSIS
-  VX Dev Team Core unificado V1.0-rc1 — una sola instalación global.
+  VX Dev Team Core unificado 1.6.0-rc1 — único instalador global vigente.
 .DESCRIPTION
   Diagnostico/Simular: solo lectura; Aplicar: backup DPAPI CurrentUser,
-  actualización de 18 agentes y 43 skills, retiro EXPLÍCITO de hasta 14 ficheros
+  actualización de 18 agentes y 57 Skills, retiro EXPLÍCITO de hasta 14 ficheros
   legacy gestionados por VX. No cambia kilo.jsonc, MCP o recursos de terceros.
   Verificar no equivale a certificar permisos efectivos en Kilo.
 #>
