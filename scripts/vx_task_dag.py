@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# component_version: 1.2.0
+# component_version: 1.3.0
 # last_modified: 2026-11-22
 """VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
@@ -565,10 +565,47 @@ def _queue_audit(conn: sqlite3.Connection, project: str, task_id: str | None = N
     }
 
 
+def _queue_handoff(conn: sqlite3.Connection, project: str,
+                   known: set[str], writable: set[str]) -> dict[str, Any]:
+    """Generate bounded task contracts for human/host-approved delegation."""
+    report = _queue_report(conn, project, known, writable)
+    if report["status"] == "EMPTY":
+        return {"schema": "vx-team-handoff/1", "project": project,
+                "contracts": [], "actions_executed": 0, "host_dispatched": False}
+    tasks = {task["id"]: task for task in _queue_tasks(conn, project)}
+    selected = report["background_candidates"]
+    # The analyzer enforces capacity, dependencies and writer conflicts.
+    if not isinstance(selected, list):
+        raise ValueError("Candidatos de ejecución no válidos.")
+    contracts = []
+    for item in selected:
+        task_id = item if isinstance(item, str) else item.get("id")
+        if task_id not in tasks:
+            raise ValueError("Candidato inexistente.")
+        task = tasks[task_id]
+        if task["state"] != "PENDING":
+            raise ValueError("Candidato no pendiente.")
+        contracts.append({
+            "task_id": task_id, "owner": task["owner"],
+            "reviewer": task["reviewer"], "writer": task["writer"],
+            "worktree": task["worktree"],
+            "allowed_paths": task.get("allowed_paths", []),
+            "depends_on": task.get("depends_on", []),
+            "contract_version": task.get("contract_version", "1"),
+            "requires_host_approval": True,
+        })
+    return {
+        "schema": "vx-team-handoff/1", "project": project,
+        "contracts": contracts, "actions_executed": 0,
+        "host_dispatched": False, "evidence_authenticated": False,
+        "note": "Propuesta de delegación; no inicia agentes ni autoriza herramientas.",
+    }
+
+
 def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
     if not args.project or not QUEUE_PROJECT.fullmatch(args.project):
         raise ValueError("Proyecto de cola invalido.")
-    mutate = args.queue_action not in ("report", "audit")
+    mutate = args.queue_action not in ("report", "audit", "handoff")
     # Declaración de rol, NO autenticación: la protección real depende de ACL del
     # proceso/host. No permitir mutaciones accidentales desde otros roles.
     if mutate and getattr(args, "actor", None) != "vx-dev-team":
@@ -594,6 +631,8 @@ def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
                           test_report=args.test_report or "", known=known, writable=writable)
         if args.queue_action == "audit":
             return _queue_audit(conn, args.project, args.task_id)
+        if args.queue_action == "handoff":
+            return _queue_handoff(conn, args.project, known, writable)
         return _queue_report(conn, args.project, known, writable)
     finally:
         conn.close()
@@ -603,7 +642,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Valida DAG de tareas de agente VX sin acciones.")
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--actor", help="Rol declarado; no autentica identidad del proceso")
-    parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report","audit"])
+    parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report","audit","handoff"])
     parser.add_argument("--queue-db", type=Path)
     parser.add_argument("--project")
     parser.add_argument("--task-id")
