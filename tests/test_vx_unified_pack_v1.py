@@ -1304,11 +1304,11 @@ class SkillDescriptionRoutingTests(unittest.TestCase):
 class InstallerReportAuditTests(unittest.TestCase):
     def test_metadata_versions_and_absent_versions_are_explicit(self):
         self.assertEqual(
-            module._declared_metadata(b"# component_version: 1.4.2\\n# last_modified: 2026-11-22\\n",
+            module._declared_metadata(b"# component_version: 1.4.2\n# last_modified: 2026-11-22\n",
                                       "vx-script.py"),
             {"version": "1.4.2", "modified": "2026-11-22"})
         self.assertEqual(
-            module._declared_metadata(b"---\\nmetadata:\\n  version: \\"0.5.0\\"\\n---\\n",
+            module._declared_metadata(b"---\nmetadata:\n  version: \"0.5.0\"\n---\n",
                                       "SKILL.md")["version"], "0.5.0")
         self.assertIsNone(module._declared_metadata(b"sin version", "old.md")["version"])
 
@@ -1318,7 +1318,7 @@ class InstallerReportAuditTests(unittest.TestCase):
             home = Path(tmp)
             old_agent = home / ".config/kilo/agents/vx-dev-team.md"
             old_agent.parent.mkdir(parents=True)
-            old_agent.write_text("# component_version: 0.9.0\\nOld version\\n",
+            old_agent.write_text("# component_version: 0.9.0\nOld version\n",
                                  encoding="utf-8")
             status, changes = module.plan(home)
             self.assertEqual(status["status"], "READY")
@@ -1337,6 +1337,7 @@ class InstallerReportAuditTests(unittest.TestCase):
             again = module.save_installation_report(home, backup)
             self.assertEqual(first_bytes, (backup / "install-report.json").read_bytes())
             self.assertEqual(again, report)
+
 
 class SQLiteInstallerProvisionTests(unittest.TestCase):
     def test_state_preflight_is_readonly_and_migration_idempotent(self):
