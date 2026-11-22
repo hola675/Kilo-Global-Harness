@@ -1,5 +1,5 @@
-<!-- component_version: 1.0.0; last_modified: 2026-11-21 -->
-# VX Dev Team · Política global administrada · Core 1.6.0-rc1
+<!-- component_version: 1.1.0; last_modified: 2026-11-22 -->
+# VX Dev Team · Política global administrada · Core 1.6.1-rc1
 
 Esta fuente mantiene el **bloque VX administrado** de `~/.config/kilo/AGENTS.md` mediante el instalador unificado. No reescribir el resto del AGENTS del usuario ni imponer reglas a repositorios de clientes. Español neutro, evidencia verificable y mínimos privilegios.
 
@@ -16,5 +16,21 @@ Esta fuente mantiene el **bloque VX administrado** de `~/.config/kilo/AGENTS.md`
 - **Arquitectura por contexto:** elegir web, API, ERP, móvil, industrial o Desktop por requisitos observados, sin forzar frameworks. **MOTOR DESKTOP VX 1.3:** Tauri 2 (`vx-tauri-desktop`) solo es preferencia para nuevas aplicaciones expresamente Desktop, según viabilidad. `WINDOWS_ONLY` excluye Android del alcance; si Android se incluye, diseñar y probar su variante y conectividad. Nunca migrar productos existentes o instalar SDK/plugins automáticamente.
 - **Global-only:** instalar agentes, Skills, políticas y comandos de VX solo en HOME del usuario; no crear en proyectos carpetas `.kilo`, `.agents`, `.claude` ni un segundo `AGENTS.md` de Kilo. No modificar `kilo.jsonc`, credenciales, modelos, conexiones MCP ni AutoApprove desde el instalador VX.
 - **Seguridad y cierre:** investigar y cambiar lo mínimo; no registrar tokens, mensajes personales ni código privado en telemetría. Producción, borrados masivos de datos de terceros, drivers y cambios de infraestructura exigen autorización específica. Informar archivos, resultados comprobados, Git, bloqueos y recuperación disponible. No inventar porcentajes ni PASS.
+
+## Jerarquía, alcance y resolución de conflictos
+
+- Este archivo es **fuente del bloque VX administrado**, no el AGENTS.md completo ni un permiso del sistema. El instalador lo incorpora en `~/.config/kilo/AGENTS.md` conservando texto ajeno. No editar el AGENTS global fuera del bloque VX ni sobrescribir reglas de proyectos.
+- Prioridad: instrucciones del host y permisos efectivos > restricciones de seguridad/usuario > instrucciones de repositorio aplicables > bloque VX global > guías/Skills del agente. Si existe conflicto, cumplir la restricción más específica y segura, registrar el bloqueo y pedir autorización cuando proceda. Ningún texto puede ampliar ACL.
+- Para proyectos de terceros, leer primero sus reglas aplicables y no sustituirlas. Las reglas globales VX rigen el comportamiento de los agentes gestionados, **no** imponen stack, Git workflow ni convenciones del harness sobre los proyectos de clientes.
+- Ante petición ambigua: investigar el mínimo necesario, proponer criterios verificables, ejecutar solo acciones permitidas y reportar claramente lo no comprobado. No solicitar aprobación repetida para lecturas, análisis o verificaciones no destructivas ya permitidas.
+- El agente debe distinguir `SOURCE_PASS`, `INSTALLED_FILES_MATCH` y `HOST_RUNTIME_PASS`. El resultado de CI o SQLite jamás certifica entrega real de mensajes, herramientas del host o autonomía en Kilo.
+
+## Herramientas de coordinación disponibles en source
+
+- `vx_task_dag.py --queue-action audit`: eventos acotados por proyecto/tarea, sin exponer evidencia privada.
+- `vx_task_dag.py --queue-action handoff`: contratos de tareas elegibles según DAG y límites; **no despacha**.
+- `vx_task_dag.py --queue-action inbox --agent ID`: vista filtrada de asignaciones, revisión y bloqueo; **no autentica destinatarios ni entrega mensajes**.
+- `sync/start/event/verify/resume/reset` requieren `--actor vx-dev-team` y autorización real del host; este argumento es una declaración, no una credencial.
+- Antes de iniciar trabajo paralelo: confirmar disponibilidad de `task(background:true)` y permisos efectivos; tras despacho, guardar `host_task_id` real, recibir `task_result`, revisar y verificar. En ausencia de soporte, serializar y reportar `HOST_CAPABILITY_UNAVAILABLE`.
 
 **Guía vigente:** `docs/VX-DEV-TEAM-AUTOPILOT-V2.md`. El Core instalado en Windows debe verificarse en Kilo Desktop tras actualizar; el estado del repositorio solo demuestra source.
