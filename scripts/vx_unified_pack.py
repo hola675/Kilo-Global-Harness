@@ -16,6 +16,7 @@ import json
 import os
 from pathlib import Path
 import re
+import sqlite3
 import sys
 import uuid
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -61,7 +62,14 @@ def digest(blob: bytes | None) -> str | None:
     return sha256(blob).hexdigest() if blob is not None else None
 
 
+def assert_runtime() -> None:
+    if (sys.version_info < (3, 11)
+            or not hasattr(sqlite3.Connection, "serialize")
+            or not hasattr(sqlite3.Connection, "deserialize")):
+        raise Blocked("Python 3.11+ con SQLite serialize/deserialize requerido.")
+
 def load_manifest() -> dict:
+    assert_runtime()
     pack = json.loads(MANIFEST.read_text(encoding="utf-8"))
     if pack.get("schema") != "vx-unified-pack/1" or pack.get("primary") != "vx-dev-team":
         raise Blocked("Manifest unificado no reconocido.")
@@ -260,7 +268,7 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
         database = home / QUEUE_REL
         if database.exists() and database.stat().st_size > vx.MAX_BACKUP_BYTES - total:
             warnings.append("Cola SQLite demasiado grande para respaldo DPAPI seguro.")
-    except (OSError, ValueError, __import__("sqlite3").DatabaseError) as exc:
+    except (OSError, ValueError, sqlite3.DatabaseError) as exc:
         state_status = "BLOCKED"
         warnings.append("Estado SQLite no verificable: " + str(exc))
     if len({row[0] for row in changes}) != len(changes):
