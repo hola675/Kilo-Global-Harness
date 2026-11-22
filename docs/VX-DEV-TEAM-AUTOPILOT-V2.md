@@ -81,18 +81,21 @@ Uso CLI dentro del host autorizado (PowerShell, sin ejecución de código de pro
 ```powershell
 $Engine = Join-Path $HOME '.config/kilo/harness/scripts/vx_task_dag.py'
 # El líder prepara una plan.json privada, con rutas relativas, sin prompts.
-python -I $Engine --queue-action sync --project laboratorio --plan 'C:\Temp\plan.json'
+python -I $Engine --queue-action sync --actor vx-dev-team --project laboratorio --plan 'C:\Temp\plan.json'
 python -I $Engine --queue-action report --project laboratorio
+python -I $Engine --queue-action handoff --project laboratorio
+python -I $Engine --queue-action inbox --project laboratorio --agent vx-backend-builder
+python -I $Engine --queue-action audit --project laboratorio
 
 # Después de llamar task(background:true) de verdad y observar ID del host:
-python -I $Engine --queue-action start --project laboratorio --task-id backend --host-task-id ses_REAL --event-key backend-start-ses_REAL
+python -I $Engine --queue-action start --actor vx-dev-team --project laboratorio --task-id backend --host-task-id ses_REAL --event-key backend-start-ses_REAL
 
 # Un hito, con evidencia observable:
-python -I $Engine --queue-action event --project laboratorio --task-id backend --event MILESTONE --event-key backend-milestone-1 --evidence-ref trace_REAL --summary 'Contrato estable'
+python -I $Engine --queue-action event --actor vx-dev-team --project laboratorio --task-id backend --event MILESTONE --event-key backend-milestone-1 --evidence-ref trace_REAL --summary 'Contrato estable'
 
 # Tras DELIVERED y comprobación independiente (NO confundir referencias con pruebas autenticadas):
-python -I $Engine --queue-action event --project laboratorio --task-id backend --event DELIVERED --event-key backend-delivered --evidence-ref trace_REAL
-python -I $Engine --queue-action verify --project laboratorio --task-id backend --event-key backend-verified --review-ref review_REAL --test-report tests_REAL
+python -I $Engine --queue-action event --actor vx-dev-team --project laboratorio --task-id backend --event DELIVERED --event-key backend-delivered --evidence-ref trace_REAL
+python -I $Engine --queue-action verify --actor vx-dev-team --project laboratorio --task-id backend --event-key backend-verified --review-ref review_REAL --test-report tests_REAL
 ```
 
 **Límites persistidos:** `sync` almacena los límites específicos del plan (`max_background_tasks`, `max_parallel_writers`, `allow_shared_worktree_exact_files`) y los aplica también a `report/start/resume`. Un segundo `sync` que cambie esos límites se rechaza; máximo 100 tareas acumuladas por proyecto. Las claves idempotentes solo admiten reintentos con contenido **idéntico**. Los paths SQLite se resuelven para impedir symlinks hacia checkout Git; la consulta `report` usa una URI de solo lectura correctamente escapada, incluso con `#` y espacios.
@@ -101,9 +104,9 @@ python -I $Engine --queue-action verify --project laboratorio --task-id backend 
 
 ```powershell
 # Si el hijo original sigue activo bajo ses_REAL:
-python -I $Engine --queue-action resume --project laboratorio --task-id backend --host-task-id ses_REAL --event-key backend-resume-1 --review-ref review_host_live --evidence-ref task_trace_live
+python -I $Engine --queue-action resume --actor vx-dev-team --project laboratorio --task-id backend --host-task-id ses_REAL --event-key backend-resume-1 --review-ref review_host_live --evidence-ref task_trace_live
 # O, exclusivamente si ses_REAL terminó: permitir replanificación, no despachar automáticamente:
-python -I $Engine --queue-action reset --project laboratorio --task-id backend --host-task-id ses_REAL --event-key backend-reset-1 --review-ref review_host_ended --evidence-ref task_trace_ended
+python -I $Engine --queue-action reset --actor vx-dev-team --project laboratorio --task-id backend --host-task-id ses_REAL --event-key backend-reset-1 --review-ref review_host_ended --evidence-ref task_trace_ended
 ```
 
 **Semántica:** `sync` valida un DAG acíclico, prioridades y rutas; importa solo tareas nuevas `PENDING` y rechaza definición contradictoria. `report` es solo lectura: muestra `ready_queue` priorizada, bloqueos, capacidad y estado declarado. `start` **solo registra** una tarea cuando el líder ya observó el ID de Kilo; rechaza dependencias sin verificar, dos escritores que colisionen y exceder límites. `event` registra un hito idempotente; `DELIVERED` pasa a `REVIEW`; `verify` requiere referencias de revisión/prueba y libera dependencias para la siguiente wave. Una referencia textual no autentica una traza real.
