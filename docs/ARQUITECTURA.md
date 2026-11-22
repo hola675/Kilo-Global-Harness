@@ -11,7 +11,7 @@
 5. **Skills:** 57 fuentes seleccionadas entre `skills/` y `runtime/dev-team-v2r/skills/`. Se copian globalmente y se cargan solo con permiso `skill` efectivo. Catálogos de propuestas no amplían la allowlist.
 6. **Comandos del pack:** únicamente `/vx-equipo`, `/vx-dependencias` y `/vx-editorial`. Los comandos legacy del repositorio son código de compatibilidad/documentación opcional, no parte del pack actual.
 7. **Control de dependencias:** `scripts/vx_task_dag.py` con DAG y cola SQLite opcional en HOME privada. La cola persiste metadatos de coordinación; no despacha, bloquea físicamente archivos, ejecuta worktrees ni deja tareas trabajando al cerrar Kilo.
-8. **Ejecución y progreso:** herramientas nativas `task` y, cuando estén disponibles, `board_read/board_post` de Kilo Swarm. `task(background: true)` comparte workspace, no crea worktree. El líder puede continuar leyendo/diseñando fuera de rutas reservadas; dos escritores simultáneos solo con rutas exactas disjuntas y ACL reales.
+8. **Ejecución y progreso:** herramientas nativas `task` y, cuando estén disponibles, `board_read/board_post` de Kilo Swarm. `task(background: true)` comparte workspace, no crea worktree. El líder puede continuar leyendo/diseñando fuera de rutas reservadas; dos escritores simultáneos solo con rutas exactas disjuntas (`write_scope: EXACT_FILES`) y ACL reales.
 9. **Git/CI:** un integrador por worktree, PR sobre `main`, pruebas focalizadas, revisión por riesgo y limpieza de rama verificada. `.github/workflows/validar-harness.yml` valida archivos fuente y contratos Windows, no autoría de subagentes runtime.
 
 ## Cadena de ejecución comprobable
