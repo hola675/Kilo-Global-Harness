@@ -1,6 +1,9 @@
 ---
+# last_modified: 2026-11-21
 name: vx-test-regression
 description: "Usar cuando se solicita implementar pruebas automatizadas VX de una tarea concreta, con fixtures aislados y casos positivos, negativos y regresiones; no confundir tests escritos con ejecutados."
+metadata:
+  version: "0.1.0"
 ---
 
 # VX Test Regression V0.1
