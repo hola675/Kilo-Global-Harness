@@ -359,7 +359,15 @@ def queue_state_snapshot(path: Path) -> bytes | None:
     target = sqlite3.connect(":memory:")
     try:
         source.backup(target, pages=128, sleep=0.05)
-        return target.serialize()
+        blob = bytearray(target.serialize())
+        # sqlite3.backup conserva la marca WAL del encabezado (offsets 18/19).
+        # La imagen ya consolidada se normaliza SOLO en memoria; :memory:
+        # no puede deserializar una imagen marcada como WAL.
+        if len(blob) < 100 or blob[:16] != b"SQLite format 3\x00":
+            raise ValueError("Snapshot SQLite no válido.")
+        if (blob[18], blob[19]) == (2, 2):
+            blob[18:20] = b"\x01\x01"
+        return bytes(blob)
     finally:
         target.close()
         source.close()
