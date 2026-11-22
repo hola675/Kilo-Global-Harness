@@ -1234,6 +1234,20 @@ class QueueActorGateTests(unittest.TestCase):
 
 
 class GlobalPolicyAlignmentTests(unittest.TestCase):
+    def test_global_workflow_policy_covers_lifecycle_without_replacing_agent(self):
+        policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
+        for heading in (
+            "Protocolo general de análisis y ejecución",
+            "Política de pruebas y certificación",
+            "Distribución, coordinación y revisión del trabajo",
+            "Política de decisiones y autonomía",
+        ):
+            self.assertIn(heading, policy)
+        self.assertIn("No sustituir al agente activo", policy)
+        self.assertIn("SOURCE_PASS", policy)
+        self.assertIn("HOST_RUNTIME_PASS", policy)
+
+
     def test_managed_global_policy_and_sqlite_examples_are_current(self):
         policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
         guide = (ROOT / "docs/VX-DEV-TEAM-AUTOPILOT-V2.md").read_text(encoding="utf-8")
