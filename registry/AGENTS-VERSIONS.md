@@ -1,5 +1,5 @@
 # Registro de versiones y cambios de agentes
-Registro central por sección · Actualizado: 2026-11-21
+Registro central por sección · Actualizado: 2026-11-22
 
 ## Política
 Cada agente lleva únicamente dos comentarios YAML en su frontmatter: `component_version` y `last_modified`, sin añadir claves desconocidas al esquema de Kilo. El líder muestra en `displayName` la versión global publicada del Harness, tomada del manifiesto de distribución, no su versión individual. Este registro centraliza el historial resumido y la versión individual de los agentes; los archivos operativos no contienen changelogs. La versión del Harness es independiente.
@@ -9,7 +9,7 @@ SemVer por archivo: PATCH corrección compatible; MINOR nueva capacidad compatib
 ## Inventario y estado
 | Agente | Archivo | Versión de seguimiento | Última modificación registrada | Resumen |
 |---|---|---|---|---|
-| vx-dev-team | agents/vx-dev-team.md | 1.0.1 | 2026-11-21 | Cabecera YAML con versión individual y fecha; líder muestra versión global del Harness |
+| vx-dev-team | agents/vx-dev-team.md | 1.0.2 | 2026-11-22 | Cabecera YAML con versión individual y fecha; líder muestra versión global del Harness |
 | vx-dev-explorer | runtime/dev-team-v2r/agents/vx-dev-explorer.md | 1.0.1 | 2026-11-21 | Cabecera YAML compatible con versión y fecha; líder con versión visible |
 | vx-dev-architect | runtime/dev-team-v2r/agents/vx-dev-architect.md | 1.0.1 | 2026-11-21 | Cabecera YAML compatible con versión y fecha; líder con versión visible |
 | vx-dev-frontend | runtime/dev-team-v2r/agents/vx-dev-frontend.md | 1.0.1 | 2026-11-21 | Cabecera YAML compatible con versión y fecha; líder con versión visible |
