@@ -3,7 +3,7 @@ name: vx-version-governance
 description: "Control preventivo y reversible de versiones ANTES de implementar, corregir, migrar, refactorizar o modificar un repositorio. Determina baseline Git, versión vigente, impacto X/Y/Z, release, changelog y rollback sin imponer publicaciones."
 compatibility: "Agent Skills; Kilo Code y Kilo Desktop Windows. Solo instrucciones: respeta ACL, lectura y aprobaciones del host."
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   last_modified: "2026-11-21"
   origin: "vx-unified"
   category: "governance"
@@ -28,6 +28,14 @@ metadata:
 - **PATCH / MINOR / MAJOR son propuestas**, no permisos para modificar manifests: cambios incompatibles requieren análisis de consumidores, contratos, migración y aprobación apropiada.
 - No incrementar versión por cada archivo o commit. Separar `WORK_VERSION` y `RELEASE_VERSION`; tags, binarios, publicación, producción y cambios de paquete solo si son parte de la tarea autorizada.
 - Para X/Y/Z registrar qué se preserva, qué cambia y el punto de recuperación (SHA/commit/tag real). No crear tags por rutina: Git ofrece historia si los commits existen; para datos externos exigir respaldo validado separado.
+
+## Versionado individual del Harness
+
+- En el Harness, la versión del pack y la versión de cada agente, Skill, política o script son **independientes**. La versión del pack aparece en el nombre visible del líder; no debe propagarse como versión individual de los hijos.
+- Antes de editar un archivo gestionado, leer sus metadatos canónicos y el registro de su sección. Si cambia el comportamiento, incrementar solo la versión individual que corresponda según la política local; mantener fecha ISO de última modificación. Un ajuste exclusivamente documental no fuerza un release del producto.
+- Resumir el cambio **solo en** `registry/AGENTS-VERSIONS.md`, `registry/SKILLS-VERSIONS.md`, `registry/POLICIES-VERSIONS.md` o `registry/SCRIPTS-VERSIONS.md` según corresponda. No introducir changelogs acumulativos en los archivos operativos.
+- Los scripts y políticas pueden usar cabecera comentada en lugar de frontmatter. No insertar YAML en archivos cuyo parser o intérprete no lo admita.
+- No alterar el `displayName` del líder al actualizar una Skill, script o política; ese nombre identifica la versión del Harness, no la versión individual del archivo.
 
 ## Ejecución y cierre
 

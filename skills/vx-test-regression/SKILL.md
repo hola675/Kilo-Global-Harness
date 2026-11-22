@@ -3,10 +3,10 @@
 name: vx-test-regression
 description: "Usar cuando se solicita implementar pruebas automatizadas VX de una tarea concreta, con fixtures aislados y casos positivos, negativos y regresiones; no confundir tests escritos con ejecutados."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
-# VX Test Regression V0.1
+# VX Test Regression
 
 **Ámbito:** convertir criterios de aceptación en tests de proyecto autorizados; guía para `vx-qa-builder` y el integrador. Skill VX original; no otorga `edit`, `bash` ni acceso a MCP.
 
@@ -25,6 +25,16 @@ Antes de escribir o proponer un test:
 5. Tras PASS, retirar el supersedido del CI activo si el alcance autorizado lo permite.
 6. No crear suites nuevas solo porque cambió la versión del componente.
 7. La historia queda en Git/PR/registry, no en tests activos duplicados.
+
+## Selección y optimización de pruebas
+
+1. Identificar el cambio observable y el **oráculo independiente**: no basta comprobar que existe una frase, archivo o mock si el riesgo es funcional.
+2. Buscar la prueba existente más cercana y decidir `UPDATE`, `REPLACE` o `ADD` antes de escribir. `ADD` requiere nueva invariante o riesgo que ninguna prueba cubra.
+3. Ejecutar primero la prueba focalizada. Ampliar a contrato, integración, smoke o E2E cuando cambien interfaces, dependencias, instalación, concurrencia o seguridad.
+4. Mantener temporalmente el test antiguo durante `REPLACE`; retirar solo cuando el reemplazo haya pasado y cubra los mismos riesgos. Si no puede demostrarse equivalencia, conservar ambos y explicar la diferencia.
+5. Evitar suites por versión, nombres históricos y reejecución completa de gates anteriores sin motivo. CI mantiene la cobertura vigente y la historia queda en Git.
+6. Medir coste cuando resulte relevante: duración, repetición, flakiness y mantenimiento. Optimizar sin reducir las invariantes verificadas.
+7. Separar `SOURCE_PASS`, `CI_PASS` y `HOST_RUNTIME_PASS`. Un test local o CI nunca certifica herramientas reales del host ni instalación.
 
 ## Casos mínimos por cambio
 

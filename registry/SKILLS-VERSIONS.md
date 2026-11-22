@@ -1,5 +1,5 @@
 # Versiones y cambios de Skills
-Registro de sección · Actualizado: 2026-11-21
+Registro de sección · Actualizado: 2026-11-22
 
 ## Política
 Cada Skill conserva su versión **individual** dentro de `metadata.version` de su frontmatter. En Skills que ya mostraban versión en el título se traslada esa versión al metadato; si no existía versión, `1.0.0` señala inicio del seguimiento, no una reconstrucción histórica. La última modificación se anota en `metadata.last_modified` (fecha ISO). No añadir changelogs extensos dentro de SKILL.md. El historial resumido se mantiene exclusivamente aquí; Git conserva el detalle. No confundir versiones de Skills con la versión global del Harness. No modificar `metadata.version` sin cambio de comportamiento o corrección real; añadir una fecha no implica publicar nueva versión de capacidad.
@@ -22,14 +22,14 @@ Cada Skill conserva su versión **individual** dentro de `metadata.version` de s
 | vx-dev-frontend-ux | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
 | vx-dev-accessibility | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
 | vx-dev-ui-state-system | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
-| vx-dev-test-strategy | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-test-strategy | 1.2.0 | 2026-11-22 | Matriz de riesgo, coste, oráculos independientes y pruebas por entorno |
 | vx-dev-security-threat-review | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
 
 | vx-dev-supply-chain-review | Conservar versión preexistente en SKILL.md | 2026-11-21 | Metadatos mínimos; sin cambio funcional |
 | vx-dev-independent-review | Conservar versión preexistente en SKILL.md | 2026-11-21 | Metadatos mínimos; sin cambio funcional |
 | vx-engineering-harness | 4.3.0 | 2026-11-21 | Metadatos mínimos; sin cambio funcional |
 | vx-implementation-handoff | 0.1.0 | 2026-11-21 | Metadatos mínimos; sin cambio funcional |
-| vx-test-regression | 0.1.0 | 2026-11-21 | Metadatos mínimos; sin cambio funcional |
+| vx-test-regression | 0.2.0 | 2026-11-22 | Selección de pruebas por invariantes, coste y equivalencia de reemplazos |
 | vx-debugging-root-cause | 0.1.0 | 2026-11-21 | Metadatos mínimos; sin cambio funcional |
 | vx-frontend-quality | 0.1.0 | 2026-11-21 | Metadatos mínimos; sin cambio funcional |
 | vx-data-contracts | 0.1.0 | 2026-11-21 | Metadatos mínimos; sin cambio funcional |
@@ -44,7 +44,7 @@ Cada Skill conserva su versión **individual** dentro de `metadata.version` de s
 | vx-cloudflare-storage-messaging | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
 | vx-sql-query-performance | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
 | vx-agent-collaboration | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
-| vx-git-ci-quality | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
+| vx-git-ci-quality | 0.3.0 | 2026-11-22 | Propiedad de gates y eliminación segura de duplicados sin perder cobertura |
 | vx-e2e-browser-testing | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
 | vx-performance-measurement | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
 | vx-observability-privacy | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
@@ -63,7 +63,7 @@ Cada Skill conserva su versión **individual** dentro de `metadata.version` de s
 | vx-inventory-reconciliation | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
 | vx-enterprise-workflows | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
 | vx-industrial-control-safety | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
-| vx-version-governance | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
+| vx-version-governance | 1.1.0 | 2026-11-22 | Versionado individual por sección, independiente del pack y del nombre del líder |
 | vx-context-routing | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
 | vx-technology-fit | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
 | vx-skill-quality | Consultar metadata.version en SKILL.md | 2026-11-21 | Seguimiento individual incorporado, sin cambio funcional |
@@ -72,4 +72,5 @@ Cada Skill conserva su versión **individual** dentro de `metadata.version` de s
 Las 57 Skills del manifiesto tienen ahora metadatos individuales de versión y última modificación. El registro resume su seguimiento; el valor canónico de cada versión reside en su SKILL.md.
 
 ## Changelog de sección
+- 2026-11-22: revisión funcional de gobernanza de versiones y optimización de pruebas en cuatro Skills; versiones independientes y tests focalizados.
 - 2026-11-21: inicio del registro central; añadido `metadata.last_modified` a cincuenta y siete Skills, manteniendo sus versiones preexistentes.
