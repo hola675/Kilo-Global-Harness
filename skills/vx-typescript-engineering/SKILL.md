@@ -1,9 +1,9 @@
 ---
 name: vx-typescript-engineering
-description: "Usar para implementar typescript y node mantenibles cuando una tarea mencione typescript, tsconfig, tsc, node. Exigir evidencia real y no cambiar permisos."
+description: "Usar al implementar, revisar o depurar código TypeScript/Node, tipos, tsconfig, build y contratos; no activar por menciones incidentales."
 metadata:
-  version: "0.2.0"
-  last_modified: "2026-11-21"
+  version: "0.2.1"
+  last_modified: "2026-11-22"
   origin: "vx-original"
 ---
 
