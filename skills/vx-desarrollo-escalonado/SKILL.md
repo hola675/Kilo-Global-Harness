@@ -3,6 +3,7 @@ name: vx-desarrollo-escalonado
 description: "Organizar cualquier proyecto software por objetivo final, fases incrementales, dependencias, entregas comprobables y trabajo multiagente paralelo sin burocracia ni pruebas acumulativas."
 metadata:
   version: "1.1.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 
