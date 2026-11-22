@@ -4,6 +4,7 @@ description: "Reconcilia documentación, versiones, ADR, changelogs y fuentes ex
 compatibility: "Read-only; puede usar solo MCP documentales allowlistados del rol Research."
 metadata:
   version: "1.1.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "research"
 ---
