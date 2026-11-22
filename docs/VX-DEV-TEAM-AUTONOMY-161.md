@@ -1,5 +1,5 @@
 # VX Dev Team — Contrato de autonomía y colaboración
-<!-- document_revision: 1; updated: 2026-11-21; status: PROPOSED_SOURCE_NOT_INSTALLED -->
+<!-- document_revision: 2; updated: 2026-11-22; status: SOURCE_IMPLEMENTED_RUNTIME_NOT_CERTIFIED -->
 
 ## Objetivo
 Aumentar autonomía operativa sin ampliar permisos indiscriminadamente: el líder toma decisiones rutinarias, selecciona equipo mínimo, reparte archivos exactos y verifica resultados. Ningún texto de política eleva las ACL efectivas de Kilo.
@@ -66,3 +66,11 @@ Prerequisitos: Windows, PowerShell 7, Python con sqlite3 y DPAPI CurrentUser, Gi
 - Para Skills, scripts y políticas: un registro resumido por sección y metadatos mínimos compatibles con su formato, sin contaminación de contenido operativo.
 - Un cambio documental no modifica automáticamente la versión del manifiesto distribuido. Solo subir Core tras actualizar assets y pasar CI + pruebas Windows.
 - Changelog 1.6.1-rc1 (2026-11-21): contrato de autonomía, responsabilidades de 18 agentes, acceso a SQLite, límites de concurrencia y checklist de certificación; **solo documento propuesto**.
+
+
+## Estado de implementación de la fase 1.6.1-rc1 (2026-11-22)
+- 18 agentes y 57 skills mantienen metadatos individuales; el nombre visible del líder usa la versión del manifiesto.
+- CI Windows compila y ejecuta el verificador de metadatos; las pruebas focalizadas cubren fechas y rutas inválidas.
+- Cola SQLite: la CLI de mutación exige `--actor vx-dev-team`; es un guardarraíl declarativo, **no autenticación**, y no impide que otro proceso con permisos de archivo escriba en la base.
+- La ejecución de agentes, el aislamiento de worktrees, los permisos efectivos del host y el canal Board siguen sujetos a comprobación real en Kilo Desktop. No atribuirles certificación por CI de source.
+- No activar instalación global ni declarar runtime certificado sin validación del equipo Windows y aprobación de los gates del instalador.
