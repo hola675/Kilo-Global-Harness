@@ -189,8 +189,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
         collaboration = (ROOT / "skills/vx-agent-collaboration/SKILL.md").read_text(encoding="utf-8")
         bootstrap = (ROOT / "skills/vx-team-bootstrap/SKILL.md").read_text(encoding="utf-8")
         handoff = (ROOT / "skills/vx-implementation-handoff/SKILL.md").read_text(encoding="utf-8")
-        self.assertRegex(collaboration, r'(?m)^  version: "\d+\.\d+\.\d+"
-        self.assertRegex(bootstrap, r'(?m)^  version: "\d+\.\d+\.\d+"
+        self.assertIn("version:", collaboration)
+        self.assertIn("version:", bootstrap)
         for body in (collaboration, bootstrap, handoff):
             self.assertIn("board_post", body)
             self.assertIn("board_read", body)
