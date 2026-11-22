@@ -22,6 +22,38 @@ DAG_SPEC.loader.exec_module(dag)
 
 
 class UnifiedPackV1Tests(unittest.TestCase):
+    def test_tracked_tree_contains_only_current_core_and_docs(self):
+        pack = module.load_manifest()
+        selected = {x["source"] for x in [
+            *pack["agents"], *pack["skills"], *pack["commands"], *pack["support_files"]]}
+        extra = {
+            ".gitignore", ".github/workflows/validar-harness.yml",
+            "rules/AGENTS-global-managed.md", "README.md",
+            "docs/ARQUITECTURA.md", "docs/VX-DEV-TEAM-AUTOPILOT-V2.md",
+            "docs/VX-DEV-TEAM-UNIFIED-V1.md",
+            "docs/VX-HARNESS-INVENTARIO-AUDIT-20261121.md",
+            "docs/VX-TEAM-CAPABILITY-HANDOFF-V1.md",
+            "docs/VX-TEAM-GIT-RECONCILIATION-V1.md",
+            "docs/VX-CONTEXTUAL-SKILLS-GOVERNANCE-V1.md",
+            "docs/VX-DESARROLLO-ESCALONADO-CONECTIVIDAD-V1.md",
+            "registry/vx-contextual-skills-v1.json",
+            "scripts/Instalar-DevTeam-Unificado.ps1",
+            "scripts/vx_unified_pack.py",
+            "scripts/vx_pack_coexist_v023.py",
+            "scripts/vx_pack_bootstrap.py",
+            "tests/test_vx_unified_pack_v1.py",
+            "tests/dev_team_agent_parser_support.py",
+            "tools/dev_team_agent_parser.py",
+        }
+        self.assertFalse(selected & extra)
+        self.assertEqual(len(selected), 80)
+        tracked = subprocess.run(
+            ["git", "ls-files", "--cached", "-z"],
+            cwd=ROOT, capture_output=True, check=True,
+        ).stdout.decode("utf-8").split("\\0")
+        actual = {path for path in tracked if path}
+        self.assertEqual(actual, selected | extra)
+
     def test_minimal_core_has_no_legacy_registry_dependency(self):
         self.assertFalse((ROOT / "registry/vx-agent-registry-v4.json").exists())
         legacy = module.APPROVED_LEGACY_RETIREMENTS
