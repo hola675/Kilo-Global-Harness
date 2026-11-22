@@ -1,9 +1,9 @@
 ---
 name: vx-cloudflare-storage-messaging
-description: "Usar para diseñar almacenamiento y mensajería cloudflare cuando una tarea mencione d1, kv, r2, queue. Exigir evidencia real y no cambiar permisos."
+description: "Usar al diseñar o modificar persistencia y mensajería de Cloudflare D1, KV, R2 o Queues, sus garantías, costes y consistencia; no activar para Workers sin almacenamiento o mensajería."
 metadata:
-  version: "0.2.0"
-  last_modified: "2026-11-21"
+  version: "0.2.1"
+  last_modified: "2026-11-22"
   origin: "vx-original"
 ---
 
