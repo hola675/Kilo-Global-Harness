@@ -6,7 +6,7 @@
 
 1. **Kilo runtime del operador:** cliente Kilo Desktop/Kilo Code con su `kilo.jsonc`, credenciales, modelos, permisos efectivos y MCP. El Harness no reescribe esos recursos y ningún source test acredita su estado.
 2. **Política global administrada:** `rules/AGENTS-global-managed.md`, copiada dentro de un bloque delimitado de `~/.config/kilo/AGENTS.md` por el instalador unificado. No hay un segundo AGENTS por proyecto generado por VX.
-3. **Líder:** `agents/vx-dev-team.md` se instala como **VX Dev Team**, único modo principal visible. Selecciona Skills permitidas y coordina tareas dependientes, revisión, Git y reportes.
+3. **Líder:** `agents/vx-dev-team.md` se instala como **VX Dev Team** acompañado de la versión global publicada del Harness en `displayName`, único modo principal visible. La versión individual y última fecha del líder, al igual que las de cada subagente, se anotan mediante dos comentarios en el frontmatter YAML; el historial resumido reside solo en `registry/AGENTS-VERSIONS.md`. Selecciona Skills permitidas y coordina tareas dependientes, revisión, Git y reportes.
 4. **Subagentes:** diez roles Dev en `runtime/dev-team-v2r/agents/`, seis builders en `agents/` y `vx-workers-adviser`. **17 ocultos** subordinados al líder. Los especialistas de lectura no escriben ni delegan.
 5. **Skills:** 57 fuentes seleccionadas entre `skills/` y `runtime/dev-team-v2r/skills/`. Se copian globalmente y se cargan solo con permiso `skill` efectivo. Catálogos de propuestas no amplían la allowlist.
 6. **Comandos del pack:** únicamente `/vx-equipo`, `/vx-dependencias` y `/vx-editorial`. Los comandos anteriores ya no están en el árbol activo; su historia permanece en Git.
