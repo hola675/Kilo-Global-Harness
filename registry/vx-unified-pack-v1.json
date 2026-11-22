@@ -1,7 +1,7 @@
 {
   "schema": "vx-unified-pack/1",
-  "version": "1.6.0-rc1",
-  "updated": "2026-11-21",
+  "version": "1.6.1-rc1",
+  "updated": "2026-11-22",
   "status": "SOURCE_CANDIDATE_NOT_INSTALLED",
   "scope": "ONE_GLOBAL_PACK_KILO_WINDOWS",
   "primary": "vx-dev-team",
