@@ -59,10 +59,14 @@ Al cerrar una tarea, el coordinador debe poder responder:
 - No instalar ni actualizar skills/MCP de manera silenciosa.
 
 
-## Coordinacion de equipos V4 (on-demand)
+## Coordinación VX Dev Team V2.1 — contrato actual
 
-- Para tareas amplias, `/vx-equipo` y `~/.config/kilo/harness/vx-agent-registry-v4.json`; el script global `harness/scripts/Seleccionar-Equipo-V4.ps1` sugiere equipo sin lanzar modelos ni procesos.
-- Hasta tres agentes de lectura realmente independientes via `task(background: true)`; sintetizar, UN escritor, luego revisores por especialidad. No activar todos por inercia.
-- `task` comparte el arbol de archivos; Kilo Swarm transmite mensajes, no toma decisiones. Otra sesion Agent Manager requiere coordinacion externa y worktree para aislar edicion.
-- Una rama `work/*` temporal por tarea, `main` permanente. Varias ramas de tareas independientes solo con worktrees aislados, propiedad explícita y un escritor por worktree; en el mismo árbol se mantiene una sola rama escritora. La ejecución paralela y el despachador automático requieren habilitación específica.
-- Nunca introducir credenciales como parametros del selector, ni asumir que una recomendacion equivale a ejecutar un agente.
+El equipo activo es `vx-dev-team` visible (**VX Dev Team**), con 17 hijos ocultos, 57 Skills del paquete unificado y permisos del propio agente, sin reinstalar jerarquías antiguas. Solo `main` es permanente; para integrar usar rama temporal y PR/CI/revisión. En tareas triviales, evitar fan-out.
+
+Para un proyecto amplio: el líder determina contratos y rutas exactas, despacha **primero** la wave de llamadas reales `task(background: true)` independientes si el host admite el parámetro, y continúa **sin esperar** con lectura de archivos estables, planificación de próximas dependencias, riesgos o revisión de trabajos ya concluidos. Hasta 4 hijos, 2 writers en archivos literales no solapados con `EXACT_FILES`, y un único escritor Git por worktree. Una dependencia no verificada bloquea el consumidor; las tareas `BLOCKED` con ID activo retienen capacidad y rutas. La cola es solo registro privado y no ejecuta modelos, watcher ni scheduler.
+
+Kilo Swarm ofrece `board_read/post` para el líder y seis builders cuando esté efectivamente expuesto, solo para hitos, sin secretos ni derechos de ejecución; analistas read-only siguen sin Board. Ante ausencia de background o Swarm, usar foreground y/o `task_result`, sin afirmar simultaneidad. La barrera de integración requiere fin de escritores, diffs, pruebas focales, revisión y evidencia real; el líder **nunca** edita archivos reservados mientras trabajen hijos. `AGENTS.md` global canónico: `rules/AGENTS-global-managed.md`; manual `docs/VX-DEV-TEAM-AUTOPILOT-V2.md`.
+
+## Changelog
+- 2026-11-21, contrato V2.1: sustituida coordinación V4 histórica de un solo escritor con límites actuales y control de progreso.
+
