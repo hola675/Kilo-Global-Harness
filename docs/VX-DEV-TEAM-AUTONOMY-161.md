@@ -74,3 +74,9 @@ Prerequisitos: Windows, PowerShell 7, Python con sqlite3 y DPAPI CurrentUser, Gi
 - Cola SQLite: la CLI de mutación exige `--actor vx-dev-team`; es un guardarraíl declarativo, **no autenticación**, y no impide que otro proceso con permisos de archivo escriba en la base.
 - La ejecución de agentes, el aislamiento de worktrees, los permisos efectivos del host y el canal Board siguen sujetos a comprobación real en Kilo Desktop. No atribuirles certificación por CI de source.
 - No activar instalación global ni declarar runtime certificado sin validación del equipo Windows y aprobación de los gates del instalador.
+
+## Incremento funcional siguiente: auditoría de coordinación
+- `python scripts/vx_task_dag.py --queue-action audit --project NOMBRE` inspecciona hasta 1000 eventos de ese proyecto sin escribir la base.
+- Añadir `--task-id ID` para limitar a una tarea existente; no expone `summary` ni `evidence_ref` en el informe de auditoría.
+- `audit` y `report` no requieren `--actor`; las mutaciones siguen exigiendo `--actor vx-dev-team` y autorización del host.
+- Esto facilita reconciliación y diagnóstico, pero no proporciona ejecución automática de agentes, autenticación de eventos ni certificación del host.
