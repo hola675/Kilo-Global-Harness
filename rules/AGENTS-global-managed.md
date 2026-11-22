@@ -1,3 +1,4 @@
+<!-- component_version: 1.0.0; last_modified: 2026-11-21 -->
 # VX Dev Team · Política global administrada · Core 1.6.0-rc1
 
 Esta fuente mantiene el **bloque VX administrado** de `~/.config/kilo/AGENTS.md` mediante el instalador unificado. No reescribir el resto del AGENTS del usuario ni imponer reglas a repositorios de clientes. Español neutro, evidencia verificable y mínimos privilegios.
