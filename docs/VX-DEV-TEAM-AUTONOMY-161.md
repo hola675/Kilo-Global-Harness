@@ -1,5 +1,5 @@
 # VX Dev Team — Contrato de autonomía y colaboración
-<!-- document_revision: 2; updated: 2026-11-22; status: SOURCE_IMPLEMENTED_RUNTIME_NOT_CERTIFIED -->
+<!-- document_revision: 3; updated: 2026-11-22; status: SOURCE_IMPLEMENTED_RUNTIME_NOT_CERTIFIED -->
 
 ## Objetivo
 Aumentar autonomía operativa sin ampliar permisos indiscriminadamente: el líder toma decisiones rutinarias, selecciona equipo mínimo, reparte archivos exactos y verifica resultados. Ningún texto de política eleva las ACL efectivas de Kilo.
@@ -48,8 +48,8 @@ Edición `ask` únicamente sobre archivos literales asignados; `task: deny`. Boa
 - Motor: `~/.config/kilo/harness/scripts/vx_task_dag.py`.
 - Estado: `~/.config/kilo/harness/state/vx-team-queue.sqlite3`.
 - Tablas: `tasks`, `events`, `project_config`; SQLite WAL, transacciones `BEGIN IMMEDIATE`.
-- El líder usa CLI `sync/report/start/event/verify/resume/reset` mediante shell autorizado por Kilo. El acceso no es un permiso SQL por agente; se basa en el control del host y el procedimiento.
-- `report` es lectura; el resto son mutaciones. Los hijos no reciben ruta de escritura ni una API de cola.
+- El líder usa CLI `sync/report/start/event/verify/resume/reset/audit/handoff/inbox` mediante shell autorizado por Kilo. Las mutaciones exigen `--actor vx-dev-team` (declaración, no autenticación). El acceso no es un permiso SQL por agente; se basa en el control del host y el procedimiento.
+- `report`, `audit`, `handoff` e `inbox` son lecturas; `sync`, `start`, `event`, `verify`, `resume` y `reset` son mutaciones. Los hijos no reciben ruta de escritura ni una API de cola.
 - No instalar servidor SQL, daemon, scheduler, puente MCP ni servicio Windows como requisito del Core.
 - No registrar prompts, secretos, contenido de código ni datos personales en eventos.
 - Una referencia de evidencia en la BD no autentica su origen; el líder debe contrastar `task_result`, trazas y diff.
