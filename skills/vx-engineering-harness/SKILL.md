@@ -57,7 +57,7 @@ Al terminar subagentes revisa sus hallazgos contra el árbol y la revisión Git 
 
 ## V4.2 — reconciliación sin cambios
 
-- Antes de migrar agentes existentes, usa el comando global `/vx-reconciliar` y el validador de campos JSONC/Markdown en `~/.config/kilo/harness/scripts/Reconciliar-Agentes-V4.2.ps1`.
+- Antes de modificar agentes globales, comparar el manifiesto Core 1.6, las definiciones actuales y el perfil instalado con lecturas autorizadas; no suponer disponible el antiguo comando `/vx-reconciliar` ni ejecutar validadores V4 retirados.
 - Compara identidades, modo, `steps`, permisos básicos y campos solapados. Los prompts, modelos y descripciones nunca se imprimen.
 - Un valor distinto no demuestra por sí mismo un fallo: Kilo puede fusionar propiedades por precedencia. No borres agentes ni sustituyas configuraciones privadas sin revisión, copia de seguridad y pruebas reales.
 - El auditor no consume modelos ni escribe archivos; cualquier migración futura requiere un plan independiente, pruebas y rollback.
