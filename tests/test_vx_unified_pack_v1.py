@@ -138,7 +138,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         collaboration = (ROOT / "skills/vx-agent-collaboration/SKILL.md").read_text(encoding="utf-8")
         bootstrap = (ROOT / "skills/vx-team-bootstrap/SKILL.md").read_text(encoding="utf-8")
         handoff = (ROOT / "skills/vx-implementation-handoff/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn('version: "0.4.0"', collaboration)
+        self.assertIn('version: "0.5.0"', collaboration)
         self.assertIn('version: "1.5.0"', bootstrap)
         for body in (collaboration, bootstrap, handoff):
             self.assertIn("board_post", body)
