@@ -1,9 +1,9 @@
 ---
-# last_modified: "2026-11-22"
 name: vx-frontend-quality
 description: "Usar al implementar o revisar UI web, accesibilidad, responsive, interacción y calidad visual; no activar para backend sin UI ni desktop nativo sin frontend web."
 metadata:
   version: "0.1.1"
+  last_modified: "2026-11-22"
 ---
 
 # VX Frontend Quality V0.1
