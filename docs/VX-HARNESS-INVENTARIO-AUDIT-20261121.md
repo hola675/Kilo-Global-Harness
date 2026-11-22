@@ -6,7 +6,7 @@
 
 ## Estado autorizado y conteos
 
-- **Árbol inventariado:** **416 archivos** (tras retirar el snapshot histórico de raíz `AUDITORIA-DETALLADA.md`).
+- **Árbol inventariado:** **415 archivos** (tras retirar el snapshot histórico de raíz `AUDITORIA-DETALLADA.md`).
 - **Assets del pack:** **80 rutas** = 18 agentes + 57 Skills + 3 comandos + 2 soportes.
 - **Un solo modo visible:** `vx-dev-team` (nombre VX Dev Team); 17 hijos ocultos, siete roles con Swarm sujeto a host.
 - **No cambios en runtime del usuario:** ni HOME, ni `kilo.jsonc`, ni MCP, permisos, AutoApprove o bases privadas.
@@ -18,7 +18,9 @@
 2. **[Corregido]** `docs/ARQUITECTURA.md` aún presentaba `vx-integrador` como líder V3. Se sustituyó por la arquitectura vigente de un único `VX Dev Team` y su canal Swarm/cola.
 3. **[Corregido]** la ayuda de `Instalar-DevTeam-Unificado.ps1` aún indicaba 43 Skills y V1.0; el backend `vx_unified_pack.py` decía Core V1. Ahora la descripción coincide con 18/57 y Core 1.6.
 4. **[Retirado, recuperable en Git]** `AUDITORIA-DETALLADA.md` documentaba una copia del 13 de noviembre anterior al pack actual. No era un insumo del instalador canónico; se elimina del árbol de trabajo, no de la historia Git.
-5. **[Compatibilidad retenida]** Seis archivos `agents/vx-integrador.md`, `vx-inspector.md`, `vx-researcher.md`, `vx-security-reviewer.md`, `vx-test-analyst.md`, `vx-frontend-adviser.md` NO pertenecen al pack activo, **pero** `registry/vx-agent-registry-v4.json`, `scripts/Validar-Registro-V4.ps1` y pruebas como `tests/test_vx_agent_permissions_v02.py` todavía los usan. Retirarlos sin migrar validador, pruebas y rollback rompería CI o la vía legacy.
+5. **[Retirado, recuperable en Git]** `docs/VX-CHECKPOINT-CONSOLIDACION-20261120.md` era una fotografía puntual de ramas del 20 de noviembre, sin enlaces desde las otras 77 guías Markdown consultadas. No era una fuente del instalador, las políticas ni el manifiesto actual.
+12. **[Corregido]** `.gitignore` ocultaba **todo `/scripts` y `/tests`** a Git cuando eran archivos nuevos, dificultando incorporar nuevas pruebas o utilidades. Se sustituyeron por patrones de archivos temporales y caches, manteniendo excluidas credenciales, bases de datos y backups.
+11. **[Compatibilidad retenida]** Seis archivos `agents/vx-integrador.md`, `vx-inspector.md`, `vx-researcher.md`, `vx-security-reviewer.md`, `vx-test-analyst.md`, `vx-frontend-adviser.md` NO pertenecen al pack activo, **pero** `registry/vx-agent-registry-v4.json`, `scripts/Validar-Registro-V4.ps1` y pruebas como `tests/test_vx_agent_permissions_v02.py` todavía los usan. Retirarlos sin migrar validador, pruebas y rollback rompería CI o la vía legacy.
 6. **[Compatibilidad retenida]** Los 32 comandos de `commands/` no enumerados por el manifiesto no se instalan en el Core actual, pero hay herramientas antiguas que los copian en bloque. No son automáticamente basura; necesitan evaluación por comando antes de borrar.
 7. **[Riesgo señalado]** `scripts/Instalar-Kilo-Global-Harness.ps1` aún utiliza `Get-ChildItem`/copia de `agents/` y `commands/` completos. **No usar ese instalador para renovar Core VX 1.6** o podría volver a instalar agentes/commands legacy. Las pruebas históricas siguen cubriendo su reversión; el retiro definitivo requiere sustituir primero dichos tests/gates.
 8. **[Propuestas aisladas]** Los JSON `*.proposal.json` son borradores, no assets instalados. Algunas Skills propuestas pueden ser útiles después; eliminarlos exige decisión de producto y comprobar sus consumidores, no solo su sufijo.
@@ -205,7 +207,7 @@
 - `skills/vx-self-improvement/SKILL.md` — FUERA_MANIFIESTO
 - `skills/vx-supply-chain-review/SKILL.md` — FUERA_MANIFIESTO
 
-### 09 DOCUMENTACIÓN — vigente, temática o histórica (80)
+### 09 DOCUMENTACIÓN — vigente, temática o histórica (79)
 
 - `README.md` — DOCUMENTACION
 - `docs/ARQUITECTURA.md` — DOCUMENTACION
@@ -223,7 +225,6 @@
 - `docs/VX-AUDITORIA-ORGANIZATIVA-V4.6.3.md` — DOCUMENTACION
 - `docs/VX-CAPACIDADES-V4.6.0.md` — DOCUMENTACION
 - `docs/VX-CERTIFICACION-RUNTIME-20261116.md` — DOCUMENTACION
-- `docs/VX-CHECKPOINT-CONSOLIDACION-20261120.md` — DOCUMENTACION
 - `docs/VX-CI-LIVING-GATES-V1.md` — DOCUMENTACION
 - `docs/VX-CI-TEST-OWNERSHIP-V1.md` — DOCUMENTACION
 - `docs/VX-CIERRE-BATERIA-V4.6.2-20261114.md` — DOCUMENTACION
