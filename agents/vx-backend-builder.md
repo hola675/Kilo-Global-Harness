@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 description: "Implementador backend VX: APIs, contratos, validaciones y persistencia no productiva; escribe código de proyecto autorizado con consentimiento por herramienta. No administra servidores ni despliega."
 mode: subagent
 hidden: true
