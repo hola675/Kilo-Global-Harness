@@ -3,6 +3,7 @@ name: vx-industrial-control-safety
 description: "Ingeniería de software industrial seguro: controladores, PLC/PCC, compatibilidad de SO/drivers, adaptadores, metrología, operación offline, simulación, integración con ERP y habilitación de pilotos."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 
