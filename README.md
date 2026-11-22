@@ -12,8 +12,8 @@
 | Skills | `skills/` y `runtime/dev-team-v2r/skills/` | **57** seleccionadas por el manifiesto; instalación local por verificar |
 | Comandos activos del pack | `commands/vx-equipo.md`, `vx-dependencias.md`, `vx-editorial.md` | **3** |
 | Archivos de soporte | `scripts/vx_task_dag.py` y manifiesto | **2** |
-| Política global | `rules/AGENTS-global-managed.md` | Bloque administrado de `~/.config/kilo/AGENTS.md` |
-| Instalación | `scripts/Instalar-DevTeam-Unificado.ps1` | Diagnóstico, simulación, aplicación y verificación |
+| Política global | `rules/AGENTS-global-managed.md` | **Reemplazo completo** de `~/.config/kilo/AGENTS.md` con respaldo |
+| Instalación | `scripts/Instalar-DevTeam-Unificado.ps1` | Inventario, backup DPAPI, sustitución, migración SQLite, verificación y restauración |
 | Validación de código | `.github/workflows/validar-harness.yml` | CI Windows; **no equivale a certificar Kilo runtime** |
 
 El sistema mantiene un solo modo principal. Seis builders (Frontend, Backend, Datos, QA, Docs y Editorial) pueden editar exclusivamente mediante los permisos reales del host (`ask`). Los otros once especialistas son de solo lectura. **Swarm** (`board_read/post`) está autorizado únicamente en el líder y los seis builders; la disponibilidad efectiva depende de Kilo Desktop.
@@ -23,12 +23,12 @@ El sistema mantiene un solo modo principal. Seis builders (Frontend, Backend, Da
 El operador expresa el resultado deseado al líder mediante lenguaje natural o `/vx-equipo`. El líder establece criterios, rutas y dependencias; despacha `task(background: true)` solo cuando Kilo realmente soporte esa opción; continúa con trabajo independiente **fuera de los archivos reservados**; recopila hitos y verifica los resultados antes de integrar.
 
 - Máximo cuatro subagentes en background; hasta dos escritores sobre archivos **exactos y disjuntos**. Un único escritor Git por worktree.
-- La cola SQLite de `vx_task_dag.py` es privada, opcional y transaccional. **No ejecuta agentes ni crea worktrees**. Las tareas bloqueadas mantienen su reserva hasta cierre comprobado.
+- La cola SQLite de `vx_task_dag.py` es privada, persistente y transaccional; el instalador aprovisiona su esquema v1 sin borrar datos existentes. **No ejecuta agentes ni crea worktrees**. Las tareas bloqueadas mantienen su reserva hasta cierre comprobado.
 - `board_post` comparte avances dentro de una sesión Swarm cuando existe; no asegura que otro agente haya leído o aprobado el mensaje.
 - El líder distingue `CLAIMED`, `DELIVERED` y `VERIFIED`; nunca declara pruebas runtime sin trazas reales.
 - Sin scheduler ni vigilancia persistente: con Kilo cerrado, la cola conserva estado pero no trabaja.
 
-Más detalles en [Autopilot V2](docs/VX-DEV-TEAM-AUTOPILOT-V2.md) y [política global](rules/AGENTS-global-managed.md). El bloque AGENTS global establece gobernanza común y **no sustituye el modo/agente activo**; la orquestación especializada permanece en `agents/vx-dev-team.md`.
+Más detalles en [Autopilot V2](docs/VX-DEV-TEAM-AUTOPILOT-V2.md) y [política global](rules/AGENTS-global-managed.md). El documento AGENTS global establece gobernanza común y **no sustituye el modo/agente activo**; la orquestación especializada permanece en `agents/vx-dev-team.md`.
 
 ## Instalar en Windows
 
@@ -55,7 +55,7 @@ pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 `
 pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Verificar
 ```
 
-El instalador crea un respaldo DPAPI y preserva `kilo.jsonc`, credenciales, conexiones MCP, modelos, AutoApprove y recursos de terceros. `Verificar` compara archivos; **la certificación real de delegación, permisos y Swarm ocurre dentro de Kilo**.
+El instalador inventaría el checkout, los worktrees, los archivos seleccionados ya existentes y hasta 14 rutas legacy VX explícitamente aprobadas; no elimina ramas, worktrees, archivos de proyecto ni recursos ajenos. Crea respaldo DPAPI de archivos y de la cola SQLite (snapshot consistente con WAL), migra aditivamente su esquema cuando procede, valida integridad y preserva las tareas/eventos existentes. Preserva `kilo.jsonc`, credenciales, conexiones MCP, modelos, AutoApprove y recursos de terceros. `Verificar` compara archivos y exige SQLite aprovisionada; **la certificación real de delegación, permisos y Swarm ocurre dentro de Kilo**.
 
 ## Qué no debe instalarse como sustituto
 
