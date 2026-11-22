@@ -223,7 +223,7 @@ def plan(home: Path) -> tuple[dict, list[tuple[str, bytes | None, bytes | None]]
     _check_paths(home, target_paths)
     before_rules = global_target.read_text(encoding="utf-8-sig") if global_target.is_file() else ""
     rules = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
-    after_rules = vx.managed_text(before_rules, rules).encode("utf-8")
+    after_rules = rules.encode("utf-8")  # Reemplazo íntegro solicitado; backup DPAPI previo y rollback.
     changes: list[tuple[str, bytes | None, bytes | None]] = []
     total = 0
     for item in [*pack["agents"], *pack["skills"], *pack["commands"], *pack["support_files"]]:

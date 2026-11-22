@@ -1060,6 +1060,9 @@ class UnifiedPackV1Tests(unittest.TestCase):
             retired_command.write_bytes(b"old P2 command\n")
             existing = home / ".config/kilo/agents/vx-dev-team.md"
             existing.write_bytes(b"outdated team\n")
+            global_agents = home / ".config/kilo/AGENTS.md"
+            global_agents.write_bytes(b"INSTRUCCIONES GLOBALES ANTERIORES\\n")
+            original_global = global_agents.read_bytes()
             cfg_before = conf.read_bytes()
             status, _ = module.plan(home)
             self.assertEqual(status["status"], "READY")
@@ -1075,10 +1078,13 @@ class UnifiedPackV1Tests(unittest.TestCase):
                              (ROOT/"commands/vx-equipo.md").read_bytes())
             self.assertNotEqual(existing.read_bytes(), b"outdated team\n")
             self.assertEqual(cfg_before, conf.read_bytes())
+            self.assertEqual(global_agents.read_text(encoding="utf-8"), (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8"))
+            self.assertNotIn(b"INSTRUCCIONES GLOBALES ANTERIORES", global_agents.read_bytes())
             self.assertEqual(third.read_bytes(), b"third party content\n")
             self.assertEqual(json.loads((receipt/"receipt.json").read_text())["state"], "INSTALLED")
             module.restore(home, receipt)
             self.assertEqual(json.loads((receipt/"receipt.json").read_text())["state"], "RESTORED")
+            self.assertEqual(global_agents.read_bytes(), original_global)
             self.assertEqual(existing.read_bytes(), b"outdated team\n")
             self.assertEqual(retired.read_bytes(), b"VX old version\n")
             self.assertEqual(retired_command.read_bytes(), b"old P2 command\n")
@@ -1274,6 +1280,15 @@ class SkillDescriptionRoutingTests(unittest.TestCase):
         implementation = (ROOT / "skills/vx-test-regression/SKILL.md").read_text(encoding="utf-8")
         self.assertIn("sin ejecutar tests", strategy.split("---", 2)[1])
         self.assertIn("UPDATE/REPLACE/ADD", implementation.split("---", 2)[1])
+
+
+class GlobalAgentsFullReplacementTests(unittest.TestCase):
+    def test_unified_installer_replaces_entire_global_agents_file(self):
+        code = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('after_rules = rules.encode("utf-8")', code)
+        self.assertNotIn('after_rules = vx.managed_text(before_rules, rules)', code)
+        self.assertIn('changes.append((".config/kilo/AGENTS.md", rule_before, after_rules))', code)
+        self.assertIn('permitted.add(".config/kilo/AGENTS.md")', code)
 
 
 class GlobalBranchWorktreeBudgetTests(unittest.TestCase):

@@ -1,9 +1,9 @@
-<!-- component_version: 2.2.0; last_modified: 2026-11-22 -->
+<!-- component_version: 2.3.0; last_modified: 2026-11-22 -->
 # AGENTS global · Gobernanza y uso del Kilo Global Harness
 
 ## Identidad y alcance
 
-Este documento es una **política global de uso del Harness**, no un agente ejecutor, un modo de chat, un prompt de sistema ni una definición alternativa de `vx-dev-team`. Se inserta como bloque administrado dentro de `~/.config/kilo/AGENTS.md` y se aplica a las sesiones de Kilo que carguen ese archivo, siempre subordinado a las instrucciones y permisos efectivos del host.
+Este documento es una **política global de uso del Harness**, no un agente ejecutor, un modo de chat, un prompt de sistema ni una definición alternativa de `vx-dev-team`. Se instala sustituyendo íntegramente `~/.config/kilo/AGENTS.md` (con respaldo y restauración del archivo previo) y se aplica a las sesiones de Kilo que carguen ese archivo, siempre subordinado a las instrucciones y permisos efectivos del host.
 
 **No sustituir al agente activo.** El modo seleccionado conserva su identidad, herramientas, objetivos, ACL y flujo de trabajo. Si el modo es `vx-dev-team`, su archivo de definición `~/.config/kilo/agents/vx-dev-team.md` establece la orquestación del equipo; este AGENTS global únicamente establece las reglas comunes. Si el usuario selecciona otro agente, no convertirlo en VX, no delegar en nombre de VX y no imponerle los flujos especializados del equipo.
 
