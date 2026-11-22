@@ -74,3 +74,16 @@ Prerequisitos: Windows, PowerShell 7, Python con sqlite3 y DPAPI CurrentUser, Gi
 - Cola SQLite: la CLI de mutación exige `--actor vx-dev-team`; es un guardarraíl declarativo, **no autenticación**, y no impide que otro proceso con permisos de archivo escriba en la base.
 - La ejecución de agentes, el aislamiento de worktrees, los permisos efectivos del host y el canal Board siguen sujetos a comprobación real en Kilo Desktop. No atribuirles certificación por CI de source.
 - No activar instalación global ni declarar runtime certificado sin validación del equipo Windows y aprobación de los gates del instalador.
+
+## Incremento funcional siguiente: auditoría de coordinación
+- `python scripts/vx_task_dag.py --queue-action audit --project NOMBRE` inspecciona hasta 1000 eventos de ese proyecto sin escribir la base.
+- Añadir `--task-id ID` para limitar a una tarea existente; no expone `summary` ni `evidence_ref` en el informe de auditoría.
+- `audit` y `report` no requieren `--actor`; las mutaciones siguen exigiendo `--actor vx-dev-team` y autorización del host.
+- Esto facilita reconciliación y diagnóstico, pero no proporciona ejecución automática de agentes, autenticación de eventos ni certificación del host.
+
+## Herramienta funcional de intercambio: handoff
+- `python scripts/vx_task_dag.py --queue-action handoff --project NOMBRE` genera contratos estructurados para las tareas candidatas seleccionadas por el DAG y los límites de concurrencia.
+- Cada contrato expone `task_id`, `owner`, `reviewer`, `writer`, `worktree`, `allowed_paths`, `depends_on`, `contract_version` y `requires_host_approval`.
+- La selección admite hasta cuatro tareas y dos escritores; las dependencias pendientes y conflictos de rutas se difieren. No se inician sesiones ni se emiten permisos del host.
+- Flujo operativo: líder consulta `handoff`, solicita al host `task` por cada candidato permitido, registra `start` con ID real, recibe `task_result`, registra `event`, exige revisión/pruebas y finalmente `verify`. Una propuesta nunca se considera trabajo realizado.
+- Los 6 agentes builder siguen sujetos a `ask` para mutaciones; el intercambio de contratos no equivale a una herramienta de mensajería directa ni confirma ejecución simultánea.
