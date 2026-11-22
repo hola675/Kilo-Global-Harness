@@ -13,7 +13,7 @@ En tareas complejas, seguir `DISCOVER → PLAN → BUILD → VERIFY → REVIEW �
 
 Antes de `BUILD` en cualquier repositorio: observar HEAD, branch, worktree, `git status`, origen de versión y cambios X/Y/Z (o registrar `BASELINE_UNVERIFIED` si una herramienta no lo permite). Conservar rutas sucias y trabajo ajeno. No confundir `WORK_VERSION` con `RELEASE_VERSION`, no crear tags por cada cambio ni ejecutar migraciones/despliegues sin autorización. El protocolo detallado está en `vx-version-governance`; la regla mínima vive en `vx-team-bootstrap` ya permitido y **no requiere ampliar ACL** para aplicarse.
 
-Clasificar producto por `OBSERVED_STACK` + `PLATFORM_SCOPE` + `TASK_INTENT`, nunca por nombre de cliente. El catálogo `registry/vx-contextual-skills-v1.json` registra `vx-context-routing`, `vx-technology-fit` y `vx-skill-quality` como referencia source inactiva. Solo cargar Skills realmente visibles/autorizadas para el agente, sin intentar eludir `skill: deny`. El método específico (bug, feature, refactor, integración, migración, hotfix) se decide en `vx-desarrollo-escalonado`; para una consulta de lectura no activar gate de mutaciones.
+Clasificar producto por `OBSERVED_STACK` + `PLATFORM_SCOPE` + `TASK_INTENT`, nunca por nombre de cliente. El catálogo documental `registry/vx-contextual-skills-v1.json` registra `vx-context-routing`, `vx-technology-fit` y `vx-skill-quality` como Skills presentes en el Core pero sujetas a allowlists (no activadas por ese catálogo). Solo cargar Skills realmente visibles/autorizadas para el agente, sin intentar eludir `skill: deny`. El método específico (bug, feature, refactor, integración, migración, hotfix) se decide en `vx-desarrollo-escalonado`; para una consulta de lectura no activar gate de mutaciones.
 
 ## Enrutamiento
 
@@ -52,12 +52,12 @@ Registrar alcance, archivos tocados, comandos y resultado verificable, cambios d
 
 ## Gate de exactitud y procedencia V4.1
 
-Al terminar subagentes revisa sus hallazgos contra el árbol y la revisión Git actuales. Guarda la distinción entre PASS de orquestación, FAIL de código, hipótesis DESCARTADAS y pruebas NO VERIFICADAS. No ejecutes fetch, pull ni build cuando la tarea sea SOLO LECTURA. Una diferencia de Git sin logs no autoriza inferir quién cambió referencias. Para informes contradictorios usa /vx-revalidar sin lanzar agentes redundantes.
+Al terminar subagentes revisa sus hallazgos contra el árbol y la revisión Git actuales. Guarda la distinción entre PASS de orquestación, FAIL de código, hipótesis DESCARTADAS y pruebas NO VERIFICADAS. No ejecutes fetch, pull ni build cuando la tarea sea SOLO LECTURA. Una diferencia de Git sin logs no autoriza inferir quién cambió referencias. Ante informes contradictorios, contrastar diff, línea y versión actuales mediante lecturas autorizadas; registrar `NOT_VERIFIED` cuando no haya evidencia. No invocar el comando histórico `/vx-revalidar`.
 
 
 ## V4.2 — reconciliación sin cambios
 
-- Antes de migrar agentes existentes, usa el comando global `/vx-reconciliar` y el validador de campos JSONC/Markdown en `~/.config/kilo/harness/scripts/Reconciliar-Agentes-V4.2.ps1`.
+- Antes de modificar agentes globales, comparar el manifiesto Core 1.6, las definiciones actuales y el perfil instalado con lecturas autorizadas; no invocar comandos V4 retirados ni ejecutar validadores antiguos.
 - Compara identidades, modo, `steps`, permisos básicos y campos solapados. Los prompts, modelos y descripciones nunca se imprimen.
 - Un valor distinto no demuestra por sí mismo un fallo: Kilo puede fusionar propiedades por precedencia. No borres agentes ni sustituyas configuraciones privadas sin revisión, copia de seguridad y pruebas reales.
 - El auditor no consume modelos ni escribe archivos; cualquier migración futura requiere un plan independiente, pruebas y rollback.
@@ -65,4 +65,4 @@ Al terminar subagentes revisa sus hallazgos contra el árbol y la revisión Git 
 
 ## Observación selectiva V4.3
 
-VX Evolution pertenece exclusivamente a Kilo. No cargar el skill de gobernanza para tareas triviales. Después de una corrección importante o un fallo repetido, ofrecer una observación breve, neutra y verificada mediante /vx-observer, sin copiar detalles de clientes. El historial global se escribe solo tras invocación explícita; ninguna propuesta se aprueba o instala automáticamente. Las reuniones semanales/mensuales no están programadas hasta V4.5.
+VX Evolution pertenece exclusivamente a Kilo. No cargar el skill de gobernanza para tareas triviales. Después de una corrección importante o un fallo repetido, entregar una nota de mejora breve y basada en evidencia al líder dentro de `task_result`, sin copiar datos de clientes. No invocar `/vx-observer`: el observador y las reuniones automáticas no forman parte de este Core.

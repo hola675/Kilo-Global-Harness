@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-# VX Pack Bootstrap 0.2.2 — Windows/Kilo Code exclusively.
-# Preview by default. Real apply only with --home and --confirm-migration.
-# Existing MCP/providers/credentials remain byte-identical in kilo.jsonc.
-# Secret-bearing profile snapshot is encrypted using CurrentUser DPAPI.
+# VX Core 1.6 · módulo de seguridad DPAPI, rutas y configuración del perfil.
+# Dependencia importada por vx_pack_coexist_v023.py y vx_unified_pack.py.
+# Su CLI heredada NO es el instalador soportado del Core; ejecutar únicamente
+# Instalar-DevTeam-Unificado.ps1 para instalar o restaurar el paquete actual.
+# Nunca modificar MCP, proveedores, credenciales ni kilo.jsonc.
 from __future__ import annotations
 
 import argparse

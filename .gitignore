@@ -14,8 +14,17 @@
 **/credentials*/
 **/tokens*/
 *.log
-/scripts
-/tests
+# El codigo fuente de scripts/ y tests/ debe poder versionarse.
+# No ignorar directorios enteros: ocultaria nuevos tests y utilidades.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.coverage.*
+*.tmp
+*.bak
+*.orig
+*.rej
 
 # Evidencia del preflight: no versionar snapshots locales de runtime
 /artifacts/

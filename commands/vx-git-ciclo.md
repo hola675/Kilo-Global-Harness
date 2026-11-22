@@ -1,6 +1,0 @@
----
-description: Ejecutar ciclo Git controlado con rama temporal y main permanente
-agent: code
----
-
-Trabaja sobre el repositorio Git realmente abierto. Primero comprueba `git status --porcelain`, `git branch --show-current`, worktrees, remotos, HEAD de `origin/main` y tareas activas; NO sobrescribas cambios del usuario. Una rama `work/<resumen>` propia por tarea desde `main` sincronizada; otras tareas independientes pueden conservar ramas simultáneas solo en worktrees aislados (un escritor por worktree). Ante `MAIN_ADVANCED`, el propietario de cada rama activa pausa en un punto seguro, comprueba árbol limpio/identidad/SHA y concilia con `origin/main` actualizado; conflicto o falta de permiso = PAUSED_NEEDS_REVIEW, sin auto-stash ni auto-resolución. Revalidar con tests focalizados y diff antes de reanudar. La notificación automática no está activada: el planificador actual es PLAN_ONLY. Revisa cambios, CI y revisión independiente, crea PR, integra y verifica `main`, archiva/retira solo la rama propia de esta tarea; las demás ramas deben reconciliar con la nueva main. Prohibido force push, `reset --hard`, rebase destructivo y borrado de ramas ajenas. No cambiar ACL, HOME ni configuración Kilo. Ver `docs/VX-TEAM-GIT-RECONCILIATION-V1.md`. Tarea: $ARGUMENTS.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""VX Task DAG V0.3: planea trabajo y gestiona cola privada SQLite; no invoca subagentes."""
+"""VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
 import argparse
 import json

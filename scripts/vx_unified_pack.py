@@ -1,4 +1,4 @@
-"""Instalador único VX Dev Team Core v1: transaccional, conservador y reversible.
+"""Instalador vigente VX Dev Team Core 1.6: transaccional, conservador y reversible.
 
 Solo gestiona IDs exactos del manifiesto; nunca modifica kilo.jsonc, MCP ni terceros.
 Simular/diagnosticar son read-only; apply/restore requieren Windows y DPAPI CurrentUser.
@@ -30,6 +30,24 @@ MANIFEST = ROOT / "registry/vx-unified-pack-v1.json"
 SCHEMA = "vx-unified-snapshot/1"
 RECEIPT = "vx-unified-receipt/1"
 BACKUP_DIR = ".config/kilo-harness-backups"
+# Legacy paths are install-time retirement targets, not runtime agent sources.
+# Pinning this exact set eliminates the obsolete V4 registry as a dependency.
+APPROVED_LEGACY_RETIREMENTS = frozenset({
+    ".config/kilo/agents/vx-integrador.md",
+    ".config/kilo/agents/vx-inspector.md",
+    ".config/kilo/agents/vx-researcher.md",
+    ".config/kilo/agents/vx-security-reviewer.md",
+    ".config/kilo/agents/vx-test-analyst.md",
+    ".config/kilo/agents/vx-frontend-adviser.md",
+    ".kilo/skills/vx-evolution-core/SKILL.md",
+    ".kilo/skills/vx-security-review/SKILL.md",
+    ".kilo/skills/vx-self-improvement/SKILL.md",
+    ".kilo/skills/vx-architecture-decisions/SKILL.md",
+    ".kilo/skills/vx-codebase-investigation/SKILL.md",
+    ".kilo/skills/vx-supply-chain-review/SKILL.md",
+    ".kilo/skills/vx-accessibility-review/SKILL.md",
+    ".config/kilo/commands/vx-p2.md",
+})
 
 
 def digest(blob: bytes | None) -> str | None:
@@ -76,12 +94,9 @@ def load_manifest() -> dict:
     if len(legacy_items) != 14 or len(set(legacy_items)) != len(legacy_items):
         raise Blocked("Retiro legacy inesperado.")
     owned = {item["target"] for item in [*agents, *skills, *commands, *support]}
-    oldpack = json.loads((ROOT / "registry/vx-agent-registry-v4.json").read_text(encoding="utf-8"))["pack"]
-    previous = {f".config/kilo/agents/{id}.md" for id in oldpack["owned_agents"]}
-    previous |= {f".kilo/skills/{id}/SKILL.md" for id in oldpack["owned_skills"]}
-    previous.add(".config/kilo/commands/vx-p2.md")
-    if any(x not in previous or x in owned or ".." in Path(x).parts for x in legacy_items):
-        raise Blocked("Retiro no pertenece a assets legacy declarados.")
+    if (set(legacy_items) != APPROVED_LEGACY_RETIREMENTS
+            or any(x in owned or ".." in Path(x).parts for x in legacy_items)):
+        raise Blocked("Retiro legacy fuera de la lista exacta auditada.")
     return pack
 
 
