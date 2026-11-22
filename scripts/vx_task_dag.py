@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# component_version: 1.3.0
+# component_version: 1.4.0
 # last_modified: 2026-11-22
 """VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
@@ -602,10 +602,42 @@ def _queue_handoff(conn: sqlite3.Connection, project: str,
     }
 
 
+def _queue_inbox(conn: sqlite3.Connection, project: str,
+                 agent: str, known: set[str]) -> dict[str, Any]:
+    """Read-only per-role coordination summary, not an authenticated mailbox."""
+    if agent not in known:
+        raise ValueError("Agente no declarado en el manifiesto.")
+    tasks = _queue_tasks(conn, project)
+    mine = [t for t in tasks if t["owner"] == agent or t["reviewer"] == agent]
+    inbox = []
+    for task in mine:
+        row = conn.execute(
+            "SELECT event,observed_at,event_key FROM events "
+            "WHERE project=? AND id=? ORDER BY observed_at DESC,event_key DESC LIMIT 1",
+            (project, task["id"]),
+        ).fetchone()
+        inbox.append({
+            "task_id": task["id"],
+            "role": "owner" if task["owner"] == agent else "reviewer",
+            "peer": task["reviewer"] if task["owner"] == agent else task["owner"],
+            "state": task["state"],
+            "depends_on": task.get("depends_on", []),
+            "latest_event": dict(row) if row else None,
+            "requires_review": task["state"] == "REVIEW" and task["reviewer"] == agent,
+            "blocked": task["state"] == "BLOCKED",
+        })
+    return {
+        "schema": "vx-team-inbox/1", "project": project, "agent": agent,
+        "items": inbox, "actions_executed": 0,
+        "authenticated": False, "host_delivery_confirmed": False,
+        "note": "Vista de coordinación declarada; no es canal de mensajería autenticado.",
+    }
+
+
 def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
     if not args.project or not QUEUE_PROJECT.fullmatch(args.project):
         raise ValueError("Proyecto de cola invalido.")
-    mutate = args.queue_action not in ("report", "audit", "handoff")
+    mutate = args.queue_action not in ("report", "audit", "handoff", "inbox")
     # Declaración de rol, NO autenticación: la protección real depende de ACL del
     # proceso/host. No permitir mutaciones accidentales desde otros roles.
     if mutate and getattr(args, "actor", None) != "vx-dev-team":
@@ -633,6 +665,10 @@ def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
             return _queue_audit(conn, args.project, args.task_id)
         if args.queue_action == "handoff":
             return _queue_handoff(conn, args.project, known, writable)
+        if args.queue_action == "inbox":
+            if not args.agent:
+                raise ValueError("inbox requiere --agent.")
+            return _queue_inbox(conn, args.project, args.agent, known)
         return _queue_report(conn, args.project, known, writable)
     finally:
         conn.close()
@@ -641,8 +677,9 @@ def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida DAG de tareas de agente VX sin acciones.")
     parser.add_argument("--plan", type=Path)
+    parser.add_argument("--agent", help="Agente destinatario para vista de coordinación; no autentica identidad")
     parser.add_argument("--actor", help="Rol declarado; no autentica identidad del proceso")
-    parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report","audit","handoff"])
+    parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report","audit","handoff","inbox"])
     parser.add_argument("--queue-db", type=Path)
     parser.add_argument("--project")
     parser.add_argument("--task-id")
