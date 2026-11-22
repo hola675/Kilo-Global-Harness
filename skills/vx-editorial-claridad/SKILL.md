@@ -1,6 +1,9 @@
 ---
+# last_modified: 2026-11-21
 name: vx-editorial-claridad
 description: "Redacta y edita textos, microcopy y contenidos en español claro y preciso; distingue significado, alcance y público, preserva hechos y prueba comprensibilidad sin inventar validación humana."
+metadata:
+  version: "1.0.0"
 ---
 
 # VX Editorial — Claridad, precisión y comprensión V1.0
