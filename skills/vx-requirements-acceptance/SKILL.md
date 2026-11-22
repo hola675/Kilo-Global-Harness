@@ -1,9 +1,9 @@
 ---
-# last_modified: "2026-11-22"
 name: vx-requirements-acceptance
 description: "Usar para aclarar requisitos ambiguos, delimitar alcance y transformar objetivos de producto en criterios de aceptación verificables; no activar si ya están claros."
 metadata:
   version: "1.0.1"
+  last_modified: "2026-11-22"
 metadata:
   version: "0.2.0"
   origin: "vx-original"
