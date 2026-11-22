@@ -59,9 +59,11 @@ El instalador crea un respaldo DPAPI y preserva `kilo.jsonc`, credenciales, cone
 
 ## Qué no debe instalarse como sustituto
 
-El repositorio conserva **código de compatibilidad y pruebas históricas**: `Instalar-Kilo-Global-Harness.ps1`, `Instalar-DevTeam-Only.ps1`, instalaciones de convivencia antiguas, otros 32 comandos VX, propuestas en `registry/*.proposal.json` y snapshots de certificación. **No corresponden al pack activo de 18/57/3/2** ni deben activarse simultáneamente al instalador unificado.
+El árbol actual mantiene **solo los archivos del Core 1.6 que se instalan, sus dependencias directas, las pruebas esenciales y la documentación necesaria**. Los instaladores, agentes y comandos VX anteriores, catálogos de propuestas y suites de versiones pasadas se retiraron de la rama de trabajo después de sustituir sus dependencias operativas y de CI.
 
-No borrar automáticamente fuentes que aún utilizan validadores antiguos, restauración o suites de regresión. Consultar [inventario de auditoría](docs/VX-HARNESS-INVENTARIO-AUDIT-20261121.md) para el estado y la política de retiro.
+**Excepción consciente:** `scripts/vx_pack_coexist_v023.py` y `scripts/vx_pack_bootstrap.py` tienen nombres históricos, pero siguen siendo dependencias *efectivas* del instalador vigente para inspección segura de HOME, cifrado DPAPI y restauración. Las 14 rutas legacy que el instalador puede retirar del perfil están fijadas en su motor, aunque sus archivos fuente antiguos ya no estén presentes. Todo lo eliminado permanece recuperable mediante el historial Git.
+
+Consultar [registro de depuración](docs/VX-HARNESS-INVENTARIO-AUDIT-20261121.md) para el alcance exacto y los criterios de retención.
 
 ## Documentación principal
 
@@ -70,10 +72,10 @@ No borrar automáticamente fuentes que aún utilizan validadores antiguos, resta
 - [Operación concurrente y recuperación](docs/VX-DEV-TEAM-AUTOPILOT-V2.md)
 - [Política global administrada](rules/AGENTS-global-managed.md)
 - [Matriz de permisos y fuentes](registry/vx-unified-pack-v1.json)
-- [Pruebas focalizadas y gates vivos](docs/VX-CI-LIVING-GATES-V1.md)
+- [Pruebas actuales de instalación, permisos y cola](tests/test_vx_unified_pack_v1.py)
 - [Inventario completo y retirada de legacy](docs/VX-HARNESS-INVENTARIO-AUDIT-20261121.md)
 
-Las guías V3/V4 y las propuestas VX Academy/Dev Team anteriores siguen en `docs/` y `registry/` como **historia o diseño opcional**, no como instrucciones de instalación del equipo actual. Su historia de cambios completa también permanece en Git.
+Las propuestas y guías V3/V4 que ya no forman parte del Core solo permanecen en el historial Git, no dentro del paquete distribuido.
 
 ## Desarrollo y seguridad
 
