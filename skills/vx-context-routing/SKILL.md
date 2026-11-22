@@ -1,10 +1,10 @@
 ---
 name: vx-context-routing
-description: "Seleccionar skills globales según contexto técnico observado (web, API, escritorio, móvil, ERP, redes Windows, industrial, UX, datos) y tipo de cambio; nunca por nombre del proyecto ni por preferencias ajenas a su stack."
+description: "Usar para seleccionar Skills VX cuando la tarea combina tecnologías o especialidades y existe riesgo de activación errónea; decidir por stack real y alcance."
 compatibility: "Agent Skills; Kilo Code/Kilo Desktop. Advisory-only, no ejecuta herramientas ni cambia ACL."
 metadata:
-  version: "1.0.0"
-  last_modified: "2026-11-21"
+  version: "1.0.1"
+  last_modified: "2026-11-22"
   origin: "vx-unified"
   category: "routing"
 ---
