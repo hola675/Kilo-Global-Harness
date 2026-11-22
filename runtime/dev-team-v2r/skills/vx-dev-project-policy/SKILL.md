@@ -4,6 +4,7 @@ description: "Aplica las políticas de proyecto del Dev Team: alcance mínimo, r
 compatibility: "Kilo Code Dev Team. Advisory-only; no concede permisos ni ejecuta shell."
 metadata:
   version: "1.1.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "governance"
 ---
