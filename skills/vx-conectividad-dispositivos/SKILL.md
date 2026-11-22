@@ -3,6 +3,7 @@ name: vx-conectividad-dispositivos
 description: "Diseñar conectividad local segura entre Windows/Android u otros dispositivos usando LAN, QR, mDNS, WebSocket, Bluetooth y Wi-Fi Direct por necesidad, sin presumir compatibilidad ni instalar dependencias automáticamente."
 metadata:
   version: "1.1.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
 ---
 
