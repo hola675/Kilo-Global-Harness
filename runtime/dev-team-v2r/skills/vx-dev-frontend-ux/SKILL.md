@@ -4,6 +4,7 @@ description: "Revisa flujos frontend y calidad UX/UI: jerarquía, responsive, in
 compatibility: "Read-only; no genera diseño gráfico ni ejecuta navegador."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "frontend-ux"
 ---
