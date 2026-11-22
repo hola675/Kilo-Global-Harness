@@ -28,7 +28,7 @@ El operador expresa el resultado deseado al líder mediante lenguaje natural o `
 - El líder distingue `CLAIMED`, `DELIVERED` y `VERIFIED`; nunca declara pruebas runtime sin trazas reales.
 - Sin scheduler ni vigilancia persistente: con Kilo cerrado, la cola conserva estado pero no trabaja.
 
-Más detalles en [Autopilot V2](docs/VX-DEV-TEAM-AUTOPILOT-V2.md) y [política global](rules/AGENTS-global-managed.md).
+Más detalles en [Autopilot V2](docs/VX-DEV-TEAM-AUTOPILOT-V2.md) y [política global](rules/AGENTS-global-managed.md). El bloque AGENTS global establece gobernanza común y **no sustituye el modo/agente activo**; la orquestación especializada permanece en `agents/vx-dev-team.md`.
 
 ## Instalar en Windows
 
