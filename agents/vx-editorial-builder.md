@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 description: "Agente editorial VX: crea y revisa textos y contenidos en español claro, preciso e inclusivo para interfaces, formularios, guías, artículos y comunicaciones; edita con autorización por herramienta."
 mode: subagent
 hidden: true
