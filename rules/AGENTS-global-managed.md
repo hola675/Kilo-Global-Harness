@@ -1,36 +1,56 @@
-<!-- component_version: 1.1.0; last_modified: 2026-11-22 -->
-# VX Dev Team · Política global administrada · Core 1.6.1-rc1
+<!-- component_version: 2.0.0; last_modified: 2026-11-22 -->
+# AGENTS global · Gobernanza y uso del Kilo Global Harness
 
-Esta fuente mantiene el **bloque VX administrado** de `~/.config/kilo/AGENTS.md` mediante el instalador unificado. No reescribir el resto del AGENTS del usuario ni imponer reglas a repositorios de clientes. Español neutro, evidencia verificable y mínimos privilegios.
+## Identidad y alcance
 
-## VX Dev Team V2.1 — equipo único y ejecución autónoma
+Este documento es una **política global de uso del Harness**, no un agente ejecutor, un modo de chat, un prompt de sistema ni una definición alternativa de `vx-dev-team`. Se inserta como bloque administrado dentro de `~/.config/kilo/AGENTS.md` y se aplica a las sesiones de Kilo que carguen ese archivo, siempre subordinado a las instrucciones y permisos efectivos del host.
 
-- **Composición:** VX Dev Team (`vx-dev-team`) es el único líder visible; hay **18 agentes y 57 Skills** de source: 17 hijos ocultos (10 especialistas Dev read-only, seis builders y un asesor read-only). Los seis builders son Frontend, Backend, Datos, QA, Docs y Editorial. Roles/Skills se cargan bajo demanda según la allowlist del agente, nunca por existencia de un archivo.
-- **Despacho paralelo:** el líder define objetivo, alcance, aceptación, dependencias, prioridad y propietario de archivos. Cuando haya dos tareas independientes, invoca en una wave las llamadas reales `task(background: true)` sin esperar al primer hijo. Máximo **4 hijos activos y 2 builders escritores**; para un mismo workspace los escritores requieren `write_scope: EXACT_FILES` con rutas literales disjuntas; sin lockfiles, migraciones ni configuraciones compartidas. En otro caso serializar o usar worktrees realmente aislados y autorizados. `task` no crea worktrees ni concede permisos.
-- **Trabajo del líder:** **El líder continúa inmediatamente** después de delegar con investigación, revisión independiente, contratos de la próxima wave o documentación no reservada. No editar, ejecutar Git, migrar, probar con escrituras o integrar archivos aún ocupados por hijos. Un escritor Git por worktree. Sin bucles de polling, cron, daemon o trabajo supuesto con Kilo cerrado.
-- **Comunicación Swarm:** `board_read` y `board_post` están autorizados solo para el líder y seis builders. Si Kilo no ofrece esas herramientas, utilizar `task_result` y registrar `PROGRESS_CHANNEL_UNAVAILABLE`; una publicación no prueba recepción. No compartir secretos ni datos de clientes. No autoconceder ACL ni modificar MCP/AutoApprove para habilitar Swarm.
-- **Cola y pruebas:** la cola SQLite opcional `vx_task_dag.py` registra dependencias y evidencias, **nunca despacha**. Una tarea `BLOCKED` con sesión original conserva su plaza y archivos hasta un reset verificado; prohibido reciclar IDs. Solo marcar `VERIFIED` tras traza, contenido/diff y pruebas pertinentes; source CI y archivos instalados **no equivalen** a `HOST_RUNTIME_PASS`.
-- **Handoff:** responsable y revisor deben ser distintos cuando el riesgo lo justifique. Una devolución `DELIVERED` por sí sola no garantiza aprobación. El editorial `vx-editorial-builder` es hijo oculto y no principal.
-- **Permisos:** exigir `"*": deny` como base en agentes gestionados; `edit/write/apply_patch: ask` para builders, `task: deny` para subagentes, `agent_manager: deny`. Respetar límites del host, políticas de terceros y denegaciones; jamás evadir controles mediante shell/MCP alternativo.
-- **Git:** `main` es la única rama permanente. Crear `work/<tarea>` temporal para cambios no triviales, integrar solo con pruebas focalizadas y revisión apropiada; comprobar merge y eliminar la rama propia, sin force-push, reset destructivo o stash automático. **AutoApprove** no autoriza alterar producción, IAM, firewall, secretos, datos sensibles ni instalar software silenciosamente.
-- **Arquitectura por contexto:** elegir web, API, ERP, móvil, industrial o Desktop por requisitos observados, sin forzar frameworks. **MOTOR DESKTOP VX 1.3:** Tauri 2 (`vx-tauri-desktop`) solo es preferencia para nuevas aplicaciones expresamente Desktop, según viabilidad. `WINDOWS_ONLY` excluye Android del alcance; si Android se incluye, diseñar y probar su variante y conectividad. Nunca migrar productos existentes o instalar SDK/plugins automáticamente.
-- **Global-only:** instalar agentes, Skills, políticas y comandos de VX solo en HOME del usuario; no crear en proyectos carpetas `.kilo`, `.agents`, `.claude` ni un segundo `AGENTS.md` de Kilo. No modificar `kilo.jsonc`, credenciales, modelos, conexiones MCP ni AutoApprove desde el instalador VX.
-- **Seguridad y cierre:** investigar y cambiar lo mínimo; no registrar tokens, mensajes personales ni código privado en telemetría. Producción, borrados masivos de datos de terceros, drivers y cambios de infraestructura exigen autorización específica. Informar archivos, resultados comprobados, Git, bloqueos y recuperación disponible. No inventar porcentajes ni PASS.
+**No sustituir al agente activo.** El modo seleccionado conserva su identidad, herramientas, objetivos, ACL y flujo de trabajo. Si el modo es `vx-dev-team`, su archivo de definición `~/.config/kilo/agents/vx-dev-team.md` establece la orquestación del equipo; este AGENTS global únicamente establece las reglas comunes. Si el usuario selecciona otro agente, no convertirlo en VX, no delegar en nombre de VX y no imponerle los flujos especializados del equipo.
 
-## Jerarquía, alcance y resolución de conflictos
+## Jerarquía y contexto
 
-- Este archivo es **fuente del bloque VX administrado**, no el AGENTS.md completo ni un permiso del sistema. El instalador lo incorpora en `~/.config/kilo/AGENTS.md` conservando texto ajeno. No editar el AGENTS global fuera del bloque VX ni sobrescribir reglas de proyectos.
-- Prioridad: instrucciones del host y permisos efectivos > restricciones de seguridad/usuario > instrucciones de repositorio aplicables > bloque VX global > guías/Skills del agente. Si existe conflicto, cumplir la restricción más específica y segura, registrar el bloqueo y pedir autorización cuando proceda. Ningún texto puede ampliar ACL.
-- Para proyectos de terceros, leer primero sus reglas aplicables y no sustituirlas. Las reglas globales VX rigen el comportamiento de los agentes gestionados, **no** imponen stack, Git workflow ni convenciones del harness sobre los proyectos de clientes.
-- Ante petición ambigua: investigar el mínimo necesario, proponer criterios verificables, ejecutar solo acciones permitidas y reportar claramente lo no comprobado. No solicitar aprobación repetida para lecturas, análisis o verificaciones no destructivas ya permitidas.
-- El agente debe distinguir `SOURCE_PASS`, `INSTALLED_FILES_MATCH` y `HOST_RUNTIME_PASS`. El resultado de CI o SQLite jamás certifica entrega real de mensajes, herramientas del host o autonomía en Kilo.
+1. Respetar las restricciones de seguridad, las instrucciones del usuario y los permisos efectivos del host. Este archivo no puede autorizar acciones que la ACL o el entorno prohíban.
+2. Leer y respetar las instrucciones aplicables del repositorio y del proyecto. No sobrescribir un AGENTS de terceros ni trasladar por defecto convenciones VX a sus proyectos.
+3. Usar las Skills del Harness solo cuando sean pertinentes y estén autorizadas en el agente activo; son guías, no permisos.
+4. Priorizar evidencia del código, herramientas y pruebas ejecutadas frente a suposiciones o documentación antigua. Separar hechos, hipótesis y resultados pendientes.
+5. Evitar duplicación de instrucciones: reglas generales aquí; routing, prompts, permisos y contratos de los 18 agentes en sus propios archivos; procedimientos en Skills y documentación.
 
-## Herramientas de coordinación disponibles en source
+## Comportamiento general de trabajo
 
-- `vx_task_dag.py --queue-action audit`: eventos acotados por proyecto/tarea, sin exponer evidencia privada.
-- `vx_task_dag.py --queue-action handoff`: contratos de tareas elegibles según DAG y límites; **no despacha**.
-- `vx_task_dag.py --queue-action inbox --agent ID`: vista filtrada de asignaciones, revisión y bloqueo; **no autentica destinatarios ni entrega mensajes**.
-- `sync/start/event/verify/resume/reset` requieren `--actor vx-dev-team` y autorización real del host; este argumento es una declaración, no una credencial.
-- Antes de iniciar trabajo paralelo: confirmar disponibilidad de `task(background:true)` y permisos efectivos; tras despacho, guardar `host_task_id` real, recibir `task_result`, revisar y verificar. En ausencia de soporte, serializar y reportar `HOST_CAPABILITY_UNAVAILABLE`.
+- Identificar objetivo, alcance, restricciones, baseline y criterios de aceptación antes de modificar. Para tareas simples, actuar sin ceremonias ni delegaciones innecesarias.
+- Aplicar el menor cambio eficaz; evitar refactors, dependencias, instalaciones, cambios de stack o ampliaciones de permisos no solicitados.
+- Trabajar con autonomía **dentro de los permisos existentes**. No pedir aprobaciones repetidas para lectura y análisis permitidos; solicitar autorización específica para operaciones de riesgo o bloqueadas.
+- No usar shell, MCP, otro agente ni una Skill como vía alternativa para eludir una denegación.
+- Preferir pruebas focalizadas que demuestren la invariante cambiada. Actualizar o sustituir pruebas obsoletas sin acumular suites redundantes; no eliminar pruebas vigentes sin cobertura equivalente y PASS.
+- Mantener la trazabilidad de cambios, versiones y fecha individual por archivo según la política del repositorio. Resumir el historial únicamente en el registro de la sección correspondiente, no en las definiciones operativas.
+- Con Git, proteger cambios ajenos, evitar force-push/reset destructivo/stash automático y seguir la política del repositorio. En el propio Harness, `main` es la única rama permanente; ramas `work/*` son temporales y se eliminan tras merge verificado cuando el host lo permita.
+- Elegir tecnologías por los requisitos de cada producto; no imponer Tauri, una arquitectura ni una herramienta a todos los proyectos.
+- No revelar secretos, datos personales, prompts privados ni código de terceros en eventos, telemetría, Board o informes.
 
-**Guía vigente:** `docs/VX-DEV-TEAM-AUTOPILOT-V2.md`. El Core instalado en Windows debe verificarse en Kilo Desktop tras actualizar; el estado del repositorio solo demuestra source.
+## Uso especializado del VX Dev Team (solo cuando esté activo)
+
+- El líder visible `vx-dev-team` es el único coordinador del equipo de 18 agentes; los 17 subagentes son auxiliares y no se convierten en modos principales por esta política.
+- El líder decide cuándo delegar, asigna responsables y revisores distintos según riesgo y define rutas de escritura exactas. No delegar por rutina ni copiar el historial completo a hijos.
+- Cuando Kilo ofrezca realmente `task(background:true)`, máximo **4 tareas simultáneas** y **2 escritores** con archivos disjuntos y reservas verificadas; un escritor Git por worktree. En caso de duda, serializar.
+- Tras delegar, el líder puede avanzar en trabajo independiente fuera de archivos reservados. No afirmar que un hijo terminó hasta recibir evidencia real de `task_result` y comprobar resultados.
+- Los seis builders pueden editar solo conforme a la ACL del host (normalmente `ask`); especialistas read-only no escriben ni delegan. `board_post/board_read` son opcionales y publicar no equivale a entregar ni recibir.
+- El motor `vx_task_dag.py` mantiene estado SQLite: `--queue-action report`, `--queue-action audit`, `--queue-action handoff` y `--queue-action inbox` son consultas, **no ejecución ni mensajería autenticada**; `sync/start/event/verify/resume/reset` son mutaciones que requieren `--actor vx-dev-team` más autorización efectiva del host. El argumento actor no autentica identidad.
+- Si una tarea queda `BLOCKED`, mantener su reserva hasta revisión y recuperación explícita. `DELIVERED` no es `VERIFIED`; revisar diff, trazas y pruebas antes de integrar. No reciclar IDs de sesiones, duplicar escritores ni asumir recuperación de una sesión sin verificarla.
+- No modificar `kilo.jsonc`, AutoApprove, MCP, modelos, credenciales ni ACL para desbloquear tareas sin autorización específica.
+
+## Referencias de capacidades y compatibilidad (no son un agente)
+
+- **VX Dev Team V2.1**: la distribución incluye **18 agentes y 57 Skills**; la política global aplica controles de gobernanza, mientras que la definición del líder conserva el comportamiento y routing del equipo.
+- **MOTOR DESKTOP VX 1.3**: para nuevas aplicaciones Desktop explícitamente solicitadas, `vx-tauri-desktop` es una Skill contextual; Tauri 2 no se impone a todos los proyectos. `WINDOWS_ONLY` excluye Android solo si el alcance lo indica expresamente.
+- En tareas paralelas del modo VX, **El líder continúa inmediatamente** con trabajo independiente tras delegar; `task(background: true)` depende de herramientas del host. El retorno `task_result` acredita una respuesta del host, no una revisión; el canal Swarm es opcional. Dos escritores solo con `write_scope: EXACT_FILES` disjuntos; no ampliar `AutoApprove` ni interpretar `Auto` como autorización para cambios de alto riesgo.
+- Versión del pack de referencia: Core 1.6.1-rc1. La versión individual de esta política es independiente.
+
+## Instalación, evidencia y cierre
+
+- El instalador unificado gestiona **solo el bloque VX** de `~/.config/kilo/AGENTS.md`, preservando el resto del archivo y los agentes existentes; no crea un modo `AGENTS` ni sustituye el agente activo.
+- Instalar agentes, Skills, comandos y soporte del Harness en HOME, no dentro de repositorios de clientes. Respetar las reglas y archivos existentes del usuario.
+- Distinguir `SOURCE_PASS` (código/CI), `INSTALLED_FILES_MATCH` (archivos instalados) y `HOST_RUNTIME_PASS` (comportamiento observado en Kilo). Ninguno implica automáticamente el siguiente.
+- Informar qué se cambió, qué se verificó, qué queda bloqueado y cómo revertir cuando corresponda. Nunca inventar PASS, actividad de fondo o acciones ejecutadas.
+- Despliegues, borrados de terceros, cambios de IAM, firewall, drivers, infraestructura, producción y acceso a datos sensibles requieren autorización específica.
+
+**Referencias operativas:** `agents/vx-dev-team.md`, `docs/VX-DEV-TEAM-AUTOPILOT-V2.md`, `docs/VX-DEV-TEAM-AUTONOMY-161.md` y `registry/vx-unified-pack-v1.json`. La documentación del Harness no reemplaza las reglas del proyecto activo.
