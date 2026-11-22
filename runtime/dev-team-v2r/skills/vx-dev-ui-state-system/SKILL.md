@@ -4,6 +4,7 @@ description: "Diseña y revisa estados de componentes y flujos UI: loading, empt
 compatibility: "Read-only; complementa frontend UX y accesibilidad."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "ui-state"
 ---
