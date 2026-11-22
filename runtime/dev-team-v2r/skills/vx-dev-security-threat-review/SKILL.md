@@ -4,6 +4,7 @@ description: "Realiza revisión defensiva de seguridad basada en activos, trust 
 compatibility: "Read-only; no ejecuta exploits, scanners ni pruebas sobre producción."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "security"
 ---
