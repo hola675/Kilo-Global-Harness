@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 import subprocess
+import sqlite3
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -1069,6 +1070,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             receipt = module.apply(home)
             self.assertTrue(receipt.is_dir())
             self.assertEqual(module.verify(home)["status"], "SOURCE_FILES_MATCH_RUNTIME_NOT_VERIFIED")
+            self.assertEqual(dag.queue_state_report(home / module.QUEUE_REL)["status"], "READY")
             self.assertFalse(retired.exists())
             self.assertFalse(retired_command.exists())
             self.assertEqual((home/".config/kilo/harness/vx-unified-pack-v1.json").read_bytes(),
@@ -1085,6 +1087,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             module.restore(home, receipt)
             self.assertEqual(json.loads((receipt/"receipt.json").read_text())["state"], "RESTORED")
             self.assertEqual(global_agents.read_bytes(), original_global)
+            self.assertFalse((home / module.QUEUE_REL).exists())
             self.assertEqual(existing.read_bytes(), b"outdated team\n")
             self.assertEqual(retired.read_bytes(), b"VX old version\n")
             self.assertEqual(retired_command.read_bytes(), b"old P2 command\n")
@@ -1281,6 +1284,87 @@ class SkillDescriptionRoutingTests(unittest.TestCase):
         self.assertIn("sin ejecutar tests", strategy.split("---", 2)[1])
         self.assertIn("UPDATE/REPLACE/ADD", implementation.split("---", 2)[1])
 
+
+class SQLiteInstallerProvisionTests(unittest.TestCase):
+    def test_state_preflight_is_readonly_and_migration_idempotent(self):
+        with tempfile.TemporaryDirectory(prefix="vx-sqlite-provision-") as tmp:
+            path = Path(tmp) / "team.sqlite3"
+            self.assertEqual(dag.queue_state_report(path)["status"], "ABSENT")
+            self.assertFalse(path.exists())
+            self.assertEqual(dag.queue_state_provision(path)["status"], "READY")
+            self.assertEqual(dag.queue_state_provision(path)["schema_version"], 1)
+            with sqlite3.connect(path) as db:
+                db.execute("INSERT INTO project_config VALUES ('demo',4,2,0)")
+                db.commit()
+            snapshot = dag.queue_state_snapshot(path)
+            self.assertIsInstance(snapshot, bytes)
+            self.assertEqual(dag.queue_state_report(path)["status"], "READY")
+            with sqlite3.connect(path) as db:
+                self.assertEqual(db.execute(
+                    "SELECT max_background_tasks FROM project_config WHERE project='demo'"
+                ).fetchone()[0], 4)
+
+    def test_bad_schema_and_future_version_block_without_mutation(self):
+        with tempfile.TemporaryDirectory(prefix="vx-sqlite-failclosed-") as tmp:
+            path = Path(tmp) / "team.sqlite3"
+            with sqlite3.connect(path) as db:
+                db.execute("CREATE TABLE tasks (unexpected TEXT)")
+                db.commit()
+            with self.assertRaisesRegex(ValueError, "Columnas SQLite incompatibles"):
+                dag.queue_state_provision(path)
+            with sqlite3.connect(path) as db:
+                self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 0)
+                db.execute("PRAGMA user_version = 7")
+                db.commit()
+            with self.assertRaisesRegex(ValueError, "Versión SQLite"):
+                dag.queue_state_report(path)
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser solo Windows")
+    def test_installer_migrates_existing_queue_and_restore_preserves_records(self):
+        with tempfile.TemporaryDirectory(prefix="vx-sqlite-upgrade-") as tmp:
+            home = Path(tmp)
+            path = home / module.QUEUE_REL
+            path.parent.mkdir(parents=True)
+            with sqlite3.connect(path) as db:
+                db.executescript(dag.QUEUE_DDL)  # Legacy: user_version=0.
+                db.execute("INSERT INTO project_config VALUES ('demo',4,2,0)")
+                db.commit()
+            before = dag.queue_state_snapshot(path)
+            self.assertEqual(dag.queue_state_report(path)["status"], "MIGRATION_REQUIRED")
+            summary, _ = module.plan(home)
+            self.assertEqual(summary["status"], "READY")
+            self.assertEqual(summary["state_status"], "MIGRATION_REQUIRED")
+            receipt = module.apply(home)
+            self.assertEqual(dag.queue_state_report(path)["status"], "READY")
+            with sqlite3.connect(path) as db:
+                self.assertEqual(db.execute("SELECT COUNT(*) FROM project_config").fetchone()[0], 1)
+            module.restore(home, receipt)
+            self.assertEqual(dag.queue_state_report(path)["status"], "MIGRATION_REQUIRED")
+            self.assertEqual(dag.queue_state_snapshot(path), before)
+
+    @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser solo Windows")
+    def test_installer_state_only_upgrade_and_postinstall_write_protection(self):
+        with tempfile.TemporaryDirectory(prefix="vx-state-only-") as tmp:
+            home = Path(tmp)
+            first = module.apply(home)
+            path = home / module.QUEUE_REL
+            self.assertTrue(path.exists())
+            # El instalador puede reponer solo SQLite sin reescribir el pack.
+            path.unlink()
+            summary, rows = module.plan(home)
+            self.assertEqual(rows, [])
+            self.assertEqual(summary["state_status"], "ABSENT")
+            second = module.apply(home)
+            self.assertEqual(dag.queue_state_report(path)["status"], "READY")
+            with sqlite3.connect(path) as db:
+                db.execute("INSERT INTO project_config VALUES ('demo',4,2,0)")
+                db.commit()
+            with self.assertRaisesRegex(module.Blocked, "SQLite cambió"):
+                module.restore(home, second)
+            self.assertEqual(dag.queue_state_report(path)["status"], "READY")
+            self.assertTrue(path.exists())
+            # El primer respaldo aún contiene los archivos previos; nunca
+            # restaurarlo a ciegas sobre el estado ahora modificado.
 
 class GlobalAgentsFullReplacementTests(unittest.TestCase):
     def test_unified_installer_replaces_entire_global_agents_file(self):
