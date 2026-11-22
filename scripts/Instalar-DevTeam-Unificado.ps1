@@ -1,4 +1,6 @@
 #Requires -Version 7.0
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 <#
 .SYNOPSIS
   VX Dev Team Core unificado 1.6.0-rc1 — único instalador global vigente.
