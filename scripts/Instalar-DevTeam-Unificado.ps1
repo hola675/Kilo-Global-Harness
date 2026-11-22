@@ -1,14 +1,14 @@
 #Requires -Version 7.0
-# component_version: 1.0.2
+# component_version: 1.0.3
 # last_modified: 2026-11-22
 <#
 .SYNOPSIS
   VX Dev Team Core unificado 1.6.1-rc1 — único instalador global vigente.
 .DESCRIPTION
   Diagnostico/Simular: solo lectura; Aplicar: backup DPAPI CurrentUser,
-  actualización de 18 agentes y 57 Skills, reemplazo íntegro de AGENTS.md global\n  con respaldo recuperable, retiro EXPLÍCITO de hasta 14 ficheros
+  actualización de 18 agentes y 57 Skills, scripts, comandos y SQLite local,\n  reemplazo íntegro de AGENTS.md global\n  con respaldo recuperable, retiro EXPLÍCITO de hasta 14 ficheros
   legacy gestionados por VX. No cambia kilo.jsonc, MCP o recursos de terceros.
-  Verificar no equivale a certificar permisos efectivos en Kilo.
+  SQLite: migración aditiva versionada, validación de integridad y snapshot DPAPI.\n  Verificar no equivale a certificar permisos efectivos en Kilo.
 #>
 [CmdletBinding()]
 param(
