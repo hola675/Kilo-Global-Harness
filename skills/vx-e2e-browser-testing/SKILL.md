@@ -1,8 +1,8 @@
 ---
 name: vx-e2e-browser-testing
-description: "Usar cuando hay que ejecutar o diseñar pruebas E2E reales de flujos web con navegador o Playwright, incluyendo oráculos y evidencia; no activar para pruebas unitarias o interfaces desktop."
+description: "Usar cuando hay que ejecutar o diseñar pruebas E2E de flujos web con navegador o Playwright y evidencia; no activar para unit tests o desktop nativo."
 metadata:
-  version: "0.2.1"
+  version: "0.2.2"
   last_modified: "2026-11-22"
   origin: "vx-original"
 ---
