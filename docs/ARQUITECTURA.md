@@ -1,6 +1,6 @@
 # Arquitectura vigente · Kilo Global Harness / VX Dev Team
 
-**Fuente de verdad:** `registry/vx-unified-pack-v1.json` (Core VX **1.6.0-rc1**). Esta guía sustituye el diagrama V3 del equipo `vx-integrador/vx-inspector`, que permanece únicamente en el historial de Git y en mecanismos legacy de compatibilidad.
+**Fuente de verdad:** `registry/vx-unified-pack-v1.json` (Core VX **1.6.0-rc1**). Esta guía sustituye el diagrama V3 de `vx-integrador/vx-inspector`, conservado únicamente en el historial Git.
 
 ## Capas
 
@@ -9,7 +9,7 @@
 3. **Líder:** `agents/vx-dev-team.md` se instala como **VX Dev Team**, único modo principal visible. Selecciona Skills permitidas y coordina tareas dependientes, revisión, Git y reportes.
 4. **Subagentes:** diez roles Dev en `runtime/dev-team-v2r/agents/`, seis builders en `agents/` y `vx-workers-adviser`. **17 ocultos** subordinados al líder. Los especialistas de lectura no escriben ni delegan.
 5. **Skills:** 57 fuentes seleccionadas entre `skills/` y `runtime/dev-team-v2r/skills/`. Se copian globalmente y se cargan solo con permiso `skill` efectivo. Catálogos de propuestas no amplían la allowlist.
-6. **Comandos del pack:** únicamente `/vx-equipo`, `/vx-dependencias` y `/vx-editorial`. Los comandos legacy del repositorio son código de compatibilidad/documentación opcional, no parte del pack actual.
+6. **Comandos del pack:** únicamente `/vx-equipo`, `/vx-dependencias` y `/vx-editorial`. Los comandos anteriores ya no están en el árbol activo; su historia permanece en Git.
 7. **Control de dependencias:** `scripts/vx_task_dag.py` con DAG y cola SQLite opcional en HOME privada. La cola persiste metadatos de coordinación; no despacha, bloquea físicamente archivos, ejecuta worktrees ni deja tareas trabajando al cerrar Kilo.
 8. **Ejecución y progreso:** herramientas nativas `task` y, cuando estén disponibles, `board_read/board_post` de Kilo Swarm. `task(background: true)` comparte workspace, no crea worktree. El líder puede continuar leyendo/diseñando fuera de rutas reservadas; dos escritores simultáneos solo con rutas exactas disjuntas (`write_scope: EXACT_FILES`) y ACL reales.
 9. **Git/CI:** un integrador por worktree, PR sobre `main`, pruebas focalizadas, revisión por riesgo y limpieza de rama verificada. `.github/workflows/validar-harness.yml` valida archivos fuente y contratos Windows, no autoría de subagentes runtime.
@@ -37,7 +37,7 @@ El planificador **no es un scheduler de modelos**. Un mensaje Swarm no confirma 
 
 Utilizar exclusivamente `scripts/Instalar-DevTeam-Unificado.ps1` para el paquete Core actual. Su backend `scripts/vx_unified_pack.py` conserva pruebas de compatibilidad, validación de propiedad, backup DPAPI y restauración controlada. **No ejecutar simultáneamente** los instaladores históricos V3/V4, DevTeam-Only, VX 0.2.2 ni convivencia VX 0.2.3 para administrar este mismo perfil global.
 
-Los scripts/registries antiguos pueden permanecer en source mientras sean necesarios para CI, recuperación o investigación; su existencia no los convierte en agentes activos. El control de retiro está en [inventario archivo por archivo](VX-HARNESS-INVENTARIO-AUDIT-20261121.md).
+El Core conserva únicamente cinco scripts en `scripts/`: el instalador PowerShell, su motor Python, dos módulos de seguridad/backup importados y el DAG/cola. Se retiraron los demás instaladores y los registros antiguos; consultar el [informe de depuración](VX-HARNESS-INVENTARIO-AUDIT-20261121.md).
 
 ## Configuración y seguridad
 
