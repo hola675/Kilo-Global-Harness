@@ -1078,7 +1078,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
                              (ROOT/"commands/vx-equipo.md").read_bytes())
             self.assertNotEqual(existing.read_bytes(), b"outdated team\n")
             self.assertEqual(cfg_before, conf.read_bytes())
-            self.assertEqual(global_agents.read_bytes(), (ROOT / "rules/AGENTS-global-managed.md").read_bytes())
+            self.assertEqual(global_agents.read_text(encoding="utf-8"), (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8"))
             self.assertNotIn(b"INSTRUCCIONES GLOBALES ANTERIORES", global_agents.read_bytes())
             self.assertEqual(third.read_bytes(), b"third party content\n")
             self.assertEqual(json.loads((receipt/"receipt.json").read_text())["state"], "INSTALLED")
