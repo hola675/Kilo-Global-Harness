@@ -1102,6 +1102,41 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertNotIn("Instalar-DevTeam-Only.ps1 -Modo Aplicar", wrapper)
 
 
+class QueueAuditTests(unittest.TestCase):
+    def test_audit_is_readonly_and_filters_by_project_and_task(self):
+        with tempfile.TemporaryDirectory(prefix="vx-queue-audit-") as folder:
+            db = Path(folder) / "queue.sqlite3"
+            conn = dag._queue_open(db, mutate=True)
+            try:
+                conn.execute(
+                    "INSERT INTO tasks VALUES (?,?,?,?,?,?,?,?)",
+                    ("projecta", "taska", "{}", "fingerprint", "PENDING", None, "1", "2026-11-22"))
+                conn.execute(
+                    "INSERT INTO events VALUES (?,?,?,?,?,?,?,?)",
+                    ("eventa", "projecta", "taska", "STARTED", "summary", "private",
+                     "2026-11-22T00:00:00Z", "hasha"))
+                conn.execute(
+                    "INSERT INTO events VALUES (?,?,?,?,?,?,?,?)",
+                    ("eventb", "projectb", "taskb", "STARTED", "summary", "private",
+                     "2026-11-22T00:00:00Z", "hashb"))
+                conn.commit()
+            finally:
+                conn.close()
+            ro = dag._queue_open(db, mutate=False)
+            try:
+                result = dag._queue_audit(ro, "projecta", "taska")
+                self.assertEqual(len(result["events"]), 1)
+                self.assertEqual(result["events"][0]["event_key"], "eventa")
+                self.assertNotIn("private", json.dumps(result))
+                self.assertEqual(result["actions_executed"], 0)
+                with self.assertRaisesRegex(ValueError, "invalido"):
+                    dag._queue_audit(ro, "projecta", "../task")
+                with self.assertRaisesRegex(ValueError, "inexistente"):
+                    dag._queue_audit(ro, "projecta", "missing")
+            finally:
+                ro.close()
+
+
 class QueueActorGateTests(unittest.TestCase):
     def test_queue_mutation_requires_explicit_leader_role(self):
         from argparse import Namespace
