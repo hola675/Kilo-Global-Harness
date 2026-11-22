@@ -1,6 +1,9 @@
 ---
+# last_modified: 2026-11-21
 name: vx-data-contracts
 description: "Usar al diseñar o implementar esquemas SQL, APIs de datos, migraciones, D1/SQLite/Postgres o transformaciones que necesiten compatibilidad e integridad; siempre con fixtures sintéticos y rollback propuesto."
+metadata:
+  version: "0.1.0"
 ---
 
 # VX Data Contracts V0.1
