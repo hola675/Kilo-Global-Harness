@@ -1,8 +1,9 @@
-"""VX Pack 0.2.3: convivencia global sin sustituir agentes/skills de terceros.
+"""VX Core 1.6: dependencia activa de inspección segura de HOME.
 
-La configuración Kilo se inspecciona solo en memoria; no se imprimen tokens o valores.
-La instalación (Windows) escribe únicamente destinos del Pack VX y bloque gestionado.
-Los cambios tienen backup DPAPI CurrentUser específico y restauración no destructiva.
+Se importa desde vx_unified_pack.py y utiliza vx_pack_bootstrap.py para
+validación de rutas, backups CurrentUser DPAPI y protección de terceros.
+El nombre v023 se conserva por compatibilidad interna; la CLI de este módulo
+NO es el instalador oficial del Core VX. No alterar kilo.jsonc ni MCP.
 """
 from __future__ import annotations
 
