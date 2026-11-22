@@ -1,10 +1,10 @@
 ---
 name: vx-dev-test-strategy
-description: "Diseña estrategia de pruebas y evidencia de aceptación sin ejecutar tests. Usar para convertir requisitos/cambios en invariantes, matriz de casos, oráculos, superficie de regresión y gates de CI."
+description: "Auditar en solo lectura el volumen, complejidad, duplicaciones, cobertura y coste de las pruebas existentes ANTES de ejecutar suites; diseñar optimización, oráculos y matriz UPDATE/REPLACE/ADD sin ejecutar tests. Usar para estrategia, auditoría de suites y presupuestos de CI."
 compatibility: "Read-only; Quality no ejecuta tests ni convierte tests escritos en PASS."
 metadata:
-  version: "1.2.0"
-  last_modified: "2026-11-21"
+  version: "1.3.0"
+  last_modified: "2026-11-22"
   origin: "vx-dev-original"
   category: "quality"
 ---
@@ -14,6 +14,14 @@ metadata:
 ## Cobertura de Skills por contexto (source)
 
 Al cambiar una Skill o su enrutamiento, usar la **suite viva** para probar `SHOULD_TRIGGER`, `SHOULD_NOT_TRIGGER`, permiso denegado y fallo de dependencia. Asegurar que un bug PySide6 no activa Tauri/Android, que una web no activa desktop y que ninguna Skill cargada crea un privilegio nuevo. Diseñar oráculos separados para `SOURCE`, `CI`, `ACL` y `RUNTIME`; no llamar PASS de runtime a una lectura de archivos. La opción `test_action` sigue siendo UPDATE, REPLACE o ADD: no construir una suite por release.
+
+## Diagnóstico estático previo a cualquier ejecución
+
+- Inventariar runners, scripts, globs, CI, fixtures y pruebas sin ejecutar código del proyecto. Separar archivos de pruebas, casos efectivos y rutas ejecutadas; registrar la incertidumbre.
+- Clasificar `COMPLEXITY`, `VOLUME`, `SPEED` como `PASS`, `ALERT` o `UNKNOWN`. No inventar duraciones, ratios de cobertura ni presupuestos; recuperar históricos de CI si existen.
+- Proponer `KEEP`, `UPDATE`, `REPLACE`, `MERGE`, `REMOVE_AFTER_EQUIVALENCE` por invariante, con coste esperado, riesgos y dependencia de validación focalizada.
+- No recomendar eliminar tests por su antigüedad, cantidad o nombre. Exigir equivalencia verificable, especialmente en autorización, datos, seguridad y regresiones.
+- Entregar `STATIC_AUDIT`, `EXECUTION_GRAPH`, `RISK_COVERAGE_MAP`, `BUDGET_STATUS`, `OPTIMIZATION_PLAN` y `UNVERIFIED_ASSUMPTIONS`; ninguna de estas salidas equivale a PASS de runtime.
 
 ## Protocolo
 1. Extraer comportamiento observable e invariantes.
