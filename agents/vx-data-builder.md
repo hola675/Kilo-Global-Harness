@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.0
+# last_modified: 2026-11-21
 description: "Programador VX de datos: esquemas, SQL y migraciones en bases de prueba aisladas. Edita proyectos autorizados con permiso ask; nunca altera bases productivas."
 mode: subagent
 hidden: true
