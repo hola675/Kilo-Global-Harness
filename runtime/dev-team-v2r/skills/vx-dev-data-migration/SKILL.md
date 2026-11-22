@@ -4,6 +4,7 @@ description: "Analiza modelos persistentes, invariantes, queries y migraciones s
 compatibility: "Read-only; no ejecuta DDL/DML ni asume motor de base de datos."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "data"
 ---
