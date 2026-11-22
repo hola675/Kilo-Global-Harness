@@ -5,6 +5,7 @@ import json
 import os
 import subprocess
 import sqlite3
+from contextlib import closing
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -1293,13 +1294,13 @@ class SQLiteInstallerProvisionTests(unittest.TestCase):
             self.assertFalse(path.exists())
             self.assertEqual(dag.queue_state_provision(path)["status"], "READY")
             self.assertEqual(dag.queue_state_provision(path)["schema_version"], 1)
-            with sqlite3.connect(path) as db:
+            with closing(sqlite3.connect(path)) as db:
                 db.execute("INSERT INTO project_config VALUES ('demo',4,2,0)")
                 db.commit()
             snapshot = dag.queue_state_snapshot(path)
             self.assertIsInstance(snapshot, bytes)
             self.assertEqual(dag.queue_state_report(path)["status"], "READY")
-            with sqlite3.connect(path) as db:
+            with closing(sqlite3.connect(path)) as db:
                 self.assertEqual(db.execute(
                     "SELECT max_background_tasks FROM project_config WHERE project='demo'"
                 ).fetchone()[0], 4)
@@ -1307,12 +1308,12 @@ class SQLiteInstallerProvisionTests(unittest.TestCase):
     def test_bad_schema_and_future_version_block_without_mutation(self):
         with tempfile.TemporaryDirectory(prefix="vx-sqlite-failclosed-") as tmp:
             path = Path(tmp) / "team.sqlite3"
-            with sqlite3.connect(path) as db:
+            with closing(sqlite3.connect(path)) as db:
                 db.execute("CREATE TABLE tasks (unexpected TEXT)")
                 db.commit()
             with self.assertRaisesRegex(ValueError, "Columnas SQLite incompatibles"):
                 dag.queue_state_provision(path)
-            with sqlite3.connect(path) as db:
+            with closing(sqlite3.connect(path)) as db:
                 self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 0)
                 db.execute("PRAGMA user_version = 7")
                 db.commit()
@@ -1325,7 +1326,7 @@ class SQLiteInstallerProvisionTests(unittest.TestCase):
             home = Path(tmp)
             path = home / module.QUEUE_REL
             path.parent.mkdir(parents=True)
-            with sqlite3.connect(path) as db:
+            with closing(sqlite3.connect(path)) as db:
                 db.executescript(dag.QUEUE_DDL)  # Legacy: user_version=0.
                 db.execute("INSERT INTO project_config VALUES ('demo',4,2,0)")
                 db.commit()
@@ -1336,11 +1337,12 @@ class SQLiteInstallerProvisionTests(unittest.TestCase):
             self.assertEqual(summary["state_status"], "MIGRATION_REQUIRED")
             receipt = module.apply(home)
             self.assertEqual(dag.queue_state_report(path)["status"], "READY")
-            with sqlite3.connect(path) as db:
+            with closing(sqlite3.connect(path)) as db:
                 self.assertEqual(db.execute("SELECT COUNT(*) FROM project_config").fetchone()[0], 1)
             module.restore(home, receipt)
             self.assertEqual(dag.queue_state_report(path)["status"], "MIGRATION_REQUIRED")
-            self.assertEqual(dag.queue_state_snapshot(path), before)
+            self.assertEqual(dag.queue_state_fingerprint(dag.queue_state_snapshot(path)),
+                             dag.queue_state_fingerprint(before))
 
     @unittest.skipUnless(os.name == "nt", "DPAPI CurrentUser solo Windows")
     def test_installer_state_only_upgrade_and_postinstall_write_protection(self):
@@ -1356,7 +1358,7 @@ class SQLiteInstallerProvisionTests(unittest.TestCase):
             self.assertEqual(summary["state_status"], "ABSENT")
             second = module.apply(home)
             self.assertEqual(dag.queue_state_report(path)["status"], "READY")
-            with sqlite3.connect(path) as db:
+            with closing(sqlite3.connect(path)) as db:
                 db.execute("INSERT INTO project_config VALUES ('demo',4,2,0)")
                 db.commit()
             with self.assertRaisesRegex(module.Blocked, "SQLite cambió"):
