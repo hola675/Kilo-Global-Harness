@@ -3,6 +3,7 @@ name: vx-api-contract-design
 description: "Usar para diseñar y modificar apis compatibles cuando una tarea mencione api, endpoint, webhook, openapi. Exigir evidencia real y no cambiar permisos."
 metadata:
   version: "0.2.0"
+  last_modified: "2026-11-21"
   origin: "vx-original"
 ---
 
