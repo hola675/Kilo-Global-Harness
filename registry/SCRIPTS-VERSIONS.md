@@ -8,6 +8,7 @@ Cada script/comando conserva versión individual y fecha en comentarios compatib
 |---|---|---|---|
 | scripts/Instalar-DevTeam-Unificado.ps1 | 1.0.0 | 2026-11-21 | Cabecera de seguimiento; instalador sin cambios funcionales |
 | scripts/vx_unified_pack.py | 1.0.0 | 2026-11-21 | Cabecera de seguimiento; lógica intacta |
+| scripts/vx_verify_metadata.py | 1.0.0 | 2026-11-22 | Validador de solo lectura de metadatos y manifiesto; pendiente de ejecución CI |
 | scripts/vx_task_dag.py | 1.0.0 | 2026-11-21 | Cabecera de seguimiento; cola SQLite intacta |
 | commands/vx-equipo.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 | commands/vx-dependencias.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
