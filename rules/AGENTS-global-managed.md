@@ -1,4 +1,4 @@
-<!-- component_version: 2.0.0; last_modified: 2026-11-22 -->
+<!-- component_version: 2.1.0; last_modified: 2026-11-22 -->
 # AGENTS global · Gobernanza y uso del Kilo Global Harness
 
 ## Identidad y alcance
@@ -26,6 +26,43 @@ Este documento es una **política global de uso del Harness**, no un agente ejec
 - Con Git, proteger cambios ajenos, evitar force-push/reset destructivo/stash automático y seguir la política del repositorio. En el propio Harness, `main` es la única rama permanente; ramas `work/*` son temporales y se eliminan tras merge verificado cuando el host lo permita.
 - Elegir tecnologías por los requisitos de cada producto; no imponer Tauri, una arquitectura ni una herramienta a todos los proyectos.
 - No revelar secretos, datos personales, prompts privados ni código de terceros en eventos, telemetría, Board o informes.
+
+## Protocolo general de análisis y ejecución
+
+1. **Entender:** delimitar petición, proyecto, estado actual, restricciones, impacto y definición observable de terminado. Distinguir lo confirmado de lo supuesto. No inventar requisitos ni modificar áreas fuera de alcance.
+2. **Inspeccionar:** leer primero las instrucciones del proyecto y los archivos relevantes, identificar interfaces, consumidores, dependencias y pruebas existentes. Preferir búsquedas focalizadas; no cargar todo el repositorio por rutina.
+3. **Planificar proporcionalmente:** para cambios simples, ejecutar directamente. Para cambios con varias dependencias, registrar una secuencia corta de entregables y riesgos, con criterios verificables. No transformar una tarea pequeña en un proceso ceremonial.
+4. **Ejecutar:** implementar cambios mínimos y coherentes con la arquitectura real. Revisar compatibilidad, errores, permisos, migraciones, rutas y efectos secundarios. Mantener los archivos editados bajo control de un solo escritor.
+5. **Validar:** comprobar el comportamiento modificado, sus límites y las regresiones razonablemente cercanas. No declarar éxito por ausencia de errores visibles ni por documentación actualizada.
+6. **Integrar y cerrar:** revisar diff, estado Git, resultados de pruebas, cambios ajenos y requisitos de entrega. Registrar únicamente el resumen pertinente y comunicar el resultado, límites y pendientes reales.
+
+### Política de pruebas y certificación
+
+- Definir la **invariante** antes de elegir la prueba: qué debía cambiar, qué debe permanecer y qué fallo se intenta prevenir.
+- Ejecutar primero la prueba más pequeña que cubra la modificación; ampliar a integración, contrato, build o end-to-end **solo si el riesgo o las dependencias lo justifican**.
+- Reutilizar y adaptar pruebas existentes. Si una prueba queda obsoleta, actualizarla o reemplazarla conservando cobertura; evitar acumular scripts de prueba temporales, duplicados o certificaciones históricas sin utilidad.
+- Los tests deben observar comportamiento y contratos, no exigir frases decorativas en documentación cuando no representan una invariante funcional. Mantener una única fuente de verdad por política.
+- Separar errores introducidos de fallos preexistentes; registrar comando, entorno, resultado y evidencia. No maquillar fallos, no desactivar controles para obtener verde ni afirmar que una prueba se ejecutó cuando no fue así.
+- En cambios de seguridad, permisos, migración, datos, concurrencia o instalación, probar también el caso negativo y el rollback cuando proceda.
+- No repetir una suite completa sin cambios relevantes. Tras corregir un fallo, repetir el subconjunto afectado y la validación de integración exigida por CI.
+- Estados de evidencia: `NOT_RUN`, `PASS`, `FAIL`, `BLOCKED`; para despliegue diferenciar `SOURCE_PASS`, `INSTALLED_FILES_MATCH`, `HOST_RUNTIME_PASS`. Un estado nunca implica otro.
+
+### Distribución, coordinación y revisión del trabajo
+
+- La distribución **no es obligatoria**: delegar solo si existen subtareas realmente independientes, herramientas disponibles y beneficio medible en tiempo o especialización.
+- El coordinador del modo activo divide por entregables, dependencias y archivos; asigna un responsable por tarea, un revisor diferente cuando el riesgo lo amerite, entradas mínimas, criterios de aceptación y rutas exactas. No enviar una instrucción vaga como «arregla todo».
+- Ejecutar en paralelo solo trabajo sin conflictos de escritura y con dependencias resueltas; reservar archivos antes de iniciar y liberar tras revisión. El coordinador sigue con trabajo independiente, sin editar archivos reservados.
+- Intercambiar resultados estructurados: identificador de tarea, estado, archivos cambiados, decisiones, evidencia, pruebas y bloqueos. No compartir secretos ni historial íntegro innecesario.
+- La comunicación declarativa (SQLite, Board, inbox, handoff) no equivale a despacho, autenticación, entrega o revisión real. Confirmar capacidades del host y recibos efectivos antes de marcar resultados.
+- Un fallo o conflicto detiene únicamente la rama de trabajo afectada; replanificar dependencias y evitar que el resto del equipo quede bloqueado innecesariamente. Nunca resolver conflictos sobrescribiendo el trabajo de otro agente.
+- Antes del merge: comprobar ausencia de modificaciones ajenas perdidas, contratos entre componentes, pruebas pertinentes y estado del revisor. El coordinador conserva la responsabilidad del resultado integrado.
+
+### Política de decisiones y autonomía
+
+- Preferir herramientas existentes y la solución más simple que satisfaga el objetivo; nuevas dependencias o automatizaciones requieren justificación y aprobación cuando afecten permisos, costes o infraestructura.
+- No pedir confirmación por cada paso rutinario autorizado. Escalar solo decisiones irreversibles, de alto impacto, de seguridad, datos sensibles, cambios de alcance o permisos no disponibles.
+- Cuando una herramienta no exista o una acción falle, documentar el límite y usar un procedimiento permitido; no simular resultados ni inventar ejecución.
+- Mantener separadas la **política global** (este archivo), la **autoridad y roles** (definiciones de agentes), la **implementación técnica** (Skills/scripts) y la **evidencia** (pruebas e informes).
 
 ## Uso especializado del VX Dev Team (solo cuando esté activo)
 
