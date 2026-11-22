@@ -4,6 +4,7 @@ description: "Seleccionar skills globales según contexto técnico observado (we
 compatibility: "Agent Skills; Kilo Code/Kilo Desktop. Advisory-only, no ejecuta herramientas ni cambia ACL."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-unified"
   category: "routing"
 ---
