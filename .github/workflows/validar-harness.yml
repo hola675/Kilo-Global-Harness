@@ -2,7 +2,7 @@ name: Validar VX Dev Team Core
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, 'work/**']
 permissions:
   contents: read
 jobs:
