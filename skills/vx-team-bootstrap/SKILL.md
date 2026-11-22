@@ -2,7 +2,7 @@
 name: vx-team-bootstrap
 description: "Inicio del pack unificado: seleccionar capacidades técnicas globales, comprobar instrucciones locales, distribuir permisos por rol y coordinar fases y resultados paralelos con un único líder visible."
 metadata:
-  version: "1.4.0"
+  version: "1.5.0"
   origin: "vx-unified"
 ---
 
@@ -46,6 +46,12 @@ Un usuario solo indica **qué producto, problema o resultado quiere**. El líder
 **Persistencia opcional por complejidad:** para tareas que crucen sesiones o tengan numerosas dependencias, usar el mismo `vx_task_dag.py` instalado por el pack: `--queue-action sync|report|start|event|verify|resume|reset`; nunca registrar prompts completos o secretos en el archivo SQLite privado. `report` devuelve estados declarados y `ready_queue` por prioridad, no arranca un worker. `start` se registra solo después de un ID de Kilo observado al invocar `task`. El líder comunica hitos con Swarm cuando exista; no tratar un `board_post` como confirmación de lectura ni usarlo para elevar privilegios. Sin Board o sin permiso de bash, continuar en memoria con `task_result`.
 
 **Autonomía realista:** dentro de la sesión activa tomar decisiones de reparto, seguir con trabajo independiente, analizar cambios, actualizar progreso al llegar eventos, verificar entrega y despachar la siguiente wave. Cuando Kilo Desktop se cierre, no prometer actividad en segundo plano: la cola durable conserva estado, pero no ejecuta tareas sin un host. No programar watchers, cron ni redes externas para simular una capacidad faltante.
+
+## Ruta operativa V2.1: el líder no queda esperando
+
+Para trabajo independiente demostrado, el líder establece un contrato por hijo con `write_scope: EXACT_FILES` para cualquier escritor concurrente y despacha las llamadas `task(background: true)` de la primera wave antes de esperar una respuesta. El propio líder **continúa productivamente** con lectura de módulos estables no reservados, contratos de futuras waves, riesgos, evidencias finalizadas y preparación de verificaciones que no escriban archivos compartidos. Ninguna actividad del líder puede modificar las rutas de builders activos, lockfiles, salida generada o estado Git compartido.
+
+Al llegar `task_result` o un hito Swarm auténtico, verificar quién ejecutó las herramientas, estado de tareas y dependencia, no aprobar por mensaje. Si una sesión está `BLOCKED`, mantener sus reservas de archivo/plaza mientras conserve el `host_task_id`, hasta cierre comprobado; usar `resume/reset` según el motor vigente. Sin background auténtico, no simular simultaneidad: ejecutar en foreground y reportar. La cola SQLite no despacha por sí misma y ningún proceso sigue trabajando con Kilo cerrado.
 
 ## Escalones de autorización
 

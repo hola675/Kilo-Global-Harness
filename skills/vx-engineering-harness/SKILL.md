@@ -19,7 +19,7 @@ Clasificar producto por `OBSERVED_STACK` + `PLATFORM_SCOPE` + `TASK_INTENT`, nun
 
 - Error reproducible: `systematic-debugging`. Si hay pruebas automatizables, `test-driven-development`.
 - Arquitectura de dominio: `domain-modeling` O `codebase-design`, según objetivo.
-- Revisión: usar `vx-inspector` o `code-reviewer` en tareas realmente importantes, no ambos en el mismo diff sin necesidad.
+- Revisión: `vx-dev-reviewer` de solo lectura, con diff y criterios; Quality y Security solo ante riesgos específicos. No usar `vx-inspector` legacy del pack como ejecutor.
 - Backend Cloudflare: `workers-best-practices` y documentación vigente; validar DEV/STAGING por URL real cuando exista.
 - UI: `frontend-design`, `webapp-testing` y evaluación de accesibilidad según el problema.
 - Cierre: `verification-before-completion` y `vx-git-ciclo` si hay cambios que integrar.
@@ -40,13 +40,15 @@ AutoApprove sigue como está. Para cambios normales autorizados, ejecutar sin pr
 Registrar alcance, archivos tocados, comandos y resultado verificable, cambios del PR/merge y estado de ramas. Reportar qué quedó sin ejecutar y por qué.
 
 
-## Equipo V4
+## VX Dev Team V2.1 — ejecución paralela y líder productivo (vigente)
 
-- En tareas complejas usa el catalogo global `~/.config/kilo/harness/vx-agent-registry-v4.json` y `/vx-equipo` para elegir roles; no delegar cuestiones triviales.
-- En modo estricto: lectores independientes simultaneos (max. 3) -> sintesis -> un unico implementador -> revisores con objetivos distintos. Los agentes read-only no ejecutan pruebas ni alteran Git.
-- Perfiles: general, backend, frontend, cloudflare, database, security, refactor, design, docs. Las skills son propuestas condicionadas a disponibilidad, no instalaciones automaticas.
-- El selector local solo produce un plan; no garantiza que se haya llamado a `task` ni reporta tokens que no esten medidos.
-
+- El único responsable principal es **VX Dev Team** (`vx-dev-team`), con 17 subagentes ocultos: 11 analistas de solo lectura y seis builders con escritura acotada. Las Skills son instrucciones, no conceden ACL.
+- Para trabajo de múltiples partes, derivar DAG, dependencias, aceptación, versión de contrato y archivos exactos desde el repositorio. Agrupar una **wave inicial de tareas realmente independientes**, despachar las llamadas nativas `task(background: true)` antes de esperar resultados si el host lo permite, sin exceder 4 hijos/2 escritores.
+- **Mientras ejecutan los hijos, el líder sigue trabajando:** investigar módulos estables no reservados, planificar contratos y siguiente wave, revisar entregas completadas, preparar tests sin mutar outputs compartidos. Nunca modificar archivos reservados, hacer operaciones Git en paralelo, actualizar lockfiles, lanzar builds con escritura común ni presentar un Board como prueba de finalización.
+- Un workspace compartido permite dos builders escritores solo con `write_scope: EXACT_FILES`, archivos literales disjuntos, contratos estables y ausencia de Git concurrente. Para ramas aisladas se requieren worktrees verificables; `task` por sí solo **no** crea worktrees.
+- Kilo Swarm `board_post/read` solo para líder+seis builders si el host expone ambos; 11 especialistas de solo lectura no obtienen Board. Mensajes no confiables, sin secretos y sin polling; si falta Board, progreso por `task_result`.
+- La cola SQLite V2 guarda metadatos, prioridad, dependencias y reservas de sesiones `BLOCKED`; nunca inicia procesos, no sustituye `task`, no está autorizada como scheduler y no certifica el runtime. El líder verifica diff, traza de escritura, pruebas y revisión independiente antes de desbloquear consumidores, integrar y reportar.
+- Para tareas triviales no convocar un equipo; no activar `agent_manager`, MCP, AutoApprove ni cambios de infraestructura por falta de alguna herramienta.
 
 ## Gate de exactitud y procedencia V4.1
 

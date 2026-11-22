@@ -2,7 +2,7 @@
 name: vx-agent-collaboration
 description: "Usar para coordinar task/swarm y agent manager con evidencia cuando una tarea mencione agentes, delegacion, swarm, agent manager. Exigir evidencia real y no cambiar permisos."
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
   origin: "vx-original"
 ---
 
@@ -21,9 +21,9 @@ metadata:
 5. El líder trabaja en paralelo en contratos, inspecciones, documentación fuera de las rutas reservadas o tareas independientes; no sustituye ni duplica la escritura del hijo.
 6. Esperar la finalización real del hijo; si se interrumpe, `HOLD_RECHECK` y reanudar por identificador solo si Kilo lo permite. Integrar cambios y pruebas en una barrera; no dar por VERIFIED el reporte del propio builder.
 
-## VX Progress V1 — avances simultáneos y reutilizables (SOURCE, no ACL)
+## VX Progress V2.1 — avances simultáneos, con ACL exacta en agentes
 
-**La fuente de verdad es el ledger de `vx-dev-team`, no los mensajes de un compañero.** Kilo admite `task(background: true)` solo si esa opción está expuesta y la llamada real retorna; la sesión padre continúa con trabajo independiente. `task` **comparte workspace** y no crea worktree ni lock. `board_post` / `board_read` son herramientas nativas de **Kilo Swarm**, compartidas únicamente por la sesión padre y sus descendientes `task`, **si están expuestas y autorizadas en esa sesión**. El source instalado hoy conserva `board_read: deny` / `board_post: deny` para el líder; una Skill no puede modificar esa ACL. Sin permiso, estado `PROGRESS_CHANNEL_DENIED`, sin workaround.
+**La fuente de verdad es el ledger de `vx-dev-team`, no los mensajes de un compañero.** Kilo admite `task(background: true)` solo si esa opción está expuesta y la llamada real retorna; la sesión padre continúa con trabajo independiente. `task` **comparte workspace** y no crea worktree ni lock. `board_post` / `board_read` son herramientas nativas de **Kilo Swarm**, compartidas únicamente por la sesión padre y sus descendientes `task`, **si están expuestas y autorizadas en esa sesión**. El líder y los seis builders tienen `board_read: allow` / `board_post: allow` en el source vigente; los once roles read-only no. **La existencia de esa ACL no prueba que el host cargue Swarm**. Si el host no expone las tools, registrar `PROGRESS_CHANNEL_UNAVAILABLE`, usar `task_result` y no buscar vías de evasión.
 
 **Evento mínimo de avance `vx-progress-event/1`:** `{task_id_or_local_ref, owner_agent, contract_version, event, work_scope, summary, next_or_blocker, evidence_ref, verification_state}`. Eventos: `STARTED`, `CONTRACT_READY`, `MILESTONE`, `BLOCKED`, `DELIVERED`, `CORRECTION`; `VERIFIED` lo emite solamente el líder tras comprobar la evidencia. Si Kilo no expone `task_id` al hijo, mantener la referencia local entregada por el líder; **nunca inventar un ID de sesión**. `work_scope` son archivos exactos, no rutas privadas ni secretos.
 
@@ -36,9 +36,19 @@ metadata:
 
 **Barrera:** `DELIVERED` no es `VERIFIED`; el líder comprueba paths, diffs, evidencia de herramienta y tests focalizados después de que todos los escritores afectados terminen. `BLOCKED` no es aprobación para reintentar en otra herramienta.
 
+## Dispatch-first — trabajo productivo del líder mientras los hijos avanzan
+
+1. Construir una primera wave corta de tareas realmente independientes con `allowed_paths` exactos, versión de contrato, `depends_on` y `acceptance`; validar límites de capacidad y particiones antes de invocar tool.
+2. **Lanzar las llamadas `task(background: true)` consecutivas sin esperar al primer hijo.** Registrar el `task_id` real si Kilo lo devuelve; de lo contrario mantener solo la referencia local y esperar un identificador fiable. Si background no está disponible, usar foreground sin afirmar simultaneidad.
+3. El padre inicia inmediatamente su **pista de trabajo segura**: investigación de módulos estables no reservados, diseño de contratos de próximas tareas, clasificación de riesgos, documentación ajena a archivos en edición o revisión de entregas de waves anteriores. No ejecutar Git, migraciones, builds que generen ficheros compartidos ni pruebas integradas mientras haya escritores activos en el mismo worktree.
+4. Al recibir resultado asíncrono, `board_read` en un punto natural o una barrera, registrar solo avances materiales. Una respuesta del Board **no reemplaza** la notificación de Kilo ni el `task_result`. El padre verifica evidencia directa, libera dependencias en la cola y lanza la siguiente wave cuando quedan plazas seguras.
+5. Si hay una tarea `BLOCKED` con sesión Kilo sin cierre demostrado, **retiene su plaza y archivos reservados**. `resume` requiere la misma sesión viva observada; `reset` requiere evidencia de terminación. No duplicar trabajo para llenar capacidad aparente.
+
+**Nunca convertir la autonomía en espera activa:** nada de bucles, polling por reloj, repost automático de estados o tareas ficticias para mantener ocupados los hijos. Si no existe ninguna actividad independiente segura, esperar el resultado del host y decirlo claramente. El líder mantiene un ledger mínimo de sesión y solo usa SQLite con permiso real y necesidad de recuperación.
+
 ## Control de cola y recuperación — V2
 
-Las dependencias reales gobiernan la wave de trabajo: ninguna tarea dependiente sale de PENDING hasta que el líder haya verificado la evidencia de sus antecedentes. Para un único objetivo complejo, el líder crea un plan `vx-task-plan/1` mínimo, lo pasa al motor de DAG y, si hace falta continuidad entre sesiones, utiliza su cola privada SQLite (`--queue-action sync`, `report`, `start`, `event`, `verify`). `report` muestra orden sugerido y límites de escritores, pero **no despacha tareas**. Solo una llamada real `task` del host seguida de un ID observado permite `start`.
+Las dependencias reales gobiernan la wave de trabajo: ninguna tarea dependiente sale de PENDING hasta que el líder haya verificado la evidencia de sus antecedentes. Para un único objetivo complejo, el líder crea un plan `vx-task-plan/1` mínimo, lo pasa al motor de DAG y, si hace falta continuidad entre sesiones, utiliza su cola privada SQLite (`--queue-action sync|report|start|event|verify|resume|reset`). `report` muestra orden sugerido y límites de escritores, pero **no despacha tareas**. Solo una llamada real `task` del host seguida de un ID observado permite `start`.
 
 El líder reanuda por el ID real que el host permita; un registro `RUNNING` en disco después de interrupción exige `HOLD_RECHECK`, nunca reintento duplicado. Los eventos son idempotentes mediante `--event-key`. El sistema no requiere conexión ni servicios externos, y el ledger nunca se sube al repositorio Git. Sin CLI aprobada se usa ledger de sesión y `task_result`.
 

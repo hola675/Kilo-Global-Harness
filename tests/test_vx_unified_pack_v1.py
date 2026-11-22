@@ -138,8 +138,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
         collaboration = (ROOT / "skills/vx-agent-collaboration/SKILL.md").read_text(encoding="utf-8")
         bootstrap = (ROOT / "skills/vx-team-bootstrap/SKILL.md").read_text(encoding="utf-8")
         handoff = (ROOT / "skills/vx-implementation-handoff/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn('version: "0.4.0"', collaboration)
-        self.assertIn('version: "1.4.0"', bootstrap)
+        self.assertIn('version: "0.5.0"', collaboration)
+        self.assertIn('version: "1.5.0"', bootstrap)
         for body in (collaboration, bootstrap, handoff):
             self.assertIn("board_post", body)
             self.assertIn("board_read", body)
@@ -774,6 +774,55 @@ class UnifiedPackV1Tests(unittest.TestCase):
             text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
             self.assertIn("background: true", text)
             self.assertIn("EXACT_FILES", text)
+
+    def test_vx_v21_global_policy_and_agents_are_consistent(self):
+        """One global instruction source; concurrency is scoped and host-gated."""
+        pack = module.load_manifest()
+        self.assertEqual(pack["version"], "1.6.0-rc1")
+        self.assertEqual(len(pack["agents"]), 18)
+        self.assertEqual(len(pack["skills"]), 57)
+        policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
+        handbook = (ROOT / "rules/vx-global-harness-v3.md").read_text(encoding="utf-8")
+        leader = (ROOT / "agents/vx-dev-team.md").read_text(encoding="utf-8")
+        bootstrap = (ROOT / "skills/vx-team-bootstrap/SKILL.md").read_text(encoding="utf-8")
+        collaboration = (ROOT / "skills/vx-agent-collaboration/SKILL.md").read_text(encoding="utf-8")
+        engineering = (ROOT / "skills/vx-engineering-harness/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("AGENTS-global-managed.md", handbook)
+        self.assertIn("VX Dev Team V2.1", policy)
+        self.assertIn("18 agentes y 57 Skills", policy)
+        self.assertNotIn("44 IDs sin duplicados", policy)
+        self.assertIn("VX Dev Team V2.1", leader)
+        for body in (policy, handbook, leader, bootstrap, collaboration, engineering):
+            self.assertIn("background: true", body)
+            self.assertIn("EXACT_FILES", body)
+            self.assertIn("task_result", body)
+            self.assertIn("Swarm", body)
+        self.assertIn("El líder continúa inmediatamente", leader)
+        self.assertIn("El líder continúa inmediatamente", policy)
+        self.assertIn("primera wave", collaboration)
+        self.assertIn("board_read: allow", collaboration)
+        self.assertIn("board_post: allow", collaboration)
+        self.assertNotIn("El source instalado hoy conserva `board_read: deny`", collaboration)
+        self.assertIn("BLOCKED", engineering)
+        self.assertIn("BLOCKED", policy)
+        self.assertIn("TASK", leader.upper())
+        self.assertFalse(pack["routing"]["parallel_background"]["automatic_dispatch_enabled"])
+        self.assertFalse(pack["routing"]["parallel_background"]["live_file_leases_implemented"])
+        self.assertEqual(pack["routing"]["parallel_background"]["max_parallel_writers"], 2)
+        self.assertEqual(pack["routing"]["parallel_background"]["max_background_tasks"], 4)
+        allowlist = set(pack["activation"]["board_acl_allowlist"])
+        self.assertEqual(len(allowlist), 7)
+        for agent in pack["agents"]:
+            src = (ROOT / agent["source"]).read_text(encoding="utf-8")
+            front = src.split("---", 2)[1]
+            self.assertEqual("  board_read: allow" in front, agent["id"] in allowlist)
+            self.assertEqual("  board_post: allow" in front, agent["id"] in allowlist)
+            self.assertIn("  agent_manager: deny", front)
+            if agent["id"] == "vx-dev-team":
+                self.assertIn('displayName: "VX Dev Team"', front)
+            else:
+                self.assertIn("mode: subagent", front)
+                self.assertIn("  task: deny", front)
 
     def test_simulation_is_readonly_and_preserves_third_party_assets(self):
         with tempfile.TemporaryDirectory(prefix="vx-unified-plan-") as folder:
