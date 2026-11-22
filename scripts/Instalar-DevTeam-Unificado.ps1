@@ -1,9 +1,9 @@
 #Requires -Version 7.0
-# component_version: 1.0.0
-# last_modified: 2026-11-21
+# component_version: 1.0.1
+# last_modified: 2026-11-22
 <#
 .SYNOPSIS
-  VX Dev Team Core unificado 1.6.0-rc1 — único instalador global vigente.
+  VX Dev Team Core unificado 1.6.1-rc1 — único instalador global vigente.
 .DESCRIPTION
   Diagnostico/Simular: solo lectura; Aplicar: backup DPAPI CurrentUser,
   actualización de 18 agentes y 57 Skills, retiro EXPLÍCITO de hasta 14 ficheros
