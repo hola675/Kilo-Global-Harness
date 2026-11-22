@@ -2,7 +2,7 @@
 name: vx-git-ci-quality
 description: "Usar para diseñar ci y gates de github actions cuando una tarea mencione git, github, ci, actions. Exigir evidencia real y no cambiar permisos."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
   last_modified: "2026-11-21"
   origin: "vx-original"
 ---
@@ -21,6 +21,14 @@ metadata:
 - Al modificar CI, decidir `UPDATE`, `REPLACE` o `ADD` para cada suite/gate afectado.
 - Un gate supersedido se retira solo tras PASS del reemplazo; la historia se conserva fuera del CI activo.
 - No mantener nombres/versiones históricas si la invariante vigente puede expresarse con un contrato actual más claro.
+
+## Optimización de gates
+
+- Mantener una matriz de propiedad: cada invariante tiene un gate principal; gates complementarios solo si observan otro entorno, contrato o riesgo.
+- Separar comprobaciones baratas de formato/metadatos, tests unitarios focalizados, integración y smoke runtime. No presentar CI remoto como certificación del Kilo instalado.
+- En PR, ejecutar los gates requeridos por cambios y política de rama; no omitir seguridad o integridad por ahorrar tiempo. En `main`, respetar los checks de protección obligatorios.
+- Medir duración y fallos intermitentes antes de paralelizar o retirar suites. No optimizar eliminando cobertura ni suprimiendo fallos.
+- Retirar gates supersedidos únicamente después de un PASS equivalente y con evidencia de cobertura. Evitar doble ejecución del mismo conjunto bajo nombres de versiones antiguas.
 
 ## Ejecución
 
