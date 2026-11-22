@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# component_version: 1.0.1
+# component_version: 1.0.2
 # last_modified: 2026-11-22
 """Verificación de metadatos VX sin dependencias externas ni escrituras."""
 from __future__ import annotations
@@ -29,8 +29,8 @@ def check(path: str, kind: str, harness_version: str) -> list[str]:
     file = ROOT / path
     if not file.is_file():
         return [f"{path}: archivo inexistente"]
-    text = file.read_text(encoding="utf-8-sig")
     try:
+        text = file.read_text(encoding="utf-8-sig")
         if kind in ("agents", "skills", "commands"):
             fm = frontmatter(text, path)
             if kind == "skills":
@@ -78,9 +78,25 @@ def main() -> int:
     counts = {}
     for section in ("agents", "skills", "commands"):
         items = manifest.get(section, [])
+        if not isinstance(items, list):
+            errors.append(f"manifest: {section} debe ser una lista")
+            continue
         counts[section] = len(items)
+        seen = set()
         for item in items:
-            errors.extend(check(item["source"], section, manifest["version"]))
+            if not isinstance(item, dict) or not isinstance(item.get("source"), str):
+                errors.append(f"manifest: entrada inválida en {section}")
+                continue
+            source = item["source"]
+            if source in seen:
+                errors.append(f"manifest: ruta duplicada {source}")
+                continue
+            seen.add(source)
+            candidate = (ROOT / source).resolve()
+            if not candidate.is_relative_to(ROOT):
+                errors.append(f"manifest: ruta fuera del repositorio {source}")
+                continue
+            errors.extend(check(source, section, manifest.get("version", "")))
     for item in errors:
         print("FAIL", item)
     print("VX METADATA:", ", ".join(f"{key}={value}" for key, value in counts.items()), f"errors={len(errors)}")
