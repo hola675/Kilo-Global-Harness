@@ -4,6 +4,7 @@ description: "Estructura handoffs y trabajo coordinado entre líder y especialis
 compatibility: "Kilo Code Dev Team depth=1. No usa Agent Manager, Board ni delegación desde hijos."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "collaboration"
 ---
