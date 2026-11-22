@@ -1,9 +1,9 @@
 ---
 name: vx-observability-privacy
-description: "Usar para diseñar observabilidad sin filtrar datos cuando una tarea mencione logs, metricas, trazas, observabilidad. Exigir evidencia real y no cambiar permisos."
+description: "Usar al diseñar o auditar logs, métricas, trazas y telemetría con minimización de datos sensibles; no activar por una mención incidental a logs."
 metadata:
-  version: "0.2.0"
-  last_modified: "2026-11-21"
+  version: "0.2.1"
+  last_modified: "2026-11-22"
   origin: "vx-original"
 ---
 

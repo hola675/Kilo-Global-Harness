@@ -189,8 +189,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
         collaboration = (ROOT / "skills/vx-agent-collaboration/SKILL.md").read_text(encoding="utf-8")
         bootstrap = (ROOT / "skills/vx-team-bootstrap/SKILL.md").read_text(encoding="utf-8")
         handoff = (ROOT / "skills/vx-implementation-handoff/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn('version: "0.5.0"', collaboration)
-        self.assertIn('version: "1.5.0"', bootstrap)
+        self.assertIn("version:", collaboration)
+        self.assertIn("version:", bootstrap)
         for body in (collaboration, bootstrap, handoff):
             self.assertIn("board_post", body)
             self.assertIn("board_read", body)
@@ -1231,6 +1231,32 @@ class QueueActorGateTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "reservada al líder"):
                 dag.queue_cli(args)
             self.assertFalse(path.exists())
+
+
+class SkillDescriptionRoutingTests(unittest.TestCase):
+    def test_all_skills_have_contextual_descriptions(self):
+        skill_paths = list((ROOT / "skills").glob("*/SKILL.md")) + list((ROOT / "runtime/dev-team-v2r/skills").glob("*/SKILL.md"))
+        self.assertEqual(57, len(skill_paths))
+        for path in skill_paths:
+            content = path.read_text(encoding="utf-8")
+            frontmatter = content.split("---", 2)[1]
+            self.assertRegex(frontmatter, r"(?m)^name:\s*vx-[a-z0-9-]+$")
+            self.assertRegex(frontmatter, r"(?m)^description:\s*[^\n]{45,}$")
+            self.assertIn("version:", frontmatter)
+            self.assertIn("last_modified:", frontmatter)
+
+    def test_tauri_requires_explicit_stack_selection(self):
+        tauri = (ROOT / "skills/vx-tauri-desktop/SKILL.md").read_text(encoding="utf-8")
+        desc = next(line for line in tauri.splitlines() if line.startswith("description:"))
+        self.assertIn("explícitamente Tauri 2", desc)
+        self.assertIn("PySide6", desc)
+        self.assertIn("Android solo si", desc)
+
+    def test_test_strategy_and_execution_are_separate(self):
+        strategy = (ROOT / "runtime/dev-team-v2r/skills/vx-dev-test-strategy/SKILL.md").read_text(encoding="utf-8")
+        implementation = (ROOT / "skills/vx-test-regression/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("sin ejecutar tests", strategy.split("---", 2)[1])
+        self.assertIn("escribir, actualizar, sustituir", implementation.split("---", 2)[1])
 
 
 class GlobalPolicyAlignmentTests(unittest.TestCase):

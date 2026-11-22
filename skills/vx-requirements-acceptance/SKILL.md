@@ -1,11 +1,9 @@
 ---
-# last_modified: 2026-11-21
 name: vx-requirements-acceptance
-description: "Usar para convertir objetivos en criterios de aceptación verificables cuando una tarea mencione brief, requisito, aceptacion, alcance. Exigir evidencia real y no cambiar permisos."
+description: "Usar para aclarar requisitos ambiguos, delimitar alcance y transformar objetivos de producto en criterios de aceptación verificables; no activar si ya están claros."
 metadata:
-  version: "1.0.0"
-metadata:
-  version: "0.2.0"
+  version: "1.0.1"
+  last_modified: "2026-11-22"
   origin: "vx-original"
 ---
 

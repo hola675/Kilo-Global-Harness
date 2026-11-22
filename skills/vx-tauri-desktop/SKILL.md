@@ -1,9 +1,9 @@
 ---
 name: vx-tauri-desktop
-description: "Diseñar y desarrollar por defecto un par Tauri 2 Windows (.exe) + Android (.apk) con lógica compartida, UI adaptativa, plugins mínimos y conectividad local segura Wi-Fi/BLE/Wi-Fi Direct condicionada a compatibilidad."
+description: "Usar únicamente si el proyecto ha elegido explícitamente Tauri 2 para desarrollar o mantener una aplicación de escritorio; diseñar empaquetado Windows, UI, plugins y seguridad. Android solo si el alcance lo solicita; no activar para web, PySide6, Electron ni otros stacks."
 metadata:
-  version: "1.3.0"
-  last_modified: "2026-11-21"
+  version: "1.3.1"
+  last_modified: "2026-11-22"
   origin: "vx-unified"
 ---
 

@@ -1,10 +1,10 @@
 ---
 name: vx-version-governance
-description: "Control preventivo y reversible de versiones ANTES de implementar, corregir, migrar, refactorizar o modificar un repositorio. Determina baseline Git, versión vigente, impacto X/Y/Z, release, changelog y rollback sin imponer publicaciones."
+description: "Usar antes de cambios de archivos, código, configuración o contratos para establecer baseline Git, versión individual y rollback; no activar para consultas solo lectura."
 compatibility: "Agent Skills; Kilo Code y Kilo Desktop Windows. Solo instrucciones: respeta ACL, lectura y aprobaciones del host."
 metadata:
-  version: "1.1.0"
-  last_modified: "2026-11-21"
+  version: "1.1.1"
+  last_modified: "2026-11-22"
   origin: "vx-unified"
   category: "governance"
 ---
