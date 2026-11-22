@@ -1,10 +1,10 @@
 ---
 name: vx-skill-quality
-description: "Diseñar, mejorar y auditar Agent Skills globales Kilo sin duplicaciones: formato SKILL.md, activación contextual correcta, permisos, seguridad de scripts, pruebas positivas/negativas y compatibilidad Windows."
+description: "Usar al crear, auditar o mejorar Agent Skills de Kilo, especialmente frontmatter, descripciones de activación, exclusiones, solapamientos y pruebas de routing."
 compatibility: "Agent Skills; Kilo Code y Kilo Desktop. Auditoría documental y pruebas autorizadas, sin auto-instalación de terceros."
 metadata:
-  version: "1.0.0"
-  last_modified: "2026-11-21"
+  version: "1.0.1"
+  last_modified: "2026-11-22"
   origin: "vx-unified"
   category: "skill-engineering"
 ---
