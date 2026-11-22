@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# component_version: 1.1.0
+# component_version: 1.2.0
 # last_modified: 2026-11-22
 """VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
@@ -540,10 +540,35 @@ def _queue_mutate(conn: sqlite3.Connection, *, project: str, action: str,
         raise
 
 
+def _queue_audit(conn: sqlite3.Connection, project: str, task_id: str | None = None) -> dict[str, Any]:
+    """Read-only reconciliation view. Evidence refs are declarations, not host proof."""
+    if task_id is not None and not ID.fullmatch(task_id):
+        raise ValueError("ID de tarea invalido.")
+    if task_id is not None and conn.execute(
+            "SELECT 1 FROM tasks WHERE project=? AND id=?", (project, task_id)).fetchone() is None:
+        raise ValueError("Tarea inexistente.")
+    rows = conn.execute(
+        "SELECT event_key,id,event,observed_at,request_hash FROM events "
+        "WHERE project=? AND (? IS NULL OR id=?) "
+        "ORDER BY observed_at,event_key LIMIT 1000",
+        (project, task_id, task_id),
+    ).fetchall()
+    return {
+        "schema": "vx-team-audit/1",
+        "project": project,
+        "task_id": task_id,
+        "events": [dict(row) for row in rows],
+        "truncated": len(rows) == 1000,
+        "actions_executed": 0,
+        "host_evidence_authenticated": False,
+        "note": "Registro local declarado: contrastar IDs, pruebas y estado con Kilo.",
+    }
+
+
 def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
     if not args.project or not QUEUE_PROJECT.fullmatch(args.project):
         raise ValueError("Proyecto de cola invalido.")
-    mutate = args.queue_action != "report"
+    mutate = args.queue_action not in ("report", "audit")
     # Declaración de rol, NO autenticación: la protección real depende de ACL del
     # proceso/host. No permitir mutaciones accidentales desde otros roles.
     if mutate and getattr(args, "actor", None) != "vx-dev-team":
@@ -567,6 +592,8 @@ def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
                           event=args.event, event_key=args.event_key, summary=args.summary or "",
                           evidence_ref=args.evidence_ref or "", review_ref=args.review_ref or "",
                           test_report=args.test_report or "", known=known, writable=writable)
+        if args.queue_action == "audit":
+            return _queue_audit(conn, args.project, args.task_id)
         return _queue_report(conn, args.project, known, writable)
     finally:
         conn.close()
@@ -576,7 +603,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Valida DAG de tareas de agente VX sin acciones.")
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--actor", help="Rol declarado; no autentica identidad del proceso")
-    parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report"])
+    parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report","audit"])
     parser.add_argument("--queue-db", type=Path)
     parser.add_argument("--project")
     parser.add_argument("--task-id")
