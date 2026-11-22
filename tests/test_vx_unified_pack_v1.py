@@ -50,7 +50,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         tracked = subprocess.run(
             ["git", "ls-files", "--cached", "-z"],
             cwd=ROOT, capture_output=True, check=True,
-        ).stdout.decode("utf-8").split("\\0")
+        ).stdout.decode("utf-8").split(chr(0))
         actual = {path for path in tracked if path}
         self.assertEqual(actual, selected | extra)
 
