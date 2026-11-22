@@ -22,6 +22,21 @@ DAG_SPEC.loader.exec_module(dag)
 
 
 class UnifiedPackV1Tests(unittest.TestCase):
+    def test_minimal_core_has_no_legacy_registry_dependency(self):
+        self.assertFalse((ROOT / "registry/vx-agent-registry-v4.json").exists())
+        legacy = module.APPROVED_LEGACY_RETIREMENTS
+        pack = module.load_manifest()
+        self.assertEqual(
+            legacy,
+            set(pack["managed_legacy"]["agents"]
+                + pack["managed_legacy"]["skills"]
+                + pack["managed_legacy"]["commands"]),
+        )
+        # Legacy source files must not be required in a fresh minimal checkout.
+        for path in pack["managed_legacy"]["agents"]:
+            self.assertFalse((ROOT / "agents" / Path(path).name).exists())
+        self.assertEqual(len(legacy), 14)
+
     def test_manifest_is_one_pack_no_duplicate_agent_or_skill(self):
         pack = module.load_manifest()
         self.assertEqual(pack["primary"], "vx-dev-team")
@@ -144,7 +159,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertIn("board_post", body)
             self.assertIn("board_read", body)
             self.assertIn("task_result", body)
-        doc = (ROOT / "docs/VX-TEAM-GLOBAL-CAPABILITIES-V14.md").read_text(encoding="utf-8")
+        doc = (ROOT / "docs/VX-DEV-TEAM-AUTOPILOT-V2.md").read_text(encoding="utf-8")
         self.assertIn("SOURCE", doc)
         self.assertIn("PROGRESS_CHANNEL_UNAVAILABLE", doc)
         self.assertIn("RT-02", doc)
@@ -782,7 +797,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertEqual(len(pack["agents"]), 18)
         self.assertEqual(len(pack["skills"]), 57)
         policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
-        handbook = (ROOT / "rules/vx-global-harness-v3.md").read_text(encoding="utf-8")
+        handbook = (ROOT / "docs/ARQUITECTURA.md").read_text(encoding="utf-8")
         leader = (ROOT / "agents/vx-dev-team.md").read_text(encoding="utf-8")
         bootstrap = (ROOT / "skills/vx-team-bootstrap/SKILL.md").read_text(encoding="utf-8")
         collaboration = (ROOT / "skills/vx-agent-collaboration/SKILL.md").read_text(encoding="utf-8")
