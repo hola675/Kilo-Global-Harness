@@ -16,8 +16,17 @@ Cada Skill conserva su versión **individual** dentro de `metadata.version` de s
 | vx-dev-architecture-decision | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
 | vx-dev-backend-contracts | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
 
+| vx-dev-data-migration | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-platform-delivery | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-debug-triage | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-frontend-ux | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-accessibility | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-ui-state-system | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-test-strategy | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-security-threat-review | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+
 ## Pendiente
-Las otras 49 Skills permanecen en el manifiesto, pero no se declaran modificadas ni verificadas en este registro hasta su inspección individual.
+Las otras 41 Skills permanecen en el manifiesto, pero no se declaran modificadas ni verificadas en este registro hasta su inspección individual.
 
 ## Changelog de sección
-- 2026-11-21: inicio del registro central; añadido `metadata.last_modified` a ocho Skills, manteniendo sus versiones preexistentes.
+- 2026-11-21: inicio del registro central; añadido `metadata.last_modified` a dieciséis Skills, manteniendo sus versiones preexistentes.
