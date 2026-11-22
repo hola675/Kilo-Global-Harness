@@ -4,6 +4,7 @@ description: "Revisa de forma independiente un cambio ya implementado para detec
 compatibility: "Read-only; Reviewer no implementa, no ejecuta tests ni decide el merge."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "review"
 ---
