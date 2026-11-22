@@ -1,4 +1,4 @@
-<!-- component_version: 2.1.0; last_modified: 2026-11-22 -->
+<!-- component_version: 2.2.0; last_modified: 2026-11-22 -->
 # AGENTS global · Gobernanza y uso del Kilo Global Harness
 
 ## Identidad y alcance
@@ -35,6 +35,18 @@ Este documento es una **política global de uso del Harness**, no un agente ejec
 4. **Ejecutar:** implementar cambios mínimos y coherentes con la arquitectura real. Revisar compatibilidad, errores, permisos, migraciones, rutas y efectos secundarios. Mantener los archivos editados bajo control de un solo escritor.
 5. **Validar:** comprobar el comportamiento modificado, sus límites y las regresiones razonablemente cercanas. No declarar éxito por ausencia de errores visibles ni por documentación actualizada.
 6. **Integrar y cerrar:** revisar diff, estado Git, resultados de pruebas, cambios ajenos y requisitos de entrega. Registrar únicamente el resumen pertinente y comunicar el resultado, límites y pendientes reales.
+
+### Presupuesto global de ramas y worktrees — preflight obligatorio
+
+- **Máximo 3 ramas activas en total, incluida `main`:** `main` + **una** rama temporal `work/*` por defecto; una **segunda** rama temporal solo cuando dos trabajos independientes requieran simultaneidad real, ámbitos de escritura disjuntos y coordinación verificable. Nunca crear una cuarta rama para iniciar otra tarea.
+- **Worktrees:** mantener **un único worktree activo en `main` por defecto**. Solo crear worktree temporal adicional si el trabajo paralelo está justificado y el host lo permite; máximo dos worktrees temporales asociados a las dos ramas `work/*`. Cada worktree tiene un único escritor; no usar un mismo directorio para dos ramas simultáneas.
+- **Antes de implementar o crear una rama:** inspeccionar `git status`, rama actual, `git branch -a`, `git worktree list --porcelain`, divergencia con `origin/main`, PR abiertos y estado de CI. Contar ramas remotas activas y locales no fusionadas; una rama `work/*` fusionada pero aún existente sigue contando hasta eliminarse.
+- **Si se supera el presupuesto, detener la creación de ramas y hacer limpieza primero:** clasificar cada rama como `MERGED`, `UNMERGED`, `DIRTY`, `IN_USE` o `UNKNOWN`; verificar que los commits están incorporados a `main` (merge/squash mediante PR y evidencia), resolver cambios no integrados sin pérdida, y eliminar únicamente ramas temporales fusionadas que ya no estén en uso. Tras squash, comprobar el PR fusionado y el contenido integrado; no confiar exclusivamente en `git branch --merged`.
+- **Consolidar hacia `main` de forma segura:** revisar diff, CI, aprobaciones y estado del PR; integrar con merge/squash autorizado, sincronizar `main` por fast-forward y retirar la rama temporal y su worktree solo después de verificar integración y limpieza. No borrar ramas con cambios únicos, PR pendientes, archivos sin commit o worktrees ocupados. No usar `reset --hard`, `push --force`, `git worktree remove --force` ni descartar cambios ajenos para cumplir el límite.
+- **Worktrees obsoletos:** inspeccionar estado y ocupación; retirar solo worktrees temporales limpios, sin trabajo pendiente, y podar metadatos obsoletos con `git worktree prune` cuando sea seguro. El worktree de `main` se conserva.
+- **Preflight como gate:** si no se puede verificar el estado Git/PR o no hay permiso para limpiar, marcar `BRANCH_BUDGET_BLOCKED` y solicitar la intervención mínima necesaria; no simular limpieza ni abrir otra rama. Una excepción requiere autorización expresa del usuario y justificación documentada.
+- **Cierre obligatorio:** dejar `main` actualizado y, cuando el trabajo haya terminado, **solo `main` activo**; verificar listado de ramas, worktrees, estado limpio y CI. Si el host no permite eliminar refs remotas, informar el bloqueo sin afirmar que la limpieza se completó.
+- **Alcance:** política de trabajo del Harness; en repositorios de terceros, respetar además sus reglas, protecciones y ramas de colaboración. No borrar ramas ajenas por aplicar este presupuesto.
 
 ### Política de pruebas y certificación
 
