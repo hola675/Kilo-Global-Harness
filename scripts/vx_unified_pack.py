@@ -1,4 +1,4 @@
-"""Instalador único VX Dev Team Core v1: transaccional, conservador y reversible.
+"""Instalador vigente VX Dev Team Core 1.6: transaccional, conservador y reversible.
 
 Solo gestiona IDs exactos del manifiesto; nunca modifica kilo.jsonc, MCP ni terceros.
 Simular/diagnosticar son read-only; apply/restore requieren Windows y DPAPI CurrentUser.
