@@ -1276,6 +1276,15 @@ class SkillDescriptionRoutingTests(unittest.TestCase):
         self.assertIn("UPDATE/REPLACE/ADD", implementation.split("---", 2)[1])
 
 
+class GlobalBranchWorktreeBudgetTests(unittest.TestCase):
+    def test_global_policy_sets_preflight_and_safe_cleanup(self):
+        policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
+        for invariant in ("Máximo 3 ramas activas", "una", "segunda", "git worktree list --porcelain",
+                          "BRANCH_BUDGET_BLOCKED", "No borrar ramas con cambios únicos",
+                          "solo `main` activo", "git worktree prune"):
+            self.assertIn(invariant, policy)
+
+
 class GlobalPolicyAlignmentTests(unittest.TestCase):
     def test_global_workflow_policy_covers_lifecycle_without_replacing_agent(self):
         policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
