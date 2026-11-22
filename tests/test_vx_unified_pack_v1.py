@@ -1273,7 +1273,7 @@ class SkillDescriptionRoutingTests(unittest.TestCase):
         strategy = (ROOT / "runtime/dev-team-v2r/skills/vx-dev-test-strategy/SKILL.md").read_text(encoding="utf-8")
         implementation = (ROOT / "skills/vx-test-regression/SKILL.md").read_text(encoding="utf-8")
         self.assertIn("sin ejecutar tests", strategy.split("---", 2)[1])
-        self.assertIn("escribir, actualizar, sustituir", implementation.split("---", 2)[1])
+        self.assertIn("UPDATE/REPLACE/ADD", implementation.split("---", 2)[1])
 
 
 class GlobalPolicyAlignmentTests(unittest.TestCase):
