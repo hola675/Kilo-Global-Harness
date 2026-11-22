@@ -4,6 +4,7 @@ description: "Audita accesibilidad de UI con foco en WCAG 2.2: semántica, tecla
 compatibility: "Read-only; automatización no sustituye verificación manual."
 metadata:
   version: "1.0.0"
+  last_modified: "2026-11-21"
   origin: "vx-dev-original"
   category: "accessibility"
 ---
