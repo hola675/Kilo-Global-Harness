@@ -1240,8 +1240,8 @@ class SkillDescriptionRoutingTests(unittest.TestCase):
         for path in skill_paths:
             content = path.read_text(encoding="utf-8")
             frontmatter = content.split("---", 2)[1]
-            self.assertRegex(frontmatter, r"(?m)^name:\\s*vx-[a-z0-9-]+$")
-            self.assertRegex(frontmatter, r"(?m)^description:\\s*[^\\n]{45,}$")
+            self.assertRegex(frontmatter, r"(?m)^name:\s*vx-[a-z0-9-]+$")
+            self.assertRegex(frontmatter, r"(?m)^description:\s*[^\n]{45,}$")
             self.assertIn("version:", frontmatter)
             self.assertIn("last_modified:", frontmatter)
 
