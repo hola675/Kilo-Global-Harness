@@ -1,4 +1,6 @@
 ---
+# component_version: 1.0.1
+# last_modified: 2026-11-21
 displayName: "Dev Explorer"
 description: "Read-only codebase cartographer. Use to locate entry points, symbols, references, dependencies and the impact surface of a change before design or implementation."
 mode: subagent
