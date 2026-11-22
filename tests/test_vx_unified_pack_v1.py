@@ -1102,6 +1102,24 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertNotIn("Instalar-DevTeam-Only.ps1 -Modo Aplicar", wrapper)
 
 
+class QueueActorGateTests(unittest.TestCase):
+    def test_queue_mutation_requires_explicit_leader_role(self):
+        from argparse import Namespace
+        with tempfile.TemporaryDirectory(prefix="vx-queue-actor-") as folder:
+            path = Path(folder) / "queue.sqlite3"
+            args = Namespace(
+                project="sample", queue_action="sync", actor="vx-qa-builder",
+                queue_db=path,
+            )
+            with self.assertRaisesRegex(ValueError, "reservada al líder"):
+                dag.queue_cli(args)
+            self.assertFalse(path.exists())
+            args.actor = None
+            with self.assertRaisesRegex(ValueError, "reservada al líder"):
+                dag.queue_cli(args)
+            self.assertFalse(path.exists())
+
+
 class MetadataContractTests(unittest.TestCase):
     """Pruebas focalizadas: el validador no modifica fuentes ni acepta fechas falsas."""
 
