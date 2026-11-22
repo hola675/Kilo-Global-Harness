@@ -1,9 +1,9 @@
 ---
 name: vx-git-ci-quality
-description: "Usar para diseñar ci y gates de github actions cuando una tarea mencione git, github, ci, actions. Exigir evidencia real y no cambiar permisos."
+description: "Usar al crear, corregir u optimizar workflows CI/CD, GitHub Actions y gates de calidad; verificar triggers, permisos, propiedad de suites, evidencias y regresiones. No activar por simples operaciones Git sin cambios de CI."
 metadata:
-  version: "0.3.0"
-  last_modified: "2026-11-21"
+  version: "0.3.1"
+  last_modified: "2026-11-22"
   origin: "vx-original"
 ---
 
