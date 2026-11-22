@@ -164,7 +164,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         lead_front = lead.split("---", 2)[1]
         self.assertIn("  board_read: allow", lead_front)
         self.assertIn("  board_post: allow", lead_front)
-        self.assertIn("displayName: \"VX Dev Team\"", lead_front)
+        self.assertIn("displayName: \"VX Dev Team v1.6.1-rc1\"", lead_front)
         self.assertIn("  agent_manager: deny", lead_front)
         self.assertIn("VX Dev Team Autopilot V2", lead)
         self.assertIn("PROGRESS_CHANNEL_UNAVAILABLE", lead)
@@ -870,7 +870,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual("  board_post: allow" in front, agent["id"] in allowlist)
             self.assertIn("  agent_manager: deny", front)
             if agent["id"] == "vx-dev-team":
-                self.assertIn('displayName: "VX Dev Team"', front)
+                self.assertIn('displayName: "VX Dev Team v1.6.1-rc1"', front)
             else:
                 self.assertIn("mode: subagent", front)
                 self.assertIn("  task: deny", front)
@@ -1141,8 +1141,8 @@ class MetadataContractTests(unittest.TestCase):
             (root / "registry").mkdir()
             agent = root / "agents/vx-dev-team.md"
             agent.write_text(
-                "---\\n# component_version: 1.0.0\\n# last_modified: 2026-02-30\\n"
-                'displayName: "VX Dev Team v1.6.1-rc1"\\n---\\n',
+                "---\n# component_version: 1.0.0\n# last_modified: 2026-02-30\n"
+                'displayName: "VX Dev Team v1.6.1-rc1"\n---\n',
                 encoding="utf-8")
             old_root = validator.ROOT
             try:
