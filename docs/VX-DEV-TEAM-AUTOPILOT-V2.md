@@ -1,7 +1,7 @@
 # VX Dev Team — Autopilot V2 · Guía operativa viva
 
 **Versión:** 2.0.0-rc1 · **Fecha:** 2026-11-21 · **Estado:** SOURCE APROBADO POR OPERADOR, RUNTIME A CERTIFICAR TRAS INSTALACIÓN.  
-**Compatibilidad:** Kilo Desktop/Kilo Code, agente global `vx-dev-team`, nombre visible **VX Dev Team**, 18 agentes/57 Skills en Core VX 1.6.0-rc1.
+**Compatibilidad:** Kilo Desktop/Kilo Code, agente global `vx-dev-team`, nombre visible **VX Dev Team**, 18 agentes/57 Skills en Core VX 1.6.2-rc1.
 
 ## Meta: una sola instrucción al líder
 
