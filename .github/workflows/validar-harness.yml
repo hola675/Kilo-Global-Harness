@@ -69,7 +69,8 @@ jobs:
           if (Test-Path (Join-Path $lab 'state/vx-runtime-observations.sqlite3')) {
             throw 'Laboratorio creó SQLite sin ejecutar Kilo.'
           }
-          Remove-Item -LiteralPath $lab -Recurse -Force
+          & $script -Modo Limpiar -RaizLaboratorio $lab -ConfirmarLimpieza -ConfirmarLabCerrado
+          if (Test-Path -LiteralPath $lab) { throw 'Cleanup lab no eliminó carpeta autorizada.' }
       - name: Verificar versiones individuales y fechas
         shell: pwsh
         run: |
