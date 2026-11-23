@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# component_version: 1.2.0
+# component_version: 1.3.0
 # last_modified: 2026-11-23
 """R4: correlacion explicita y solo lectura; nunca modifica DAG ni certifica host."""
 from __future__ import annotations
@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 from contextlib import closing
 from hashlib import sha256
+import hmac
 import json
 from pathlib import Path
 import re
@@ -102,17 +103,65 @@ def verify_receipt(receipt_file: Path, artifact_file: Path, link: dict) -> dict:
     if len(blob) > MAX_ARTIFACT_BYTES:
         raise ValueError("Evidencia excede limite.")
     return {"receipt_integrity_matches": sha256(blob).hexdigest() == digest,
+            "receipt_mac_checked": sealed and proof is not None and proof["receipt_integrity_matches"],
+            "receipt_mac_matches": mac_ok,
             "receipt_origin_authenticated": False,
             "artifact_content_reviewed": False}
 
 
+ATTESTATION_DOMAIN = b"VX-OBSERVER-RECEIPT-MAC-V1\\x00"
+ISSUER_ID = re.compile(r"^[a-z][a-z0-9_-]{1,63}$")
+
+
+def verify_attestation(receipt_file: Path, attestation_file: Path,
+                       key_file: Path, trusted_issuer: str) -> bool:
+    """HMAC verifica posesion de clave; NO identidad del proceso, resultado o aprobacion."""
+    if not ISSUER_ID.fullmatch(trusted_issuer):
+        raise ValueError("Emisor de confianza invalido.")
+    paths = (receipt_file, attestation_file, key_file)
+    if any(not p.is_absolute() or p.is_symlink() or not p.is_file() for p in paths):
+        raise ValueError("Fuentes de sello deben ser archivos absolutos regulares.")
+    if len({p.resolve() for p in paths}) != len(paths):
+        raise ValueError("Recibo, sello y clave deben ser archivos diferentes.")
+    if attestation_file.stat().st_size > 4096 or key_file.stat().st_size not in range(32, 129):
+        raise ValueError("Sello o clave fuera de limites.")
+    seal = json.loads(attestation_file.read_text(encoding="utf-8"))
+    required = {"schema", "issuer", "receipt_sha256", "mac_sha256"}
+    if not isinstance(seal, dict) or set(seal) != required:
+        raise ValueError("Campos de sello incompatibles.")
+    if seal["schema"] != "vx-receipt-hmac/1" or seal["issuer"] != trusted_issuer:
+        raise ValueError("Emisor o esquema no confiable.")
+    if any(not isinstance(seal[name], str) or not HASH.fullmatch(seal[name])
+           for name in ("receipt_sha256", "mac_sha256")):
+        raise ValueError("Huella o MAC invalido.")
+    with receipt_file.open("rb") as inp:
+        receipt = inp.read(4097)
+    if len(receipt) > 4096:
+        raise ValueError("Recibo excede limite.")
+    digest = sha256(receipt).hexdigest()
+    with key_file.open("rb") as inp:
+        key = inp.read(129)
+    if not 32 <= len(key) <= 128:
+        raise ValueError("Clave fuera de limites.")
+    message = ATTESTATION_DOMAIN + trusted_issuer.encode("ascii") + b"\\x00" + bytes.fromhex(digest)
+    expected = hmac.new(key, message, "sha256").hexdigest()
+    return (hmac.compare_digest(digest, seal["receipt_sha256"]) and
+            hmac.compare_digest(expected, seal["mac_sha256"]))
+
+
 def correlate(queue: Path, observer: Path, project: str, task_id: str,
               session_ref: str, call_ref: str, link_file: Path | None = None,
-              receipt_file: Path | None = None, artifact_file: Path | None = None) -> dict:
+              receipt_file: Path | None = None, artifact_file: Path | None = None,
+              attestation_file: Path | None = None, trust_key_file: Path | None = None,
+              trusted_issuer: str | None = None) -> dict:
     if not PROJECT.fullmatch(project) or not TASK.fullmatch(task_id):
         raise ValueError("Proyecto o tarea invalidos.")
     if not HASH.fullmatch(session_ref) or not HASH.fullmatch(call_ref):
         raise ValueError("Los hashes deben ser SHA256 completos, no prefijos.")
+    sealed = any(value is not None for value in (attestation_file, trust_key_file, trusted_issuer))
+    if sealed and (attestation_file is None or trust_key_file is None or trusted_issuer is None or
+                   receipt_file is None or artifact_file is None or link_file is None):
+        raise ValueError("Sello requiere clave, emisor, recibo, evidencia y vinculo.")
     if (receipt_file is None) != (artifact_file is None):
         raise ValueError("Recibo y evidencia deben aportarse juntos.")
     if receipt_file is not None and link_file is None:
@@ -129,6 +178,8 @@ def correlate(queue: Path, observer: Path, project: str, task_id: str,
         paths.append(link_file.resolve())
     if receipt_file is not None:
         paths.extend((receipt_file.resolve(), artifact_file.resolve()))
+    if sealed:
+        paths.extend((attestation_file.resolve(), trust_key_file.resolve()))
     if len(set(paths)) != len(paths):
         raise ValueError("Las fuentes deben ser archivos distintos.")
     queue_schema = {"tasks": {"project", "id", "state", "host_task_id"}}
@@ -155,10 +206,14 @@ def correlate(queue: Path, observer: Path, project: str, task_id: str,
             raise ValueError("La herramienta del vinculo no coincide con los hooks.")
         proof = (verify_receipt(receipt_file, artifact_file, link)
                  if receipt_file is not None and matched else None)
+        mac_ok = (verify_attestation(receipt_file, attestation_file, trust_key_file, trusted_issuer)
+                  if proof and proof["receipt_integrity_matches"] and sealed else False)
         return {
             "schema": "vx-observer-dag-correlation/1",
             "project": project, "task_id": task_id,
-            "status": ("RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED"
+            "status": ("RECEIPT_MAC_MATCH_KEY_POSSESSION_ONLY" if sealed and mac_ok else
+                       "RECEIPT_MAC_INVALID" if sealed and proof and proof["receipt_integrity_matches"] else
+                       "RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED"
                        if proof and proof["receipt_integrity_matches"] else
                        "RECEIPT_INTEGRITY_MISMATCH" if proof else
                        "LINKED_OBSERVED_NOT_VERIFIED" if link is not None else
@@ -191,11 +246,14 @@ def main() -> int:
     p.add_argument("--link-file", type=Path, help="Vinculo explicito JSON; sin autenticar")
     p.add_argument("--receipt-file", type=Path, help="Recibo JSON de integridad, no autentica host")
     p.add_argument("--artifact-file", type=Path, help="Archivo evidencia <=1 MiB; no se imprime")
+    p.add_argument("--attestation-file", type=Path, help="Sello HMAC; opcional con clave y emisor")
+    p.add_argument("--trust-key-file", type=Path, help="Clave compartida privada 32-128 bytes")
+    p.add_argument("--trusted-issuer", help="ID del emisor previamente establecido por el operador")
     a = p.parse_args()
     try:
-        report = correlate(a.queue_db, a.observer_db, a.project, a.task_id, a.session_ref, a.call_ref, a.link_file, a.receipt_file, a.artifact_file)
+        report = correlate(a.queue_db, a.observer_db, a.project, a.task_id, a.session_ref, a.call_ref, a.link_file, a.receipt_file, a.artifact_file, a.attestation_file, a.trust_key_file, a.trusted_issuer)
         print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
-        return 0 if report["status"] in ("CORRELATED_NOT_VERIFIED", "LINKED_OBSERVED_NOT_VERIFIED", "RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED") else 1
+        return 0 if report["status"] in ("CORRELATED_NOT_VERIFIED", "LINKED_OBSERVED_NOT_VERIFIED", "RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED", "RECEIPT_MAC_MATCH_KEY_POSSESSION_ONLY") else 1
     except (OSError, ValueError, sqlite3.DatabaseError) as error:
         print(json.dumps({"schema": "vx-observer-dag-correlation/1", "status": "FAIL",
                           "error_type": type(error).__name__, "actions_executed": 0}))
