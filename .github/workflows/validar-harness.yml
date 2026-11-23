@@ -20,11 +20,13 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $f = (Resolve-Path 'scripts/Instalar-DevTeam-Unificado.ps1').Path
-          $errors = $null
-          $tokens = $null
-          [System.Management.Automation.Language.Parser]::ParseFile($f, [ref]$tokens, [ref]$errors) | Out-Null
-          if (@($errors).Count -ne 0) { throw "Instalador invalido: $($errors | Out-String)" }
+          foreach ($relative in @('scripts/Instalar-DevTeam-Unificado.ps1', 'scripts/Eliminar-RamasFusionadas.ps1')) {
+            $f = (Resolve-Path $relative).Path
+            $errors = $null
+            $tokens = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($f, [ref]$tokens, [ref]$errors) | Out-Null
+            if (@($errors).Count -ne 0) { throw "PowerShell invalido ($relative): $($errors | Out-String)" }
+          }
       - name: Compilar motores y pruebas del Core
         shell: pwsh
         run: |
@@ -35,8 +37,13 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+          $env:VX_OBSERVER_ENABLE = '0'
           node --check runtime/kilo-observer/vx-runtime-observer.js
           if ($LASTEXITCODE -ne 0) { throw 'Observador JS inválido.' }
+          node --check runtime/kilo-observer/lib/vx-observer-hooks.js
+          if ($LASTEXITCODE -ne 0) { throw 'Normalizador de hooks inválido.' }
+          node --test tests/test_vx_observer_contract.mjs
+          if ($LASTEXITCODE -ne 0) { throw 'Pruebas contractuales offline de hooks fallidas.' }
       - name: Verificar versiones individuales y fechas
         shell: pwsh
         run: |

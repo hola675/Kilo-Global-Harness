@@ -14,6 +14,8 @@ Cada script/comando conserva versión individual y fecha en comentarios compatib
 | commands/vx-dependencias.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 | commands/vx-editorial.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 
-| runtime/kilo-observer/vx-runtime-observer.js | 0.1.1 | 2026-11-23 | Prototipo experimental opt-in; no incluido en instalación ni certificado en Kilo Desktop |
+| runtime/kilo-observer/vx-runtime-observer.js | 0.2.0 | 2026-11-23 | Observador experimental con doble opt-in y eventos filtrados; sin instalación ni certificado Desktop |
+| runtime/kilo-observer/lib/vx-observer-hooks.js | 0.1.0 | 2026-11-23 | Normalización determinista de eventos sin argumentos ni respuestas; tests Node offline |
+| scripts/Eliminar-RamasFusionadas.ps1 | 1.0.0 | 2026-11-23 | Simulación Git por defecto; elimina solo work/* con PR fusionado, historial inmutable y SHA protegido |
 
 Los módulos históricos de respaldo aún requieren versionado individual después de auditoría específica; no se retiran mientras sean dependencias del instalador.

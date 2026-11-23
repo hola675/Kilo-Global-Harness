@@ -44,6 +44,9 @@ class UnifiedPackV1Tests(unittest.TestCase):
             "docs/VX-DEV-TEAM-AUTONOMY-161.md",
             "scripts/vx_verify_metadata.py",
             "runtime/kilo-observer/vx-runtime-observer.js",
+            "runtime/kilo-observer/lib/vx-observer-hooks.js",
+            "tests/test_vx_observer_contract.mjs",
+            "scripts/Eliminar-RamasFusionadas.ps1",
             "scripts/Instalar-DevTeam-Unificado.ps1",
             "scripts/vx_unified_pack.py",
             "scripts/vx_pack_coexist_v023.py",
@@ -1344,19 +1347,29 @@ class ObserverSourceAndReportTests(unittest.TestCase):
     def test_observer_plugin_is_opt_in_and_never_injects_content_or_permissions(self):
         source = (ROOT / "runtime/kilo-observer/vx-runtime-observer.js").read_text(
             encoding="utf-8")
+        helper = (ROOT / "runtime/kilo-observer/lib/vx-observer-hooks.js").read_text(
+            encoding="utf-8")
         self.assertIn('process.env.VX_OBSERVER_ENABLE === "1"', source)
         self.assertIn("if (!ENABLED || !PROJECT_SCOPE || safeProject(directory) !== PROJECT_SCOPE) return {}", source)
         self.assertIn('process.env.VX_OBSERVER_PROJECT', source)
         self.assertIn('await import("bun:sqlite")', source)
         self.assertIn("vx-runtime-observations.sqlite3", source)
-        self.assertIn("TOOL_RETURNED_NOT_VERIFIED", source)
-        self.assertIn("TOOL_CALLED_NOT_CONFIRMED", source)
-        self.assertNotIn("input.args", source)
-        self.assertNotIn("output.output", source)
-        self.assertNotIn("chat.message", source)
-        self.assertNotIn("permission.ask", source)
-        self.assertNotIn("kilo.jsonc", source)
-        self.assertNotIn("vx-team-queue.sqlite3", source)
+        self.assertIn("TOOL_RETURNED_NOT_VERIFIED", helper)
+        self.assertIn("TOOL_CALLED_NOT_CONFIRMED", helper)
+        for forbidden in ("input.args", "output.output", "chat.message",
+                          "permission.ask", "kilo.jsonc", "vx-team-queue.sqlite3"):
+            self.assertNotIn(forbidden, source + helper)
+
+    def test_branch_cleanup_requires_merged_pr_and_lease(self):
+        source = (ROOT / "scripts/Eliminar-RamasFusionadas.ps1").read_text(
+            encoding="utf-8")
+        for contract in ("-Aplicar", "-ConfirmarBorrado", "headRefOid",
+                         "--paginate", "commits?per_page=100",
+                         "--force-with-lease=", "worktree list --porcelain",
+                         "git -C $Root status --porcelain"):
+            self.assertIn(contract, source)
+        self.assertNotIn("reset --hard", source)
+        self.assertNotIn("push --force", source)
 
     def test_observer_report_readonly_with_events_and_absent_db(self):
         with tempfile.TemporaryDirectory(prefix="vx-observer-report-") as tmp:
