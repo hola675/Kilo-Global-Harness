@@ -1,23 +1,30 @@
-// component_version: 0.2.0
+// component_version: 0.3.0
 // last_modified: 2026-11-23
 // OBSERVATION_ONLY / SOURCE_CANDIDATE / NOT_INSTALLED / OPT_IN_REQUIRED
 // This module does NOT change tool arguments, approvals, chat, or Kilo config.
 // Hook support in Kilo Desktop must be proven separately from CLI/VS Code.
 import { homedir } from "node:os"
-import { join } from "node:path"
+import { dirname, isAbsolute, join, resolve } from "node:path"
 import { safeProject, createObservationHooks } from "./lib/vx-observer-hooks.js"
 import { existsSync, lstatSync, mkdirSync } from "node:fs"
 
 const ENABLED = process.env.VX_OBSERVER_ENABLE === "1"
 const PROJECT_SCOPE = String(process.env.VX_OBSERVER_PROJECT || "").toLowerCase()
-const PRIVATE_DIR = join(homedir(), ".config", "kilo", "harness", "state")
-const PRIVATE_DB = join(PRIVATE_DIR, "vx-runtime-observations.sqlite3")
+const STATE_OVERRIDE = process.env.VX_OBSERVER_STATE_ROOT
+const PRIVATE_DIR = STATE_OVERRIDE
+  ? (isAbsolute(STATE_OVERRIDE) && !STATE_OVERRIDE.includes("\\0")
+    ? resolve(STATE_OVERRIDE) : null)
+  : join(homedir(), ".config", "kilo", "harness", "state")
+const PRIVATE_DB = PRIVATE_DIR ? join(PRIVATE_DIR, "vx-runtime-observations.sqlite3") : null
 const MAX_DB_BYTES = 64 * 1024 * 1024
 
 function ensurePrivateDatabase(Database) {
-  // Do not follow a direct symlink for the private SQLite file or directory.
-  if (existsSync(PRIVATE_DIR) && lstatSync(PRIVATE_DIR).isSymbolicLink()) {
-    throw new Error("observer state directory is a symlink")
+  if (!PRIVATE_DIR || !PRIVATE_DB) throw new Error("invalid observer state root")
+  // Refuse symlink/junction traversal in any existing ancestor, not only leaf.
+  for (let parent = PRIVATE_DIR; parent !== dirname(parent); parent = dirname(parent)) {
+    if (existsSync(parent) && lstatSync(parent).isSymbolicLink()) {
+      throw new Error("observer directory ancestor is a symlink")
+    }
   }
   mkdirSync(PRIVATE_DIR, { recursive: true })
   if (existsSync(PRIVATE_DB) && lstatSync(PRIVATE_DB).isSymbolicLink()) {
@@ -26,7 +33,6 @@ function ensurePrivateDatabase(Database) {
   const db = new Database(PRIVATE_DB, { create: true, strict: true })
   try {
     db.exec("PRAGMA busy_timeout = 250")
-    db.exec("PRAGMA journal_mode = WAL")
     const versionRow = db.query("PRAGMA user_version").get()
     const version = Number(versionRow?.user_version ?? -1)
     if (version !== 0 && version !== 1) {
@@ -40,6 +46,14 @@ function ensurePrivateDatabase(Database) {
         throw new Error("observer database belongs to another schema")
       }
     }
+    if (version === 1) {
+      const columns = db.query("PRAGMA table_info(host_observations)").all()
+      const actual = new Set(columns.map((column) => column.name))
+      for (const field of ["event_key", "project", "session_ref", "call_ref", "event_type", "tool", "observed_at"]) {
+        if (!actual.has(field)) throw new Error("incompatible observer table: " + field)
+      }
+    }
+    db.exec("PRAGMA journal_mode = WAL")
     db.exec("BEGIN IMMEDIATE")
     try {
       db.exec(
