@@ -2,6 +2,7 @@
 # last_modified: 2026-11-23
 """R4: pruebas focalizadas en bases efimeras; sin credenciales ni HOME."""
 import importlib.util
+from contextlib import closing
 from pathlib import Path
 import sqlite3
 import tempfile
@@ -22,11 +23,11 @@ class CorrelationTests(unittest.TestCase):
         self.addCleanup(self.temp.cleanup)
         root = Path(self.temp.name)
         self.queue, self.observer = root / "queue.sqlite3", root / "observer.sqlite3"
-        with sqlite3.connect(self.queue) as conn:
+        with closing(sqlite3.connect(self.queue)) as conn:
             conn.execute("CREATE TABLE tasks(project TEXT,id TEXT,state TEXT,host_task_id TEXT)")
             conn.execute("PRAGMA user_version=1")
             conn.execute("INSERT INTO tasks VALUES ('demo','job01','RUNNING','host-x')")
-        with sqlite3.connect(self.observer) as conn:
+        with closing(sqlite3.connect(self.observer)) as conn:
             conn.execute("CREATE TABLE host_observations(project TEXT,session_ref TEXT,call_ref TEXT,event_type TEXT,tool TEXT)")
             conn.execute("PRAGMA user_version=1")
             for event in r4.EVENTS:
@@ -46,7 +47,7 @@ class CorrelationTests(unittest.TestCase):
     def test_rejects_missing_or_ambiguous_hooks(self):
         self.assertEqual(r4.correlate(self.queue, self.observer, "demo", "job01",
                                       SESSION, "c"*64)["status"], "NOT_CORRELATED")
-        with sqlite3.connect(self.observer) as conn:
+        with closing(sqlite3.connect(self.observer)) as conn:
             conn.execute("INSERT INTO host_observations VALUES (?,?,?,?,?)",
                          ("demo", SESSION, CALL, r4.EVENTS[0], "task"))
         self.assertEqual(r4.correlate(self.queue, self.observer, "demo", "job01",
