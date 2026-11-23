@@ -520,7 +520,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
             front = doc.frontmatter
             if agent["role"] == "lead":
                 self.assertIn("mode: primary", front)
-                self.assertTrue({"*"} | set(pack["lead_skill_allowlist"]) <= doc.permissions.allowlist("skill"))
+                self.assertEqual(doc.permissions.fallback("skill"), "allow")
+                self.assertTrue(set(pack["lead_skill_allowlist"]) <= doc.permissions.allowlist("skill"))
                 expected_children = {a["id"] for a in pack["agents"] if a["role"] != "lead"}
                 self.assertEqual(doc.permissions.allowlist("task"), expected_children)
             else:
@@ -611,7 +612,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
             with self.subTest(agent=agent['id']):
                 doc = load_agent(ROOT / agent['source'])
                 expected = set(pack['builder_skill_allowlists'][agent['id']])
-                self.assertTrue({'*'} | expected <= doc.permissions.allowlist('skill'))
+                self.assertEqual(doc.permissions.fallback('skill'), 'allow')
+                self.assertTrue(expected <= doc.permissions.allowlist('skill'))
                 self.assertTrue(expected <= declared)
                 self.assertEqual(doc.permissions.scalar('task'), 'deny')
                 for tool in ('edit', 'write', 'apply_patch'):
