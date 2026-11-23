@@ -157,6 +157,14 @@ La consulta exige coincidencia exacta del proyecto, tarea y hashes SHA256 comple
 
 **Gate abierto:** falta corroborar el origen auténtico del vínculo con Kilo y resultados de tareas reales; el informe siempre conserva `explicit_mapping_authenticated: false` y `host_results_verified: false`. Mantener fuera del instalador y de producción.
 
+### R4.3 — Integridad de recibo de evidencia (sin autenticación del host)
+
+El correlador v1.2.0 añade opcionalmente `--receipt-file` y `--artifact-file` (ambos obligatorios conjuntamente y solo junto a `--link-file`). El recibo JSON v1 exige exactamente los campos del vínculo R4.2, más `artifact_sha256`. La lectura está limitada a un recibo de 4096 bytes y una evidencia de 1 MiB; el digest SHA256 se calcula sin guardar ni mostrar el contenido. Los archivos deben ser absolutos, regulares, preexistentes y diferentes de las bases SQLite y el archivo de vínculo. Rechaza recibos cuyo proyecto, tarea, host, hashes o herramienta difieran del vínculo. En ausencia de hooks pareados no se examina la integridad y se conserva `NOT_CORRELATED`.
+
+`RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED` significa exclusivamente que la evidencia conserva los bytes referenciados por el recibo y que la llamada observada corresponde al vínculo declarado. `RECEIPT_INTEGRITY_MISMATCH` detecta bytes diferentes; ambos mantienen `receipt_origin_authenticated=false`, `artifact_content_reviewed=false`, `host_results_verified=false`, `dag_state_modified=false`. **Un SHA256 no acredita procedencia ni ejecución real del host**, y un recibo autogenerado puede coincidir sin ser confiable. No considerar `VERIFIED` ni `DELIVERED` por esta fase.
+
+La comprobación es experimental, solo lectura y fuera del instalador global. Siguiente gate: una fuente de recibos autenticada y verificable fuera de la declaración del propio operador; definir confianza del emisor y comprobar resultados efectivamente antes de cambiar estados DAG.
+
 ### R6 — Limpieza de ramas remotas con comprobación previa
 
 `scripts/Eliminar-RamasFusionadas.ps1` es una herramienta manual,
@@ -207,7 +215,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
 | R3 | Persistencia del runtime | R3_HOST_HOOKS_OBSERVED_PASS_DAG_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
-| R4 | Coordinación multiagente | R4_EXPLICIT_LINK_SOURCE_PENDING_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
+| R4 | Coordinación multiagente | R4_RECEIPT_INTEGRITY_SOURCE_PENDING_AUTHENTICATED_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
 
