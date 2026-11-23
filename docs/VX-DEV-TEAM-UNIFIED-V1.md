@@ -77,3 +77,30 @@ Abrir Kilo Desktop y certificar invocaciones reales de `skill`, `task`, permisos
 **Tres estados diferentes:** `SOURCE_PASS` (CI) → `INSTALLED_FILES_MATCH` (verificación del instalador) → `HOST_RUNTIME_PASS` (evidencia en Kilo). La cola SQLite no ejecuta agentes ni funciona con Kilo cerrado.
 
 Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y [registro de depuración](VX-HARNESS-INVENTARIO-AUDIT-20261121.md).
+
+
+## Roadmap vivo de implementación — 2026-11-23
+
+**Objetivo:** evolucionar un único Harness instalable, sin perder la ejecución actual de Vecidya ni confundir fuente, instalación y runtime. Esta sección es la fuente canónica de avance; no generar documentos de roadmap por fase.
+
+| Orden | Fase | Estado | Criterio de aceptación |
+|---|---|---|---|
+| R1 | Saneamiento de contratos y referencias | EN_IMPLEMENTACIÓN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
+| R2 | Observador no invasivo de Kilo | SOURCE_CANDIDATE | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
+| R3 | Persistencia del runtime | PENDIENTE_HOST | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
+| R4 | Coordinación multiagente | PENDIENTE_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
+| R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
+| R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
+
+### Gates de seguridad y reversibilidad
+
+- **G0:** Inventariar checkout, PR, CI, worktrees y respaldos. No interrumpir Vecidya.
+- **G1:** Cambiar referencias/documentación/versiones sin modificar ACL ni otros proyectos.
+- **G2:** Investigar el contrato oficial de eventos Kilo; el soporte documentado en CLI/VS Code no certifica el Desktop. El observador se entrega desactivado.
+- **G3:** Laboratorio aislado antes de activar el plugin globalmente: sin secretos, contenido de cliente, salida de herramientas ni rutas completas. Si el host no soporta hooks, seguir con el ledger de sesión.
+- **G4:** Los eventos del hook demuestran observación, no entrega, aprobación o estado VERIFIED. Persistencia y cola DAG requieren contratos separados.
+- **G5:** Cambios por PR, CI y respaldo. Para instalar en Windows, Kilo cerrado, confirmación explícita y restauración disponible.
+
+**Evidencia de partida:** 51 pruebas CI Windows correctas; usuario confirmó instalación de 18 agentes/57 Skills y base SQLite íntegra con tres tablas y cero registros de tareas, eventos y proyectos. Hubo delegación real en Vecidya, no reflejada automáticamente en esa base.
+
+**Bloqueo Git:** 14 ramas remotas de PR fusionados continúan en GitHub. El navegador de automatización no posee autenticación para borrarlas. Para continuar sin crear una rama adicional se reutiliza temporalmente una rama fusionada, sincronizada con main mediante merge no destructivo (sin force-push).
