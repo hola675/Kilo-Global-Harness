@@ -1,11 +1,11 @@
 # Arquitectura vigente · Kilo Global Harness / VX Dev Team
 
-**Fuente de verdad:** `registry/vx-unified-pack-v1.json` (Core VX **1.6.0-rc1**). Esta guía sustituye el diagrama V3 de `vx-integrador/vx-inspector`, conservado únicamente en el historial Git.
+**Fuente de verdad:** `registry/vx-unified-pack-v1.json` (Core VX **1.6.2-rc1**). Esta guía sustituye el diagrama V3 de `vx-integrador/vx-inspector`, conservado únicamente en el historial Git.
 
 ## Capas
 
 1. **Kilo runtime del operador:** cliente Kilo Desktop/Kilo Code con su `kilo.jsonc`, credenciales, modelos, permisos efectivos y MCP. El Harness no reescribe esos recursos y ningún source test acredita su estado.
-2. **Política global administrada:** `rules/AGENTS-global-managed.md`, copiada dentro de un bloque delimitado de `~/.config/kilo/AGENTS.md` por el instalador unificado. No hay un segundo AGENTS por proyecto generado por VX.
+2. **Política global administrada:** `rules/AGENTS-global-managed.md`, instalada mediante sustitución completa de `~/.config/kilo/AGENTS.md` por el instalador unificado, con respaldo DPAPI de los bytes anteriores. No hay un segundo AGENTS por proyecto generado por VX.
 3. **Líder:** `agents/vx-dev-team.md` se instala como **VX Dev Team** acompañado de la versión global publicada del Harness en `displayName`, único modo principal visible. La versión individual y última fecha del líder, al igual que las de cada subagente, se anotan mediante dos comentarios en el frontmatter YAML; el historial resumido reside solo en `registry/AGENTS-VERSIONS.md`. Selecciona Skills permitidas y coordina tareas dependientes, revisión, Git y reportes.
 4. **Subagentes:** diez roles Dev en `runtime/dev-team-v2r/agents/`, seis builders en `agents/` y `vx-workers-adviser`. **17 ocultos** subordinados al líder. Los especialistas de lectura no escriben ni delegan.
 5. **Skills:** 57 fuentes seleccionadas entre `skills/` y `runtime/dev-team-v2r/skills/`. Se copian globalmente y se cargan solo con permiso `skill` efectivo. Catálogos de propuestas no amplían la allowlist.
@@ -37,7 +37,7 @@ El planificador **no es un scheduler de modelos**. Un mensaje Swarm no confirma 
 
 Utilizar exclusivamente `scripts/Instalar-DevTeam-Unificado.ps1` para el paquete Core actual. Su backend `scripts/vx_unified_pack.py` conserva pruebas de compatibilidad, validación de propiedad, backup DPAPI y restauración controlada. **No ejecutar simultáneamente** los instaladores históricos V3/V4, DevTeam-Only, VX 0.2.2 ni convivencia VX 0.2.3 para administrar este mismo perfil global.
 
-El Core conserva únicamente cinco scripts en `scripts/`: el instalador PowerShell, su motor Python, dos módulos de seguridad/backup importados y el DAG/cola. Se retiraron los demás instaladores y los registros antiguos; consultar el [informe de depuración](VX-HARNESS-INVENTARIO-AUDIT-20261121.md).
+El Core conserva únicamente seis scripts en `scripts/`: el instalador PowerShell, su motor Python, dos módulos de seguridad/backup importados, el DAG/cola y el validador de metadatos del CI. Se retiraron los demás instaladores y los registros antiguos; consultar el [informe de depuración](VX-HARNESS-INVENTARIO-AUDIT-20261121.md).
 
 ## Configuración y seguridad
 
