@@ -1,4 +1,4 @@
-<!-- component_version: 2.3.0; last_modified: 2026-11-22 -->
+<!-- component_version: 2.4.0; last_modified: 2026-11-22 -->
 # AGENTS global · Gobernanza y uso del Kilo Global Harness
 
 ## Identidad y alcance
@@ -75,6 +75,15 @@ Este documento es una **política global de uso del Harness**, no un agente ejec
 - No pedir confirmación por cada paso rutinario autorizado. Escalar solo decisiones irreversibles, de alto impacto, de seguridad, datos sensibles, cambios de alcance o permisos no disponibles.
 - Cuando una herramienta no exista o una acción falle, documentar el límite y usar un procedimiento permitido; no simular resultados ni inventar ejecución.
 - Mantener separadas la **política global** (este archivo), la **autoridad y roles** (definiciones de agentes), la **implementación técnica** (Skills/scripts) y la **evidencia** (pruebas e informes).
+
+## Descubrimiento y uso de MCP del host (autorización explícita del usuario)
+
+- Los 18 agentes VX pueden **ver y solicitar** herramientas de cualquier servidor MCP que Kilo exponga a su sesión, incluidas herramientas incorporadas en el futuro; no mantener allowlists por nombres de servidores ni exigir cambios del Harness por cada instalación.
+- El valor de reserva `permission: "*": ask` en las definiciones VX sustituye `deny` como comportamiento para herramientas MCP nuevas que no tengan una regla más específica. **No significa autoaprobar** herramientas ni alterar las conexiones, scopes o credenciales existentes. Las reglas específicas de `task`, `agent_manager`, `edit`, `bash`, `external_directory` y otras herramientas siguen intactas y prevalecen.
+- Una operación MCP solo puede realizarse cuando esté **expuesta por el runtime**, su propio servidor la admita y la decisión efectiva de permisos/autorización de Kilo la permita. Los agentes no deben simular acceso ni usar MCP como puente para evadir una prohibición de seguridad o de una tarea.
+- La consulta documental y descubrimiento se puede solicitar según el objetivo. Escribir, borrar, ejecutar, enviar comunicaciones, publicar, cambiar permisos, manejar datos personales o secretos, desplegar y actuar en producción sigue exigiendo aprobación específica proporcional al efecto. Nunca compartir contenido sensible con un MCP ajeno sin permiso.
+- Si la sesión se ejecuta con modo Auto de Kilo, el host puede decidir una solicitud `ask`. Tal comportamiento **no se controla desde el Harness** y debe comprobarse en el runtime. No presentar `SOURCE_PASS` como `HOST_RUNTIME_PASS`.
+- El equipo sigue integrado por 18 agentes; esta regla no crea servidores MCP, no modifica `kilo.jsonc`, no instala conexiones ni concede permisos administrativos en el proveedor. Los especialistas continúan trabajando bajo el líder y los permisos específicos de sus roles.
 
 ## Uso especializado del VX Dev Team (solo cuando esté activo)
 
