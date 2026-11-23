@@ -1,5 +1,5 @@
 #Requires -Version 7.0
-# component_version: 1.0.0
+# component_version: 1.0.1
 # last_modified: 2026-11-23
 <#
 .SYNOPSIS
@@ -7,9 +7,11 @@
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('Diagnostico','Preparar','Verificar')]
+    [ValidateSet('Diagnostico','Preparar','Verificar','Limpiar')]
     [string]$Modo = 'Diagnostico',
-    [string]$RaizLaboratorio = (Join-Path $env:TEMP 'vx-kilo-observer-lab')
+    [string]$RaizLaboratorio = (Join-Path $env:TEMP 'vx-kilo-observer-lab'),
+    [switch]$ConfirmarLimpieza,
+    [switch]$ConfirmarLabCerrado
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -27,6 +29,7 @@ $Db = Join-Path $Lab 'state\vx-runtime-observations.sqlite3'
 $SourcePlugin = Join-Path $Repo 'runtime\kilo-observer\vx-runtime-observer.js'
 $SourceHelper = Join-Path $Repo 'runtime\kilo-observer\lib\vx-observer-hooks.js'
 $Dag = Join-Path $Repo 'scripts\vx_task_dag.py'
+$Marker = Join-Path $Lab '.vx-observer-lab.marker'
 foreach ($Source in @($SourcePlugin,$SourceHelper,$Dag)) {
     if (-not (Test-Path -LiteralPath $Source -PathType Leaf)) { throw "Fuente ausente: $Source" }
 }
@@ -63,6 +66,7 @@ Push-Location $Project
 try { & $Kilo.Source $Project } finally { Pop-Location }
 '@
     Set-Content -LiteralPath (Join-Path $Lab 'Iniciar-Laboratorio.ps1') -Value $Launcher -Encoding utf8
+    Set-Content -LiteralPath $Marker -Value 'VX_OBSERVER_LAB_V1' -Encoding ascii
     Write-Host 'LAB_PREPARED: Kilo NO iniciado, perfil real sin cambios.' -ForegroundColor Green
 }
 if ($Modo -eq 'Verificar') {
@@ -72,6 +76,23 @@ if ($Modo -eq 'Verificar') {
     $Py = (Get-Command python -CommandType Application -ErrorAction Stop | Select-Object -First 1 -ExpandProperty Source)
     & $Py -I $Dag --observer-report --observer-db $Db --project 'vx-observer-lab'
     if ($LASTEXITCODE -ne 0) { throw 'Lectura SQLite lab falló.' }
+}
+if ($Modo -eq 'Limpiar') {
+    if (-not $ConfirmarLimpieza -or -not $ConfirmarLabCerrado) {
+        throw 'Limpiar requiere -ConfirmarLimpieza y -ConfirmarLabCerrado.'
+    }
+    if (-not (Test-Path -LiteralPath $Marker -PathType Leaf)) {
+        throw 'Sin marcador de laboratorio VX: no borrar.'
+    }
+    if ((Get-Content -LiteralPath $Marker -Raw).Trim() -cne 'VX_OBSERVER_LAB_V1') {
+        throw 'Marcador alterado: no borrar.'
+    }
+    if (@(Get-ChildItem -LiteralPath $Lab -Recurse -Force -Attributes ReparsePoint).Count -gt 0) {
+        throw 'Laboratorio contiene enlaces/junctions: limpieza bloqueada.'
+    }
+    Remove-Item -LiteralPath $Lab -Recurse -Force -ErrorAction Stop
+    Write-Host 'LAB_REMOVED: solo carpeta temporal del laboratorio.' -ForegroundColor Green
+    return
 }
 [ordered]@{
     schema = 'vx-observer-lab-status/1'
