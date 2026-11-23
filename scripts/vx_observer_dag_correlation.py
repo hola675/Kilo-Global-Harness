@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# component_version: 1.0.0
+# component_version: 1.1.0
 # last_modified: 2026-11-23
 """R4: correlacion explicita y solo lectura; nunca modifica DAG ni certifica host."""
 from __future__ import annotations
@@ -41,12 +41,46 @@ def checked_db(path: Path, tables: dict[str, set[str]]) -> sqlite3.Connection:
         raise
 
 
+def read_explicit_link(path: Path) -> dict:
+    """Operador aporta vínculo fuera del repositorio; no constituye autenticación."""
+    if not path.is_absolute() or path.is_symlink() or not path.is_file():
+        raise ValueError("Vinculo requiere archivo regular absoluto existente.")
+    if path.stat().st_size > 4096:
+        raise ValueError("Archivo de vinculo excede 4096 bytes.")
+    link = json.loads(path.read_text(encoding="utf-8"))
+    required = {"schema", "project", "task_id", "host_task_id",
+                "session_ref", "call_ref", "tool"}
+    if not isinstance(link, dict) or set(link) != required:
+        raise ValueError("Campos de vinculo incompatibles.")
+    if link["schema"] != "vx-observer-task-link/1":
+        raise ValueError("Esquema de vinculo incompatible.")
+    host_id = link["host_task_id"]
+    if not isinstance(host_id, str) or not 1 <= len(host_id) <= 256 or any(ord(c) < 33 for c in host_id):
+        raise ValueError("ID de host invalido.")
+    if link["tool"] not in TOOLS:
+        raise ValueError("Herramienta vinculada invalida.")
+    if not isinstance(link["session_ref"], str) or not HASH.fullmatch(link["session_ref"]):
+        raise ValueError("Hash de sesion invalido.")
+    if not isinstance(link["call_ref"], str) or not HASH.fullmatch(link["call_ref"]):
+        raise ValueError("Hash de llamada invalido.")
+    if not isinstance(link["project"], str) or not PROJECT.fullmatch(link["project"]):
+        raise ValueError("Proyecto de vinculo invalido.")
+    if not isinstance(link["task_id"], str) or not TASK.fullmatch(link["task_id"]):
+        raise ValueError("Tarea de vinculo invalida.")
+    return link
+
+
 def correlate(queue: Path, observer: Path, project: str, task_id: str,
-              session_ref: str, call_ref: str) -> dict:
+              session_ref: str, call_ref: str, link_file: Path | None = None) -> dict:
     if not PROJECT.fullmatch(project) or not TASK.fullmatch(task_id):
         raise ValueError("Proyecto o tarea invalidos.")
     if not HASH.fullmatch(session_ref) or not HASH.fullmatch(call_ref):
         raise ValueError("Los hashes deben ser SHA256 completos, no prefijos.")
+    link = read_explicit_link(link_file) if link_file is not None else None
+    if link is not None and any(link[field] != value for field, value in (
+            ("project", project), ("task_id", task_id),
+            ("session_ref", session_ref), ("call_ref", call_ref))):
+        raise ValueError("El vinculo no coincide con los parametros solicitados.")
     if queue.resolve() == observer.resolve():
         raise ValueError("Las bases deben ser diferentes.")
     queue_schema = {"tasks": {"project", "id", "state", "host_task_id"}}
@@ -56,6 +90,8 @@ def correlate(queue: Path, observer: Path, project: str, task_id: str,
                          (project, task_id)).fetchone()
         if task is None:
             raise ValueError("La tarea no existe en la cola.")
+        if link is not None and (not task[1] or task[1] != link["host_task_id"]):
+            raise ValueError("ID de host del vinculo no coincide con la tarea.")
         rows = o.execute(
             "SELECT event_type,tool,COUNT(*) FROM host_observations "
             "WHERE project=? AND session_ref=? AND call_ref=? "
@@ -67,14 +103,19 @@ def correlate(queue: Path, observer: Path, project: str, task_id: str,
         before = sum(n for event, _, n in rows if event == EVENTS[0])
         after = sum(n for event, _, n in rows if event == EVENTS[1])
         matched = before == 1 and after == 1 and len(tools) == 1 and next(iter(tools), None) in TOOLS
+        if link is not None and matched and link["tool"] != next(iter(tools)):
+            raise ValueError("La herramienta del vinculo no coincide con los hooks.")
         return {
             "schema": "vx-observer-dag-correlation/1",
             "project": project, "task_id": task_id,
-            "status": "CORRELATED_NOT_VERIFIED" if matched else "NOT_CORRELATED",
+            "status": ("LINKED_OBSERVED_NOT_VERIFIED" if link is not None else
+                       "CORRELATED_NOT_VERIFIED") if matched else "NOT_CORRELATED",
             "observed_tool": next(iter(tools)) if matched else None,
             "before_count": before, "after_count": after,
             "queue_state_declared": task[0],
             "host_task_id_present": bool(task[1]),
+            "explicit_mapping_supplied": link is not None,
+            "explicit_mapping_matches_queue": link is not None and matched,
             "explicit_mapping_authenticated": False,
             "host_results_verified": False, "dag_state_modified": False,
             "actions_executed": 0,
@@ -90,11 +131,12 @@ def main() -> int:
     p.add_argument("--task-id", required=True)
     p.add_argument("--session-ref", required=True, help="SHA256 completo observado")
     p.add_argument("--call-ref", required=True, help="SHA256 completo observado")
+    p.add_argument("--link-file", type=Path, help="Vinculo explicito JSON; sin autenticar")
     a = p.parse_args()
     try:
-        report = correlate(a.queue_db, a.observer_db, a.project, a.task_id, a.session_ref, a.call_ref)
+        report = correlate(a.queue_db, a.observer_db, a.project, a.task_id, a.session_ref, a.call_ref, a.link_file)
         print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
-        return 0 if report["status"] == "CORRELATED_NOT_VERIFIED" else 1
+        return 0 if report["status"] in ("CORRELATED_NOT_VERIFIED", "LINKED_OBSERVED_NOT_VERIFIED") else 1
     except (OSError, ValueError, sqlite3.DatabaseError) as error:
         print(json.dumps({"schema": "vx-observer-dag-correlation/1", "status": "FAIL",
                           "error_type": type(error).__name__, "actions_executed": 0}))

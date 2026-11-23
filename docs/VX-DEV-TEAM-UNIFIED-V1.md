@@ -149,6 +149,14 @@ El resultado `CORRELATED_NOT_VERIFIED` requiere tarea existente en el proyecto c
 
 **Gate R4 sigue abierto:** falta verificar en el host cómo obtener y autenticar vínculos de tareas reales, verificar resultados externos, controlar datos sensibles y cerrar la integración de coordinación. No utilizar este informe para marcar `VERIFIED`.
 
+### R4.2 — Vínculo explícito con tarea del host (experimental)
+
+El correlador v1.1.0 admite opcionalmente `--link-file <ruta-absoluta>`, un archivo JSON de como máximo 4096 bytes con exactamente `schema: vx-observer-task-link/1`, `project`, `task_id`, `host_task_id`, `session_ref`, `call_ref` y `tool`. El operador obtiene estos campos por un procedimiento autorizado: **nunca inferir automáticamente** los hashes desde un ID de host ni almacenar prompts o credenciales. No guardar este JSON en Git ni en repositorios de clientes.
+
+La consulta exige coincidencia exacta del proyecto, tarea y hashes SHA256 completos con el argumento CLI, así como `host_task_id` con la tarea ya existente en SQLite y `tool` con ambos hooks de la misma llamada. Los archivos de vínculo son privados, preexistentes y de solo lectura; ninguna operación escribe en la cola ni en la base de eventos. Si la evidencia coincide, devuelve `LINKED_OBSERVED_NOT_VERIFIED`, que **no** es prueba de identidad autenticada, entrega, aprobación, resultado correcto ni ejecución completa del agente. Ausencias producen `NOT_CORRELATED` y contradicciones se rechazan. Sin `--link-file`, el contrato R4 original sigue compatible.
+
+**Gate abierto:** falta corroborar el origen auténtico del vínculo con Kilo y resultados de tareas reales; el informe siempre conserva `explicit_mapping_authenticated: false` y `host_results_verified: false`. Mantener fuera del instalador y de producción.
+
 ### R6 — Limpieza de ramas remotas con comprobación previa
 
 `scripts/Eliminar-RamasFusionadas.ps1` es una herramienta manual,
@@ -199,7 +207,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
 | R3 | Persistencia del runtime | R3_HOST_HOOKS_OBSERVED_PASS_DAG_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
-| R4 | Coordinación multiagente | R4_CORRELATOR_SOURCE_PENDING_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
+| R4 | Coordinación multiagente | R4_EXPLICIT_LINK_SOURCE_PENDING_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
 
