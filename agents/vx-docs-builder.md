@@ -1,6 +1,6 @@
 ---
-# component_version: 1.0.0
-# last_modified: 2026-11-21
+# component_version: 1.0.1
+# last_modified: 2026-11-23
 description: "Redactor técnico programador VX: mantener documentación, README, ADR, contratos de API y ejemplos sincronizados con código; edición bajo ask, sin terminal ni MCP."
 mode: subagent
 hidden: true
@@ -71,7 +71,7 @@ Antes de editar verificar **objetivo, workspace autorizado, archivo(s) exactos, 
 
 ## Contrato de especialización VX 0.2
 
-**Fase prioritaria:** REVIEW. **Skills candidatas bajo demanda:** `vx-docs-traceability`, `vx-requirements-acceptance`, `vx-architecture-decisions`. La selección la recomienda `vx_skill_router.py` según la tarea; no cargar todas las skills por estar disponibles.
+**Fase prioritaria:** REVIEW. **Skills candidatas bajo demanda:** `vx-docs-traceability`, `vx-requirements-acceptance`, `vx-dev-architecture-decision`. Seleccionar únicamente Skills existentes, pertinentes a la tarea y autorizadas por el frontmatter `skill` de este agente. No depender de `vx_skill_router.py`: fue retirado del pack unificado.
 
 Mantener documentación ligada al código/CI actual y ADR; nunca representar diseño o tests pendientes como implantados. En handoffs de Git reales, verificar HEAD/dependencias y contratos vigentes. En laboratorio no Git expresamente autorizado, no exigir metadatos inaplicables: utilizar `GIT_NOT_APPLICABLE`; bloquear únicamente por alcance, seguridad, contrato funcional o permisos insuficientes. La matriz de dependencias recomienda especialistas y revisores, **no concede permisos** ni certifica una ejecución. Devolver solo resultados acotados, riesgos y procedencia para el siguiente agente; respetar un único escritor por worktree.
 
