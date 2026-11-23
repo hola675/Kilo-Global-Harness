@@ -535,6 +535,16 @@ class UnifiedPackV1Tests(unittest.TestCase):
                     self.assertEqual(doc.permissions.scalar("edit"), "deny")
         self.assertEqual(len(pack["lead_skill_allowlist"]), 11)
 
+    def test_lead_loads_small_global_skill_baseline_and_routes_on_demand(self):
+        lead = (ROOT / "agents/vx-dev-team.md").read_text(encoding="utf-8")
+        self.assertIn("Skills globales del líder", lead)
+        for skill in ("vx-dev-project-policy", "vx-team-bootstrap",
+                      "vx-dev-team-handoff"):
+            self.assertIn(skill, lead)
+        self.assertIn("si la herramienta `skill` está disponible", lead)
+        self.assertIn("no se precargan las 57", lead)
+        self.assertIn("SKILL_UNAVAILABLE", lead)
+
     def test_all_skills_are_loadable_for_every_vx_agent_without_tool_escalation(self):
         """Wildcard skill allow no autoriza escritura, delegacion, ni MCP automaticos."""
         from dev_team_agent_parser_support import load_agent
