@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.2
+# component_version: 1.1.0
 # last_modified: 2026-11-23
 description: "Implementador frontend VX: modificar React/HTML/CSS y componentes UI de un proyecto autorizado, solo tras contrato de tarea; distinto de la revisora UX Daniela. Usar solo con un escritor por worktree."
 mode: subagent
@@ -18,7 +18,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-frontend-ux": allow
     "vx-dev-accessibility": allow
     "vx-dev-ui-state-system": allow
