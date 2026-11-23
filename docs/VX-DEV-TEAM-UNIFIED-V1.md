@@ -1,4 +1,4 @@
-# VX Dev Team · Instalación única del Core 1.6.1-rc1
+# VX Dev Team · Instalación única del Core 1.6.2-rc1
 
 **Actualización:** 2026-11-22 · **Estado:** fuente versionada. Instalación local y concurrencia real de Kilo Desktop requieren pruebas separadas.
 
