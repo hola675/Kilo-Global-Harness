@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.2
+# component_version: 1.1.0
 # last_modified: 2026-11-23
 description: "Redactor técnico programador VX: mantener documentación, README, ADR, contratos de API y ejemplos sincronizados con código; edición bajo ask, sin terminal ni MCP."
 mode: subagent
@@ -18,7 +18,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-docs-traceability": allow
     "vx-editorial-claridad": allow
     "vx-dev-architecture-decision": allow
