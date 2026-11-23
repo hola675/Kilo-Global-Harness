@@ -173,6 +173,14 @@ El correlador v1.3.0 incorpora `--attestation-file`, `--trust-key-file` y `--tru
 
 **Gate para futura autenticación de host:** diseñar custodia y aislamiento de clave, un emisor atestado e independiente de la sesión solicitante, protección anti-replay y revocación, verificación de resultados del host y evidencia de tareas reales. Ningún resultado R4.4 autoriza promover estados DAG.
 
+### R4.5 — Política de confianza, caducidad y revocación (experimental)
+
+Se admite `--trust-policy-file` únicamente junto a todos los parámetros HMAC de R4.4. El archivo JSON privado `vx-receipt-trust-policy/1` contiene exactamente `schema`, `issuer`, `project`, `allowed_tools`, `key_sha256`, `revoked`, `not_after_utc`, `revoked_receipts_sha256`. El archivo tiene un límite de 8192 bytes; admite una lista de herramientas declaradas y hasta 128 hashes de recibos revocados. Rechaza claves distintas, emisor/proyecto/herramienta no autorizados, caducidad vencida y revocación. Las entradas se validan antes de emitir estado de coincidencia de política y no modifican ni la cola DAG ni SQLite del observador.
+
+`RECEIPT_MAC_MATCH_POLICY_SCOPED_ONLY` significa únicamente **MAC correcto y política externa suministrada coherente con esa clave y contexto**. La política es controlada por quien la suministra: no es evidencia de que Kilo haya emitido el sello. Su lista de revocación es estática y **no constituye prevención atómica de replay**: una invocación repetida puede validar el mismo recibo mientras no se revoque externamente. No se ha implementado custodia segura del emisor, autoridad independiente, rotación automática ni promoción de `DELIVERED`/`VERIFIED`. Los campos `receipt_origin_authenticated` y `host_results_verified` siguen siendo falsos.
+
+**Siguiente gate:** fuente independiente de identidad, registro antirreutilización transaccional con aislamiento y controles de ACL, revisión efectiva de resultados y validación en un laboratorio real de Kilo. No introducir claves ni archivos privados en Git ni instalar esta función globalmente.
+
 ### R6 — Limpieza de ramas remotas con comprobación previa
 
 `scripts/Eliminar-RamasFusionadas.ps1` es una herramienta manual,
@@ -223,7 +231,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
 | R3 | Persistencia del runtime | R3_HOST_HOOKS_OBSERVED_PASS_DAG_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
-| R4 | Coordinación multiagente | R4_KEYED_INTEGRITY_SOURCE_PENDING_TRUSTED_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
+| R4 | Coordinación multiagente | R4_SCOPED_TRUST_POLICY_SOURCE_PENDING_TRUSTED_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
 
