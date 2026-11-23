@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.1
+# component_version: 1.0.2
 # last_modified: 2026-11-21
 displayName: "Dev Architect"
 description: "Read-only architecture specialist. Use to turn verified evidence and requirements into boundaries, options, contracts, tradeoffs and an implementable change plan."
@@ -7,7 +7,7 @@ mode: subagent
 hidden: true
 steps: 100
 permission:
-  "*": deny
+  "*": ask
   read: deny
   glob: allow
   grep: allow
@@ -32,6 +32,11 @@ permission:
   microsoft-learn_microsoft_docs_fetch: allow
   microsoft-learn_microsoft_code_sample_search: allow
 ---
+
+
+## Política de acceso dinámico a MCP (2026-11-23)
+
+El agente puede descubrir y solicitar el uso de **todos los servidores y herramientas MCP disponibles en la sesión**. La regla global `permission: "*": ask` permite pedir aprobación del host para herramientas MCP nuevas sin una allowlist fija por proveedor; no altera conexiones, credenciales ni permisos del servidor. El acceso no es automático: `ask` exige la decisión efectiva de Kilo y sus controles de usuario. Las denegaciones y aprobaciones explícitas de herramientas nativas en el frontmatter prevalecen; no usar MCP como rodeo de una denegación nativa, de una política del proyecto ni de una tarea fuera de alcance. Las lecturas remotas, las escrituras, despliegues, instalaciones, eliminación de datos, accesos a secretos y operaciones de producción mantienen su autorización propia según el impacto. Si Kilo no expone una herramienta o deniega la solicitud, informar `MCP_UNAVAILABLE_OR_DENIED` sin simular llamadas. Esta política actualizada sustituye únicamente las prohibiciones anteriores del **uso general de MCP** en este mismo perfil, no las restricciones de seguridad, rol o herramientas nativas.
 
 ## Skills autorizadas
 
