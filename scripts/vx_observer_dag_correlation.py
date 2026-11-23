@@ -103,8 +103,6 @@ def verify_receipt(receipt_file: Path, artifact_file: Path, link: dict) -> dict:
     if len(blob) > MAX_ARTIFACT_BYTES:
         raise ValueError("Evidencia excede limite.")
     return {"receipt_integrity_matches": sha256(blob).hexdigest() == digest,
-            "receipt_mac_checked": sealed and proof is not None and proof["receipt_integrity_matches"],
-            "receipt_mac_matches": mac_ok,
             "receipt_origin_authenticated": False,
             "artifact_content_reviewed": False}
 
@@ -227,6 +225,8 @@ def correlate(queue: Path, observer: Path, project: str, task_id: str,
             "explicit_mapping_authenticated": False,
             "receipt_supplied": receipt_file is not None,
             "receipt_integrity_matches": proof["receipt_integrity_matches"] if proof else False,
+            "receipt_mac_checked": sealed and proof is not None and proof["receipt_integrity_matches"],
+            "receipt_mac_matches": mac_ok,
             "receipt_origin_authenticated": False,
             "artifact_content_reviewed": False,
             "host_results_verified": False, "dag_state_modified": False,
