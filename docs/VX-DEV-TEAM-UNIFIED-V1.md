@@ -101,8 +101,8 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 
 | Orden | Fase | Estado | Criterio de aceptación |
 |---|---|---|---|
-| R1 | Saneamiento de contratos y referencias | EN_IMPLEMENTACIÓN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
-| R2 | Observador no invasivo de Kilo | SOURCE_CANDIDATE | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
+| R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
+| R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
 | R3 | Persistencia del runtime | PENDIENTE_HOST | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
 | R4 | Coordinación multiagente | PENDIENTE_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
@@ -117,6 +117,6 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 - **G4:** Los eventos del hook demuestran observación, no entrega, aprobación o estado VERIFIED. Persistencia y cola DAG requieren contratos separados.
 - **G5:** Cambios por PR, CI y respaldo. Para instalar en Windows, Kilo cerrado, confirmación explícita y restauración disponible.
 
-**Evidencia de partida:** 51 pruebas CI Windows correctas; usuario confirmó instalación de 18 agentes/57 Skills y base SQLite íntegra con tres tablas y cero registros de tareas, eventos y proyectos. Hubo delegación real en Vecidya, no reflejada automáticamente en esa base.
+**Evidencia de partida:** 53 pruebas CI Windows correctas tras R1/R2; usuario confirmó instalación de 18 agentes/57 Skills y base SQLite íntegra con tres tablas y cero registros de tareas, eventos y proyectos. Hubo delegación real en Vecidya, no reflejada automáticamente en esa base.
 
 **Bloqueo Git:** 14 ramas remotas de PR fusionados continúan en GitHub. El navegador de automatización no posee autenticación para borrarlas. Para continuar sin crear una rama adicional se reutiliza temporalmente una rama fusionada, sincronizada con main mediante merge no destructivo (sin force-push).
