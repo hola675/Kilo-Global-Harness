@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.2
+# component_version: 1.1.0
 # last_modified: 2026-11-21
 displayName: "Dev Frontend"
 description: "Read-only frontend specialist. Use for UI flows, component boundaries, client state, interaction states, accessibility, responsive behavior and frontend/API integration risks."
@@ -13,7 +13,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-frontend-ux": allow
     "vx-dev-accessibility": allow
     "vx-dev-ui-state-system": allow
