@@ -108,6 +108,8 @@ que no contenga NUL y que no atraviese symlinks conocidos.
 pwsh -NoProfile -File .\scripts\Probar-Observador-Kilo.ps1 -Modo Diagnostico
 pwsh -NoProfile -File .\scripts\Probar-Observador-Kilo.ps1 -Modo Preparar
 pwsh -NoProfile -File .\scripts\Probar-Observador-Kilo.ps1 -Modo Verificar
+# Tras cerrar manualmente el Kilo CLI del laboratorio:
+pwsh -NoProfile -File .\scripts\Probar-Observador-Kilo.ps1 -Modo Limpiar -ConfirmarLimpieza -ConfirmarLabCerrado
 ```
 
 El modo Preparar crea `%TEMP%\vx-kilo-observer-lab\vx-observer-lab\.kilo\plugin\`
@@ -175,7 +177,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 |---|---|---|---|
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
-| R3 | Persistencia del runtime | SOURCE_TESTED_HOST_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
+| R3 | Persistencia del runtime | BUN_SQLITE_CI_PASS_HOST_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
 | R4 | Coordinación multiagente | PENDIENTE_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
