@@ -109,7 +109,7 @@ def verify_receipt(receipt_file: Path, artifact_file: Path, link: dict) -> dict:
             "artifact_content_reviewed": False}
 
 
-ATTESTATION_DOMAIN = b"VX-OBSERVER-RECEIPT-MAC-V1\\x00"
+ATTESTATION_DOMAIN = b"VX-OBSERVER-RECEIPT-MAC-V1\x00"
 ISSUER_ID = re.compile(r"^[a-z][a-z0-9_-]{1,63}$")
 
 
@@ -143,7 +143,7 @@ def verify_attestation(receipt_file: Path, attestation_file: Path,
         key = inp.read(129)
     if not 32 <= len(key) <= 128:
         raise ValueError("Clave fuera de limites.")
-    message = ATTESTATION_DOMAIN + trusted_issuer.encode("ascii") + b"\\x00" + bytes.fromhex(digest)
+    message = ATTESTATION_DOMAIN + trusted_issuer.encode("ascii") + b"\x00" + bytes.fromhex(digest)
     expected = hmac.new(key, message, "sha256").hexdigest()
     return (hmac.compare_digest(digest, seal["receipt_sha256"]) and
             hmac.compare_digest(expected, seal["mac_sha256"]))
