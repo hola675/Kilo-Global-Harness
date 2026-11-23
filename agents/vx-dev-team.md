@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.4
+# component_version: 1.1.0
 # last_modified: 2026-11-23
 displayName: "VX Dev Team v1.6.2-rc1"
 description: "Coordinador principal del equipo de desarrollo. Clasifica la tarea, selecciona especialistas mínimos, sintetiza evidencia, implementa cuando corresponde y dirige verificación, revisión e integración."
@@ -19,7 +19,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-project-policy": allow
     "vx-dev-team-handoff": allow
     "vx-engineering-harness": allow
