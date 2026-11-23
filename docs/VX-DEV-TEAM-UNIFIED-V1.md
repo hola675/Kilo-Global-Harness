@@ -72,6 +72,46 @@ python -I .\scripts\vx_task_dag.py --observer-report --project vecidya
 
 Mientras no se autorice su activación en un HOME de prueba, el resultado esperado es `ABSENT`. No activar `VX_OBSERVER_ENABLE=1` ni `VX_OBSERVER_PROJECT` en sesiones productivas/Vecidya en curso. Al iniciar el laboratorio, copiar la fuente al directorio plugin de ese perfil y verificar eventos reales antes de extender el instalador. Una vez verificado, R3 contempla enlazar eventos observados con IDs de tareas reales, sin inferir resultados por el mero regreso de una herramienta.
 
+### R3 — Contrato de observación probado sin el host
+
+El plugin se dividió en un adaptador Bun y el normalizador puro 
+`runtime/kilo-observer/lib/vx-observer-hooks.js`. Las pruebas Node simulan callbacks
+`task`, `skill` y eventos de sesión, comprueban que no llegan al escritor
+argumentos, respuestas ni identificadores en claro y validan la idempotencia de las claves.
+El código escribe de forma transaccional mínima con
+`INSERT OR IGNORE` en su SQLite independiente y no toca la cola DAG de estados de tareas.
+
+Para ejecutar las pruebas sin Kilo ni escritura en el HOME:
+
+```powershell
+node --test .\tests\test_vx_observer_contract.mjs
+python -I .\scripts\vx_task_dag.py --observer-report
+```
+
+**GATE R3 abierto:** los tests de callbacks simulados NO demuestran que Kilo Desktop
+cargue el plugin, ni que emita identificadores equivalentes a los documentados para CLI.
+Primero validar en un perfil separado y proyecto temporal, con consentimiento y respaldo.
+No activar observación en Vecidya hasta que haya evidencia de compatibilidad y
+verificación privada de datos. La consulta devuelve observaciones, no tareas VERIFIED.
+
+### R6 — Limpieza de ramas remotas con comprobación previa
+
+`scripts/Eliminar-RamasFusionadas.ps1` es una herramienta manual,
+no ejecutada por el instalador. Por defecto solo simula. Exige GitHub CLI autenticado
+y una copia limpia de `main`, consulta refs remotas reales, los PR
+fusionados a `main` y el último commit **histórico** de cada PR,
+comprueba los worktrees y aplica `--force-with-lease` al borrar cada ref.
+Un commit nuevo posterior al PR o una rama local divergente bloquean el borrado.
+
+```powershell
+pwsh -NoProfile -File .\scripts\Eliminar-RamasFusionadas.ps1
+pwsh -NoProfile -File .\scripts\Eliminar-RamasFusionadas.ps1 -Aplicar -ConfirmarBorrado
+```
+
+No elimina la rama `main`, y las ramas locales únicamente se borran
+si se añade expresamente `-EliminarLocales` después de todas las comprobaciones.
+El comando no se ejecuta automáticamente durante una instalación del pack.
+
 ## Restauración
 
 Conservar privada la carpeta `vx-unified-...` que informa el motor. Si una instalación genera errores, consultar antes de restaurar modificaciones posteriores en los destinos:
@@ -103,7 +143,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 |---|---|---|---|
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
-| R3 | Persistencia del runtime | PENDIENTE_HOST | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
+| R3 | Persistencia del runtime | SOURCE_TESTED_HOST_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
 | R4 | Coordinación multiagente | PENDIENTE_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
