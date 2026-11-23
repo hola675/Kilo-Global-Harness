@@ -12,7 +12,7 @@ const ENABLED = process.env.VX_OBSERVER_ENABLE === "1"
 const PROJECT_SCOPE = String(process.env.VX_OBSERVER_PROJECT || "").toLowerCase()
 const STATE_OVERRIDE = process.env.VX_OBSERVER_STATE_ROOT
 const PRIVATE_DIR = STATE_OVERRIDE
-  ? (isAbsolute(STATE_OVERRIDE) && !STATE_OVERRIDE.includes("\\0")
+  ? (isAbsolute(STATE_OVERRIDE) && !STATE_OVERRIDE.includes(String.fromCharCode(0))
     ? resolve(STATE_OVERRIDE) : null)
   : join(homedir(), ".config", "kilo", "harness", "state")
 const PRIVATE_DB = PRIVATE_DIR ? join(PRIVATE_DIR, "vx-runtime-observations.sqlite3") : null
