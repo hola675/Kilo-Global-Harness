@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.2
+# component_version: 1.1.0
 # last_modified: 2026-11-21
 displayName: "Dev Backend"
 description: "Read-only backend specialist. Use for APIs, services, domain logic, application auth, validation, integration contracts, jobs and backend failure behavior."
@@ -13,7 +13,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-backend-contracts": allow
     "vx-dev-debug-triage": allow
   task: deny
