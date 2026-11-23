@@ -116,7 +116,7 @@ El modo Preparar crea `%TEMP%\vx-kilo-observer-lab\vx-observer-lab\.kilo\plugin\
 y un `Iniciar-Laboratorio.ps1` para inicio **manual**, que fija variables HOME,
 USERPROFILE, XDG y APPDATA únicamente en su propio proceso. No los cambia en la
 terminal actual ni en Windows. El script busca primero `kilo` en PATH y después el CLI
-incluido en Kilo Desktop bajo `%LOCALAPPDATA%\\KiloDesktop\\app-*\\resources\\kilo\\<variant>\\bin\\kilo.exe`.
+incluido en Kilo Desktop bajo `%LOCALAPPDATA%\KiloDesktop\app-*\resources\kilo\<variant>\bin\kilo.exe`.
 Al generar el lanzador fija la ruta absoluta encontrada ANTES de aislar `LOCALAPPDATA`,
 por lo que no requiere instalar otro CLI ni modificar PATH global. No reutiliza la sesión
 Desktop que está trabajando en Vecidya.
