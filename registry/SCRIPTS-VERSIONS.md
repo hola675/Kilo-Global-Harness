@@ -14,6 +14,6 @@ Cada script/comando conserva versión individual y fecha en comentarios compatib
 | commands/vx-dependencias.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 | commands/vx-editorial.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 
-| runtime/kilo-observer/vx-runtime-observer.js | 0.1.0 | 2026-11-23 | Prototipo experimental opt-in; no incluido en instalación ni certificado en Kilo Desktop |
+| runtime/kilo-observer/vx-runtime-observer.js | 0.1.1 | 2026-11-23 | Prototipo experimental opt-in; no incluido en instalación ni certificado en Kilo Desktop |
 
 Los módulos históricos de respaldo aún requieren versionado individual después de auditoría específica; no se retiran mientras sean dependencias del instalador.
