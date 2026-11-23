@@ -165,6 +165,14 @@ El correlador v1.2.0 añade opcionalmente `--receipt-file` y `--artifact-file` (
 
 La comprobación es experimental, solo lectura y fuera del instalador global. Siguiente gate: una fuente de recibos autenticada y verificable fuera de la declaración del propio operador; definir confianza del emisor y comprobar resultados efectivamente antes de cambiar estados DAG.
 
+### R4.4 — Sello HMAC opcional con emisor configurado (no autenticación de Kilo)
+
+El correlador v1.3.0 incorpora `--attestation-file`, `--trust-key-file` y `--trusted-issuer`, que deben proporcionarse conjuntamente con vínculo, recibo y evidencia. El sello `vx-receipt-hmac/1` contiene exactamente `schema`, `issuer`, `receipt_sha256`, `mac_sha256`. HMAC-SHA256 cubre el dominio `VX-OBSERVER-RECEIPT-MAC-V1`, emisor y hash de los **bytes exactos** del recibo. Exige clave binaria de 32–128 bytes y valida estructura, fuente, hash y MAC en comparación constante. No escribe la clave en salida ni en SQLite; el operador debe custodiarla fuera del repositorio y no compartirla con agentes de menor confianza. En esta fase no se generan ni distribuyen claves, no se gestiona rotación y no se instala la función globalmente.
+
+`RECEIPT_MAC_MATCH_KEY_POSSESSION_ONLY` indica únicamente que el sello coincide con una clave que el operador decidió confiar; **no identifica por sí mismo a Kilo, no prueba que el host haya emitido el recibo y no valida ejecución, resultado, autoría, aprobación ni revisión**. Una persona o proceso con acceso a la clave podría fabricar un sello. MAC incorrecto genera `RECEIPT_MAC_INVALID`; parámetros incompletos y emisor incompatible se rechazan. `receipt_origin_authenticated` y `host_results_verified` permanecen siempre falsos. Sin parámetros nuevos se conservan los estados anteriores. La cola DAG permanece inalterada.
+
+**Gate para futura autenticación de host:** diseñar custodia y aislamiento de clave, un emisor atestado e independiente de la sesión solicitante, protección anti-replay y revocación, verificación de resultados del host y evidencia de tareas reales. Ningún resultado R4.4 autoriza promover estados DAG.
+
 ### R6 — Limpieza de ramas remotas con comprobación previa
 
 `scripts/Eliminar-RamasFusionadas.ps1` es una herramienta manual,
@@ -215,7 +223,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
 | R3 | Persistencia del runtime | R3_HOST_HOOKS_OBSERVED_PASS_DAG_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
-| R4 | Coordinación multiagente | R4_RECEIPT_INTEGRITY_SOURCE_PENDING_AUTHENTICATED_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
+| R4 | Coordinación multiagente | R4_KEYED_INTEGRITY_SOURCE_PENDING_TRUSTED_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
 
