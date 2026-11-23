@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.1
+# component_version: 1.1.0
 # last_modified: 2026-11-21
 displayName: "Dev Reviewer"
 description: "Read-only independent change reviewer. Use after implementation to challenge correctness, contract compatibility, regression risk, accidental complexity and maintainability without replacing Quality or Security."
@@ -13,7 +13,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-independent-review": allow
     "vx-dev-project-policy": allow
   task: deny
