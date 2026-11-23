@@ -94,6 +94,40 @@ Primero validar en un perfil separado y proyecto temporal, con consentimiento y 
 No activar observación en Vecidya hasta que haya evidencia de compatibilidad y
 verificación privada de datos. La consulta devuelve observaciones, no tareas VERIFIED.
 
+### R3 — Laboratorio aislado de Kilo en Windows
+
+El laboratorio tiene un instalador **independiente del pack global**, en
+`scripts/Probar-Observador-Kilo.ps1`, y solo puede crear un directorio NUEVO
+dentro de TEMP. No inicia Kilo ni copia credenciales, modos, modelos, MCP o datos
+de Vecidya. El adaptador del plugin acepta `VX_OBSERVER_STATE_ROOT` para
+dirigir SQLite exclusivamente a un directorio elegido; valida que sea absoluto,
+que no contenga NUL y que no atraviese symlinks conocidos.
+
+```powershell
+# Ejecutar desde el checkout de Kilo-Global-Harness
+pwsh -NoProfile -File .\scripts\Probar-Observador-Kilo.ps1 -Modo Diagnostico
+pwsh -NoProfile -File .\scripts\Probar-Observador-Kilo.ps1 -Modo Preparar
+pwsh -NoProfile -File .\scripts\Probar-Observador-Kilo.ps1 -Modo Verificar
+# Tras cerrar manualmente el Kilo CLI del laboratorio:
+pwsh -NoProfile -File .\scripts\Probar-Observador-Kilo.ps1 -Modo Limpiar -ConfirmarLimpieza -ConfirmarLabCerrado
+```
+
+El modo Preparar crea `%TEMP%\vx-kilo-observer-lab\vx-observer-lab\.kilo\plugin\`
+y un `Iniciar-Laboratorio.ps1` para inicio **manual**, que fija variables HOME,
+USERPROFILE, XDG y APPDATA únicamente en su propio proceso. No los cambia en la
+terminal actual ni en Windows; Kilo CLI debe existir como comando independiente y
+no se reutiliza la sesión Desktop que está trabajando en Vecidya.
+
+El laboratorio sin iniciar debe devolver observaciones `ABSENT`. Tras iniciar
+manualmente CLI y generar eventos de prueba sin secretos, Verificar comprueba solo
+conteos en su base propia. La prueba Bun en CI realiza inserciones y consultas
+reales con DB desechable en la carpeta temporal del runner.
+
+**GATE R3:** SQLite real y callbacks probados en CI no son prueba de carga del
+plugin en Kilo Desktop. Tampoco demuestran la vinculación de IDs de task con
+estados VERIFIED de la cola principal. No integrar al instalador global ni
+activar sobre Vecidya sin evidencia específica y rollback de laboratorio.
+
 ### R6 — Limpieza de ramas remotas con comprobación previa
 
 `scripts/Eliminar-RamasFusionadas.ps1` es una herramienta manual,
@@ -143,7 +177,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 |---|---|---|---|
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
-| R3 | Persistencia del runtime | SOURCE_TESTED_HOST_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
+| R3 | Persistencia del runtime | BUN_SQLITE_CI_PASS_HOST_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
 | R4 | Coordinación multiagente | PENDIENTE_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
