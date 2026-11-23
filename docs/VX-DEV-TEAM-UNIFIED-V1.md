@@ -56,6 +56,22 @@ pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Informe -Ca
 
 Sin `-CarpetaRespaldo` elige el recibo más reciente. Los informes no demuestran por sí mismos que Kilo habilite las herramientas y permisos del agente. Solo se reportan elementos del manifiesto y sus rutas aprobadas; nunca se limpia trabajo de proyecto por inferencia.
 
+
+### R2 — Observador Kilo experimental (desactivado)
+
+El prototipo se mantiene **solo en el checkout** en `runtime/kilo-observer/vx-runtime-observer.js`; no se copia a `~/.config/kilo/plugin/`, no se añade a `kilo.json(c)`, no eleva ACL y no se inicia con el instalador. Requiere `VX_OBSERVER_ENABLE=1` para hacer cualquier escritura. La carga en Kilo Desktop y la existencia del runtime Bun con `bun:sqlite` deben comprobarse en una instalación/laboratorio aislado. La documentación oficial de plugins confirma hooks para CLI y VS Code, **no acredita Desktop de este usuario**.
+
+El código observa `task`, `skill`, `board_post`, `board_read` y eventos de ciclo de sesión, **sin leer, serializar ni persistir argumentos, prompts, respuestas, texto de archivos, credenciales, rutas completas ni IDs de sesión sin hash**. Las observaciones quedan en una base separada, `~/.config/kilo/harness/state/vx-runtime-observations.sqlite3`, con clave de idempotencia, tabla `host_observations` y esquema independiente v1. No toca las tablas `tasks`, `events` ni `project_config` de la cola existente: un hook observado no es un task verificado.
+
+Consultar su estado sin crear ni mutar ninguna DB:
+
+```powershell
+python -I .\scripts\vx_task_dag.py --observer-report
+python -I .\scripts\vx_task_dag.py --observer-report --project vecidya
+```
+
+Mientras no se autorice su activación en un HOME de prueba, el resultado esperado es `ABSENT`. No ejecutar `VX_OBSERVER_ENABLE=1` en sesiones productivas/Vecidya en curso. Al iniciar el laboratorio, copiar la fuente al directorio plugin de ese perfil y verificar eventos reales antes de extender el instalador. Una vez verificado, R3 contempla enlazar eventos observados con IDs de tareas reales, sin inferir resultados por el mero regreso de una herramienta.
+
 ## Restauración
 
 Conservar privada la carpeta `vx-unified-...` que informa el motor. Si una instalación genera errores, consultar antes de restaurar modificaciones posteriores en los destinos:
