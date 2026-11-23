@@ -131,6 +131,16 @@ plugin en Kilo Desktop. Tampoco demuestran la vinculación de IDs de task con
 estados VERIFIED de la cola principal. No integrar al instalador global ni
 activar sobre Vecidya sin evidencia específica y rollback de laboratorio.
 
+### R3 — Evidencia local de hooks Kilo CLI (2026-11-23)
+
+**Alcance certificado: observabilidad básica en laboratorio, no ejecución ni resultados de agentes.** El operador ejecutó manualmente Kilo CLI `7.8.27`, incluido en Kilo Desktop `app-1.0.0`, dentro de `%TEMP%\vx-kilo-observer-lab\vx-observer-lab`. El plugin se cargó desde `.kilo/plugin` del proyecto temporal y la base independiente se creó en `%TEMP%\vx-kilo-observer-lab\state\vx-runtime-observations.sqlite3`. No fue necesario instalar otro CLI ni modificar PATH global. El informe del lanzador indicó `global_install_changes: 0`; esto no constituye una auditoría del sistema operativo.
+
+**Evidencia proporcionada por el operador:** tras tres sesiones, el informe `vx-host-observer-report/1` devolvió `total_events: 12`: tres `session.created`, cuatro `session.updated`, tres `session.idle`, un `TOOL_CALLED_NOT_CONFIRMED` y un `TOOL_RETURNED_NOT_VERIFIED`. La consulta SQLite de solo lectura confirmó para ambos eventos `tool=skill`, mismo prefijo de `session_ref=5f147f42a452` y de `call_ref=e390e496a5fc`; marcas UTC `2026-11-23T10:10:16.967Z` y `2026-11-23T10:10:17.060Z`. Se comparten únicamente prefijos hash, no identificadores originales ni contenido. El intervalo de 93 ms es entre observaciones, no una métrica de éxito funcional.
+
+**Certificación parcial:** `R3_HOST_HOOKS_OBSERVED_PASS` para detección CLI, carga del plugin en CLI aislado, hooks de ciclo de sesión, callbacks antes/después de `skill`, correlación por sesión/llamada y persistencia SQLite. El informe canónico permanece `OBSERVED_NOT_CERTIFIED`, `actions_executed: 0`, `host_results_verified: false`, `runtime_verified: false` y `tasks_registered: false`. Ningún retorno equivale a una entrega verificada; no hay evidencia suficiente para `HOST_RUNTIME_PASS` integral, Kilo Desktop GUI, Board, delegación, permisos de escritura, DAG ni éxito de herramientas.
+
+**Siguiente gate:** correlacionar futuras llamadas del host con IDs de tareas DAG **solo mediante relación explícita y verificable**, sin reconstruir IDs desde hashes ni crear tareas por el mero evento. Mantener el observador opt-in y fuera del instalador global. Las pruebas de privacidad, fallo seguro, rollback, retención y coexistencia deberán preceder a cualquier habilitación productiva.
+
 ### R6 — Limpieza de ramas remotas con comprobación previa
 
 `scripts/Eliminar-RamasFusionadas.ps1` es una herramienta manual,
@@ -180,7 +190,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 |---|---|---|---|
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
-| R3 | Persistencia del runtime | BUN_SQLITE_CI_PASS_HOST_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
+| R3 | Persistencia del runtime | R3_HOST_HOOKS_OBSERVED_PASS_DAG_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
 | R4 | Coordinación multiagente | PENDIENTE_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
