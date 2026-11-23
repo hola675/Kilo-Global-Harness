@@ -1,5 +1,5 @@
 #Requires -Version 7.0
-# component_version: 1.0.1
+# component_version: 1.1.0
 # last_modified: 2026-11-23
 <#
 .SYNOPSIS
@@ -10,6 +10,7 @@ param(
     [ValidateSet('Diagnostico','Preparar','Verificar','Limpiar')]
     [string]$Modo = 'Diagnostico',
     [string]$RaizLaboratorio = (Join-Path $env:TEMP 'vx-kilo-observer-lab'),
+    [string]$KiloExecutable,
     [switch]$ConfirmarLimpieza,
     [switch]$ConfirmarLabCerrado
 )
@@ -30,6 +31,34 @@ $SourcePlugin = Join-Path $Repo 'runtime\kilo-observer\vx-runtime-observer.js'
 $SourceHelper = Join-Path $Repo 'runtime\kilo-observer\lib\vx-observer-hooks.js'
 $Dag = Join-Path $Repo 'scripts\vx_task_dag.py'
 $Marker = Join-Path $Lab '.vx-observer-lab.marker'
+function Resolve-KiloExecutable {
+    if ($KiloExecutable) {
+        if (-not [IO.Path]::IsPathFullyQualified($KiloExecutable) -or
+            -not (Test-Path -LiteralPath $KiloExecutable -PathType Leaf)) {
+            throw "KiloExecutable no es un ejecutable absoluto existente: $KiloExecutable"
+        }
+        return (Resolve-Path -LiteralPath $KiloExecutable).Path
+    }
+    $Command = Get-Command kilo -CommandType Application -ErrorAction SilentlyContinue |
+        Select-Object -First 1
+    if ($Command) { return $Command.Source }
+
+    # Kilo Desktop bundles its own CLI. Search installed app versions without
+    # changing PATH, user profile, or the Desktop installation.
+    $DesktopRoot = Join-Path $env:LOCALAPPDATA 'KiloDesktop'
+    if (Test-Path -LiteralPath $DesktopRoot -PathType Container) {
+        $Apps = Get-ChildItem -LiteralPath $DesktopRoot -Directory -Filter 'app-*' |
+            Sort-Object { try { [version]($_.Name -replace '^app-', '') } catch { [version]'0.0.0' } } -Descending
+        foreach ($App in $Apps) {
+            foreach ($Variant in @('windows-x64-baseline','windows-x64','windows-arm64')) {
+                $Candidate = Join-Path $App.FullName "resources\kilo\$Variant\bin\kilo.exe"
+                if (Test-Path -LiteralPath $Candidate -PathType Leaf) { return $Candidate }
+            }
+        }
+    }
+    return $null
+}
+$ResolvedKilo = Resolve-KiloExecutable
 foreach ($Source in @($SourcePlugin,$SourceHelper,$Dag)) {
     if (-not (Test-Path -LiteralPath $Source -PathType Leaf)) { throw "Fuente ausente: $Source" }
 }
@@ -42,6 +71,7 @@ if ($Modo -eq 'Preparar') {
     $null = New-Item -ItemType Directory -Path (Join-Path $Plugins 'lib') -Force
     Copy-Item -LiteralPath $SourcePlugin -Destination (Join-Path $Plugins 'vx-runtime-observer.js')
     Copy-Item -LiteralPath $SourceHelper -Destination (Join-Path $Plugins 'lib\vx-observer-hooks.js')
+    $KiloLiteral = if ($ResolvedKilo) { "'" + $ResolvedKilo.Replace("'", "''") + "'" } else { '$null' }
     $Launcher = @'
 # SOLO ejecutar a mano. Sin claves ni proyectos reales.
 $ErrorActionPreference = 'Stop'
@@ -59,12 +89,21 @@ $env:VX_OBSERVER_ENABLE = '1'
 $env:VX_OBSERVER_PROJECT = 'vx-observer-lab'
 $env:VX_OBSERVER_STATE_ROOT = Join-Path $Lab 'state'
 Remove-Item Env:KILO_PURE -ErrorAction SilentlyContinue
-$Kilo = Get-Command kilo -CommandType Application -ErrorAction SilentlyContinue
-if (-not $Kilo) { throw 'Kilo CLI no encontrado. No se ha ejecutado el lab.' }
-Write-Host 'Proyecto aislado, sin modelos ni credenciales copiados.' -ForegroundColor Yellow
+$KiloExe = __VX_KILO_EXE__
+if (-not $KiloExe) {
+    $KiloCommand = Get-Command kilo -CommandType Application -ErrorAction SilentlyContinue |
+        Select-Object -First 1
+    if ($KiloCommand) { $KiloExe = $KiloCommand.Source }
+}
+if (-not $KiloExe -or -not (Test-Path -LiteralPath $KiloExe -PathType Leaf)) {
+    throw 'Kilo CLI no encontrado. Diagnostica con -Modo Diagnostico; no se ha ejecutado el lab.'
+}
+Write-Host "CLI aislado: $KiloExe" -ForegroundColor Cyan
+Write-Host 'Proyecto aislado. No se copian credenciales, modelos ni MCP.' -ForegroundColor Yellow
 Push-Location $Project
-try { & $Kilo.Source $Project } finally { Pop-Location }
+try { & $KiloExe $Project } finally { Pop-Location }
 '@
+    $Launcher = $Launcher.Replace('__VX_KILO_EXE__', $KiloLiteral)
     Set-Content -LiteralPath (Join-Path $Lab 'Iniciar-Laboratorio.ps1') -Value $Launcher -Encoding utf8
     Set-Content -LiteralPath $Marker -Value 'VX_OBSERVER_LAB_V1' -Encoding ascii
     Write-Host 'LAB_PREPARED: Kilo NO iniciado, perfil real sin cambios.' -ForegroundColor Green
@@ -101,7 +140,8 @@ if ($Modo -eq 'Limpiar') {
     project = $Project
     plugin_staged = (Test-Path -LiteralPath (Join-Path $Plugins 'vx-runtime-observer.js') -PathType Leaf)
     db_present = (Test-Path -LiteralPath $Db -PathType Leaf)
-    kilo_cli_available = [bool](Get-Command kilo -CommandType Application -ErrorAction SilentlyContinue)
+    kilo_cli_available = [bool]$ResolvedKilo
+    kilo_executable = $ResolvedKilo
     global_install_changes = 0
     kilo_started_by_this_script = $false
 } | ConvertTo-Json -Depth 3
