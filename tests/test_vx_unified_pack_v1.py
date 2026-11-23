@@ -186,7 +186,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             with self.subTest(agent=agent_id):
                 body = (ROOT / "agents" / f"{agent_id}.md").read_text(encoding="utf-8")
                 front = body.split("---", 2)[1]
-                self.assertIn('  "*": deny', front)
+                self.assertIn('  "*": ask', front)
                 self.assertIn("  task: deny", front)
                 self.assertIn("  agent_manager: deny", front)
                 self.assertIn("  edit: ask", front)
@@ -533,6 +533,31 @@ class UnifiedPackV1Tests(unittest.TestCase):
                 else:
                     self.assertEqual(doc.permissions.scalar("edit"), "deny")
         self.assertEqual(len(pack["lead_skill_allowlist"]), 11)
+
+    def test_mcp_dynamic_discovery_is_ask_and_role_bans_remain(self):
+        """MCP desconocidos quedan bajo ask; los bloqueos nativos siguen explícitos."""
+        from dev_team_agent_parser_support import load_agent
+        pack = module.load_manifest()
+        self.assertEqual(len(pack["agents"]), 18)
+        for item in pack["agents"]:
+            with self.subTest(agent=item["id"]):
+                doc = load_agent(ROOT / item["source"])
+                front = doc.frontmatter
+                self.assertIn('  "*": ask', front)
+                self.assertIn("  agent_manager: deny", front)
+                self.assertIn("  external_directory: deny", front)
+                self.assertIn("Política de acceso dinámico a MCP",
+                              (ROOT / item["source"]).read_text(encoding="utf-8"))
+                if item["role"] != "lead":
+                    self.assertIn("  task: deny", front)
+                if item["role"] == "readonly":
+                    for tool in ("edit", "write", "apply_patch", "bash"):
+                        self.assertIn(f"  {tool}: deny", front)
+                if item["role"] == "builder":
+                    for tool in ("edit", "write", "apply_patch"):
+                        self.assertIn(f"  {tool}: ask", front)
+        self.assertIn("Descubrimiento y uso de MCP del host",
+                      (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8"))
 
     def test_generic_skills_boot_and_role_scoped_permissions_no_project_specific_profiles(self):
         pack = module.load_manifest()
