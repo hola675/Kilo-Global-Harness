@@ -71,11 +71,25 @@ foreach ($Line in $Refs) {
     } else {
         $Prs = @(ConvertFrom-Json -InputObject $PrJson)
         $Open = @($Prs | Where-Object { $_.state -eq 'OPEN' })
-        $Verified = @($Prs | Where-Object {
+        # Un PR fusionado puede mostrar headRefOid actualizado tras reutilizar
+        # su rama. Comprobar también el último COMMIT histórico, inmutable.
+        $Candidates = @($Prs | Where-Object {
             $_.state -eq 'MERGED' -and $_.mergedAt -and
             $_.baseRefName -eq 'main' -and
             $_.headRefOid -eq $Sha
         })
+        $Verified = @()
+        $HistoryFailed = $false
+        foreach ($Candidate in $Candidates) {
+            $History = @(& gh api --paginate "repos/$Repo/pulls/$($Candidate.number)/commits?per_page=100" --jq '.[].sha')
+            if ($LASTEXITCODE -ne 0) {
+                $HistoryFailed = $true
+                break
+            }
+            if ($History.Count -gt 0 -and $History[-1].Trim().ToLowerInvariant() -eq $Sha) {
+                $Verified += $Candidate
+            }
+        }
         $InUse = @($Worktrees | Where-Object { $_ -ceq ('branch refs/heads/' + $Name) })
         & git -C $Root show-ref --verify --quiet ('refs/heads/' + $Name)
         $LocalExists = ($LASTEXITCODE -eq 0)
@@ -89,6 +103,8 @@ foreach ($Line in $Refs) {
             $Detail = 'Rama utilizada por otro worktree'
         } elseif ($LocalExists -and $LocalHead -ne $Sha) {
             $Detail = 'Rama local diverge; preservar hasta reconciliar'
+        } elseif ($HistoryFailed) {
+            $Detail = 'No se pudo certificar el historial inmutable de PR'
         } elseif ($Verified.Count -eq 0) {
             $Detail = 'Sin PR fusionado a main con HEAD remoto idéntico'
         } else {
