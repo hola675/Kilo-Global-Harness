@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.1
+# component_version: 1.1.0
 # last_modified: 2026-11-21
 displayName: "Dev Quality"
 description: "Read-only quality specialist. Use to derive acceptance criteria, invariants, test matrices, regression surfaces, test oracles and a verification plan from the requested behavior and available evidence."
@@ -13,7 +13,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-test-strategy": allow
     "vx-dev-accessibility": allow
   task: deny

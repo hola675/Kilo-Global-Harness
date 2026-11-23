@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.2
+# component_version: 1.1.0
 # last_modified: 2026-11-23
 description: "Implementador de pruebas VX: escribe tests automatizados y fixtures aislados del proyecto autorizado, distinto del analista Rafael que diseña casos; nunca altera producción ni elude pruebas."
 mode: subagent
@@ -18,7 +18,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-test-strategy": allow
     "vx-test-regression": allow
     "vx-dev-accessibility": allow

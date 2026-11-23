@@ -515,9 +515,11 @@
     "retire_historical_p2_command": true,
     "install_support_files": true,
     "no_legacy_registry_required": true,
-    "contextual_skills_install_only": true,
-    "contextual_skills_not_auto_allowlisted": true,
+    "contextual_skills_install_only": false,
+    "contextual_skills_not_auto_allowlisted": false,
     "runtime_acl_change_requires_separate_review": true,
+    "all_available_skills_per_agent": true,
+    "skill_loading_grants_tool_permissions": false,
     "no_board_acl_change": false,
     "board_acl_change_user_authorized": true,
     "board_acl_allowlist": [

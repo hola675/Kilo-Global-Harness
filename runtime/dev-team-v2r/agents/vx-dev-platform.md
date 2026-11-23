@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.1
+# component_version: 1.1.0
 # last_modified: 2026-11-21
 displayName: "Dev Platform"
 description: "Read-only platform/runtime specialist. Use for build systems, CI/CD, Docker, packaging, runtime configuration, bindings, observability wiring and deployment risk analysis without deploying or changing infrastructure."
@@ -13,7 +13,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-platform-delivery": allow
     "vx-dev-debug-triage": allow
   task: deny

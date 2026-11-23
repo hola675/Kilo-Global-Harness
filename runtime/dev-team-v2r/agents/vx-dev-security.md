@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.1
+# component_version: 1.1.0
 # last_modified: 2026-11-21
 displayName: "Dev Security"
 description: "Read-only security specialist. Use to map assets, trust boundaries, untrusted inputs, access-control decisions, abuse paths, sensitive-data exposure and evidence-backed security findings."
@@ -13,7 +13,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-security-threat-review": allow
     "vx-dev-supply-chain-review": allow
     "vx-dev-mcp-security": allow

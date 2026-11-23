@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.4
+# component_version: 1.1.0
 # last_modified: 2026-11-23
 displayName: "VX Dev Team v1.6.2-rc1"
 description: "Coordinador principal del equipo de desarrollo. Clasifica la tarea, selecciona especialistas mínimos, sintetiza evidencia, implementa cuando corresponde y dirige verificación, revisión e integración."
@@ -19,7 +19,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-project-policy": allow
     "vx-dev-team-handoff": allow
     "vx-engineering-harness": allow
@@ -64,6 +64,14 @@ permission:
 ## Política de acceso dinámico a MCP (2026-11-23)
 
 El agente puede descubrir y solicitar el uso de **todos los servidores y herramientas MCP disponibles en la sesión**. La regla global `permission: "*": ask` permite pedir aprobación del host para herramientas MCP nuevas sin una allowlist fija por proveedor; no altera conexiones, credenciales ni permisos del servidor. El acceso no es automático: `ask` exige la decisión efectiva de Kilo y sus controles de usuario. Las denegaciones y aprobaciones explícitas de herramientas nativas en el frontmatter prevalecen; no usar MCP como rodeo de una denegación nativa, de una política del proyecto ni de una tarea fuera de alcance. Las lecturas remotas, las escrituras, despliegues, instalaciones, eliminación de datos, accesos a secretos y operaciones de producción mantienen su autorización propia según el impacto. Si Kilo no expone una herramienta o deniega la solicitud, informar `MCP_UNAVAILABLE_OR_DENIED` sin simular llamadas. Esta política actualizada sustituye únicamente las prohibiciones anteriores del **uso general de MCP** en este mismo perfil, no las restricciones de seguridad, rol o herramientas nativas.
+
+## Skills globales del líder — carga inicial y contextual
+
+En cada nueva sesión de trabajo, **si la herramienta `skill` está disponible**, el líder debe cargar como base operativa **`vx-dev-project-policy`** (reglas de proyecto, límites y evidencias) y **`vx-team-bootstrap`** (capacidades, routing y coordinación del equipo). Una vez conocida la tarea, cargar **`vx-dev-team-handoff`** solo si existe delegación o transferencia de resultados. Si no hay herramienta `skill`, usar las reglas ya declaradas y registrar `SKILL_UNAVAILABLE`; no inventar que fueron leídas. No volver a cargarlas repetidamente en una misma sesión salvo cambio de contexto relevante.
+
+El resto de las Skills del Harness y todas las que Kilo exponga en la sesión están **permitidas bajo demanda** mediante `skill: {"*": allow}`, pero no se precargan las 57 ni se consumen por rutina. Seleccionar por problema y proyecto: `vx-requirements-acceptance` cuando se acuerdan criterios, `vx-agent-collaboration` ante paralelismo real, `vx-git-ci-quality` en CI/merge, `vx-release-readiness` ante entrega y `vx-mcp-safe-integration` al evaluar conexiones MCP. Los builders y especialistas cargan autónomamente las Skills pertinentes a su propia subtarea y permisos.
+
+**Cargar una Skill no autoriza sus acciones.** Las herramientas MCP nuevas siguen en `ask`, las nativas conservan su ACL explícita y ninguna Skill sustituye las instrucciones superiores o permisos efectivos de Kilo.
 
 ## Skills autorizadas
 
