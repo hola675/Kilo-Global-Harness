@@ -1,12 +1,12 @@
 ---
-# component_version: 1.0.1
+# component_version: 1.0.2
 # last_modified: 2026-11-23
 description: Especialista de arquitectura y diagnostico Cloudflare Workers, KV, R2, D1, Durable Objects, queues y bindings; propone pruebas en DEV/STAGING sin escribir ni desplegar.
 mode: subagent
 hidden: true
 steps: 55
 permission:
-  "*": deny
+  "*": ask
   read:
     "*": allow
     "*.env*": deny
@@ -26,6 +26,11 @@ permission:
   agent_manager: deny
   external_directory: deny
 ---
+
+
+## Política de acceso dinámico a MCP (2026-11-23)
+
+El agente puede descubrir y solicitar el uso de **todos los servidores y herramientas MCP disponibles en la sesión**. La regla global `permission: "*": ask` permite pedir aprobación del host para herramientas MCP nuevas sin una allowlist fija por proveedor; no altera conexiones, credenciales ni permisos del servidor. El acceso no es automático: `ask` exige la decisión efectiva de Kilo y sus controles de usuario. Las denegaciones y aprobaciones explícitas de herramientas nativas en el frontmatter prevalecen; no usar MCP como rodeo de una denegación nativa, de una política del proyecto ni de una tarea fuera de alcance. Las lecturas remotas, las escrituras, despliegues, instalaciones, eliminación de datos, accesos a secretos y operaciones de producción mantienen su autorización propia según el impacto. Si Kilo no expone una herramienta o deniega la solicitud, informar `MCP_UNAVAILABLE_OR_DENIED` sin simular llamadas. Esta política actualizada sustituye únicamente las prohibiciones anteriores del **uso general de MCP** en este mismo perfil, no las restricciones de seguridad, rol o herramientas nativas.
 
 # VX Workers Adviser
 

@@ -15,6 +15,14 @@ Este es el único paquete soportado en el repositorio. No utilizar instaladores 
 
 **Entrypoint:** `scripts/Instalar-DevTeam-Unificado.ps1`. Backend en `scripts/vx_unified_pack.py` y dos módulos de seguridad DPAPI: `scripts/vx_pack_coexist_v023.py` y `scripts/vx_pack_bootstrap.py`. Aunque esos dos nombres son antiguos, ambos están **importados por el instalador vigente** y no se pueden retirar sin reemplazo probado.
 
+## MCP dinámicos — permisos de los 18 agentes (SOURCE)
+
+Desde esta revisión, el líder y los 17 subagentes declaran `permission: "*": ask`, de modo que pueden **descubrir y solicitar** cualquier herramienta MCP que la sesión efectiva de Kilo les exponga, sin enumerar servidores como Context7, GitHub, Playwright, Figma, etc. Los nombres exactos y servidores disponibles dependen de la configuración existente del usuario, no del Harness. Las excepciones explícitas del frontmatter (`task`, `agent_manager`, `edit`, `write`, `bash`, `external_directory`, etc.) conservan su prioridad. Los agentes de análisis siguen sin escritura nativa; los builders escriben únicamente con `ask` y ámbito contratado.
+
+**No es acceso irrestricto ni instalación automática:** `ask` deja la autorización al runtime de Kilo, y una herramienta MCP puede estar ausente, desconectada o requerir OAuth/scopes propios. No se cambian `kilo.jsonc`, credenciales, listas de servidores ni ajustes AutoApprove. Operaciones MCP con efectos externos (escritura, ejecución, publicación, borrado, dinero, infraestructura, secretos o producción) requieren autorización correspondiente. Ningún agente debe usar un MCP para evadir denegaciones de la política del usuario, del proyecto o del host.
+
+**Validación separada:** CI comprueba exclusivamente que las definiciones de los 18 agentes contienen la regla y mantienen permisos nativos. La disponibilidad y aprobación de herramientas MCP por sesión necesita prueba controlada en Kilo Desktop; reportar `SOURCE_PASS` no significa `HOST_RUNTIME_PASS`.
+
 ## Instalación Windows
 
 Abrir PowerShell 7 **fuera de Kilo**, cerrar Kilo Desktop/VS Code/VSCodium para aplicar y verificar que el checkout local está limpio y sincronizado.
