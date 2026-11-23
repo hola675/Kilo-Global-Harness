@@ -43,6 +43,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             "registry/SCRIPTS-VERSIONS.md", "registry/POLICIES-VERSIONS.md",
             "docs/VX-DEV-TEAM-AUTONOMY-161.md",
             "scripts/vx_verify_metadata.py",
+            "runtime/kilo-observer/vx-runtime-observer.js",
             "scripts/Instalar-DevTeam-Unificado.ps1",
             "scripts/vx_unified_pack.py",
             "scripts/vx_pack_coexist_v023.py",
@@ -1338,6 +1339,56 @@ class InstallerReportAuditTests(unittest.TestCase):
             self.assertEqual(first_bytes, (backup / "install-report.json").read_bytes())
             self.assertEqual(again, report)
 
+
+class ObserverSourceAndReportTests(unittest.TestCase):
+    def test_observer_plugin_is_opt_in_and_never_injects_content_or_permissions(self):
+        source = (ROOT / "runtime/kilo-observer/vx-runtime-observer.js").read_text(
+            encoding="utf-8")
+        self.assertIn('process.env.VX_OBSERVER_ENABLE === "1"', source)
+        self.assertIn("if (!ENABLED) return {}", source)
+        self.assertIn('await import("bun:sqlite")', source)
+        self.assertIn("vx-runtime-observations.sqlite3", source)
+        self.assertIn("TOOL_RETURNED_NOT_VERIFIED", source)
+        self.assertIn("TOOL_CALLED_NOT_CONFIRMED", source)
+        self.assertNotIn("input.args", source)
+        self.assertNotIn("output.output", source)
+        self.assertNotIn("chat.message", source)
+        self.assertNotIn("permission.ask", source)
+        self.assertNotIn("kilo.jsonc", source)
+        self.assertNotIn("vx-team-queue.sqlite3", source)
+
+    def test_observer_report_readonly_with_events_and_absent_db(self):
+        with tempfile.TemporaryDirectory(prefix="vx-observer-report-") as tmp:
+            dbfile = Path(tmp) / "observer.sqlite3"
+            absent = dag.observer_report(dbfile)
+            self.assertEqual(absent["status"], "ABSENT")
+            self.assertFalse(dbfile.exists())
+            with closing(sqlite3.connect(dbfile)) as db:
+                db.execute(
+                    "CREATE TABLE host_observations ("
+                    "event_key TEXT PRIMARY KEY,project TEXT NOT NULL,"
+                    "session_ref TEXT NOT NULL,call_ref TEXT,"
+                    "event_type TEXT NOT NULL,tool TEXT,observed_at TEXT NOT NULL)"
+                )
+                db.execute("PRAGMA user_version = 1")
+                db.execute(
+                    "INSERT INTO host_observations VALUES (?,?,?,?,?,?,?)",
+                    ("event01", "vecidya", "hash01", "call01",
+                     "TOOL_RETURNED_NOT_VERIFIED", "task", "2026-11-23T00:00:00Z")
+                )
+                db.commit()
+            data = dbfile.read_bytes()
+            report = dag.observer_report(dbfile, "vecidya")
+            self.assertEqual(report["total_events"], 1)
+            self.assertEqual(report["status"], "OBSERVED_NOT_CERTIFIED")
+            self.assertFalse(report["runtime_verified"])
+            self.assertFalse(report["tasks_registered"])
+            self.assertEqual(dbfile.read_bytes(), data)
+            with closing(sqlite3.connect(dbfile)) as db:
+                db.execute("PRAGMA user_version = 99")
+                db.commit()
+            with self.assertRaisesRegex(ValueError, "Esquema del observador"):
+                dag.observer_report(dbfile)
 
 class SQLiteInstallerProvisionTests(unittest.TestCase):
     def test_state_preflight_is_readonly_and_migration_idempotent(self):
