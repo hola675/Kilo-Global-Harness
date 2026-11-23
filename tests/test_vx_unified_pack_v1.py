@@ -47,6 +47,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
             "runtime/kilo-observer/lib/vx-observer-hooks.js",
             "tests/test_vx_observer_contract.mjs",
             "scripts/Eliminar-RamasFusionadas.ps1",
+            "scripts/Probar-Observador-Kilo.ps1",
+            "tests/test_vx_observer_sqlite.bun.mjs",
             "scripts/Instalar-DevTeam-Unificado.ps1",
             "scripts/vx_unified_pack.py",
             "scripts/vx_pack_coexist_v023.py",
@@ -1352,6 +1354,7 @@ class ObserverSourceAndReportTests(unittest.TestCase):
         self.assertIn('process.env.VX_OBSERVER_ENABLE === "1"', source)
         self.assertIn("if (!ENABLED || !PROJECT_SCOPE || safeProject(directory) !== PROJECT_SCOPE) return {}", source)
         self.assertIn('process.env.VX_OBSERVER_PROJECT', source)
+        self.assertIn('process.env.VX_OBSERVER_STATE_ROOT', source)
         self.assertIn('await import("bun:sqlite")', source)
         self.assertIn("vx-runtime-observations.sqlite3", source)
         self.assertIn("TOOL_RETURNED_NOT_VERIFIED", helper)
