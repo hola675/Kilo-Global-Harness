@@ -6,6 +6,6 @@ Metadatos mínimos en cabecera, historial resumido solo aquí y detalle en Git. 
 
 | Componente | Versión | Fecha | Resumen |
 |---|---|---|---|
-| rules/AGENTS-global-managed.md | 2.4.0 | 2026-11-23 | MCP dinámicos en 18 agentes sujetos a ask y autorización del host; se preservan límites por rol |
+| rules/AGENTS-global-managed.md | 2.5.0 | 2026-11-23 | Acceso dinámico a todas las Skills descubiertas para 18 agentes; MCP bajo ask y ACL nativas conservadas |
 
 El registro no afirma que todas las políticas del repositorio hayan sido inventariadas o certificadas.
