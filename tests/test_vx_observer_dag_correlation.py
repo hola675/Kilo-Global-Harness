@@ -159,7 +159,7 @@ class CorrelationTests(unittest.TestCase):
         trust = self.queue.parent / "trust.key"
         trust.write_bytes(key)
         digest = sha256(receipt.read_bytes()).hexdigest()
-        message = r4.ATTESTATION_DOMAIN + issuer.encode("ascii") + b"\\x00" + bytes.fromhex(digest)
+        message = r4.ATTESTATION_DOMAIN + issuer.encode("ascii") + b"\x00" + bytes.fromhex(digest)
         mac = hmac.new(key, message, "sha256").hexdigest()
         seal = self.queue.parent / "seal.json"
         seal.write_text(json.dumps({
