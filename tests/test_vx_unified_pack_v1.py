@@ -544,8 +544,11 @@ class UnifiedPackV1Tests(unittest.TestCase):
         for agent in pack["agents"]:
             with self.subTest(agent=agent["id"]):
                 doc = load_agent(ROOT / agent["source"])
-                self.assertIn('  skill:', doc.frontmatter)
-                self.assertIn('    "*": allow', doc.frontmatter)
+                if agent["id"] == "vx-workers-adviser":
+                    self.assertIn('  skill: allow', doc.frontmatter)
+                else:
+                    self.assertIn('  skill:', doc.frontmatter)
+                    self.assertIn('    "*": allow', doc.frontmatter)
                 self.assertIn('  "*": ask', doc.frontmatter)
                 self.assertIn('  agent_manager: deny', doc.frontmatter)
                 self.assertIn('  external_directory: deny', doc.frontmatter)
