@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.1
+# component_version: 1.0.2
 # last_modified: 2026-11-21
 displayName: "Dev Explorer"
 description: "Read-only codebase cartographer. Use to locate entry points, symbols, references, dependencies and the impact surface of a change before design or implementation."
@@ -7,7 +7,7 @@ mode: subagent
 hidden: true
 steps: 80
 permission:
-  "*": deny
+  "*": ask
   read: deny
   glob: allow
   grep: allow
@@ -26,6 +26,11 @@ permission:
   board_read: deny
   board_post: deny
 ---
+
+
+## Política de acceso dinámico a MCP (2026-11-23)
+
+El agente puede descubrir y solicitar el uso de **todos los servidores y herramientas MCP disponibles en la sesión**. La regla global `permission: "*": ask` permite pedir aprobación del host para herramientas MCP nuevas sin una allowlist fija por proveedor; no altera conexiones, credenciales ni permisos del servidor. El acceso no es automático: `ask` exige la decisión efectiva de Kilo y sus controles de usuario. Las denegaciones y aprobaciones explícitas de herramientas nativas en el frontmatter prevalecen; no usar MCP como rodeo de una denegación nativa, de una política del proyecto ni de una tarea fuera de alcance. Las lecturas remotas, las escrituras, despliegues, instalaciones, eliminación de datos, accesos a secretos y operaciones de producción mantienen su autorización propia según el impacto. Si Kilo no expone una herramienta o deniega la solicitud, informar `MCP_UNAVAILABLE_OR_DENIED` sin simular llamadas. Esta política actualizada sustituye únicamente las prohibiciones anteriores del **uso general de MCP** en este mismo perfil, no las restricciones de seguridad, rol o herramientas nativas.
 
 ## Skills autorizadas
 
