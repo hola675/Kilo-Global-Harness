@@ -1,4 +1,4 @@
-// component_version: 0.1.0
+// component_version: 0.1.1
 // last_modified: 2026-11-23
 // OBSERVATION_ONLY / SOURCE_CANDIDATE / NOT_INSTALLED / OPT_IN_REQUIRED
 // This module does NOT change tool arguments, approvals, chat, or Kilo config.
@@ -9,6 +9,7 @@ import { basename, join } from "node:path"
 import { existsSync, lstatSync, mkdirSync } from "node:fs"
 
 const ENABLED = process.env.VX_OBSERVER_ENABLE === "1"
+const PROJECT_SCOPE = String(process.env.VX_OBSERVER_PROJECT || "").toLowerCase()
 const PRIVATE_DIR = join(homedir(), ".config", "kilo", "harness", "state")
 const PRIVATE_DB = join(PRIVATE_DIR, "vx-runtime-observations.sqlite3")
 const TOOLS = new Set(["task", "skill", "board_post", "board_read"])
@@ -88,7 +89,7 @@ function ensurePrivateDatabase(Database) {
 }
 
 const observer = async ({ directory }) => {
-  if (!ENABLED) return {}
+  if (!ENABLED || !PROJECT_SCOPE || safeProject(directory) !== PROJECT_SCOPE) return {}
   let Database
   try {
     ;({ Database } = await import("bun:sqlite"))
@@ -121,9 +122,9 @@ const observer = async ({ directory }) => {
       const sessionRef = hash(sessionID)
       const callRef = typeof callID === "string" && callID ? hash(sessionID, callID) : null
       // Lifecycle 'updated' is sampled per minute; tool events are idempotent by callID.
-      const keyScope = callRef || (type === "session.updated"
-        ? now.toISOString().slice(0, 16)
-        : "lifecycle")
+      const keyScope = callRef || (type === "session.created"
+        ? "lifecycle"
+        : now.toISOString().slice(0, 16))
       const key = hash(type, sessionRef, keyScope, tool || "")
       insert.run(key, project, sessionRef, callRef, type, tool, now.toISOString())
     } catch {
