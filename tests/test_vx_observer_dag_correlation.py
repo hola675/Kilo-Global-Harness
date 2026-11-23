@@ -1,8 +1,9 @@
-# component_version: 1.2.0
+# component_version: 1.3.0
 # last_modified: 2026-11-23
 """R4: pruebas focalizadas en bases efimeras; sin credenciales ni HOME."""
 import importlib.util
 import json
+import hmac
 from hashlib import sha256
 from contextlib import closing
 from pathlib import Path
@@ -153,6 +154,64 @@ class CorrelationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "limite"):
             r4.correlate(self.queue, self.observer, "demo", "job01",
                          SESSION, CALL, link, receipt, artifact)
+
+    def make_seal(self, receipt, key=b"K"*32, issuer="lab-issuer"):
+        trust = self.queue.parent / "trust.key"
+        trust.write_bytes(key)
+        digest = sha256(receipt.read_bytes()).hexdigest()
+        message = r4.ATTESTATION_DOMAIN + issuer.encode("ascii") + b"\\x00" + bytes.fromhex(digest)
+        mac = hmac.new(key, message, "sha256").hexdigest()
+        seal = self.queue.parent / "seal.json"
+        seal.write_text(json.dumps({
+            "schema": "vx-receipt-hmac/1", "issuer": issuer,
+            "receipt_sha256": digest, "mac_sha256": mac,
+        }), encoding="utf-8")
+        return seal, trust
+
+    def test_valid_keyed_receipt_does_not_verify_host(self):
+        link, receipt, artifact = self.make_receipt()
+        seal, trust = self.make_seal(receipt)
+        before = (self.queue.read_bytes(), self.observer.read_bytes())
+        report = r4.correlate(self.queue, self.observer, "demo", "job01",
+                              SESSION, CALL, link, receipt, artifact,
+                              seal, trust, "lab-issuer")
+        self.assertEqual(report["status"], "RECEIPT_MAC_MATCH_KEY_POSSESSION_ONLY")
+        self.assertTrue(report["receipt_mac_checked"])
+        self.assertTrue(report["receipt_mac_matches"])
+        self.assertFalse(report["receipt_origin_authenticated"])
+        self.assertFalse(report["host_results_verified"])
+        self.assertEqual(before, (self.queue.read_bytes(), self.observer.read_bytes()))
+        self.assertNotIn("KKKK", json.dumps(report))
+
+    def test_wrong_key_or_seal_cannot_claim_provenance(self):
+        link, receipt, artifact = self.make_receipt()
+        seal, trust = self.make_seal(receipt)
+        trust.write_bytes(b"Z"*32)
+        wrong = r4.correlate(self.queue, self.observer, "demo", "job01",
+                             SESSION, CALL, link, receipt, artifact,
+                             seal, trust, "lab-issuer")
+        self.assertEqual(wrong["status"], "RECEIPT_MAC_INVALID")
+        self.assertFalse(wrong["receipt_mac_matches"])
+        trust.write_bytes(b"K"*32)
+        info = json.loads(seal.read_text(encoding="utf-8"))
+        info["issuer"] = "unexpected-issuer"
+        seal.write_text(json.dumps(info), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "Emisor"):
+            r4.correlate(self.queue, self.observer, "demo", "job01",
+                         SESSION, CALL, link, receipt, artifact,
+                         seal, trust, "lab-issuer")
+
+    def test_partial_seal_or_same_key_source_rejected(self):
+        link, receipt, artifact = self.make_receipt()
+        seal, trust = self.make_seal(receipt)
+        with self.assertRaisesRegex(ValueError, "Sello requiere"):
+            r4.correlate(self.queue, self.observer, "demo", "job01",
+                         SESSION, CALL, link, receipt, artifact,
+                         seal, None, "lab-issuer")
+        with self.assertRaisesRegex(ValueError, "diferentes"):
+            r4.correlate(self.queue, self.observer, "demo", "job01",
+                         SESSION, CALL, link, receipt, artifact,
+                         seal, receipt, "lab-issuer")
 
     def test_fail_closed_on_bad_input_or_missing_db(self):
         with self.assertRaisesRegex(ValueError, "SHA256"):
