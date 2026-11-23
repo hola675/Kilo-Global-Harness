@@ -1,5 +1,5 @@
 # Versiones y cambios de Skills
-Registro de sección · Actualizado: 2026-11-22
+Registro de sección · Actualizado: 2026-11-23
 
 ## Política
 Cada Skill conserva su versión **individual** dentro de `metadata.version` de su frontmatter. En Skills que ya mostraban versión en el título se traslada esa versión al metadato; si no existía versión, `1.0.0` señala inicio del seguimiento, no una reconstrucción histórica. La última modificación se anota en `metadata.last_modified` (fecha ISO). No añadir changelogs extensos dentro de SKILL.md. El historial resumido se mantiene exclusivamente aquí; Git conserva el detalle. No confundir versiones de Skills con la versión global del Harness. No modificar `metadata.version` sin cambio de comportamiento o corrección real; añadir una fecha no implica publicar nueva versión de capacidad.
@@ -9,7 +9,7 @@ Cada Skill conserva su versión **individual** dentro de `metadata.version` de s
 |---|---|---|---|
 | vx-dev-project-policy | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
 | vx-dev-team-handoff | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
-| vx-dev-mcp-readonly | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
+| vx-dev-mcp-readonly | 1.1.0 | 2026-11-23 | Procedimiento de consulta MCP dinámica bajo ask y autorización efectiva de Kilo |
 | vx-dev-mcp-security | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
 | vx-dev-codebase-investigation | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
 | vx-dev-source-reconciliation | Conservar versión preexistente en SKILL.md | 2026-11-21 | Fecha de seguimiento incorporada; sin cambio funcional |
@@ -72,6 +72,7 @@ Cada Skill conserva su versión **individual** dentro de `metadata.version` de s
 Las 57 Skills del manifiesto tienen ahora metadatos individuales de versión y última modificación. El registro resume su seguimiento; el valor canónico de cada versión reside en su SKILL.md.
 
 ## Changelog de sección
+- 2026-11-23: vx-dev-mcp-readonly v1.1.0 actualiza la guía de acceso MCP dinámico sin alterar permisos del host.
 - 2026-11-22: gate AUDIT_FIRST antes de ejecutar pruebas; presupuestos adaptativos de complejidad, volumen y rapidez, con ejemplo estático Vecidya sin modificar su repositorio.
 - 2026-11-22: auditoría de las 57 descripciones; afinadas 25 Skills con activadores y exclusiones por tarea/stack; resto conservado tras revisión.
 - 2026-11-22: revisión funcional de gobernanza de versiones y optimización de pruebas en cuatro Skills; versiones independientes y tests focalizados.
