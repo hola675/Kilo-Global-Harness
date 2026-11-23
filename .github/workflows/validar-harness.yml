@@ -20,7 +20,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          foreach ($relative in @('scripts/Instalar-DevTeam-Unificado.ps1', 'scripts/Eliminar-RamasFusionadas.ps1')) {
+          foreach ($relative in @('scripts/Instalar-DevTeam-Unificado.ps1', 'scripts/Eliminar-RamasFusionadas.ps1', 'scripts/Probar-Observador-Kilo.ps1')) {
             $f = (Resolve-Path $relative).Path
             $errors = $null
             $tokens = $null
@@ -44,6 +44,35 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Normalizador de hooks inválido.' }
           node --test tests/test_vx_observer_contract.mjs
           if ($LASTEXITCODE -ne 0) { throw 'Pruebas contractuales offline de hooks fallidas.' }
+      - name: Preparar Bun aislado para prueba REAL de SQLite
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.3.0'
+      - name: SQLite Bun - contratos y persistencia sin Kilo ni HOME real
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          bun test tests/test_vx_observer_sqlite.bun.mjs
+          if ($LASTEXITCODE -ne 0) { throw 'SQLite Bun contract test failed.' }
+      - name: Laboratorio Windows - crear y verificar sin iniciar Kilo
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $lab = Join-Path $env:TEMP ('vx-observer-lab-ci-' + [guid]::NewGuid().ToString('N'))
+          $script = (Resolve-Path 'scripts/Probar-Observador-Kilo.ps1').Path
+          & $script -Modo Diagnostico -RaizLaboratorio $lab
+          if ($LASTEXITCODE -ne 0) { throw 'Diagnostico lab fallido.' }
+          & $script -Modo Preparar -RaizLaboratorio $lab
+          if ($LASTEXITCODE -ne 0) { throw 'Preparar lab fallido.' }
+          if (!(Test-Path (Join-Path $lab 'vx-observer-lab/.kilo/plugin/lib/vx-observer-hooks.js'))) {
+            throw 'Plugin helper no incluido en laboratorio.'
+          }
+          & $script -Modo Verificar -RaizLaboratorio $lab
+          if ($LASTEXITCODE -ne 0) { throw 'Verificar lab fallido.' }
+          if (Test-Path (Join-Path $lab 'state/vx-runtime-observations.sqlite3')) {
+            throw 'Laboratorio creó SQLite sin ejecutar Kilo.'
+          }
+          Remove-Item -LiteralPath $lab -Recurse -Force
       - name: Verificar versiones individuales y fechas
         shell: pwsh
         run: |
