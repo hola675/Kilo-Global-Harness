@@ -27,12 +27,14 @@ class CorrelationTests(unittest.TestCase):
             conn.execute("CREATE TABLE tasks(project TEXT,id TEXT,state TEXT,host_task_id TEXT)")
             conn.execute("PRAGMA user_version=1")
             conn.execute("INSERT INTO tasks VALUES ('demo','job01','RUNNING','host-x')")
+            conn.commit()
         with closing(sqlite3.connect(self.observer)) as conn:
             conn.execute("CREATE TABLE host_observations(project TEXT,session_ref TEXT,call_ref TEXT,event_type TEXT,tool TEXT)")
             conn.execute("PRAGMA user_version=1")
             for event in r4.EVENTS:
                 conn.execute("INSERT INTO host_observations VALUES (?,?,?,?,?)",
                              ("demo", SESSION, CALL, event, "skill"))
+            conn.commit()
 
     def test_correlated_is_not_verified_and_readonly(self):
         before = (self.queue.read_bytes(), self.observer.read_bytes())
@@ -50,6 +52,7 @@ class CorrelationTests(unittest.TestCase):
         with closing(sqlite3.connect(self.observer)) as conn:
             conn.execute("INSERT INTO host_observations VALUES (?,?,?,?,?)",
                          ("demo", SESSION, CALL, r4.EVENTS[0], "task"))
+            conn.commit()
         self.assertEqual(r4.correlate(self.queue, self.observer, "demo", "job01",
                                       SESSION, CALL)["status"], "NOT_CORRELATED")
 
