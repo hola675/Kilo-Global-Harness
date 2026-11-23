@@ -1,6 +1,6 @@
 ---
-# component_version: 1.0.0
-# last_modified: 2026-11-21
+# component_version: 1.0.1
+# last_modified: 2026-11-23
 description: "Equipo unificado: un líder visible, especialistas ocultos y builders por demanda; sin selectors ni plugins históricos."
 agent: vx-dev-team
 ---
@@ -61,7 +61,7 @@ Cuando el host exponga `task(background: true)`, Frontend y Rust pueden trabajar
 
 ## Skills del pack unificado
 
-El pool contiene 18 CORE y 26 complementarias. Cada agente carga solo la skill que la tarea necesita y que su propia ACL de `skill` permite; la skill no amplía herramientas, no instala MCP ni habilita AutoApprove. No es requisito ejecutar `Seleccionar-Equipo-V4.ps1` ni `vx_skill_router.py`: ambos corresponden a rutas históricas ajenas a esta instalación única. La disponibilidad efectiva de `task` y `skill` requiere prueba en Kilo; si falta, conserva la tarea en el líder y declara `TOOL_UNAVAILABLE` o `PERMISSION_DENIED` según corresponda.
+El pool seleccionado contiene 18 CORE, 35 CAPABILITY y 4 CONTEXTUAL (57 en total). Cada agente carga solo la skill que la tarea necesita y que su propia ACL de `skill` permite; la skill no amplía herramientas, no instala MCP ni habilita AutoApprove. No es requisito ejecutar `Seleccionar-Equipo-V4.ps1` ni `vx_skill_router.py`: ambos corresponden a rutas históricas ajenas a esta instalación única. La disponibilidad efectiva de `task` y `skill` requiere prueba en Kilo; si falta, conserva la tarea en el líder y declara `TOOL_UNAVAILABLE` o `PERMISSION_DENIED` según corresponda.
 
 ## Git y seguridad
 

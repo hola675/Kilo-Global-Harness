@@ -1,4 +1,4 @@
-# VX Dev Team · Instalación única del Core 1.6.1-rc1
+# VX Dev Team · Instalación única del Core 1.6.2-rc1
 
 **Actualización:** 2026-11-22 · **Estado:** fuente versionada. Instalación local y concurrencia real de Kilo Desktop requieren pruebas separadas.
 
@@ -56,6 +56,22 @@ pwsh -NoProfile -File .\scripts\Instalar-DevTeam-Unificado.ps1 -Modo Informe -Ca
 
 Sin `-CarpetaRespaldo` elige el recibo más reciente. Los informes no demuestran por sí mismos que Kilo habilite las herramientas y permisos del agente. Solo se reportan elementos del manifiesto y sus rutas aprobadas; nunca se limpia trabajo de proyecto por inferencia.
 
+
+### R2 — Observador Kilo experimental (desactivado)
+
+El prototipo se mantiene **solo en el checkout** en `runtime/kilo-observer/vx-runtime-observer.js`; no se copia a `~/.config/kilo/plugin/`, no se añade a `kilo.json(c)`, no eleva ACL y no se inicia con el instalador. Requiere conjuntamente `VX_OBSERVER_ENABLE=1` y `VX_OBSERVER_PROJECT=<nombre-exacto-de-directorio>` para hacer cualquier escritura; ninguna sesión de otro proyecto queda incluida. La carga en Kilo Desktop y la existencia del runtime Bun con `bun:sqlite` deben comprobarse en una instalación/laboratorio aislado. La documentación oficial de plugins confirma hooks para CLI y VS Code, **no acredita Desktop de este usuario**.
+
+El código observa `task`, `skill`, `board_post`, `board_read` y eventos de ciclo de sesión, **sin leer, serializar ni persistir argumentos, prompts, respuestas, texto de archivos, credenciales, rutas completas ni IDs de sesión sin hash**. Las observaciones quedan en una base separada, `~/.config/kilo/harness/state/vx-runtime-observations.sqlite3`, con clave de idempotencia, tabla `host_observations` y esquema independiente v1. No toca las tablas `tasks`, `events` ni `project_config` de la cola existente: un hook observado no es un task verificado.
+
+Consultar su estado sin crear ni mutar ninguna DB:
+
+```powershell
+python -I .\scripts\vx_task_dag.py --observer-report
+python -I .\scripts\vx_task_dag.py --observer-report --project vecidya
+```
+
+Mientras no se autorice su activación en un HOME de prueba, el resultado esperado es `ABSENT`. No activar `VX_OBSERVER_ENABLE=1` ni `VX_OBSERVER_PROJECT` en sesiones productivas/Vecidya en curso. Al iniciar el laboratorio, copiar la fuente al directorio plugin de ese perfil y verificar eventos reales antes de extender el instalador. Una vez verificado, R3 contempla enlazar eventos observados con IDs de tareas reales, sin inferir resultados por el mero regreso de una herramienta.
+
 ## Restauración
 
 Conservar privada la carpeta `vx-unified-...` que informa el motor. Si una instalación genera errores, consultar antes de restaurar modificaciones posteriores en los destinos:
@@ -77,3 +93,30 @@ Abrir Kilo Desktop y certificar invocaciones reales de `skill`, `task`, permisos
 **Tres estados diferentes:** `SOURCE_PASS` (CI) → `INSTALLED_FILES_MATCH` (verificación del instalador) → `HOST_RUNTIME_PASS` (evidencia en Kilo). La cola SQLite no ejecuta agentes ni funciona con Kilo cerrado.
 
 Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y [registro de depuración](VX-HARNESS-INVENTARIO-AUDIT-20261121.md).
+
+
+## Roadmap vivo de implementación — 2026-11-23
+
+**Objetivo:** evolucionar un único Harness instalable, sin perder la ejecución actual de Vecidya ni confundir fuente, instalación y runtime. Esta sección es la fuente canónica de avance; no generar documentos de roadmap por fase.
+
+| Orden | Fase | Estado | Criterio de aceptación |
+|---|---|---|---|
+| R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
+| R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
+| R3 | Persistencia del runtime | PENDIENTE_HOST | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
+| R4 | Coordinación multiagente | PENDIENTE_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
+| R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
+| R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
+
+### Gates de seguridad y reversibilidad
+
+- **G0:** Inventariar checkout, PR, CI, worktrees y respaldos. No interrumpir Vecidya.
+- **G1:** Cambiar referencias/documentación/versiones sin modificar ACL ni otros proyectos.
+- **G2:** Investigar el contrato oficial de eventos Kilo; el soporte documentado en CLI/VS Code no certifica el Desktop. El observador se entrega desactivado.
+- **G3:** Laboratorio aislado antes de activar el plugin globalmente: sin secretos, contenido de cliente, salida de herramientas ni rutas completas. Si el host no soporta hooks, seguir con el ledger de sesión.
+- **G4:** Los eventos del hook demuestran observación, no entrega, aprobación o estado VERIFIED. Persistencia y cola DAG requieren contratos separados.
+- **G5:** Cambios por PR, CI y respaldo. Para instalar en Windows, Kilo cerrado, confirmación explícita y restauración disponible.
+
+**Evidencia de partida:** 53 pruebas CI Windows correctas tras R1/R2; usuario confirmó instalación de 18 agentes/57 Skills y base SQLite íntegra con tres tablas y cero registros de tareas, eventos y proyectos. Hubo delegación real en Vecidya, no reflejada automáticamente en esa base.
+
+**Bloqueo Git:** 14 ramas remotas de PR fusionados continúan en GitHub. El navegador de automatización no posee autenticación para borrarlas. Para continuar sin crear una rama adicional se reutiliza temporalmente una rama fusionada, sincronizada con main mediante merge no destructivo (sin force-push).

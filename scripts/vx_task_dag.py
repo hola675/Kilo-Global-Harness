@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# component_version: 1.5.0
-# last_modified: 2026-11-22
+# component_version: 1.5.1
+# last_modified: 2026-11-23
 """VX Dev Team Core 1.6: DAG y cola transaccional SQLite local; NO despacha subagentes ni Git."""
 from __future__ import annotations
 import argparse
@@ -815,6 +815,50 @@ def queue_cli(args: argparse.Namespace) -> dict[str, Any]:
         conn.close()
 
 
+
+def observer_report(path: Path, project: str | None = None) -> dict[str, Any]:
+    """Consulta agregada al observador separado. No crea SQLite ni atribuye éxito."""
+    if project is not None and not QUEUE_PROJECT.fullmatch(project):
+        raise ValueError("Nombre de proyecto para observaciones inválido.")
+    if path.is_symlink() or (path.exists() and not path.is_file()):
+        raise ValueError("Ruta de observación no es archivo regular.")
+    if not path.is_absolute() or path.suffix != ".sqlite3":
+        raise ValueError("Observador requiere archivo SQLite absoluto.")
+    if not path.exists():
+        return {"schema": "vx-host-observer-report/1", "status": "ABSENT",
+                "database": str(path), "actions_executed": 0, "runtime_verified": False}
+    with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=2)) as conn:
+        conn.execute("PRAGMA query_only = ON")
+        valid = conn.execute("PRAGMA integrity_check").fetchone()
+        if valid is None or valid[0] != "ok":
+            raise ValueError("La base de observación no supera integridad SQLite.")
+        version = int(conn.execute("PRAGMA user_version").fetchone()[0])
+        columns = {row[1] for row in conn.execute(
+            "PRAGMA table_info(host_observations)")}
+        required = {"event_key", "project", "session_ref", "call_ref",
+                    "event_type", "tool", "observed_at"}
+        if version != 1 or not required.issubset(columns):
+            raise ValueError("Esquema del observador desconocido.")
+        where = "WHERE project=?" if project else ""
+        args = (project,) if project else ()
+        counts = [
+            {"project": row[0], "event": row[1], "total": row[2]}
+            for row in conn.execute(
+                "SELECT project,event_type,COUNT(*) FROM host_observations "
+                + where + " GROUP BY project,event_type ORDER BY project,event_type LIMIT 100",
+                args)
+        ]
+        total = conn.execute(
+            "SELECT COUNT(*) FROM host_observations " + where, args
+        ).fetchone()[0]
+        return {"schema": "vx-host-observer-report/1", "status": "OBSERVED_NOT_CERTIFIED",
+                "database": str(path), "schema_version": version,
+                "total_events": total, "counts": counts,
+                "actions_executed": 0, "runtime_verified": False,
+                "tasks_registered": False, "host_results_verified": False,
+                "note": "Eventos de hooks, no tareas DAG ni prueba de resultados del host."}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida DAG de tareas de agente VX sin acciones.")
     parser.add_argument("--plan", type=Path)
@@ -822,6 +866,8 @@ def main() -> int:
     parser.add_argument("--actor", help="Rol declarado; no autentica identidad del proceso")
     parser.add_argument("--queue-action", choices=["sync","start","event","verify","resume","reset","report","audit","handoff","inbox"])
     parser.add_argument("--queue-db", type=Path)
+    parser.add_argument("--observer-report", action="store_true", help="Auditar observaciones del host sin escribir")
+    parser.add_argument("--observer-db", type=Path, help="Ruta absoluta SQLite del observador, solo lectura")
     parser.add_argument("--project")
     parser.add_argument("--task-id")
     parser.add_argument("--host-task-id")
@@ -834,6 +880,12 @@ def main() -> int:
     parser.add_argument("--registry", type=Path, default=None)
     args = parser.parse_args()
     try:
+        if args.observer_report:
+            if args.queue_action or args.plan:
+                raise ValueError("Modo observador incompatible con plan/cola.")
+            target = args.observer_db or (Path.home() / ".config/kilo/harness/state/vx-runtime-observations.sqlite3")
+            print(json.dumps(observer_report(target, args.project), ensure_ascii=False, sort_keys=True, indent=2))
+            return 0
         if args.queue_action:
             print(json.dumps(queue_cli(args), ensure_ascii=False, sort_keys=True, indent=2))
             return 0

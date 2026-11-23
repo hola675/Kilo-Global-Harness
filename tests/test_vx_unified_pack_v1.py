@@ -43,6 +43,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             "registry/SCRIPTS-VERSIONS.md", "registry/POLICIES-VERSIONS.md",
             "docs/VX-DEV-TEAM-AUTONOMY-161.md",
             "scripts/vx_verify_metadata.py",
+            "runtime/kilo-observer/vx-runtime-observer.js",
             "scripts/Instalar-DevTeam-Unificado.ps1",
             "scripts/vx_unified_pack.py",
             "scripts/vx_pack_coexist_v023.py",
@@ -166,7 +167,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         lead_front = lead.split("---", 2)[1]
         self.assertIn("  board_read: allow", lead_front)
         self.assertIn("  board_post: allow", lead_front)
-        self.assertIn("displayName: \"VX Dev Team v1.6.1-rc1\"", lead_front)
+        self.assertIn("displayName: \"VX Dev Team v1.6.2-rc1\"", lead_front)
         self.assertIn("  agent_manager: deny", lead_front)
         self.assertIn("VX Dev Team Autopilot V2", lead)
         self.assertIn("PROGRESS_CHANNEL_UNAVAILABLE", lead)
@@ -528,7 +529,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_generic_skills_boot_and_role_scoped_permissions_no_project_specific_profiles(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.6.1-rc1')
+        self.assertEqual(pack['version'], '1.6.2-rc1')
         generic = {
             'vx-team-bootstrap', 'vx-saas-multitenant-cloud',
             'vx-erp-localfirst-modular', 'vx-windows-network-systems',
@@ -720,7 +721,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_explicit_desktop_only_and_phased_connectivity_skills_are_integrated(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.6.1-rc1')
+        self.assertEqual(pack['version'], '1.6.2-rc1')
         desktop = pack['routing']['desktop']
         self.assertEqual(desktop['applies_to'], 'EXPLICITLY_SCOPED_NEW_DESKTOP_PRODUCT_ONLY')
         self.assertEqual(desktop['mobile_scope_rule'], 'DEFAULT_DUAL_UNLESS_EXPLICIT_WINDOWS_ONLY')
@@ -765,7 +766,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.6.1-rc1')
+        self.assertEqual(pack['version'], '1.6.2-rc1')
         tauri = [skill for skill in pack['skills'] if skill['id'] == 'vx-tauri-desktop']
         self.assertEqual(len(tauri), 1)
         self.assertEqual(tauri[0]['layer'], 'CAPABILITY')
@@ -786,7 +787,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_unified_parallel_desktop_contract_is_scoped_and_preserves_acl(self):
         pack = module.load_manifest()
-        self.assertEqual(pack["version"], "1.6.1-rc1")
+        self.assertEqual(pack["version"], "1.6.2-rc1")
         routing = pack["routing"]["parallel_background"]
         self.assertEqual(routing["max_parallel_writers"], 2)
         self.assertEqual(routing["max_background_tasks"], 4)
@@ -831,7 +832,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
     def test_vx_v21_global_policy_and_agents_are_consistent(self):
         """One global instruction source; concurrency is scoped and host-gated."""
         pack = module.load_manifest()
-        self.assertEqual(pack["version"], "1.6.1-rc1")
+        self.assertEqual(pack["version"], "1.6.2-rc1")
         self.assertEqual(len(pack["agents"]), 18)
         self.assertEqual(len(pack["skills"]), 57)
         policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
@@ -872,7 +873,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual("  board_post: allow" in front, agent["id"] in allowlist)
             self.assertIn("  agent_manager: deny", front)
             if agent["id"] == "vx-dev-team":
-                self.assertIn('displayName: "VX Dev Team v1.6.1-rc1"', front)
+                self.assertIn('displayName: "VX Dev Team v1.6.2-rc1"', front)
             else:
                 self.assertIn("mode: subagent", front)
                 self.assertIn("  task: deny", front)
@@ -1339,6 +1340,57 @@ class InstallerReportAuditTests(unittest.TestCase):
             self.assertEqual(again, report)
 
 
+class ObserverSourceAndReportTests(unittest.TestCase):
+    def test_observer_plugin_is_opt_in_and_never_injects_content_or_permissions(self):
+        source = (ROOT / "runtime/kilo-observer/vx-runtime-observer.js").read_text(
+            encoding="utf-8")
+        self.assertIn('process.env.VX_OBSERVER_ENABLE === "1"', source)
+        self.assertIn("if (!ENABLED || !PROJECT_SCOPE || safeProject(directory) !== PROJECT_SCOPE) return {}", source)
+        self.assertIn('process.env.VX_OBSERVER_PROJECT', source)
+        self.assertIn('await import("bun:sqlite")', source)
+        self.assertIn("vx-runtime-observations.sqlite3", source)
+        self.assertIn("TOOL_RETURNED_NOT_VERIFIED", source)
+        self.assertIn("TOOL_CALLED_NOT_CONFIRMED", source)
+        self.assertNotIn("input.args", source)
+        self.assertNotIn("output.output", source)
+        self.assertNotIn("chat.message", source)
+        self.assertNotIn("permission.ask", source)
+        self.assertNotIn("kilo.jsonc", source)
+        self.assertNotIn("vx-team-queue.sqlite3", source)
+
+    def test_observer_report_readonly_with_events_and_absent_db(self):
+        with tempfile.TemporaryDirectory(prefix="vx-observer-report-") as tmp:
+            dbfile = Path(tmp) / "observer.sqlite3"
+            absent = dag.observer_report(dbfile)
+            self.assertEqual(absent["status"], "ABSENT")
+            self.assertFalse(dbfile.exists())
+            with closing(sqlite3.connect(dbfile)) as db:
+                db.execute(
+                    "CREATE TABLE host_observations ("
+                    "event_key TEXT PRIMARY KEY,project TEXT NOT NULL,"
+                    "session_ref TEXT NOT NULL,call_ref TEXT,"
+                    "event_type TEXT NOT NULL,tool TEXT,observed_at TEXT NOT NULL)"
+                )
+                db.execute("PRAGMA user_version = 1")
+                db.execute(
+                    "INSERT INTO host_observations VALUES (?,?,?,?,?,?,?)",
+                    ("event01", "vecidya", "hash01", "call01",
+                     "TOOL_RETURNED_NOT_VERIFIED", "task", "2026-11-23T00:00:00Z")
+                )
+                db.commit()
+            data = dbfile.read_bytes()
+            report = dag.observer_report(dbfile, "vecidya")
+            self.assertEqual(report["total_events"], 1)
+            self.assertEqual(report["status"], "OBSERVED_NOT_CERTIFIED")
+            self.assertFalse(report["runtime_verified"])
+            self.assertFalse(report["tasks_registered"])
+            self.assertEqual(dbfile.read_bytes(), data)
+            with closing(sqlite3.connect(dbfile)) as db:
+                db.execute("PRAGMA user_version = 99")
+                db.commit()
+            with self.assertRaisesRegex(ValueError, "Esquema del observador"):
+                dag.observer_report(dbfile)
+
 class SQLiteInstallerProvisionTests(unittest.TestCase):
     def test_state_preflight_is_readonly_and_migration_idempotent(self):
         with tempfile.TemporaryDirectory(prefix="vx-sqlite-provision-") as tmp:
@@ -1501,15 +1553,15 @@ class MetadataContractTests(unittest.TestCase):
             agent = root / "agents/vx-dev-team.md"
             agent.write_text(
                 "---\n# component_version: 1.0.0\n# last_modified: 2026-02-30\n"
-                'displayName: "VX Dev Team v1.6.1-rc1"\n---\n',
+                'displayName: "VX Dev Team v1.6.2-rc1"\n---\n',
                 encoding="utf-8")
             old_root = validator.ROOT
             try:
                 validator.ROOT = root
-                errors = validator.check("agents/vx-dev-team.md", "agents", "1.6.1-rc1")
+                errors = validator.check("agents/vx-dev-team.md", "agents", "1.6.2-rc1")
                 self.assertTrue(any("calendario" in error for error in errors), errors)
                 manifest = {
-                    "version": "1.6.1-rc1",
+                    "version": "1.6.2-rc1",
                     "agents": [{"source": "../outside.md"}],
                     "skills": [], "commands": [],
                 }
