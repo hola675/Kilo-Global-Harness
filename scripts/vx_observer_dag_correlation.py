@@ -186,7 +186,7 @@ def verify_trust_policy(policy_file: Path, key_file: Path, receipt_file: Path,
         raise ValueError("Clave diferente de la politica de confianza.")
     expiry = policy["not_after_utc"]
     if (not isinstance(expiry, str) or
-            not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z", expiry)):
+            not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", expiry)):
         raise ValueError("Caducidad UTC invalida.")
     try:
         deadline = datetime.strptime(expiry, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
