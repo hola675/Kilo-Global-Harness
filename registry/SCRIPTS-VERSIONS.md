@@ -15,7 +15,7 @@ Cada script/comando conserva versión individual y fecha en comentarios compatib
 | commands/vx-editorial.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 
 | runtime/kilo-observer/vx-runtime-observer.js | 0.3.0 | 2026-11-23 | Estado SQLite del laboratorio configurable, esquema validado antes de WAL, checks de symlinks |
-| scripts/Probar-Observador-Kilo.ps1 | 1.0.0 | 2026-11-23 | Prepara proyecto temporal, lanzador manual y lectura de DB sin afectar Kilo real |
+| scripts/Probar-Observador-Kilo.ps1 | 1.0.1 | 2026-11-23 | Prepara proyecto temporal, lanzador manual y lectura de DB sin afectar Kilo real |
 | runtime/kilo-observer/lib/vx-observer-hooks.js | 0.1.0 | 2026-11-23 | Normalización determinista de eventos sin argumentos ni respuestas; tests Node offline |
 | scripts/Eliminar-RamasFusionadas.ps1 | 1.0.0 | 2026-11-23 | Simulación Git por defecto; elimina solo work/* con PR fusionado, historial inmutable y SHA protegido |
 
