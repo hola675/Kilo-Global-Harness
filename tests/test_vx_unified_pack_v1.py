@@ -110,7 +110,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         self.assertTrue(pack["activation"]["no_mcp_change"])
         self.assertTrue(pack["activation"]["no_third_party_change"])
 
-    def test_contextual_skills_are_installed_but_not_auto_authorized(self):
+    def test_contextual_skills_are_installed_and_available_to_all_agents(self):
         pack = module.load_manifest()
         registered = {item["id"]: item for item in pack["skills"]}
         contextual = {
@@ -121,13 +121,13 @@ class UnifiedPackV1Tests(unittest.TestCase):
             {item["id"] for item in pack["skills"] if item["layer"] == "CONTEXTUAL"},
             contextual,
         )
-        self.assertTrue(pack["activation"]["contextual_skills_install_only"])
-        self.assertTrue(pack["activation"]["contextual_skills_not_auto_allowlisted"])
+        self.assertFalse(pack["activation"]["contextual_skills_install_only"])
+        self.assertFalse(pack["activation"]["contextual_skills_not_auto_allowlisted"])
         self.assertTrue(pack["activation"]["runtime_acl_change_requires_separate_review"])
         assigned = set(pack["lead_skill_allowlist"])
         for scope in pack["builder_skill_allowlists"].values():
             assigned.update(scope)
-        self.assertFalse(assigned & contextual, "New Skills must remain deny-by-default")
+        self.assertFalse(assigned & contextual, "Suggested role lists remain recommendations, not permission boundaries")
         for id in contextual:
             self.assertEqual(registered[id]["source"], f"skills/{id}/SKILL.md")
             self.assertEqual(registered[id]["target"], f".kilo/skills/{id}/SKILL.md")
@@ -520,7 +520,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             front = doc.frontmatter
             if agent["role"] == "lead":
                 self.assertIn("mode: primary", front)
-                self.assertEqual(doc.permissions.allowlist("skill"), set(pack["lead_skill_allowlist"]))
+                self.assertTrue({"*"} | set(pack["lead_skill_allowlist"]) <= doc.permissions.allowlist("skill"))
                 expected_children = {a["id"] for a in pack["agents"] if a["role"] != "lead"}
                 self.assertEqual(doc.permissions.allowlist("task"), expected_children)
             else:
@@ -533,6 +533,27 @@ class UnifiedPackV1Tests(unittest.TestCase):
                 else:
                     self.assertEqual(doc.permissions.scalar("edit"), "deny")
         self.assertEqual(len(pack["lead_skill_allowlist"]), 11)
+
+    def test_all_skills_are_loadable_for_every_vx_agent_without_tool_escalation(self):
+        """Wildcard skill allow no autoriza escritura, delegacion, ni MCP automaticos."""
+        from dev_team_agent_parser_support import load_agent
+        pack = module.load_manifest()
+        self.assertTrue(pack["activation"]["all_available_skills_per_agent"])
+        self.assertFalse(pack["activation"]["skill_loading_grants_tool_permissions"])
+        self.assertEqual(len(pack["agents"]), 18)
+        for agent in pack["agents"]:
+            with self.subTest(agent=agent["id"]):
+                doc = load_agent(ROOT / agent["source"])
+                self.assertIn('  skill:', doc.frontmatter)
+                self.assertIn('    "*": allow', doc.frontmatter)
+                self.assertIn('  "*": ask', doc.frontmatter)
+                self.assertIn('  agent_manager: deny', doc.frontmatter)
+                self.assertIn('  external_directory: deny', doc.frontmatter)
+                if agent["role"] != "lead":
+                    self.assertIn('  task: deny', doc.frontmatter)
+                if agent["role"] == "readonly":
+                    self.assertIn('  edit: deny', doc.frontmatter)
+                    self.assertIn('  bash: deny', doc.frontmatter)
 
     def test_mcp_dynamic_discovery_is_ask_and_role_bans_remain(self):
         """MCP desconocidos quedan bajo ask; los bloqueos nativos siguen explícitos."""
@@ -587,7 +608,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             with self.subTest(agent=agent['id']):
                 doc = load_agent(ROOT / agent['source'])
                 expected = set(pack['builder_skill_allowlists'][agent['id']])
-                self.assertEqual(doc.permissions.allowlist('skill'), expected)
+                self.assertTrue({'*'} | expected <= doc.permissions.allowlist('skill'))
                 self.assertTrue(expected <= declared)
                 self.assertEqual(doc.permissions.scalar('task'), 'deny')
                 for tool in ('edit', 'write', 'apply_patch'):
