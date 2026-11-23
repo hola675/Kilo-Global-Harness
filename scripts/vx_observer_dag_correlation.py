@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-# component_version: 1.3.0
+# component_version: 1.4.0
 # last_modified: 2026-11-23
 """R4: correlacion explicita y solo lectura; nunca modifica DAG ni certifica host."""
 from __future__ import annotations
 
 import argparse
 from contextlib import closing
+from datetime import datetime, timezone
 from hashlib import sha256
 import hmac
 import json
@@ -147,16 +148,75 @@ def verify_attestation(receipt_file: Path, attestation_file: Path,
             hmac.compare_digest(expected, seal["mac_sha256"]))
 
 
+def verify_trust_policy(policy_file: Path, key_file: Path, receipt_file: Path,
+                        issuer: str, project: str, tool: str,
+                        now: datetime | None = None) -> bool:
+    """Politica privada opt-in, sin autenticar el origen de Kilo ni impedir replay global."""
+    if not policy_file.is_absolute() or policy_file.is_symlink() or not policy_file.is_file():
+        raise ValueError("Politica requiere archivo absoluto regular existente.")
+    if policy_file.stat().st_size > 8192:
+        raise ValueError("Politica excede limite.")
+    policy = json.loads(policy_file.read_text(encoding="utf-8"))
+    expected = {"schema", "issuer", "project", "allowed_tools", "key_sha256",
+                "revoked", "not_after_utc", "revoked_receipts_sha256"}
+    if not isinstance(policy, dict) or set(policy) != expected:
+        raise ValueError("Politica de confianza incompatible.")
+    if policy["schema"] != "vx-receipt-trust-policy/1":
+        raise ValueError("Esquema de politica incompatible.")
+    if policy["issuer"] != issuer or policy["project"] != project:
+        raise ValueError("Politica fuera de emisor o proyecto autorizado.")
+    allowed = policy["allowed_tools"]
+    if (not isinstance(allowed, list) or not allowed or len(allowed) > 4 or
+            any(type(item) is not str or item not in TOOLS for item in allowed) or
+            len(set(allowed)) != len(allowed) or tool not in allowed):
+        raise ValueError("Herramienta fuera de alcance de confianza.")
+    if type(policy["revoked"]) is not bool or policy["revoked"]:
+        raise ValueError("Clave o emisor revocado o estado invalido.")
+    revoked = policy["revoked_receipts_sha256"]
+    if (not isinstance(revoked, list) or len(revoked) > 128 or
+            any(not isinstance(item, str) or not HASH.fullmatch(item) for item in revoked) or
+            len(set(revoked)) != len(revoked)):
+        raise ValueError("Lista de recibos revocados invalida.")
+    if not isinstance(policy["key_sha256"], str) or not HASH.fullmatch(policy["key_sha256"]):
+        raise ValueError("Hash de clave en politica invalido.")
+    with key_file.open("rb") as inp:
+        key_bytes = inp.read(129)
+    if not 32 <= len(key_bytes) <= 128 or not hmac.compare_digest(
+            sha256(key_bytes).hexdigest(), policy["key_sha256"]):
+        raise ValueError("Clave diferente de la politica de confianza.")
+    expiry = policy["not_after_utc"]
+    if (not isinstance(expiry, str) or
+            not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", expiry)):
+        raise ValueError("Caducidad UTC invalida.")
+    try:
+        deadline = datetime.strptime(expiry, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except ValueError as exc:
+        raise ValueError("Fecha de caducidad invalida.") from exc
+    at = now if now is not None else datetime.now(timezone.utc)
+    if at.tzinfo is None or at.astimezone(timezone.utc) >= deadline:
+        raise ValueError("Politica caducada o reloj no valido.")
+    with receipt_file.open("rb") as inp:
+        receipt = inp.read(4097)
+    if len(receipt) > 4096:
+        raise ValueError("Recibo excede limite.")
+    if sha256(receipt).hexdigest() in revoked:
+        raise ValueError("Recibo revocado por politica.")
+    return True
+
+
 def correlate(queue: Path, observer: Path, project: str, task_id: str,
               session_ref: str, call_ref: str, link_file: Path | None = None,
               receipt_file: Path | None = None, artifact_file: Path | None = None,
               attestation_file: Path | None = None, trust_key_file: Path | None = None,
-              trusted_issuer: str | None = None) -> dict:
+              trusted_issuer: str | None = None,
+              trust_policy_file: Path | None = None) -> dict:
     if not PROJECT.fullmatch(project) or not TASK.fullmatch(task_id):
         raise ValueError("Proyecto o tarea invalidos.")
     if not HASH.fullmatch(session_ref) or not HASH.fullmatch(call_ref):
         raise ValueError("Los hashes deben ser SHA256 completos, no prefijos.")
     sealed = any(value is not None for value in (attestation_file, trust_key_file, trusted_issuer))
+    if trust_policy_file is not None and not sealed:
+        raise ValueError("Politica de confianza requiere sello HMAC completo.")
     if sealed and (attestation_file is None or trust_key_file is None or trusted_issuer is None or
                    receipt_file is None or artifact_file is None or link_file is None):
         raise ValueError("Sello requiere clave, emisor, recibo, evidencia y vinculo.")
@@ -178,6 +238,8 @@ def correlate(queue: Path, observer: Path, project: str, task_id: str,
         paths.extend((receipt_file.resolve(), artifact_file.resolve()))
     if sealed:
         paths.extend((attestation_file.resolve(), trust_key_file.resolve()))
+    if trust_policy_file is not None:
+        paths.append(trust_policy_file.resolve())
     if len(set(paths)) != len(paths):
         raise ValueError("Las fuentes deben ser archivos distintos.")
     queue_schema = {"tasks": {"project", "id", "state", "host_task_id"}}
@@ -206,10 +268,14 @@ def correlate(queue: Path, observer: Path, project: str, task_id: str,
                  if receipt_file is not None and matched else None)
         mac_ok = (verify_attestation(receipt_file, attestation_file, trust_key_file, trusted_issuer)
                   if proof and proof["receipt_integrity_matches"] and sealed else False)
+        scoped_ok = (verify_trust_policy(trust_policy_file, trust_key_file, receipt_file,
+                                         trusted_issuer, project, link["tool"])
+                     if trust_policy_file is not None and mac_ok else False)
         return {
             "schema": "vx-observer-dag-correlation/1",
             "project": project, "task_id": task_id,
-            "status": ("RECEIPT_MAC_MATCH_KEY_POSSESSION_ONLY" if sealed and mac_ok else
+            "status": ("RECEIPT_MAC_MATCH_POLICY_SCOPED_ONLY" if scoped_ok else
+                       "RECEIPT_MAC_MATCH_KEY_POSSESSION_ONLY" if sealed and mac_ok else
                        "RECEIPT_MAC_INVALID" if sealed and proof and proof["receipt_integrity_matches"] else
                        "RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED"
                        if proof and proof["receipt_integrity_matches"] else
@@ -227,6 +293,8 @@ def correlate(queue: Path, observer: Path, project: str, task_id: str,
             "receipt_integrity_matches": proof["receipt_integrity_matches"] if proof else False,
             "receipt_mac_checked": sealed and proof is not None and proof["receipt_integrity_matches"],
             "receipt_mac_matches": mac_ok,
+            "trust_policy_supplied": trust_policy_file is not None,
+            "trust_policy_scope_matched": scoped_ok,
             "receipt_origin_authenticated": False,
             "artifact_content_reviewed": False,
             "host_results_verified": False, "dag_state_modified": False,
@@ -249,11 +317,12 @@ def main() -> int:
     p.add_argument("--attestation-file", type=Path, help="Sello HMAC; opcional con clave y emisor")
     p.add_argument("--trust-key-file", type=Path, help="Clave compartida privada 32-128 bytes")
     p.add_argument("--trusted-issuer", help="ID del emisor previamente establecido por el operador")
+    p.add_argument("--trust-policy-file", type=Path, help="Politica de confianza externa, alcance y revocacion")
     a = p.parse_args()
     try:
-        report = correlate(a.queue_db, a.observer_db, a.project, a.task_id, a.session_ref, a.call_ref, a.link_file, a.receipt_file, a.artifact_file, a.attestation_file, a.trust_key_file, a.trusted_issuer)
+        report = correlate(a.queue_db, a.observer_db, a.project, a.task_id, a.session_ref, a.call_ref, a.link_file, a.receipt_file, a.artifact_file, a.attestation_file, a.trust_key_file, a.trusted_issuer, a.trust_policy_file)
         print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
-        return 0 if report["status"] in ("CORRELATED_NOT_VERIFIED", "LINKED_OBSERVED_NOT_VERIFIED", "RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED", "RECEIPT_MAC_MATCH_KEY_POSSESSION_ONLY") else 1
+        return 0 if report["status"] in ("CORRELATED_NOT_VERIFIED", "LINKED_OBSERVED_NOT_VERIFIED", "RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED", "RECEIPT_MAC_MATCH_KEY_POSSESSION_ONLY", "RECEIPT_MAC_MATCH_POLICY_SCOPED_ONLY") else 1
     except (OSError, ValueError, sqlite3.DatabaseError) as error:
         print(json.dumps({"schema": "vx-observer-dag-correlation/1", "status": "FAIL",
                           "error_type": type(error).__name__, "actions_executed": 0}))

@@ -1,4 +1,4 @@
-# component_version: 1.3.0
+# component_version: 1.4.0
 # last_modified: 2026-11-23
 """R4: pruebas focalizadas en bases efimeras; sin credenciales ni HOME."""
 import importlib.util
@@ -212,6 +212,67 @@ class CorrelationTests(unittest.TestCase):
             r4.correlate(self.queue, self.observer, "demo", "job01",
                          SESSION, CALL, link, receipt, artifact,
                          seal, receipt, "lab-issuer")
+
+    def make_policy(self, trust, receipt, **changes):
+        data = {
+            "schema": "vx-receipt-trust-policy/1",
+            "issuer": "lab-issuer", "project": "demo",
+            "allowed_tools": ["skill"], "key_sha256": sha256(trust.read_bytes()).hexdigest(),
+            "revoked": False, "not_after_utc": "2099-01-01T00:00:00Z",
+            "revoked_receipts_sha256": [],
+        }
+        data.update(changes)
+        file = self.queue.parent / "policy.json"
+        file.write_text(json.dumps(data), encoding="utf-8")
+        return file
+
+    def test_policy_scopes_valid_mac_without_authenticating_host(self):
+        link, receipt, artifact = self.make_receipt()
+        seal, trust = self.make_seal(receipt)
+        policy = self.make_policy(trust, receipt)
+        before = (self.queue.read_bytes(), self.observer.read_bytes())
+        report = r4.correlate(self.queue, self.observer, "demo", "job01",
+                              SESSION, CALL, link, receipt, artifact,
+                              seal, trust, "lab-issuer", policy)
+        self.assertEqual(report["status"], "RECEIPT_MAC_MATCH_POLICY_SCOPED_ONLY")
+        self.assertTrue(report["trust_policy_scope_matched"])
+        self.assertFalse(report["receipt_origin_authenticated"])
+        self.assertFalse(report["host_results_verified"])
+        self.assertFalse(report["dag_state_modified"])
+        self.assertEqual(before, (self.queue.read_bytes(), self.observer.read_bytes()))
+
+    def test_policy_rejects_revoked_expired_wrong_scope_and_key(self):
+        link, receipt, artifact = self.make_receipt()
+        seal, trust = self.make_seal(receipt)
+        bad = (
+            {"revoked": True},
+            {"not_after_utc": "2000-01-01T00:00:00Z"},
+            {"project": "other"},
+            {"issuer": "different"},
+            {"allowed_tools": ["task"]},
+            {"key_sha256": "b" * 64},
+            {"revoked_receipts_sha256": [sha256(receipt.read_bytes()).hexdigest()]},
+            {"revoked_receipts_sha256": ["invalid"]},
+        )
+        for fields in bad:
+            policy = self.make_policy(trust, receipt, **fields)
+            with self.subTest(fields=fields), self.assertRaises(ValueError):
+                r4.correlate(self.queue, self.observer, "demo", "job01",
+                             SESSION, CALL, link, receipt, artifact,
+                             seal, trust, "lab-issuer", policy)
+
+    def test_policy_requires_mac_and_distinct_sources(self):
+        link, receipt, artifact = self.make_receipt()
+        seal, trust = self.make_seal(receipt)
+        policy = self.make_policy(trust, receipt)
+        with self.assertRaisesRegex(ValueError, "requiere sello"):
+            r4.correlate(self.queue, self.observer, "demo", "job01",
+                         SESSION, CALL, link, receipt, artifact,
+                         trust_policy_file=policy)
+        with self.assertRaisesRegex(ValueError, "distintos"):
+            r4.correlate(self.queue, self.observer, "demo", "job01",
+                         SESSION, CALL, link, receipt, artifact,
+                         seal, trust, "lab-issuer", trust)
 
     def test_fail_closed_on_bad_input_or_missing_db(self):
         with self.assertRaisesRegex(ValueError, "SHA256"):
