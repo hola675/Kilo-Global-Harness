@@ -52,7 +52,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          bun test tests/test_vx_observer_sqlite.bun.mjs
+          bun test tests/vx_observer_sqlite.test.mjs
           if ($LASTEXITCODE -ne 0) { throw 'SQLite Bun contract test failed.' }
       - name: Laboratorio Windows - crear y verificar sin iniciar Kilo
         shell: pwsh
