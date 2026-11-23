@@ -167,7 +167,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
         lead_front = lead.split("---", 2)[1]
         self.assertIn("  board_read: allow", lead_front)
         self.assertIn("  board_post: allow", lead_front)
-        self.assertIn("displayName: \"VX Dev Team v1.6.1-rc1\"", lead_front)
+        self.assertIn("displayName: \"VX Dev Team v1.6.2-rc1\"", lead_front)
         self.assertIn("  agent_manager: deny", lead_front)
         self.assertIn("VX Dev Team Autopilot V2", lead)
         self.assertIn("PROGRESS_CHANNEL_UNAVAILABLE", lead)
@@ -529,7 +529,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_generic_skills_boot_and_role_scoped_permissions_no_project_specific_profiles(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.6.1-rc1')
+        self.assertEqual(pack['version'], '1.6.2-rc1')
         generic = {
             'vx-team-bootstrap', 'vx-saas-multitenant-cloud',
             'vx-erp-localfirst-modular', 'vx-windows-network-systems',
@@ -721,7 +721,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_explicit_desktop_only_and_phased_connectivity_skills_are_integrated(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.6.1-rc1')
+        self.assertEqual(pack['version'], '1.6.2-rc1')
         desktop = pack['routing']['desktop']
         self.assertEqual(desktop['applies_to'], 'EXPLICITLY_SCOPED_NEW_DESKTOP_PRODUCT_ONLY')
         self.assertEqual(desktop['mobile_scope_rule'], 'DEFAULT_DUAL_UNLESS_EXPLICIT_WINDOWS_ONLY')
@@ -766,7 +766,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_tauri_desktop_preference_and_skill_are_lazy_scoped(self):
         pack = module.load_manifest()
-        self.assertEqual(pack['version'], '1.6.1-rc1')
+        self.assertEqual(pack['version'], '1.6.2-rc1')
         tauri = [skill for skill in pack['skills'] if skill['id'] == 'vx-tauri-desktop']
         self.assertEqual(len(tauri), 1)
         self.assertEqual(tauri[0]['layer'], 'CAPABILITY')
@@ -787,7 +787,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
 
     def test_unified_parallel_desktop_contract_is_scoped_and_preserves_acl(self):
         pack = module.load_manifest()
-        self.assertEqual(pack["version"], "1.6.1-rc1")
+        self.assertEqual(pack["version"], "1.6.2-rc1")
         routing = pack["routing"]["parallel_background"]
         self.assertEqual(routing["max_parallel_writers"], 2)
         self.assertEqual(routing["max_background_tasks"], 4)
@@ -832,7 +832,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
     def test_vx_v21_global_policy_and_agents_are_consistent(self):
         """One global instruction source; concurrency is scoped and host-gated."""
         pack = module.load_manifest()
-        self.assertEqual(pack["version"], "1.6.1-rc1")
+        self.assertEqual(pack["version"], "1.6.2-rc1")
         self.assertEqual(len(pack["agents"]), 18)
         self.assertEqual(len(pack["skills"]), 57)
         policy = (ROOT / "rules/AGENTS-global-managed.md").read_text(encoding="utf-8")
@@ -873,7 +873,7 @@ class UnifiedPackV1Tests(unittest.TestCase):
             self.assertEqual("  board_post: allow" in front, agent["id"] in allowlist)
             self.assertIn("  agent_manager: deny", front)
             if agent["id"] == "vx-dev-team":
-                self.assertIn('displayName: "VX Dev Team v1.6.1-rc1"', front)
+                self.assertIn('displayName: "VX Dev Team v1.6.2-rc1"', front)
             else:
                 self.assertIn("mode: subagent", front)
                 self.assertIn("  task: deny", front)
@@ -1552,15 +1552,15 @@ class MetadataContractTests(unittest.TestCase):
             agent = root / "agents/vx-dev-team.md"
             agent.write_text(
                 "---\n# component_version: 1.0.0\n# last_modified: 2026-02-30\n"
-                'displayName: "VX Dev Team v1.6.1-rc1"\n---\n',
+                'displayName: "VX Dev Team v1.6.2-rc1"\n---\n',
                 encoding="utf-8")
             old_root = validator.ROOT
             try:
                 validator.ROOT = root
-                errors = validator.check("agents/vx-dev-team.md", "agents", "1.6.1-rc1")
+                errors = validator.check("agents/vx-dev-team.md", "agents", "1.6.2-rc1")
                 self.assertTrue(any("calendario" in error for error in errors), errors)
                 manifest = {
-                    "version": "1.6.1-rc1",
+                    "version": "1.6.2-rc1",
                     "agents": [{"source": "../outside.md"}],
                     "skills": [], "commands": [],
                 }
