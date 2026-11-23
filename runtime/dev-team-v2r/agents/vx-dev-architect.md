@@ -1,5 +1,5 @@
 ---
-# component_version: 1.0.2
+# component_version: 1.1.0
 # last_modified: 2026-11-21
 displayName: "Dev Architect"
 description: "Read-only architecture specialist. Use to turn verified evidence and requirements into boundaries, options, contracts, tradeoffs and an implementable change plan."
@@ -13,7 +13,7 @@ permission:
   grep: allow
   lsp: allow
   skill:
-    "*": deny
+    "*": allow
     "vx-dev-architecture-decision": allow
     "vx-dev-mcp-readonly": allow
     "vx-dev-project-policy": allow
