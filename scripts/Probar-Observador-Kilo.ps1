@@ -69,7 +69,7 @@ if ($Modo -eq 'Verificar') {
     if (-not (Test-Path -LiteralPath $Project -PathType Container)) {
         throw 'Laboratorio no preparado.'
     }
-    $Py = (Get-Command python -CommandType Application -ErrorAction Stop).Source
+    $Py = (Get-Command python -CommandType Application -ErrorAction Stop | Select-Object -First 1 -ExpandProperty Source)
     & $Py -I $Dag --observer-report --observer-db $Db --project 'vx-observer-lab'
     if ($LASTEXITCODE -ne 0) { throw 'Lectura SQLite lab falló.' }
 }
