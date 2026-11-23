@@ -208,7 +208,7 @@ class CorrelationTests(unittest.TestCase):
             r4.correlate(self.queue, self.observer, "demo", "job01",
                          SESSION, CALL, link, receipt, artifact,
                          seal, None, "lab-issuer")
-        with self.assertRaisesRegex(ValueError, "diferentes"):
+        with self.assertRaisesRegex(ValueError, "distintos"):
             r4.correlate(self.queue, self.observer, "demo", "job01",
                          SESSION, CALL, link, receipt, artifact,
                          seal, receipt, "lab-issuer")
