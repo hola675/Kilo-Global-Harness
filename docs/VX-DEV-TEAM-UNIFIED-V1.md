@@ -31,6 +31,8 @@ Las herramientas MCP permanecen disponibles para solicitud bajo `permission: "*"
 
 **Si existe `rules/AGENTS.md` sin seguimiento Git**, conservarlo fuera del checkout antes de instalar. No asumir que es basura: comparar con la política administrada y mover una copia original a un directorio privado respaldado antes de liberar el árbol. El instalador exige `main` limpio y sincronizado. No usar `git clean` ni `reset --hard` sobre contenido ajeno.
 
+**Carga recomendada del líder:** su prompt solicita al comenzar `vx-dev-project-policy` y `vx-team-bootstrap` cuando Kilo exponga la herramienta `skill`; `vx-dev-team-handoff` se reserva para delegaciones reales. Otras Skills se seleccionan por tarea, sin cargar el catálogo completo ni suponer que una solicitud se ejecutó si Kilo la rechazó. Las Skills no alteran las ACL ni la aprobación de MCP.
+
 ## Instalación Windows
 
 Abrir PowerShell 7 **fuera de Kilo**, cerrar Kilo Desktop/VS Code/VSCodium para aplicar y verificar que el checkout local está limpio y sincronizado.
