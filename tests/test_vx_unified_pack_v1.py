@@ -1345,7 +1345,8 @@ class ObserverSourceAndReportTests(unittest.TestCase):
         source = (ROOT / "runtime/kilo-observer/vx-runtime-observer.js").read_text(
             encoding="utf-8")
         self.assertIn('process.env.VX_OBSERVER_ENABLE === "1"', source)
-        self.assertIn("if (!ENABLED) return {}", source)
+        self.assertIn("if (!ENABLED || !PROJECT_SCOPE || safeProject(directory) !== PROJECT_SCOPE) return {}", source)
+        self.assertIn('process.env.VX_OBSERVER_PROJECT', source)
         self.assertIn('await import("bun:sqlite")', source)
         self.assertIn("vx-runtime-observations.sqlite3", source)
         self.assertIn("TOOL_RETURNED_NOT_VERIFIED", source)
