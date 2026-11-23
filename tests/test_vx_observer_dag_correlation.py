@@ -1,8 +1,9 @@
-# component_version: 1.1.0
+# component_version: 1.2.0
 # last_modified: 2026-11-23
 """R4: pruebas focalizadas en bases efimeras; sin credenciales ni HOME."""
 import importlib.util
 import json
+from hashlib import sha256
 from contextlib import closing
 from pathlib import Path
 import sqlite3
@@ -97,6 +98,61 @@ class CorrelationTests(unittest.TestCase):
                               SESSION, "c" * 64, self.make_link(call_ref="c" * 64))
         self.assertEqual(report["status"], "NOT_CORRELATED")
         self.assertFalse(report["explicit_mapping_matches_queue"])
+
+    def make_receipt(self, artifact=b"r4 evidence test"):
+        artifact_path = self.queue.parent / "evidence.bin"
+        artifact_path.write_bytes(artifact)
+        link = self.make_link()
+        data = json.loads(link.read_text(encoding="utf-8"))
+        data["schema"] = "vx-host-evidence-receipt/1"
+        data["artifact_sha256"] = sha256(artifact).hexdigest()
+        receipt = self.queue.parent / "receipt.json"
+        receipt.write_text(json.dumps(data), encoding="utf-8")
+        return link, receipt, artifact_path
+
+    def test_receipt_integrity_does_not_certify_host_or_task(self):
+        link, receipt, artifact = self.make_receipt()
+        before = (self.queue.read_bytes(), self.observer.read_bytes())
+        report = r4.correlate(self.queue, self.observer, "demo", "job01",
+                              SESSION, CALL, link, receipt, artifact)
+        self.assertEqual(report["status"], "RECEIPT_INTEGRITY_MATCH_NOT_AUTHENTICATED")
+        self.assertTrue(report["receipt_integrity_matches"])
+        self.assertFalse(report["receipt_origin_authenticated"])
+        self.assertFalse(report["host_results_verified"])
+        self.assertFalse(report["artifact_content_reviewed"])
+        self.assertEqual(before, (self.queue.read_bytes(), self.observer.read_bytes()))
+
+    def test_tampering_changes_integrity_status_without_certification(self):
+        link, receipt, artifact = self.make_receipt()
+        artifact.write_bytes(b"changed!")
+        report = r4.correlate(self.queue, self.observer, "demo", "job01",
+                              SESSION, CALL, link, receipt, artifact)
+        self.assertEqual(report["status"], "RECEIPT_INTEGRITY_MISMATCH")
+        self.assertFalse(report["receipt_integrity_matches"])
+        self.assertFalse(report["host_results_verified"])
+
+    def test_receipt_rejects_wrong_identity_extra_fields_and_partial_files(self):
+        link, receipt, artifact = self.make_receipt()
+        with self.assertRaisesRegex(ValueError, "juntos"):
+            r4.correlate(self.queue, self.observer, "demo", "job01",
+                         SESSION, CALL, link, receipt)
+        with self.assertRaisesRegex(ValueError, "vinculo"):
+            r4.correlate(self.queue, self.observer, "demo", "job01",
+                         SESSION, CALL, None, receipt, artifact)
+        payload = json.loads(receipt.read_text(encoding="utf-8"))
+        for key, value in (("host_task_id", "other-host"), ("tool", "task"),
+                           ("untrusted", "extra")):
+            modified = dict(payload)
+            modified[key] = value
+            receipt.write_text(json.dumps(modified), encoding="utf-8")
+            with self.assertRaises(ValueError):
+                r4.correlate(self.queue, self.observer, "demo", "job01",
+                             SESSION, CALL, link, receipt, artifact)
+        receipt.write_text(json.dumps(payload), encoding="utf-8")
+        artifact.write_bytes(b"x" * (r4.MAX_ARTIFACT_BYTES + 1))
+        with self.assertRaisesRegex(ValueError, "limite"):
+            r4.correlate(self.queue, self.observer, "demo", "job01",
+                         SESSION, CALL, link, receipt, artifact)
 
     def test_fail_closed_on_bad_input_or_missing_db(self):
         with self.assertRaisesRegex(ValueError, "SHA256"):
