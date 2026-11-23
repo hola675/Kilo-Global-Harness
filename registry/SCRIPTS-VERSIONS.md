@@ -10,8 +10,8 @@ Cada script/comando conserva versión individual y fecha en comentarios compatib
 | scripts/vx_unified_pack.py | 1.2.0 | 2026-11-22 | Inventario histórico de archivos y versiones antes/después, scripts, SQLite y reportes JSON/Markdown por backup |
 | scripts/vx_verify_metadata.py | 1.0.2 | 2026-11-22 | Valida fechas reales, duplicados, rutas y estructura; conectado a CI Windows |
 | scripts/vx_task_dag.py | 1.5.1 | 2026-11-23 | Consulta readonly agregada a base independiente de observaciones del host |
-| scripts/vx_observer_dag_correlation.py | 1.1.0 | 2026-11-23 | R4.2: vínculo JSON opcional, cotejo exacto con ID del host en la cola; sin autenticar ni verificar resultados |
-| tests/test_vx_observer_dag_correlation.py | 1.1.0 | 2026-11-23 | Añade casos de vínculo correcto, divergencia host/herramienta/proyecto, campos extra y no mutación |
+| scripts/vx_observer_dag_correlation.py | 1.2.0 | 2026-11-23 | R4.3: recibo JSON y digest SHA256 de evidencia externa, solo integridad; no identidad ni resultado |
+| tests/test_vx_observer_dag_correlation.py | 1.2.0 | 2026-11-23 | Valida integridad, manipulación, discrepancia de recibo, límites y no mutación |
 | commands/vx-equipo.md | 1.0.1 | 2026-11-23 | Catálogo correcto de 57 Skills: 18 CORE, 35 CAPABILITY y 4 CONTEXTUAL |
 | commands/vx-dependencias.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
 | commands/vx-editorial.md | 1.0.0 | 2026-11-21 | Comentarios YAML; sin cambio funcional |
