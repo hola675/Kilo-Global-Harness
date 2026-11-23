@@ -83,6 +83,14 @@ jobs:
           $ErrorActionPreference = 'Stop'
           python -I -m unittest discover -s tests -p 'test_vx_unified_pack_v1.py' -v
           if ($LASTEXITCODE -ne 0) { throw 'Core VX: regresion focal fallida.' }
+      - name: R4 - correlacion readonly entre observador y DAG
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          python -I -m compileall -q scripts/vx_observer_dag_correlation.py tests/test_vx_observer_dag_correlation.py
+          if ($LASTEXITCODE -ne 0) { throw 'R4: sintaxis Python invalida.' }
+          python -I -m unittest discover -s tests -p 'test_vx_observer_dag_correlation.py' -v
+          if ($LASTEXITCODE -ne 0) { throw 'R4: contrato de correlacion fallido.' }
       - name: Instalador unificado - diagnostico y simulacion sin mutaciones
         shell: pwsh
         run: |
