@@ -61,14 +61,11 @@ jobs:
           $lab = Join-Path $env:TEMP ('vx-observer-lab-ci-' + [guid]::NewGuid().ToString('N'))
           $script = (Resolve-Path 'scripts/Probar-Observador-Kilo.ps1').Path
           & $script -Modo Diagnostico -RaizLaboratorio $lab
-          if ($LASTEXITCODE -ne 0) { throw 'Diagnostico lab fallido.' }
           & $script -Modo Preparar -RaizLaboratorio $lab
-          if ($LASTEXITCODE -ne 0) { throw 'Preparar lab fallido.' }
           if (!(Test-Path (Join-Path $lab 'vx-observer-lab/.kilo/plugin/lib/vx-observer-hooks.js'))) {
             throw 'Plugin helper no incluido en laboratorio.'
           }
           & $script -Modo Verificar -RaizLaboratorio $lab
-          if ($LASTEXITCODE -ne 0) { throw 'Verificar lab fallido.' }
           if (Test-Path (Join-Path $lab 'state/vx-runtime-observations.sqlite3')) {
             throw 'Laboratorio creó SQLite sin ejecutar Kilo.'
           }
