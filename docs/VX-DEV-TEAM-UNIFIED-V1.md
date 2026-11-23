@@ -141,6 +141,14 @@ activar sobre Vecidya sin evidencia específica y rollback de laboratorio.
 
 **Siguiente gate:** correlacionar futuras llamadas del host con IDs de tareas DAG **solo mediante relación explícita y verificable**, sin reconstruir IDs desde hashes ni crear tareas por el mero evento. Mantener el observador opt-in y fuera del instalador global. Las pruebas de privacidad, fallo seguro, rollback, retención y coexistencia deberán preceder a cualquier habilitación productiva.
 
+### R4 — Correlación explícita solo lectura (fuente experimental)
+
+El script `scripts/vx_observer_dag_correlation.py` consulta dos bases SQLite existentes en modo `ro` y `query_only`. Exige `--queue-db`, `--observer-db`, `--project`, `--task-id`, `--session-ref` y `--call-ref`. Los dos últimos son hashes SHA256 **completos**, obtenidos del observador por una operación autorizada; los prefijos publicados para R3 no bastan. El operador debe aportar expresamente el vínculo: no se infiere de la coincidencia de hora ni del nombre de herramienta.
+
+El resultado `CORRELATED_NOT_VERIFIED` requiere tarea existente en el proyecto correcto y **exactamente un evento before y uno after** para el mismo par de hashes y la misma herramienta reconocida. El resultado informa únicamente de la correlación, no de la identidad autenticada, entrega, éxito ni revisión. `NOT_CORRELATED` cubre ausencias y ambigüedades. Es una consulta puntual **sin tabla de vínculos**, sin cambios de estado y sin invocar Kilo. No habilita permisos, no instala plugins y no participa en el instalador global. Tests focalizados: `python -m unittest discover -s tests -p test_vx_observer_dag_correlation.py -v`.
+
+**Gate R4 sigue abierto:** falta verificar en el host cómo obtener y autenticar vínculos de tareas reales, verificar resultados externos, controlar datos sensibles y cerrar la integración de coordinación. No utilizar este informe para marcar `VERIFIED`.
+
 ### R6 — Limpieza de ramas remotas con comprobación previa
 
 `scripts/Eliminar-RamasFusionadas.ps1` es una herramienta manual,
@@ -191,7 +199,7 @@ Ver [arquitectura](ARQUITECTURA.md), [autonomía](VX-DEV-TEAM-AUTOPILOT-V2.md) y
 | R1 | Saneamiento de contratos y referencias | SOURCE_PASS_PENDIENTE_MAIN | Ningún agente referencia un ejecutable retirado o Skill inexistente; documentación/selector/manifiesto concuerdan; CI PASS |
 | R2 | Observador no invasivo de Kilo | SOURCE_PASS_NO_ACTIVADO | Plugin local desactivado por defecto, sin alterar herramientas ni registrar conversaciones, prompts, tokens, rutas completas o credenciales |
 | R3 | Persistencia del runtime | R3_HOST_HOOKS_OBSERVED_PASS_DAG_PENDING | Eventos observados con idempotencia y consulta solo lectura; no confundirlos con tareas DAG registradas ni éxito certificado |
-| R4 | Coordinación multiagente | PENDIENTE_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
+| R4 | Coordinación multiagente | R4_CORRELATOR_SOURCE_PENDING_HOST | Conflictos de escritura probados, ID real de host, recuperación y barrera de integración; sin elevar ACL |
 | R5 | Certificación integral | PENDIENTE_HOST | CI Windows y laboratorio real de Kilo con herramientas, Skills, delegación, Board y persistencia; evidencia verificable |
 | R6 | Consolidación Git/contexto | BLOQUEADO_LIMPIEZA_REMOTA | Reducir duplicaciones sin perder conducta; PR y CI; retirar solo ramas fusionadas sin trabajo exclusivo |
 

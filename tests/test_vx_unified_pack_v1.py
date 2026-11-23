@@ -48,6 +48,8 @@ class UnifiedPackV1Tests(unittest.TestCase):
             "tests/test_vx_observer_contract.mjs",
             "scripts/Eliminar-RamasFusionadas.ps1",
             "scripts/Probar-Observador-Kilo.ps1",
+            "scripts/vx_observer_dag_correlation.py",
+            "tests/test_vx_observer_dag_correlation.py",
             "tests/vx_observer_sqlite.test.mjs",
             "scripts/Instalar-DevTeam-Unificado.ps1",
             "scripts/vx_unified_pack.py",
