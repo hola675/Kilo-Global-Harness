@@ -1,5 +1,5 @@
 # Arquitectura y estructura
-Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.4.0 | Última modificación: 2026-11-24
 
 ## Capas
 1. Host: Kilo Desktop y su engine, proveedor/modelo seleccionado por el usuario. Code conserva modo y prompt nativos. Selección de modelos independiente de roles, skills y coordinación.
@@ -14,7 +14,7 @@ Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
 - AGENTS.md: reglas del repositorio; README.md: mapa.
 - docs/: plan, roadmap, arquitectura, fuentes, investigaciones, instalación.
 - team/policies/: fuente candidata de política global, no instalar aún.
-- team/agents/: diseño de roles; luego un archivo por agente.
+- team/agents/: nueve definiciones Markdown candidatas y matriz de permisos; todavía no instaladas ni certificadas.
 - team/skills/: catálogo; luego nombre/SKILL.md y referencias necesarias.
 - team/contracts/: contratos de tareas/observaciones.
 - team/learning/: diseño de mejora continua.

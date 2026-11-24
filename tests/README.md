@@ -1,5 +1,5 @@
 # Política de pruebas y certificación
-Versión del archivo: 0.4.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.5.0 | Última modificación: 2026-11-24
 
 ## Estrategia
 - T0 estática: esquema, YAML/JSONC, nombres, metadatos, referencias, licencias y manifiesto.
@@ -27,3 +27,6 @@ Usar mismos fixtures, contratos, límites de herramientas y criterios de aceptac
 
 ## Núcleo F04
 [Matriz focalizada del núcleo](F04-NUCLEO.md): carga y comportamiento del candidato completo; casos nuevos de decisión y aceptación, sin duplicar PoC F03.
+
+## Equipo F05
+[Matriz F05](F05-EQUIPO.md): descubrimiento, selección de roles, herramientas y aceptación por rol; recuperar comprobación pendiente de coordinación en F07 sin duplicar F03/F04.
