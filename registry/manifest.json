@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.31.0",
+    "version": "0.32.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -221,7 +221,9 @@
     "fullRuntimeCertification": false,
     "releaseAuthorized": false,
     "F04_1": "DONE_REPORTED_RECOVERED",
-    "F04_2": "CANDIDATE_PREPARED"
+    "F04_2": "CANDIDATE_PREPARED",
+    "F04_3_6": "STATIC_REVIEW_COMPLETE",
+    "F04_7": "PROBE_PREPARED_NOT_RUN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -277,6 +279,13 @@
     "version": "0.14.0",
     "evaluation": "tests/F04-NUCLEO.md",
     "runtimeStatus": "NOT_RUN",
-    "active": false
+    "active": false,
+    "probe": {
+      "path": "scripts/Probar-Nucleo-KiloTeam.ps1",
+      "version": "0.1.0",
+      "runtimeStatus": "NOT_RUN",
+      "persistentOwnership": true,
+      "installation": false
+    }
   }
 }
