@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.8.0",
+    "version": "0.9.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -84,11 +84,13 @@
   "nextPhase": "F03",
   "modelPolicy": {
     "mode": "single-operator-authorized-model",
-    "candidate": "openai/gpt-6-luna",
+    "candidate": "kilo/openai/gpt-6-luna",
     "verified": false,
     "lastReportedChildModel": "kilo/kilo-auto/free",
-    "status": "MISMATCH_REPORTED",
+    "status": "CANDIDATE_UNVERIFIED_PREVIOUS_REFERENCE_FAILED",
     "automaticSubstitutionAllowed": false,
-    "billingVerified": false
+    "billingVerified": false,
+    "failedReference": "openai/gpt-6-luna",
+    "catalogVerified": false
   }
 }

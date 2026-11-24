@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.8.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.9.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -38,3 +38,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — constructor y control de modelo
 - Runtime/calidad: seis herramientas del constructor operativas según reporte, verificación externa de hash pendiente. Modelo del hijo kilo/kilo-auto/free difiere del objetivo autorizado.
 - Gobierno/integración: modelo uniforme obligatorio, precedencia nativa auditada y prueba focalizada F03.4C; no instalación, no cambios de facturación ni configuración global.
+
+## 2026-11-24 — resolución de modelo Gateway
+- F03.4C: referencia directa openai/gpt-6-luna falló; selección uniforme sigue bloqueada. Hipótesis de ID calificado kilo/openai/gpt-6-luna, pendiente de catálogo y prueba F03.4D. Sin cambios de configuración local ni facturación.
