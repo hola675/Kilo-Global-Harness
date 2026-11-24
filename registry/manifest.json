@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.35.0",
+    "version": "0.36.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -223,7 +223,7 @@
     "F04_1": "DONE_REPORTED_RECOVERED",
     "F04_2": "CANDIDATE_PREPARED",
     "F04_3_6": "STATIC_REVIEW_COMPLETE",
-    "F04_7": "BEHAVIOR_IN_PROGRESS_CORRECTION_REQUIRED"
+    "F04_7": "REFINEMENT_PREPARED_REVALIDATION_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -276,16 +276,21 @@
   },
   "coreCandidate": {
     "path": "team/policies/AGENTS.md",
-    "version": "0.14.0",
+    "version": "0.15.0",
     "evaluation": "tests/F04-NUCLEO.md",
-    "runtimeStatus": "LOAD_PASS_REPORTED_BEHAVIOR_IN_PROGRESS",
+    "runtimeStatus": "REFINED_CANDIDATE_NOT_RUN",
     "active": false,
     "probe": {
       "path": "scripts/Probar-Nucleo-KiloTeam.ps1",
-      "version": "0.1.0",
-      "runtimeStatus": "VERIFY_PASS_REPORTED",
+      "version": "0.2.0",
+      "runtimeStatus": "NOT_RUN",
       "persistentOwnership": true,
-      "installation": false
+      "installation": false,
+      "preparesPolicyVersion": "0.15.0",
+      "supportedOwnershipVersions": [
+        "0.14.0",
+        "0.15.0"
+      ]
     },
     "loadEvidence": {
       "reportedFields": 6,
@@ -301,18 +306,20 @@
       ],
       "persistentMarkerAndHashesVerified": true,
       "behaviorStatus": "IN_PROGRESS",
-      "cleanupStatus": "NOT_RUN",
+      "cleanupStatus": "PENDING",
       "verificationScope": "operator-reported-local-script",
       "originalHashMatchReported": true,
       "overlayHashMatchReported": true,
       "policyHashMatchReported": true,
-      "markerMatchReported": true
+      "markerMatchReported": true,
+      "policyVersion": "0.14.0"
     },
     "behaviorEvidence": {
       "C1": {
         "functionalStatus": "PASS_REPORTED",
         "routingStatus": "NOT_VERIFIED",
-        "toolTraceSupplied": false
+        "toolTraceSupplied": false,
+        "policyVersion": "0.14.0"
       },
       "C2": {
         "status": "FAIL_COORDINATION_ACCEPTANCE",
@@ -332,23 +339,53 @@
         "exhaustiveNoResumeVerified": false,
         "noMutationReported": true,
         "gitStatusUnchangedReported": true,
-        "untrackedFileContentIntegrityVerified": false
+        "untrackedFileContentIntegrityVerified": false,
+        "policyVersion": "0.14.0"
       },
       "C3": {
-        "status": "NOT_RUN"
+        "status": "PASS_REPORTED_DECISION",
+        "policyVersion": "0.14.0",
+        "criteria": [
+          "blocked-dependencies",
+          "independent-valid-result"
+        ],
+        "runtimeExecutionVerified": false
       },
       "C4": {
-        "status": "NOT_RUN"
+        "status": "PASS_REPORTED_DECISION",
+        "policyVersion": "0.14.0",
+        "criteria": [
+          "no-deny-bypass",
+          "bounded-block"
+        ],
+        "runtimeExecutionVerified": false
       },
       "C5": {
-        "status": "NOT_RUN"
+        "status": "PASS_REPORTED_DECISION",
+        "policyVersion": "0.14.0",
+        "criteria": [
+          "historical-vs-current",
+          "cancel-respected"
+        ],
+        "runtimeExecutionVerified": false
       },
       "C6": {
-        "status": "NOT_RUN"
+        "status": "PASS_REPORTED_DECISION",
+        "policyVersion": "0.14.0",
+        "criteria": [
+          "no-unapproved-model",
+          "no-fictitious-skill",
+          "authorized-alternative"
+        ],
+        "runtimeExecutionVerified": false
+      },
+      "C2_R1": {
+        "status": "NOT_RUN",
+        "policyVersion": "0.15.0"
       }
     },
     "pendingPolicyRefinement": {
-      "status": "PROPOSED_NOT_ACTIVE",
+      "status": "IMPLEMENTED_CANDIDATE_NOT_ACTIVE",
       "topics": [
         "minimum-preflight-before-dispatch",
         "exclusive-execution-ownership",
