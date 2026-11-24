@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.19.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.20.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -78,3 +78,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — compactación y reapertura confirmadas
 - Calidad: operador confirma ejecución/finalización de /compact y cierre/reapertura; recuperación de contexto e identidad reportada, persistencia del estado operativo no verificada.
 - Rendimiento: F03.6 preparada con auditoría declarativa comparable directa/delegada y métricas observables. Sin ejecución remota de laboratorio ni instalación global.
+
+## 2026-11-24 — baseline de delegación
+- Rendimiento: UI reporta 18s directo, 59s delegado y 19s hijo, resultados principales coincidentes; una muestra, métricas de coste no disponibles y discrepancias de líneas no resueltas.
+- Política: directo para tareas breves, delegación justificada y validación proporcional. Preparada F03.7A de techo de sesión condicionada a control real. Sin instalación global.
