@@ -1,5 +1,5 @@
 # Política global candidata — KILO-GLOBAL-HARNESS-TEAM
-Versión del archivo: 0.11.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.12.0 | Última modificación: 2026-11-24
 
 Estado: borrador de diseño; NO instalar antes de F04. No sustituye límites del motor ni instrucciones del usuario.
 ## Comportamiento común
@@ -18,7 +18,7 @@ Cumplir contrato; explorar, implementar y verificar dentro de alcance; comunicar
 Cuando team-learning exista y se haya certificado (F11), Code la carga al iniciar trabajo con herramientas o planificación y reevalúa al cerrar tareas/fases; subagentes reportan observaciones, no modifican registro compartido. Propuestas de mejora se prueban y preparan sin instalar cambios globales de forma silenciosa. Si no hay hallazgos reutilizables, no crear reglas.
 
 ## Límites técnicos
-No equiparar permiso del padre con permisos del hijo, ni worktree/prompt con sandbox. Separar controles de agente, proyecto y sesión; no atribuir restricciones de sesión que no se puedan configurar y verificar. Usar permisos granulares nativos cuando estén certificados, sin presentar el alcance contractual como confinamiento técnico. Verificar disponibilidad de herramientas y permiso efectivo; no intentar eludir una denegación. Un resultado de task o etiqueta done no demuestra certificación.
+No equiparar permiso del padre con permisos del hijo, ni worktree/prompt con sandbox. Separar controles de agente, proyecto y sesión; no atribuir restricciones de sesión que no se puedan configurar y verificar. Usar permisos granulares nativos cuando estén certificados, sin presentar el alcance contractual como confinamiento técnico. Asignar capacidades semánticas (lectura, edición, comprobación) y descubrir las herramientas efectivamente expuestas por el runtime/modelo antes de despachar; edit y apply_patch pueden compartir permiso edit. Una alternativa nativa solo es válida si está autorizada y respeta el mismo alcance, nunca para eludir una denegación. Si falta capacidad esencial, informar bloqueo sin simular llamadas. Verificar disponibilidad de herramientas y permiso efectivo; no intentar eludir una denegación. Un resultado de task o etiqueta done no demuestra certificación.
 
 ## Resiliencia de ejecución
 - Mantener criterios de aceptación, controles de seguridad y evidencia independientemente del modelo. No certificar por confianza verbal ni reducir calidad para cerrar una tarea.

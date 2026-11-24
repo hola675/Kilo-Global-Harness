@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.22.0",
+    "version": "0.23.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -66,14 +66,16 @@
         "operator-confirmed-native-compaction-with-checkpoint-recall",
         "operator-confirmed-desktop-reopen-with-root-and-child-reference-retained",
         "direct-delegated-baseline-ui-reported",
-        "granular-fixtures-preparation-and-unchanged-hashes"
+        "granular-fixtures-preparation-and-unchanged-hashes",
+        "granular-agent-dispatch-recovered",
+        "granular-file-edit-positive-negative",
+        "explicit-agent-edit-denial-with-protected-hash-unchanged"
       ],
       "pendingChecks": [
         "billing",
         "global-installation",
         "coordination-without-redundant-resume",
         "session-permission-inheritance",
-        "explicit-denial-if-exposed",
         "filesystem-isolation",
         "builder-pre-post-hash-comparison-not-supplied",
         "independent-provider-identity",
@@ -83,8 +85,7 @@
         "terminal-task-failure-recovery",
         "operational-state-persistence",
         "child-resume-after-restart",
-        "compaction-reconciliation-current-state-not-conclusive",
-        "granular-file-edit-positive-negative"
+        "compaction-reconciliation-current-state-not-conclusive"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",
@@ -133,14 +134,19 @@
         "sessionControlPrecheck": "NOT_VERIFIED",
         "sessionInheritanceStatus": "BLOCKED",
         "sessionControlAccessibleVerified": false,
-        "granularFileEditStatus": "NOT_VERIFIED",
+        "granularFileEditStatus": "PASS_REPORTED",
         "filesystemIsolationVerified": false,
         "granularFixturePreparationReported": true,
         "granularFixtureHashesUnchangedReported": true,
-        "granularPositiveEditStatus": "NOT_RUN",
-        "granularNegativeEditStatus": "NOT_RUN",
-        "granularDispatchStatus": "BLOCKED",
-        "granularDispatchCauseVerified": false
+        "granularPositiveEditStatus": "PASS_REPORTED",
+        "granularNegativeEditStatus": "PASS_REPORTED",
+        "granularDispatchStatus": "PASS_REPORTED",
+        "granularDispatchCauseVerified": false,
+        "granularExplicitAgentDenialReported": true,
+        "granularAllowedHashChangedReported": true,
+        "granularProtectedHashUnchangedReported": true,
+        "patchToolAvailableReported": true,
+        "exactMutatingToolCallVerified": false
       }
     }
   },

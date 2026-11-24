@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.22.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.23.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -89,3 +89,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — bloqueo previo a edición granular
 - Calidad: perfil y fixtures preparados, hashes intactos; no ejecución de especialista granular ni edit acreditada. Preparado diagnóstico de identidad/Task/descubrimiento y despacho explícito sin nesting ni cambios globales.
+
+## 2026-11-24 — edición granular comprobada
+- Calidad: despacho corregido, edición autorizada y rechazo explícito de edición protegida reportados; hashes externos verifican diferencia e integridad. apply_patch comparte permiso edit según fuente; herramienta exacta por llamada no acreditada.
+- Política/contrato: capacidades semánticas y herramientas expuestas, sin eludir denegaciones. Preparada F03.8 de coordinación sin reanudación redundante. Sin instalación global.
