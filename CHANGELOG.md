@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -15,3 +15,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 - Equipo: Code nativo, profundidad 1 inicial, resolución nativa de modelos, permisos reales y mapeo Task/Swarm; activación Team Learning tras certificación.
 - Integración/distribución: separar plugins Desktop/CLI y MCP; preservar ownership administrado y par de versiones probado.
 - Calidad: nuevos casos específicos, estado estático separado de runtime. 15 archivos de diseño actualizados a versión individual 0.2.0; catálogo 35 y roles 9 sin cambios. No se publica release ni se modifica legacy.
+
+## 2026-11-24 — comprobación F02
+- Runtime: versión CLI empaquetada 7.8.27 confirmada por operador; inventario estático, sin pruebas de agentes.
+- Calidad: guía de laboratorio F03 y exclusión Git de bytecode Python; F02.4 pendiente de creación local. Artefacto VX anterior no es evidencia actual.

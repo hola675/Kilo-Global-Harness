@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.2.0",
+    "version": "0.3.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
   "targetHarnessVersion": "1.0.0",
-  "status": "design-only",
+  "status": "design-and-inventory",
   "installable": false,
   "target": {
     "os": "Windows",
@@ -19,6 +19,12 @@
       "cliVersion": "7.8.27",
       "cliCommit": "03a6f07d053cd7e6aa88fa1e258e93510335259f",
       "status": "static-only"
+    },
+    "observedVersionPair": {
+      "desktop": "1.0.0",
+      "cli": "7.8.27",
+      "status": "version-confirmed-only",
+      "runtimeCertification": "NOT_RUN"
     }
   },
   "leader": "native Code",
