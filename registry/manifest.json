@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.21.0",
+    "version": "0.22.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -65,7 +65,8 @@
         "stale-state-discrepancy-detected-without-task-mutation",
         "operator-confirmed-native-compaction-with-checkpoint-recall",
         "operator-confirmed-desktop-reopen-with-root-and-child-reference-retained",
-        "direct-delegated-baseline-ui-reported"
+        "direct-delegated-baseline-ui-reported",
+        "granular-fixtures-preparation-and-unchanged-hashes"
       ],
       "pendingChecks": [
         "billing",
@@ -132,8 +133,14 @@
         "sessionControlPrecheck": "NOT_VERIFIED",
         "sessionInheritanceStatus": "BLOCKED",
         "sessionControlAccessibleVerified": false,
-        "granularFileEditStatus": "NOT_RUN",
-        "filesystemIsolationVerified": false
+        "granularFileEditStatus": "NOT_VERIFIED",
+        "filesystemIsolationVerified": false,
+        "granularFixturePreparationReported": true,
+        "granularFixtureHashesUnchangedReported": true,
+        "granularPositiveEditStatus": "NOT_RUN",
+        "granularNegativeEditStatus": "NOT_RUN",
+        "granularDispatchStatus": "BLOCKED",
+        "granularDispatchCauseVerified": false
       }
     }
   },

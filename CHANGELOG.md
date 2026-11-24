@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.21.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.22.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -86,3 +86,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — límites de permisos de sesión
 - Calidad: precheck NOT_VERIFIED, herencia de sesión bloqueada por falta de control accesible acreditado. Preparado caso diferencial de edición por archivo en perfil descartable.
 - Política: distinguir permisos por agente/proyecto/sesión y no equiparar contrato con confinamiento. Sin instalación global.
+
+## 2026-11-24 — bloqueo previo a edición granular
+- Calidad: perfil y fixtures preparados, hashes intactos; no ejecución de especialista granular ni edit acreditada. Preparado diagnóstico de identidad/Task/descubrimiento y despacho explícito sin nesting ni cambios globales.
