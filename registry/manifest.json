@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.37.0",
+    "version": "0.38.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
   "targetHarnessVersion": "1.0.0",
-  "status": "native-poc-limited-core-candidate",
+  "status": "native-poc-limited-team-candidates",
   "installable": false,
   "target": {
     "os": "Windows",
@@ -95,7 +95,9 @@
         "compaction-reconciliation-current-state-not-conclusive",
         "coordination-no-redundant-polling",
         "global-instruction-conflicting-precedence-and-repeatability",
-        "full-core-policy-behavior"
+        "full-core-policy-behavior",
+        "core-routing-and-scope-discipline-real-execution",
+        "nine-specialist-effective-capabilities"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",
@@ -187,7 +189,7 @@
     "credentials",
     "uncertified artifacts"
   ],
-  "nextPhase": "F04",
+  "nextPhase": "F05",
   "modelPolicy": {
     "mode": "operator-configurable-model-independent",
     "provisionalLabReference": "kilo/openai/gpt-6-luna",
@@ -215,7 +217,7 @@
   },
   "phaseGate": {
     "F03": "DONE_POC_LIMITED",
-    "F04": "IN_PROGRESS",
+    "F04": "DONE_POC_LIMITED",
     "developmentCandidatesAllowed": true,
     "globalActivationAuthorized": false,
     "fullRuntimeCertification": false,
@@ -223,7 +225,9 @@
     "F04_1": "DONE_REPORTED_RECOVERED",
     "F04_2": "CANDIDATE_PREPARED",
     "F04_3_6": "STATIC_REVIEW_COMPLETE",
-    "F04_7": "REFINED_LOAD_FUNCTIONAL_PASS_TRACE_AND_CLEANUP_PENDING"
+    "F04_7": "DONE_LIMITED_EXECUTION_EVIDENCE_PENDING",
+    "F05": "IN_PROGRESS",
+    "F05_1_2": "CANDIDATES_PREPARED_STATIC"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -278,12 +282,12 @@
     "path": "team/policies/AGENTS.md",
     "version": "0.15.0",
     "evaluation": "tests/F04-NUCLEO.md",
-    "runtimeStatus": "REFINED_LOAD_PASS_REPORTED_FUNCTIONAL_PASS_EXECUTION_UNVERIFIED",
+    "runtimeStatus": "LIMITED_CLOSED_EXECUTION_EVIDENCE_PENDING",
     "active": false,
     "probe": {
       "path": "scripts/Probar-Nucleo-KiloTeam.ps1",
       "version": "0.2.0",
-      "runtimeStatus": "RETIRE_PREVIOUS_PREPARE_VERIFY_PASS_REPORTED",
+      "runtimeStatus": "PREPARE_VERIFY_RETIRE_PASS_REPORTED",
       "persistentOwnership": true,
       "installation": false,
       "preparesPolicyVersion": "0.15.0",
@@ -417,7 +421,118 @@
       "policyHashMatchReported": true,
       "status": "PASS_LOAD_REPORTED",
       "verificationScope": "operator-reported-local-script",
-      "cleanupStatus": "PENDING"
+      "cleanupStatus": "PASS_REPORTED",
+      "temporaryFilesAbsentReported": true,
+      "ownershipRecordAbsentReported": true,
+      "originalIntactAfterCleanupReported": true
     }
+  },
+  "teamCandidate": {
+    "status": "CANDIDATES_PREPARED_STATIC",
+    "versionPerAgent": "0.1.0",
+    "runtimeStatus": "NOT_RUN",
+    "evaluation": "tests/F05-EQUIPO.md",
+    "defaultUnknownPermission": "deny",
+    "roles": [
+      {
+        "id": "team-architect",
+        "path": "team/agents/team-architect.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "ask",
+        "bash": "ask",
+        "web": "ask",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      },
+      {
+        "id": "team-frontend",
+        "path": "team/agents/team-frontend.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "allow",
+        "bash": "ask",
+        "web": "deny",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      },
+      {
+        "id": "team-backend",
+        "path": "team/agents/team-backend.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "allow",
+        "bash": "ask",
+        "web": "deny",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      },
+      {
+        "id": "team-data",
+        "path": "team/agents/team-data.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "allow",
+        "bash": "ask",
+        "web": "deny",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      },
+      {
+        "id": "team-platform",
+        "path": "team/agents/team-platform.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "allow",
+        "bash": "ask",
+        "web": "deny",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      },
+      {
+        "id": "team-research",
+        "path": "team/agents/team-research.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "deny",
+        "bash": "deny",
+        "web": "ask",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      },
+      {
+        "id": "team-quality",
+        "path": "team/agents/team-quality.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "deny",
+        "bash": "ask",
+        "web": "deny",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      },
+      {
+        "id": "team-security",
+        "path": "team/agents/team-security.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "deny",
+        "bash": "ask",
+        "web": "ask",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      },
+      {
+        "id": "team-editorial",
+        "path": "team/agents/team-editorial.md",
+        "version": "0.1.0",
+        "mode": "subagent",
+        "edit": "allow",
+        "bash": "deny",
+        "web": "deny",
+        "modelFixed": false,
+        "runtimeStatus": "NOT_RUN"
+      }
+    ]
   }
 }
