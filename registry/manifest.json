@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.36.0",
+    "version": "0.37.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -223,7 +223,7 @@
     "F04_1": "DONE_REPORTED_RECOVERED",
     "F04_2": "CANDIDATE_PREPARED",
     "F04_3_6": "STATIC_REVIEW_COMPLETE",
-    "F04_7": "REFINEMENT_PREPARED_REVALIDATION_PENDING"
+    "F04_7": "REFINED_LOAD_FUNCTIONAL_PASS_TRACE_AND_CLEANUP_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -278,12 +278,12 @@
     "path": "team/policies/AGENTS.md",
     "version": "0.15.0",
     "evaluation": "tests/F04-NUCLEO.md",
-    "runtimeStatus": "REFINED_CANDIDATE_NOT_RUN",
+    "runtimeStatus": "REFINED_LOAD_PASS_REPORTED_FUNCTIONAL_PASS_EXECUTION_UNVERIFIED",
     "active": false,
     "probe": {
       "path": "scripts/Probar-Nucleo-KiloTeam.ps1",
       "version": "0.2.0",
-      "runtimeStatus": "NOT_RUN",
+      "runtimeStatus": "RETIRE_PREVIOUS_PREPARE_VERIFY_PASS_REPORTED",
       "persistentOwnership": true,
       "installation": false,
       "preparesPolicyVersion": "0.15.0",
@@ -306,7 +306,7 @@
       ],
       "persistentMarkerAndHashesVerified": true,
       "behaviorStatus": "IN_PROGRESS",
-      "cleanupStatus": "PENDING",
+      "cleanupStatus": "PASS_REPORTED",
       "verificationScope": "operator-reported-local-script",
       "originalHashMatchReported": true,
       "overlayHashMatchReported": true,
@@ -380,12 +380,25 @@
         "runtimeExecutionVerified": false
       },
       "C2_R1": {
-        "status": "NOT_RUN",
-        "policyVersion": "0.15.0"
+        "status": "PASS_REPORTED_FUNCTIONAL_EXECUTION_NOT_VERIFIED",
+        "policyVersion": "0.15.0",
+        "functionalStatus": "PASS_REPORTED",
+        "reportScopeStatus": "PASS_REPORTED",
+        "threeWorksCompletedClaimed": true,
+        "parallelPlanReported": true,
+        "toolTraceSupplied": false,
+        "delegationsActuallyVerified": false,
+        "backgroundVerified": false,
+        "preDispatchReadsVerified": false,
+        "redundantReadsStatus": "NOT_VERIFIED",
+        "executionScopeStatus": "NOT_VERIFIED",
+        "noMutationReported": true,
+        "fixturePrePostHashesVerified": false,
+        "durationReported": false
       }
     },
     "pendingPolicyRefinement": {
-      "status": "IMPLEMENTED_CANDIDATE_NOT_ACTIVE",
+      "status": "LOADED_FUNCTIONAL_PASS_EXECUTION_UNVERIFIED",
       "topics": [
         "minimum-preflight-before-dispatch",
         "exclusive-execution-ownership",
@@ -393,6 +406,18 @@
         "skill-relevance",
         "proportionate-evidence-validation"
       ]
+    },
+    "refinedLoadEvidence": {
+      "policyVersion": "0.15.0",
+      "previousPolicyRetiredReported": true,
+      "preparationReported": true,
+      "markerMatchReported": true,
+      "originalHashMatchReported": true,
+      "overlayHashMatchReported": true,
+      "policyHashMatchReported": true,
+      "status": "PASS_LOAD_REPORTED",
+      "verificationScope": "operator-reported-local-script",
+      "cleanupStatus": "PENDING"
     }
   }
 }

@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.36.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.37.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -135,3 +135,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — corrección focalizada del núcleo
 - Calidad: C3–C6 decisiones correctas, sin certificación de ejecución. C2 conserva fallo de coordinación.
 - Política: v0.15.0 refuerza despacho temprano, propiedad de ejecución, alcance y evidencia. Script v0.2.0 prepara 0.15.0, permite retirada de 0.14.0 por registro y hashes. R1 pendiente; sin instalación definitiva.
+
+## 2026-11-24 — nueva política verificada en laboratorio
+- Integración: retirada de 0.14.0 y preparación/carga de 0.15.0 correctas según operador; cuatro MATCH. C2-R1 funcional correcto y reporte acotado, disciplina de ejecución no acreditada por falta de traza. No repetir auditoría; retirada final pendiente y comprobación de coordinación trasladable a equipo real. Sin instalación definitiva.
