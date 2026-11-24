@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.32.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.33.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -122,3 +122,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — preparación de evaluación del núcleo
 - Calidad: revisión estática del candidato sin cambios de política; script temporal F04 con registro de propiedad persistente, schema y protección de originales. Prueba funcional Windows NOT_RUN; no instalador definitivo ni activación automática.
+
+## 2026-11-24 — recuperación textual del núcleo
+- Calidad: versión, marcador temporal, proyecto, identidad declarada y routing reportados; cotejo persistente de marcador/hashes pendiente. Preparado C1 sin inducir selección de nivel ni herramienta. Conducta y retirada NOT_RUN.

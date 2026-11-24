@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.32.0",
+    "version": "0.33.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -223,7 +223,7 @@
     "F04_1": "DONE_REPORTED_RECOVERED",
     "F04_2": "CANDIDATE_PREPARED",
     "F04_3_6": "STATIC_REVIEW_COMPLETE",
-    "F04_7": "PROBE_PREPARED_NOT_RUN"
+    "F04_7": "LOAD_REPORTED_PENDING_LOCAL_VERIFICATION"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -278,14 +278,30 @@
     "path": "team/policies/AGENTS.md",
     "version": "0.14.0",
     "evaluation": "tests/F04-NUCLEO.md",
-    "runtimeStatus": "NOT_RUN",
+    "runtimeStatus": "LOAD_REPORTED_PENDING_LOCAL_VERIFICATION",
     "active": false,
     "probe": {
       "path": "scripts/Probar-Nucleo-KiloTeam.ps1",
       "version": "0.1.0",
-      "runtimeStatus": "NOT_RUN",
+      "runtimeStatus": "MARKER_RETURNED_REPORTED",
       "persistentOwnership": true,
       "installation": false
+    },
+    "loadEvidence": {
+      "reportedFields": 6,
+      "expectedPolicyVersionReported": true,
+      "globalMarkerReturnedReported": true,
+      "projectMarkerReported": true,
+      "leaderIdentityReported": true,
+      "routingLevelsReported": [
+        "N1",
+        "N2",
+        "N3",
+        "N4"
+      ],
+      "persistentMarkerAndHashesVerified": false,
+      "behaviorStatus": "NOT_RUN",
+      "cleanupStatus": "NOT_RUN"
     }
   }
 }
