@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.5.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.6.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -26,3 +26,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — delegación asíncrona y Swarm
 - Runtime/calidad: dos hijos background, comunicación, continuidad tras delegación y ambas notificaciones reportadas correctamente. Solapamiento y modelo de hijos no verificados. Pruebas focalizadas de intervalos, cursor y permiso negativo preparadas.
 - Política: cierre definitivo tras resultados requeridos, estados diferenciados y concurrencia sin conflicto de escrituras. No instalada. F03 sigue abierta.
+
+## 2026-11-24 — solapamiento observable
+- Runtime/calidad: intervalos Swarm A/B con 17.256 ms de intersección, marca Code dentro, cursor incremental y notificaciones originales reportados. No certifica inferencia simultánea ni modelo de hijos. F03 abierta.
+- Política: evitar reanudación por mera demora de notificación; task_id solo para trabajo adicional autorizado o recuperación de fallo confirmado. Preparada prueba focalizada de permisos; sin instalación global.

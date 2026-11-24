@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.5.0",
+    "version": "0.6.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -34,19 +34,26 @@
         "background-task-two-children",
         "leader-progress-after-dispatch",
         "swarm-post-read",
-        "both-native-completion-notifications"
+        "both-native-completion-notifications",
+        "swarm-bounded-interval-overlap",
+        "leader-marker-during-overlap",
+        "board-incremental-cursor"
       ],
       "pendingChecks": [
-        "measured-overlap",
-        "leader-activity-during-overlap",
         "child-model",
         "billing",
-        "board-cursor",
         "board-root-isolation",
         "effective-permissions",
         "recovery",
-        "global-installation"
-      ]
+        "global-installation",
+        "coordination-without-redundant-resume"
+      ],
+      "overlapEvidence": {
+        "type": "operator-reported-swarm-publication-intervals",
+        "durationMs": 17256,
+        "leaderMarkerInside": true,
+        "simultaneousInferenceVerified": false
+      }
     }
   },
   "leader": "native Code",
