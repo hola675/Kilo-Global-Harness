@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.17.0",
+    "version": "0.18.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -60,7 +60,9 @@
         "subagent-running-cancelled-completed",
         "authorized-resume-after-cancellation-same-id",
         "partial-context-after-cancellation",
-        "checkpoint-seven-fields-recalled"
+        "checkpoint-seven-fields-recalled",
+        "root-checkpoint-and-child-reference-retained",
+        "stale-state-discrepancy-detected-without-task-mutation"
       ],
       "pendingChecks": [
         "billing",
@@ -93,7 +95,12 @@
         "staleTaskStateObserved": true,
         "summaryState": "running",
         "priorReportedState": "completed",
-        "causalAttributionVerified": false
+        "causalAttributionVerified": false,
+        "rootIdentityMatchReported": true,
+        "childReferenceRetainedReported": true,
+        "currentReportedState": "unknown",
+        "restartVerified": false,
+        "operationalStatePersistenceVerified": false
       }
     }
   },

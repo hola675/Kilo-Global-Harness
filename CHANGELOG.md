@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.17.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.18.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -70,3 +70,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — recuperación de checkpoint y estado histórico
 - Calidad: siete campos recuperados; ejecución de compactación no acreditada. Resumen intermedio conserva running frente a completed reportado previamente para mismo hijo.
 - Política: reconciliar estado operativo con evidencia nativa reciente antes de actuar; preparar F03.5F de reapertura ordenada. Sin instalación global ni publicación de IDs.
+
+## 2026-11-24 — continuidad y estado unknown
+- Calidad: raíz, checkpoint y referencia hija recuperados; ejecución actual unknown, reinicio no acreditado. Auditoría confirma fallback unknown cuando falta estado de participante en snapshot, no causa concreta.
+- Política: conservar por separado resultado verificado y estado actual; no reanudar automáticamente ni repetir evidencia válida. Sin instalación global.
