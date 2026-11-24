@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.4.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.5.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -50,3 +50,6 @@ El código auditado corresponde a Desktop 1.0.0 / CLI 7.8.27, no necesariamente 
 
 ## Evidencia F03.1 — 2026-11-24
 Fuente: informe textual de Kilo Desktop aportado por el operador, no ejecución ni inspección independiente de trazas desde este repositorio. Reporta coincidencia de los marcadores de instrucciones, skill y fixture; llamada skill y task foreground al subagente team-lab-reader con identificador de sesión hija. Estado PASS_REPORTED para estas comprobaciones; identidad root code, ruta global y precedencia, restricciones de escritura, aislamiento y facturación no certificados. openai/gpt-6-luna es identificador del modelo reportado, no del agente. F03.2/F03.3: probar dos hijos background y comunicación board; F03.4/F03.5 pendientes. No publicar identificadores de sesión ni datos de cuenta.
+
+## Evidencia F03.2/F03.3 — 2026-11-24
+Fuente: informe de operador y salida textual de Kilo; no inspección independiente de trazas. PASS_REPORTED: Code identificado como main/code con modelo openai/gpt-6-luna; dos llamadas background running con hijos distintos; lectura independiente posterior a lanzamiento y anterior a notificación A; ambos mensajes board_post/board_read y ambas notificaciones finales recibidas (B llegó después del primer informe). Los dos marcadores esperados coinciden. Diferencia de publicaciones: 456 ms; no mide duración ni demuestra solapamiento. NOT_VERIFIED: intervalos de hijos, actividad del líder dentro de intervalo simultáneo, modelo efectivo de hijos, cobertura BYOK/facturación, cursor incremental y aislamiento entre raíces. F03 permanece IN_PROGRESS. Siguiente: comprobar intervalos observables con marcas Swarm y permiso negativo edit sobre fixture descartable, sin repetir positivos ya registrados. Después F03.5 y pruebas pendientes de F03.3/F03.4. No publicar IDs de sesión, mensajes ni datos privados.
