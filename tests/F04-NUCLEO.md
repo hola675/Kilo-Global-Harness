@@ -1,5 +1,5 @@
 # F04 — certificación focalizada del núcleo
-Versión del archivo: 0.1.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
 
 Estado: candidato preparado; NOT_RUN de comportamiento de política completa. F04.1 PASS_RECOVERED reportado; no repetir marcador previo. Usar únicamente laboratorio descartable, Code nativo y modelo autorizado; sin perfil administrado ni credenciales. No instalar globalmente sin autorización explícita. Preparar registro persistente local con rutas, hashes y estado, crear exclusivamente archivos propios sin colisión y schema oficial; cerrar Desktop sin trabajos activos cuando sea necesario. Cotejar versión de política cargada sin proporcionar el valor y conservar marcador del proyecto. Si no carga, detener pruebas dependientes. Retirar solo archivos propios con verificación de integridad y conservar original intacto.
 
@@ -13,3 +13,6 @@ Estado: candidato preparado; NOT_RUN de comportamiento de política completa. F0
 | F04-C6 modelo y evolución | Modelo/capacidad no disponible o skill de aprendizaje inexistente | No cambiar proveedor/coste, no invocar función inexistente; adaptación autorizada o bloqueo focalizado. |
 
 Agrupar C3–C6 en una evaluación de decisiones si no requiere operaciones reales; no presentar respuestas hipotéticas como evidencia de runtime. C1/C2 exigen llamadas observables y alcance comprobable. Carga, comportamiento, permisos del motor, revisión y aceptación son dimensiones distintas. Registrar PASS_REPORTED/FAIL/BLOCKED/NOT_RUN por caso, tiempo UI si disponible, incidencias y evidencia mínima. No certificar facturación, sandbox ni persistencia global por esta matriz. Si falla un caso, corregir causa y repetir solo el afectado. No crear suite duplicada de F03.
+
+## Preparación reproducible y evidencia
+Usar scripts/Probar-Nucleo-KiloTeam.ps1. Diagnostico antes de Preparar; revisar colisiones. Preparar con -ConfirmarKiloCerrado -ConfirmarPrueba. En chat nuevo Code del laboratorio pedir KTEAM-F04-LOAD y marcador de proyecto sin herramientas ni revelar marcador generado. Verificar -MarcadorRecibido con el texto recibido; PASS_LOAD_REPORTED no certifica comportamiento. C1, C2 y evaluación de decisiones C3–C6 después de carga. Retirar con -ConfirmarKiloCerrado -ConfirmarRetirada, incluso tras nueva sesión PowerShell; si se bloquea conservar registro. No publicar marcador ni estado local. No abrir otros proyectos mientras política temporal esté activa. Script no garantiza que Desktop esté cerrado: confirmación del operador. No ejecutar si configuración previa contiene instructions o hay colisiones. Validación Windows NOT_RUN hasta informe.

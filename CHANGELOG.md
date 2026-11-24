@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.31.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.32.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -119,3 +119,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — núcleo global candidato
 - Integración: F04.1 PASS_RECOVERED reportado, schema oficial presente, temporales retirados y original intacto. Limitación de hash histórico del marcador conservada.
 - Política: núcleo operativo v0.14.0 consolidado en siete secciones, routing N1–N4, contrato, capacidad, seguridad, calidad, recuperación y evolución condicionada. Matriz F04 preparada; validación funcional NOT_RUN, sin activación ni release.
+
+## 2026-11-24 — preparación de evaluación del núcleo
+- Calidad: revisión estática del candidato sin cambios de política; script temporal F04 con registro de propiedad persistente, schema y protección de originales. Prueba funcional Windows NOT_RUN; no instalador definitivo ni activación automática.
