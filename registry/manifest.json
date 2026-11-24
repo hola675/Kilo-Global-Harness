@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.13.0",
+    "version": "0.14.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -53,7 +53,8 @@
         "own-completed-child-resume-same-id",
         "resumed-child-context-recall",
         "resumed-child-new-work-and-swarm",
-        "two-root-board-visible-separation"
+        "two-root-board-visible-separation",
+        "cross-root-resume-explicit-parentage-rejection"
       ],
       "pendingChecks": [
         "billing",
@@ -66,12 +67,12 @@
         "independent-provider-identity",
         "cross-model-resilience",
         "central-model-precedence-distinct-values",
-        "cross-root-resume-guard",
         "board-isolation-beyond-observed-sample",
         "failure-cancellation-recovery",
         "compaction-recovery",
         "restart-recovery",
-        "direct-delegated-baseline"
+        "direct-delegated-baseline",
+        "controlled-tool-error-task-recovery"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",

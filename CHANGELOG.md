@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.13.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.14.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -56,3 +56,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — reanudación y separación de tableros
 - Runtime: mismo hijo reanudado con contexto y modelo reportados, nueva lectura y mensaje Swarm. Raíz B no muestra el mensaje de A en la muestra.
 - Calidad: aislamiento universal no certificado; preparado caso negativo de parentesco con hijo propio de laboratorio. Sin instalación global ni repetición de positivos.
+
+## 2026-11-24 — control de parentesco
+- Runtime/calidad: rechazo explícito de reanudación desde raíz distinta, sin reintento reportado. Preparada prueba de error de lectura y recuperación lógica; fallo terminal, cancelación, compactación y reinicio permanecen separados. Sin instalación global.
