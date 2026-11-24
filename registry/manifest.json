@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.28.0",
+    "version": "0.29.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -245,8 +245,13 @@
     "originalConfigIntactAtOverlayCreationReported": true,
     "globalMarkerReturnedReported": true,
     "exactMarkerMatchVerified": false,
-    "cleanupStatus": "PENDING",
+    "cleanupStatus": "BLOCKED_MISSING_SESSION_REFERENCES",
     "earlierUnavailableReportsObserved": true,
-    "preferredCandidate": "user-kilo-json-overlay-explicit-instructions"
+    "preferredCandidate": "user-kilo-json-overlay-explicit-instructions",
+    "cleanupRecoveryPrepared": true,
+    "historicalConfigHashesAvailable": true,
+    "historicalMarkerHashAvailable": false,
+    "markerTemplateRecoveryStatus": "NOT_RUN",
+    "persistentProbeOwnershipRecordRequired": true
   }
 }

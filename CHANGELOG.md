@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.28.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.29.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -109,3 +109,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — recuperación de instrucciones explícitas
 - Integración: overlay creado sin sobrescribir JSONC, último informe devuelve marcador global y de proyecto; cotejo local exacto y retirada pendientes. Estrategia complementaria candidata condicionada a compatibilidad y propiedad. Sin instalación definitiva.
+
+## 2026-11-24 — recuperación de referencias de la prueba global
+- Integración: cierre abortado antes de retirar por variables de sesión ausentes. Preparada recuperación con hashes históricos de configs y comparación exacta con plantilla conocida del marcador; no se afirma hash histórico de AGENTS.md. Incorporar registro local persistente de propiedad en futuras pruebas. Limpieza aún pendiente.
