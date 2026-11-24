@@ -1,5 +1,5 @@
 # Política global candidata — KILO-GLOBAL-HARNESS-TEAM
-Versión del archivo: 0.7.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.8.0 | Última modificación: 2026-11-24
 
 Estado: borrador de diseño; NO instalar antes de F04. No sustituye límites del motor ni instrucciones del usuario.
 ## Comportamiento común
@@ -27,3 +27,6 @@ No equiparar permiso del padre con permisos del hijo, ni worktree/prompt con san
 
 ## Recuperación de tareas
 Distinguir fallo de herramienta, bloqueo lógico de tarea, error terminal de Task y cancelación explícita. Conservar evidencia, resultados válidos y task_id propio; clasificar causa antes de reintentar. Corregir causa o alcance autorizado, reanudar cuando sea viable y verificar resultado; si persiste bloqueo, informar sin repetir a ciegas. No considerar done de Task como aceptación de tarea. La cancelación del usuario prevalece; no reanudar automáticamente una tarea cancelada sin nueva autorización. No reutilizar task_id de otra raíz. Evidencia de F03.5C limitada a recuperación lógica, no a interrupciones del motor.
+
+## Reconciliación tras pérdida de contexto
+Un resumen, checkpoint o recuerdo es una referencia histórica, no prueba del estado operativo actual. Tras compactación, reinicio, reanudación o contradicción material, recuperar objetivo, decisiones, restricciones y referencias de tarea; contrastar una vez estados/identidades pertinentes con evidencia nativa reciente (Task, Swarm, metadatos) y resultados verificables. No relanzar, cancelar ni reanudar por un estado histórico running; si falta evidencia, conservar estado desconocido y bloquear solo la acción afectada. Respetar cancelación explícita y última decisión autorizada. No repetir operaciones verificadas sin regresión ni hacer polling. Diferenciar recuperación textual de estado reconciliado; registrar discrepancia útil para Team Learning cuando exista. Política candidata, no enforcement instalado.
