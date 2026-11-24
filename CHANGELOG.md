@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.18.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.19.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -74,3 +74,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — continuidad y estado unknown
 - Calidad: raíz, checkpoint y referencia hija recuperados; ejecución actual unknown, reinicio no acreditado. Auditoría confirma fallback unknown cuando falta estado de participante en snapshot, no causa concreta.
 - Política: conservar por separado resultado verificado y estado actual; no reanudar automáticamente ni repetir evidencia válida. Sin instalación global.
+
+## 2026-11-24 — compactación y reapertura confirmadas
+- Calidad: operador confirma ejecución/finalización de /compact y cierre/reapertura; recuperación de contexto e identidad reportada, persistencia del estado operativo no verificada.
+- Rendimiento: F03.6 preparada con auditoría declarativa comparable directa/delegada y métricas observables. Sin ejecución remota de laboratorio ni instalación global.

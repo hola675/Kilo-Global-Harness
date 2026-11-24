@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.18.0",
+    "version": "0.19.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -62,7 +62,9 @@
         "partial-context-after-cancellation",
         "checkpoint-seven-fields-recalled",
         "root-checkpoint-and-child-reference-retained",
-        "stale-state-discrepancy-detected-without-task-mutation"
+        "stale-state-discrepancy-detected-without-task-mutation",
+        "operator-confirmed-native-compaction-with-checkpoint-recall",
+        "operator-confirmed-desktop-reopen-with-root-and-child-reference-retained"
       ],
       "pendingChecks": [
         "billing",
@@ -76,11 +78,11 @@
         "cross-model-resilience",
         "central-model-precedence-distinct-values",
         "board-isolation-beyond-observed-sample",
-        "compaction-recovery",
-        "restart-recovery",
         "direct-delegated-baseline",
         "terminal-task-failure-recovery",
-        "checkpoint-operational-state-reconciliation"
+        "operational-state-persistence",
+        "child-resume-after-restart",
+        "compaction-reconciliation-current-state-not-conclusive"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",
@@ -100,7 +102,12 @@
         "childReferenceRetainedReported": true,
         "currentReportedState": "unknown",
         "restartVerified": false,
-        "operationalStatePersistenceVerified": false
+        "operationalStatePersistenceVerified": false,
+        "nativeCompactionOperatorConfirmed": true,
+        "nativeCompactionStatus": "PASS_REPORTED",
+        "restartOperatorConfirmed": true,
+        "restartContextRecoveryStatus": "PASS_REPORTED",
+        "independentRuntimeTraceVerified": false
       }
     }
   },
