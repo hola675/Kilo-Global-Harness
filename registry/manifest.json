@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.26.0",
+    "version": "0.27.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -232,6 +232,11 @@
     "probeCreationAndCleanupIndependentlyVerified": false,
     "serviceConfigOverrideSourceConfirmed": true,
     "explicitGlobalInstructionsSourceConfirmed": true,
-    "explicitGlobalInstructionsProbeStatus": "NOT_RUN"
+    "explicitGlobalInstructionsProbeStatus": "NOT_RUN",
+    "existingUserJsoncDetectedReported": true,
+    "existingConfigOverwriteGuardStatus": "PASS_REPORTED",
+    "overlayProbeStatus": "NOT_RUN",
+    "overlayProbePrepared": true,
+    "existingConfigContentVerified": false
   }
 }

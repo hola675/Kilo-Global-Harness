@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.26.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.27.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -103,3 +103,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — resolución de instrucciones globales
 - Runtime: marcador global no disponible, marcador proyecto correcto. Auditoría distingue Global.Path.config XDG y servicio global.config con override de Desktop; preparada alternativa instructions absoluta desde JSONC global de usuario, condicionada a ausencia de conflictos y propiedad comprobable. Sin instalación global ni modificación de perfil.
+
+## 2026-11-24 — protección de configuración existente
+- Integración: preflight abortó por kilo.jsonc de usuario existente. Preparada prueba de overlay kilo.json mediante merge nativo, condicionada a ausencia de instructions y otros candidatos, con verificación de hashes y retirada selectiva. No se sobrescribe configuración existente.
