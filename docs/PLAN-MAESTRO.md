@@ -1,5 +1,5 @@
 # Plan maestro
-Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
 
 ## Misión
 Convertir Kilo Desktop en un equipo de ingeniería que interpreta objetivos, planifica, ejecuta, delega, integra, certifica y aprende, con intervención mínima del usuario dentro de la autorización. Diseñar desde cero, con experiencia y patrones de las investigaciones y la auditoría de código fuente; legacy es referencia histórica inmutable.
@@ -37,3 +37,6 @@ Fuente normativa para estas decisiones: [auditoría fijada](AUDITORIA-CODIGO-KIL
 - Modelos: respetar resolución nativa y configuración autorizada; no imponer overrides de modelo/proveedor/variant dinámicos por coste o complejidad.
 - Team Learning: metaskill semántica y observaciones mínimas; usar resultados/eventos nativos, no monitor paralelo por defecto. Introducir activación de la skill solo cuando exista y se pruebe (F11).
 - Evidencia de cierre: retorno task, estado UI done, conexión MCP y recepción de board no equivalen a verificación de resultado. Distinguir cada uno.
+
+## Control de modelo uniforme
+Requisito del operador: un único modelo autorizado para Code y especialistas; objetivo de laboratorio openai/gpt-6-luna, pendiente de confirmación BYOK y coste. No sustituir por free/auto, otro proveedor ni modelo de pago por iniciativa del agente. Si catálogo, cuota o configuración impiden usarlo, informar y detener delegación afectada. Política no equivale a enforcement del motor. Fuente fijada: https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/kilocode/tool/task.ts#L282-L412 . Para tarea nueva sin override explícito: workflow > selección guardada (solo KILO_CLIENT=cli) > modelo del agente > subagent_model disponible > padre. Reanudación puede usar modelo de sesión previa; overrides explícitos se resuelven por separado. No inferir origen de kilo-auto/free por este orden. Probar primero model: openai/gpt-6-luna en definición de un lector de laboratorio, nuevo chat Code con mismo modelo y nueva task sin override; no reusar task_id. Verificar identidad efectiva del hijo y del líder, y proveedor/coste en panel, sin copiar credenciales. Si falla, revisar configuración efectiva y workflow; probar subagent_model y overrides autorizados por separado. Centralización en F04/F05 tras evidencia; no editar perfil administrado de Desktop.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.7.0",
+    "version": "0.8.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -40,19 +40,21 @@
         "board-incremental-cursor",
         "reader-read-operation",
         "reader-mutating-tools-not-exposed",
-        "reader-fixture-hash-unchanged"
+        "reader-fixture-hash-unchanged",
+        "builder-read-glob-grep-edit-bash-skill",
+        "builder-content-verified-by-code"
       ],
       "pendingChecks": [
-        "child-model",
         "billing",
         "board-root-isolation",
         "recovery",
         "global-installation",
         "coordination-without-redundant-resume",
-        "builder-edit-shell-positive",
         "session-permission-inheritance",
         "explicit-denial-if-exposed",
-        "filesystem-isolation"
+        "filesystem-isolation",
+        "builder-external-hash-verification",
+        "uniform-model-and-provider"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",
@@ -79,5 +81,14 @@
     "credentials",
     "uncertified artifacts"
   ],
-  "nextPhase": "F03"
+  "nextPhase": "F03",
+  "modelPolicy": {
+    "mode": "single-operator-authorized-model",
+    "candidate": "openai/gpt-6-luna",
+    "verified": false,
+    "lastReportedChildModel": "kilo/kilo-auto/free",
+    "status": "MISMATCH_REPORTED",
+    "automaticSubstitutionAllowed": false,
+    "billingVerified": false
+  }
 }

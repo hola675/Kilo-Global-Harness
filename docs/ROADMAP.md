@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.7.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.8.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -61,3 +61,7 @@ Siguiente puerta: F03.4a (permisos negativos y positivos en fixture), F03.3b (ai
 ## Evidencia F03.4A
 F03.4A, evidencia aportada por operador: lector invocado una sola vez en foreground; read permitido y contenido original recuperado; edit, write, apply_patch, bash y task reportadas como no expuestas. No hubo llamada de edición ni rechazo explícito, por lo que no se acredita enforcement de una operación invocada ni causalidad de cada regla. glob/grep no ejercitados; skill y Swarm ya observados en pruebas previas. Code releyó el archivo; el operador confirmó SHA256 idéntico antes y después (9C72486CB818408E96EE429A44187DFC3D27AF9B2F8E1D9AF40C1190B77C278B) y marcador KTEAM-PERMISSION-ORIGINAL. PASS_REPORTED de lectura y no modificación con corroboración de hash aportada por operador; PASS_REPORTED de ausencia de herramientas según inventario del hijo. Sin certificación de sandbox, confinamiento de rutas, negación de operación ni permisos de otros roles. No repetir esta prueba salvo regresión. Se observó además que glob no encontró rutas ocultas y read de directorio sí; no generalizar sin prueba adicional.
 Siguiente F03.4B: escritor de laboratorio con edit y bash permitidos para probar mutación y comando inocuo; mantener task y external_directory denegados. F03.3b y F03.5 pendientes. No se amplían permisos globales.
+
+## Evidencia F03.4B y puerta de modelos
+F03.4B — informe del operador: builder descubierto y delegado una vez; read/glob/grep/edit/bash/skill ejecutados, edit cambió marcador esperado, Code releyó ambos fixtures y reportó lector intacto. PASS_REPORTED para operaciones. Hash externo posterior pendiente; git status de archivos untracked no prueba ausencia de otros cambios. Hallazgo: hijo reportó kilo/kilo-auto/free según identidad de runtime, frente a openai/gpt-6-luna reportado por Code en pruebas previas. No hay evidencia del modelo root de esta nueva sesión ni de facturación. Modelo uniforme NOT_VERIFIED, modelo del hijo discrepante del objetivo. No atribuir causa concreta a configuración sin inspección.
+F03.4C: prueba de modelo uniforme en sesión nueva y coste autorizado antes de ampliar llamadas. F03.3b, permisos de sesión y F03.5 pendientes. F03 sigue IN_PROGRESS.
