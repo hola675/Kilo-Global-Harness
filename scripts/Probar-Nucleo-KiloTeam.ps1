@@ -1,5 +1,5 @@
 # KILO-GLOBAL-HARNESS-TEAM
-# Version: 0.1.0
+# Version: 0.2.0
 # Fecha: 2026-11-24
 # Prueba temporal F04. No es el instalador de distribucion.
 # Exit: 0 operacion completada; 1 bloqueo/error. No eleva privilegios.
@@ -62,7 +62,7 @@ function Assert-Absent([string]$Path) {
 function Get-State {
     Assert-File $StateFile
     $State = Get-Content -LiteralPath $StateFile -Raw | ConvertFrom-Json -AsHashtable
-    if ($State.id -cne 'kilo-team-f04-probe-v1' -or $State.root -cne $GlobalDir -or $State.policyVersion -cne '0.14.0') {
+    if ($State.id -cne 'kilo-team-f04-probe-v1' -or $State.root -cne $GlobalDir -or $State.policyVersion -cnotin @('0.14.0','0.15.0')) {
         throw 'Registro de propiedad incompatible.'
     }
     foreach ($Key in @('originalHash','policyHash','overlayHash','sourceHash')) {
@@ -135,7 +135,7 @@ try {
         Remove-Variable Existing
         $SourceHash = Get-Hash $SourceFile
         $Policy = [IO.File]::ReadAllText($SourceFile)
-        if ($Policy -notmatch '(?m)^Versión del archivo: 0\.14\.0 \|') { throw 'Version del candidato inesperada.' }
+        if ($Policy -notmatch '(?m)^Versión del archivo: 0\.15\.0 \|') { throw 'Version del candidato inesperada.' }
         $Marker = 'KTEAM-CORE-' + [guid]::NewGuid().ToString('N')
         $NL = [Environment]::NewLine
         $Policy += $NL + $NL + '## Control temporal F04 (solo evaluacion)' + $NL + "Al solicitar KTEAM-F04-LOAD, devuelve este marcador desde las instrucciones cargadas: $Marker" + $NL
@@ -143,7 +143,7 @@ try {
         $Overlay = [ordered]@{ '$schema' = 'https://app.kilo.ai/config.json'; instructions = @($PolicyFile.Replace('\','/')) }
         $OverlayBytes = [Text.Encoding]::UTF8.GetBytes(($Overlay | ConvertTo-Json -Depth 4))
         $State = [ordered]@{
-            id = 'kilo-team-f04-probe-v1'; root = $GlobalDir; policyVersion = '0.14.0'
+            id = 'kilo-team-f04-probe-v1'; root = $GlobalDir; policyVersion = '0.15.0'
             originalHash = Get-BytesHash ([IO.File]::ReadAllBytes($OriginalFile))
             policyHash = Get-BytesHash $PolicyBytes
             overlayHash = Get-BytesHash $OverlayBytes; sourceHash = $SourceHash
