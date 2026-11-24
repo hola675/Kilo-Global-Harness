@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.9.0",
+    "version": "0.10.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -42,7 +42,11 @@
         "reader-mutating-tools-not-exposed",
         "reader-fixture-hash-unchanged",
         "builder-read-glob-grep-edit-bash-skill",
-        "builder-content-verified-by-code"
+        "builder-content-verified-by-code",
+        "gateway-qualified-model-cli-catalog",
+        "reader-qualified-model-declared",
+        "builder-external-post-content-hash",
+        "reader-hash-unchanged-after-builder"
       ],
       "pendingChecks": [
         "billing",
@@ -53,8 +57,8 @@
         "session-permission-inheritance",
         "explicit-denial-if-exposed",
         "filesystem-isolation",
-        "builder-external-hash-verification",
-        "uniform-model-and-provider"
+        "uniform-model-and-provider",
+        "builder-pre-post-hash-comparison-not-supplied"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",
@@ -87,10 +91,11 @@
     "candidate": "kilo/openai/gpt-6-luna",
     "verified": false,
     "lastReportedChildModel": "kilo/kilo-auto/free",
-    "status": "CANDIDATE_UNVERIFIED_PREVIOUS_REFERENCE_FAILED",
+    "status": "CATALOG_CONFIRMED_LAB_CONFIGURED_RUNTIME_PENDING",
     "automaticSubstitutionAllowed": false,
     "billingVerified": false,
     "failedReference": "openai/gpt-6-luna",
-    "catalogVerified": false
+    "catalogVerified": true,
+    "catalogScope": "operator-reported-standalone-bundled-cli"
   }
 }

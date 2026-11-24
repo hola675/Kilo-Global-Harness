@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.9.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.10.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -41,3 +41,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — resolución de modelo Gateway
 - F03.4C: referencia directa openai/gpt-6-luna falló; selección uniforme sigue bloqueada. Hipótesis de ID calificado kilo/openai/gpt-6-luna, pendiente de catálogo y prueba F03.4D. Sin cambios de configuración local ni facturación.
+
+## 2026-11-24 — catálogo Gateway confirmado
+- Integración/calidad: CLI lista la referencia calificada y operador actualizó el lector de laboratorio. Verificación externa posterior del contenido del constructor y hash intacto del lector. Pendientes ejecución uniforme en Desktop y facturación, sin instalación global.
