@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.30.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.31.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -115,3 +115,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — normalización nativa de configuración
 - Integración: hash original coincide según flujo, overlay difiere; retirada abortada. Fuente confirma inserción automática de $schema, causa local no verificada. Preparada comprobación semántica estricta y retirada autorizada solo de temporales identificados. F13 deberá contemplar normalización nativa y propiedad persistente.
+
+## 2026-11-24 — núcleo global candidato
+- Integración: F04.1 PASS_RECOVERED reportado, schema oficial presente, temporales retirados y original intacto. Limitación de hash histórico del marcador conservada.
+- Política: núcleo operativo v0.14.0 consolidado en siete secciones, routing N1–N4, contrato, capacidad, seguridad, calidad, recuperación y evolución condicionada. Matriz F04 preparada; validación funcional NOT_RUN, sin activación ni release.

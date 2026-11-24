@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.30.0",
+    "version": "0.31.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
   "targetHarnessVersion": "1.0.0",
-  "status": "native-poc-limited-core-preparation",
+  "status": "native-poc-limited-core-candidate",
   "installable": false,
   "target": {
     "os": "Windows",
@@ -74,7 +74,10 @@
         "leader-independent-read-and-partial-integration",
         "global-instruction-candidate-path-inventory-no-existing-files",
         "global-config-overlay-created-original-unchanged-at-creation",
-        "explicit-global-marker-returned-reported"
+        "explicit-global-marker-returned-reported",
+        "explicit-global-instruction-marker-template-recovery",
+        "overlay-schema-semantic-validation",
+        "temporary-overlay-and-marker-cleanup-original-hash-preserved"
       ],
       "pendingChecks": [
         "billing",
@@ -91,7 +94,8 @@
         "child-resume-after-restart",
         "compaction-reconciliation-current-state-not-conclusive",
         "coordination-no-redundant-polling",
-        "global-instruction-resolution-and-shadowing"
+        "global-instruction-conflicting-precedence-and-repeatability",
+        "full-core-policy-behavior"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",
@@ -215,7 +219,9 @@
     "developmentCandidatesAllowed": true,
     "globalActivationAuthorized": false,
     "fullRuntimeCertification": false,
-    "releaseAuthorized": false
+    "releaseAuthorized": false,
+    "F04_1": "DONE_REPORTED_RECOVERED",
+    "F04_2": "CANDIDATE_PREPARED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -226,7 +232,7 @@
     "claudeFallbackInstructionsExistReported": false,
     "powershellEnvOverridesPresentReported": false,
     "desktopProcessEnvIndependentlyVerified": false,
-    "effectiveLoadStatus": "POSITIVE_REPORTED_PENDING_EXACT_MATCH",
+    "effectiveLoadStatus": "PASS_REPORTED_RECOVERED",
     "shadowingPrecedenceVerified": false,
     "temporaryProbePrepared": true,
     "automaticGlobalMarkerStatus": "NOT_AVAILABLE_REPORTED",
@@ -234,10 +240,10 @@
     "probeCreationAndCleanupIndependentlyVerified": false,
     "serviceConfigOverrideSourceConfirmed": true,
     "explicitGlobalInstructionsSourceConfirmed": true,
-    "explicitGlobalInstructionsProbeStatus": "MARKER_RETURNED_REPORTED",
+    "explicitGlobalInstructionsProbeStatus": "PASS_REPORTED_RECOVERED",
     "existingUserJsoncDetectedReported": true,
     "existingConfigOverwriteGuardStatus": "PASS_REPORTED",
-    "overlayProbeStatus": "MARKER_RETURNED_REPORTED",
+    "overlayProbeStatus": "PASS_REPORTED_RECOVERED",
     "overlayProbePrepared": true,
     "existingConfigContentVerified": false,
     "existingConfigPropertyCountReported": 1,
@@ -245,19 +251,32 @@
     "originalConfigIntactAtOverlayCreationReported": true,
     "globalMarkerReturnedReported": true,
     "exactMarkerMatchVerified": false,
-    "cleanupStatus": "BLOCKED_OVERLAY_HASH_DRIFT",
+    "cleanupStatus": "PASS_REPORTED_RECOVERED",
     "earlierUnavailableReportsObserved": true,
     "preferredCandidate": "user-kilo-json-overlay-explicit-instructions",
     "cleanupRecoveryPrepared": true,
     "historicalConfigHashesAvailable": true,
     "historicalMarkerHashAvailable": false,
-    "markerTemplateRecoveryStatus": "NOT_RUN",
+    "markerTemplateRecoveryStatus": "PASS_REPORTED",
     "persistentProbeOwnershipRecordRequired": true,
     "originalConfigHistoricalHashMatchReported": true,
     "overlayHistoricalHashMismatchReported": true,
-    "overlayCurrentContentVerified": false,
+    "overlayCurrentContentVerified": true,
     "nativeSchemaInsertionSourceConfirmed": true,
     "overlayDriftCauseVerified": false,
-    "semanticRecoveryPrepared": true
+    "semanticRecoveryPrepared": true,
+    "markerMatchedCurrentTemplateReported": true,
+    "overlayOfficialSchemaPresentReported": true,
+    "overlayInstructionsUnchangedReported": true,
+    "overlayUnknownPropertiesAbsentReported": true,
+    "originalConfigIntactAfterCleanupReported": true,
+    "temporaryFilesRemovedReported": true
+  },
+  "coreCandidate": {
+    "path": "team/policies/AGENTS.md",
+    "version": "0.14.0",
+    "evaluation": "tests/F04-NUCLEO.md",
+    "runtimeStatus": "NOT_RUN",
+    "active": false
   }
 }
