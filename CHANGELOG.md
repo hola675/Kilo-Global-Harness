@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.38.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.39.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -142,3 +142,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — cierre limitado F04 y equipo candidato F05
 - Integración: retirada 0.15.0 reportada y configuración original preservada. Cierre limitado, disciplina real de coordinación pendiente.
 - Equipo: nueve definiciones nativas model-neutral v0.1.0 con permisos explícitos, roles y handoff, sin nuevos líderes. Matriz F05 preparada; validación estática limitada, runtime NOT_RUN, sin instalación definitiva.
+
+## 2026-11-24 — refinamiento individual de especialistas
+- Investigación: diez repositorios y doce archivos fuente seleccionados, registro fijado, análisis de patrones y nueve identidades propuestas.
+- Equipo: Atlas v0.2.0 con criterio técnico, routing, límites y handoff especializado; permisos intactos. A1–A5 preparados, runtime NOT_RUN. Resto de roles sin cambios. Sin instalación definitiva.

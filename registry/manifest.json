@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.38.0",
+    "version": "0.39.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -227,7 +227,8 @@
     "F04_3_6": "STATIC_REVIEW_COMPLETE",
     "F04_7": "DONE_LIMITED_EXECUTION_EVIDENCE_PENDING",
     "F05": "IN_PROGRESS",
-    "F05_1_2": "CANDIDATES_PREPARED_STATIC"
+    "F05_1_2": "CANDIDATES_PREPARED_STATIC",
+    "F05_2_R": "IN_PROGRESS"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -429,7 +430,6 @@
   },
   "teamCandidate": {
     "status": "CANDIDATES_PREPARED_STATIC",
-    "versionPerAgent": "0.1.0",
     "runtimeStatus": "NOT_RUN",
     "evaluation": "tests/F05-EQUIPO.md",
     "defaultUnknownPermission": "deny",
@@ -437,13 +437,15 @@
       {
         "id": "team-architect",
         "path": "team/agents/team-architect.md",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "mode": "subagent",
         "edit": "ask",
         "bash": "ask",
         "web": "ask",
         "modelFixed": false,
-        "runtimeStatus": "NOT_RUN"
+        "runtimeStatus": "NOT_RUN",
+        "persona": "Atlas",
+        "refinementStatus": "IMPLEMENTED_STATIC_NOT_RUN"
       },
       {
         "id": "team-frontend",
@@ -533,6 +535,27 @@
         "modelFixed": false,
         "runtimeStatus": "NOT_RUN"
       }
-    ]
+    ],
+    "refinement": {
+      "status": "IN_PROGRESS",
+      "research": "docs/INVESTIGACION-ESPECIALISTAS.md",
+      "reviewedRepositories": 10,
+      "selectedSourceFiles": 12,
+      "completeRoles": [
+        "team-architect"
+      ],
+      "remainingRoles": [
+        "team-frontend",
+        "team-backend",
+        "team-data",
+        "team-platform",
+        "team-research",
+        "team-quality",
+        "team-security",
+        "team-editorial"
+      ],
+      "nextRole": "team-frontend",
+      "runtimeStatus": "NOT_RUN"
+    }
   }
 }
