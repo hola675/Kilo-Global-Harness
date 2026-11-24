@@ -1,14 +1,14 @@
 # Roadmap de ejecución
-Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.4.0 | Última modificación: 2026-11-24
 
-Leyenda: IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
+Leyenda: DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
 | Fase | Dependencia | Estado | Entregable y puerta de salida |
 |---|---|---|---|
 | F00 Investigación y archivo | ninguna | DONE_DOC | legacy íntegro; tres estudios y auditoría estática Desktop/CLI fijada; límites explícitos |
 | F01 Plan y estructura | F00 | DONE_DOC | arquitectura, políticas, contratos, catálogo y estrategia de distribución actualizados según auditoría; ninguna instalación |
-| F02 Runtime y laboratorio | F01 | IN_PROGRESS | F02.1–F02.4: binario empaquetado y hash, perfil global/administrado, procedencia y colisiones, matriz de capacidades y fixture aislado; informe sanitizado |
-| F03 PoC nativa y línea base | F02 | PENDING | F03.1–F03.5: Code, marker de instrucciones, subagente y skill reales, task foreground/background, board incremental, permisos y aislamiento, recuperación y baseline |
+| F02 Runtime y laboratorio | F01 | DONE_INVENTORY | F02.1–F02.4: binario empaquetado y hash, perfil global/administrado, procedencia y colisiones, matriz de capacidades y fixture aislado; informe sanitizado |
+| F03 PoC nativa y línea base | F02 | IN_PROGRESS | F03.1–F03.5: Code, marker de instrucciones, subagente y skill reales, task foreground/background, board incremental, permisos y aislamiento, recuperación y baseline |
 | F04 Núcleo Code y políticas | F03 | PENDING | AGENTS global y configuración mínima por ruta verificada; prueba de shadowing y sesión nueva; no sustituir Code ni tocar propiedad Desktop; política base sin depender de team-learning aún inexistente |
 | F05 Equipo mínimo | F04 | PENDING | arquitectura, frontend, backend, datos, plataforma, investigación, calidad, seguridad, editorial; reutilizar general/explore; cada rol prueba herramientas positivas/negativas, techos de sesión y resultado; profundidad inicial 1; modelos nativos |
 | F06 Skills base propias | F04 | PENDING | coordinación, requisitos, arquitectura, implementación, depuración, pruebas, Git, contexto, herramientas, seguridad y creación de skills; evals positivas/negativas y comparación sin skill; probar colisiones y disponibilidad por agente |
@@ -22,7 +22,7 @@ Leyenda: IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = ent
 | F14 Pilotos y release | F13 | PENDING | web, ERP/local-first y desktop cuando aplique; aceptación del usuario, matriz real, documentación, release y hash verificable |
 
 ## Prioridades y paralelismo
-Ruta crítica: F02→F03→F04→F05/F06→F07→F11→F12→F13→F14. F08, F09 y F11 pueden avanzar en paralelo tras sus dependencias; F10 se decide después de los resultados F07, F09 y F11, evitando construir almacenamiento o MCP antes de probar la metaskill. F12 espera F10 (implementación certificada o NO_NECESARIO), F08, F09 y F11. La secuencia de IDs no obliga a ejecutar serialmente. Cada fase arranca con criterios y alcance explícitos; revisión de evidencia antes de desbloquear dependientes. F02 es el siguiente trabajo, no instalación.
+Ruta crítica: F02→F03→F04→F05/F06→F07→F11→F12→F13→F14. F08, F09 y F11 pueden avanzar en paralelo tras sus dependencias; F10 se decide después de los resultados F07, F09 y F11, evitando construir almacenamiento o MCP antes de probar la metaskill. F12 espera F10 (implementación certificada o NO_NECESARIO), F08, F09 y F11. La secuencia de IDs no obliga a ejecutar serialmente. Cada fase arranca con criterios y alcance explícitos; revisión de evidencia antes de desbloquear dependientes. F03 está en ejecución en laboratorio, no instalación global.
 ## Hitos de versión del Harness
 0.1.x: diseño y prueba nativa; 0.2.x: núcleo y equipo; 0.3.x: skills y coordinación; 0.4.x: integraciones y aprendizaje; 0.5.x: integración y empaquetado; 1.0.0-rc: piloto; 1.0.0: release certificada. Versiones objetivo, no releases publicadas ni promesas de fechas.
 
@@ -45,5 +45,8 @@ El código auditado corresponde a Desktop 1.0.0 / CLI 7.8.27, no necesariamente 
 ## Evidencia F02 — 2026-11-24
 - F02.1: PASS de identificación de versión; Desktop 1.0.0 y CLI empaquetado 7.8.27 confirmado mediante --version. Metadato PE 1.4.4 no equivale a versión CLI. Hash inventariado localmente, no comparación con distribución oficial.
 - F02.2/F02.3: inventario estático realizado; perfil administrado identificado, rutas candidatas y residuos de otros proyectos detectados. Exposición, permisos efectivos, facturación y precedencia real pendientes de F03. No publicar inventario privado.
-- F02.4: [procedimiento de laboratorio](../tests/F03-LABORATORIO.md) preparado, creación y ejecución local pendientes. No utilizar proyectos reales ni la prevalidación VX histórica en artifacts/ como evidencia del nuevo equipo.
-- F03: NOT_RUN. Ninguna capacidad funcional certificada. No confundir identificación del binario con certificación del par host/engine.
+- F02.4: [procedimiento de laboratorio](../tests/F03-LABORATORIO.md) preparado y utilizado en la primera prueba reportada por el operador. No utilizar proyectos reales ni la prevalidación VX histórica en artifacts/ como evidencia del nuevo equipo.
+- F03: inicialmente NOT_RUN; ver evidencia posterior. No confundir identificación del binario con certificación del par host/engine.
+
+## Evidencia F03.1 — 2026-11-24
+Fuente: informe textual de Kilo Desktop aportado por el operador, no ejecución ni inspección independiente de trazas desde este repositorio. Reporta coincidencia de los marcadores de instrucciones, skill y fixture; llamada skill y task foreground al subagente team-lab-reader con identificador de sesión hija. Estado PASS_REPORTED para estas comprobaciones; identidad root code, ruta global y precedencia, restricciones de escritura, aislamiento y facturación no certificados. openai/gpt-6-luna es identificador del modelo reportado, no del agente. F03.2/F03.3: probar dos hijos background y comunicación board; F03.4/F03.5 pendientes. No publicar identificadores de sesión ni datos de cuenta.

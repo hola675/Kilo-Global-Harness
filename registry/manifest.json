@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.3.0",
+    "version": "0.4.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
   "targetHarnessVersion": "1.0.0",
-  "status": "design-and-inventory",
+  "status": "native-poc-in-progress",
   "installable": false,
   "target": {
     "os": "Windows",
@@ -24,7 +24,13 @@
       "desktop": "1.0.0",
       "cli": "7.8.27",
       "status": "version-confirmed-only",
-      "runtimeCertification": "NOT_RUN"
+      "runtimeCertification": "PARTIAL_REPORTED",
+      "reportedChecks": [
+        "project-instructions",
+        "skill-invocation",
+        "custom-subagent-discovery",
+        "foreground-task"
+      ]
     }
   },
   "leader": "native Code",
@@ -44,5 +50,5 @@
     "credentials",
     "uncertified artifacts"
   ],
-  "nextPhase": "F02"
+  "nextPhase": "F03"
 }

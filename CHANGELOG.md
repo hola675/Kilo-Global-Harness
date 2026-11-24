@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.4.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -19,3 +19,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — comprobación F02
 - Runtime: versión CLI empaquetada 7.8.27 confirmada por operador; inventario estático, sin pruebas de agentes.
 - Calidad: guía de laboratorio F03 y exclusión Git de bytecode Python; F02.4 pendiente de creación local. Artefacto VX anterior no es evidencia actual.
+
+## 2026-11-24 — primera prueba nativa
+- Calidad/runtime: F03.1 con marcadores y llamada foreground correctos según informe del operador (PASS_REPORTED parcial). F02 cerrado como inventario limitado, no certificación. Preparada prueba background/Swarm. Facturación, permisos, solapamiento y recuperación aún no certificados.
