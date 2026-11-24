@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.24.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.25.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -97,3 +97,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — coordinación y transición limitada a F04
 - Calidad: dos notificaciones, trabajo independiente y no reanudación reportados; integración parcial por error de ruta, ausencia de polling no acreditada.
 - Política/contrato: referencias concretas y base de workspace; retorno terminal no equivale a aceptación. F03 cerrada como PoC limitada para desarrollo candidato; F04.1 preparación de prueba de instrucciones globales, sin instalación ni certificación integral.
+
+## 2026-11-24 — diagnóstico de rutas globales
+- Integración: directorios de usuario y perfil Desktop existentes; tres archivos globales ausentes según operador. Preparada prueba temporal de marcador aleatorio, creación exclusiva y retirada por hash; carga efectiva pendiente. Sin instalación global definitiva.

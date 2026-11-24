@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.24.0",
+    "version": "0.25.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -71,7 +71,8 @@
         "granular-file-edit-positive-negative",
         "explicit-agent-edit-denial-with-protected-hash-unchanged",
         "two-background-notifications-without-reported-resume",
-        "leader-independent-read-and-partial-integration"
+        "leader-independent-read-and-partial-integration",
+        "global-instruction-candidate-path-inventory-no-existing-files"
       ],
       "pendingChecks": [
         "billing",
@@ -213,5 +214,18 @@
     "globalActivationAuthorized": false,
     "fullRuntimeCertification": false,
     "releaseAuthorized": false
+  },
+  "globalInstructionEvidence": {
+    "inventoryStatus": "PASS_REPORTED",
+    "userConfigDirectoryExistsReported": true,
+    "desktopProfileDirectoryExistsReported": true,
+    "userGlobalInstructionsExistReported": false,
+    "desktopProfileInstructionsExistReported": false,
+    "claudeFallbackInstructionsExistReported": false,
+    "powershellEnvOverridesPresentReported": false,
+    "desktopProcessEnvIndependentlyVerified": false,
+    "effectiveLoadStatus": "NOT_RUN",
+    "shadowingPrecedenceVerified": false,
+    "temporaryProbePrepared": true
   }
 }
