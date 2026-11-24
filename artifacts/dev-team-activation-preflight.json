@@ -1,0 +1,115 @@
+{
+  "schema": "dev-team-activation-preflight/1",
+  "generated_at": "2026-11-19T20:17:39.0703734-05:00",
+  "mode": "PLAN_ONLY",
+  "checks": {
+    "source_ci_pass": true,
+    "canonical_roles_11": true,
+    "runtime_agent_hash_match": false,
+    "skill_source_hash_18_of_18": false,
+    "runtime_snapshot_11_of_11": false,
+    "skill_eval_report_complete": false,
+    "runtime_verified_mcp_id_count": 5,
+    "operator_approval": false
+  },
+  "hash_evidence": {
+    "scope": "FILE_SHA256_ONLY_NOT_RUNTIME_BEHAVIOR",
+    "agents": {
+      "status": "FAIL",
+      "expected": 11,
+      "matched": 6,
+      "missing": [],
+      "different": [
+        "vx-dev-team",
+        "vx-dev-platform",
+        "vx-dev-quality",
+        "vx-dev-security",
+        "vx-dev-reviewer"
+      ],
+      "unreadable": []
+    },
+    "skills": {
+      "status": "FAIL",
+      "expected": 18,
+      "matched": 2,
+      "missing": [],
+      "different": [
+        "vx-dev-project-policy",
+        "vx-dev-team-handoff",
+        "vx-dev-codebase-investigation",
+        "vx-dev-source-reconciliation",
+        "vx-dev-architecture-decision",
+        "vx-dev-backend-contracts",
+        "vx-dev-data-migration",
+        "vx-dev-platform-delivery",
+        "vx-dev-debug-triage",
+        "vx-dev-frontend-ux",
+        "vx-dev-accessibility",
+        "vx-dev-ui-state-system",
+        "vx-dev-test-strategy",
+        "vx-dev-security-threat-review",
+        "vx-dev-supply-chain-review",
+        "vx-dev-independent-review"
+      ],
+      "unreadable": []
+    }
+  },
+  "waves": [
+    {
+      "id": "W1-CORE-18",
+      "readiness": "BLOCKED",
+      "blockers": [
+        "runtime_agent_hash_match",
+        "skill_source_hash_18_of_18",
+        "operator_approval"
+      ],
+      "action": "NO_AUTO_APPLY"
+    },
+    {
+      "id": "W2-GAP-FILL",
+      "readiness": "BLOCKED",
+      "blockers": [
+        "W1_runtime_pass",
+        "skill_eval_report_complete",
+        "overlap_review",
+        "operator_approval"
+      ],
+      "action": "NO_AUTO_APPLY"
+    },
+    {
+      "id": "W3-UX-UI-PRO",
+      "readiness": "BLOCKED",
+      "blockers": [
+        "W2_or_explicit_skip",
+        "skill_eval_report_complete",
+        "browser_tool_inventory",
+        "operator_approval"
+      ],
+      "action": "NO_AUTO_APPLY"
+    },
+    {
+      "id": "W4-MCP-OPERATIONS",
+      "readiness": "BLOCKED",
+      "blockers": [
+        "skill_eval_report_complete",
+        "mcp_exact_inventory_runtime_complete",
+        "role_assignment_review",
+        "operator_approval"
+      ],
+      "action": "NO_AUTO_APPLY"
+    },
+    {
+      "id": "W5-TOOL-ACL",
+      "readiness": "BLOCKED",
+      "blockers": [
+        "runtime_visible_snapshot_11_of_11",
+        "tool_plan_review",
+        "negative_visibility_tests",
+        "per_tool_smokes",
+        "operator_approval"
+      ],
+      "action": "NO_AUTO_APPLY"
+    }
+  ],
+  "invariant": "This preflight never applies runtime changes and never grants operator approval."
+}
