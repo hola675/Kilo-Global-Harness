@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.20.0",
+    "version": "0.21.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -82,7 +82,8 @@
         "terminal-task-failure-recovery",
         "operational-state-persistence",
         "child-resume-after-restart",
-        "compaction-reconciliation-current-state-not-conclusive"
+        "compaction-reconciliation-current-state-not-conclusive",
+        "granular-file-edit-positive-negative"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",
@@ -126,6 +127,13 @@
         "independentChildModelMetadataVerified": false,
         "costVerified": false,
         "causalGeneralizationVerified": false
+      },
+      "permissionEvidence": {
+        "sessionControlPrecheck": "NOT_VERIFIED",
+        "sessionInheritanceStatus": "BLOCKED",
+        "sessionControlAccessibleVerified": false,
+        "granularFileEditStatus": "NOT_RUN",
+        "filesystemIsolationVerified": false
       }
     }
   },

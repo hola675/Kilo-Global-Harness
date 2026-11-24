@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.20.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.21.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -82,3 +82,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — baseline de delegación
 - Rendimiento: UI reporta 18s directo, 59s delegado y 19s hijo, resultados principales coincidentes; una muestra, métricas de coste no disponibles y discrepancias de líneas no resueltas.
 - Política: directo para tareas breves, delegación justificada y validación proporcional. Preparada F03.7A de techo de sesión condicionada a control real. Sin instalación global.
+
+## 2026-11-24 — límites de permisos de sesión
+- Calidad: precheck NOT_VERIFIED, herencia de sesión bloqueada por falta de control accesible acreditado. Preparado caso diferencial de edición por archivo en perfil descartable.
+- Política: distinguir permisos por agente/proyecto/sesión y no equiparar contrato con confinamiento. Sin instalación global.
