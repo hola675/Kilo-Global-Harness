@@ -1,5 +1,5 @@
 # Política global candidata — KILO-GLOBAL-HARNESS-TEAM
-Versión del archivo: 0.6.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.7.0 | Última modificación: 2026-11-24
 
 Estado: borrador de diseño; NO instalar antes de F04. No sustituye límites del motor ni instrucciones del usuario.
 ## Comportamiento común
@@ -24,3 +24,6 @@ No equiparar permiso del padre con permisos del hijo, ni worktree/prompt con san
 - Mantener criterios de aceptación, controles de seguridad y evidencia independientemente del modelo. No certificar por confianza verbal ni reducir calidad para cerrar una tarea.
 - Ajustar tamaño de tareas y contexto a resultados observados; usar contratos claros, herramientas deterministas y revisión proporcional al riesgo. Si hay fallos, corregir con hipótesis nueva y reintentos acotados; si persiste una carencia, limitar alcance o registrar bloqueo. No escalar de modelo/coste automáticamente.
 - Evitar comprobaciones redundantes: reutilizar evidencia vigente, repetir solo ante cambio relevante, fallo o regresión. Team Learning registrará patrones útiles por capacidad y contexto, no conclusiones generales por precio/marca.
+
+## Recuperación de tareas
+Distinguir fallo de herramienta, bloqueo lógico de tarea, error terminal de Task y cancelación explícita. Conservar evidencia, resultados válidos y task_id propio; clasificar causa antes de reintentar. Corregir causa o alcance autorizado, reanudar cuando sea viable y verificar resultado; si persiste bloqueo, informar sin repetir a ciegas. No considerar done de Task como aceptación de tarea. La cancelación del usuario prevalece; no reanudar automáticamente una tarea cancelada sin nueva autorización. No reutilizar task_id de otra raíz. Evidencia de F03.5C limitada a recuperación lógica, no a interrupciones del motor.
