@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.15.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.16.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -63,3 +63,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — recuperación lógica de tareas
 - Runtime/calidad: error de read, BLOCKED, corrección de alcance y reanudación del mismo hijo con resultado válido reportados. No error terminal de Task.
 - Política: distinguir bloqueo/fallo/cancelación, preservar evidencia, corregir antes de reintentar y respetar cancelación explícita; preparada F03.5D según control Stop subagent de Desktop. Sin instalación global.
+
+## 2026-11-24 — cancelación y continuidad
+- Runtime/calidad: estados running/cancelled/completed, mismo hijo y lectura recuperada reportados; continuidad de contexto parcial. Preparada compactación nativa /compact de raíz entre turnos. Fallo terminal y reinicio no certificados; sin instalación global.
