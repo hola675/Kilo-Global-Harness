@@ -1,13 +1,27 @@
 # KILO-GLOBAL-HARNESS-TEAM
+Versión del archivo: 0.1.0 | Última modificación: 2026-11-24
 
-Nueva etapa iniciada el 2026-11-24. Code, el agente nativo de Kilo Desktop, será el líder; los especialistas serán subagentes nativos. El equipo aprovechará las herramientas, skills, plugins y MCP disponibles sin sustituir el motor de Kilo.
+Estado: planificación y estructura inicial. Objetivo de release: 1.0.0 del Harness (independiente de Kilo).
+Code nativo es el único líder. El equipo amplía Kilo Desktop mediante subagentes, políticas, skills y capacidades nativas; no instala un motor paralelo.
+
+## Entrada
+- [Plan maestro](docs/PLAN-MAESTRO.md)
+- [Roadmap y puertas de aceptación](docs/ROADMAP.md)
+- [Arquitectura](docs/ARQUITECTURA.md)
+- [Políticas globales propuestas](team/policies/AGENTS.md)
+- [Roles y permisos](team/agents/README.md)
+- [Catálogo de skills](team/skills/README.md)
+- [Contratos](team/contracts/README.md)
+- [Team Learning](team/learning/README.md)
+- [MCP](integration/mcp/README.md)
+- [Integración Kilo](integration/kilo/README.md)
+- [Instalación y dependencias](docs/INSTALACION.md)
+- [Certificación](tests/README.md)
+- [Fuentes y metodología](docs/FUENTES.md)
+- [Historial resumido](CHANGELOG.md)
 
 ## Investigación
-
-[Investigación inicial y plan de certificación](docs/INVESTIGACION-KILO-NATIVO.md).
+[Motor Kilo](docs/INVESTIGACION-KILO-NATIVO.md) · [Harness públicos](docs/INVESTIGACION-HARNESS-PUBLICOS.md) · [Task Observer](docs/INVESTIGACION-TASK-OBSERVER.md).
 
 ## Archivo histórico
-
-`legacy/` conserva exactamente el árbol Git de la implementación anterior, commit `79879427a9799a53bafce5f4fd466ccf417da484`. Es solo referencia; no es un paquete activo ni debe instalarse desde esta nueva etapa.
-
-Estado: investigación y diseño; no hay instalador nuevo certificado.
+legacy/ conserva el árbol exacto del commit 79879427a9799a53bafce5f4fd466ccf417da484. No usar como paquete activo ni copiar su arquitectura. Todavía no hay instalador nuevo certificado ni componentes instalables.

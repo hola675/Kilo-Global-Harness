@@ -1,0 +1,12 @@
+# Dependencias, instalación y distribución
+Versión del archivo: 0.1.0 | Última modificación: 2026-11-24
+
+No hay instalador activo. Windows, usuario habitual sin administrador por defecto; Kilo Desktop instalado desde canal oficial y autenticado por usuario. No asumir disponibilidad de red ni instalar dependencias automáticamente.
+## Dependencias
+Obligatorias iniciales: Kilo Desktop y PowerShell 7 (scripts Windows), Git para desarrollo/actualización del repo. Runtime del motor integrado en Desktop; no instalar Node/Bun/Python/Docker adicional por defecto. CI y desarrollo pueden requerir herramientas específicas fijadas en manifiesto al implementarlas. Opcionales: Node LTS y pnpm si un MCP propio lo requiere; SDK oficial MCP, Python/uv, navegadores Playwright, Docker, LSP, Rust/Tauri solo cuando un proyecto/componente lo requiera. Descubrimiento real, versiones compatibles y checksum/lockfile; no usar @latest en release reproducible.
+## Ciclo
+Diagnostico (solo lectura) → Simular (diff y propiedad) → Instalar (autorización, archivos administrados) → Verificar (nueva sesión y herramientas reales) → Actualizar (comparar hashes y migraciones) → Desinstalar (solo propiedad del pack) → Restaurar (rollback de cambios propios). Ningún respaldo de la limpieza antigua se recupera por defecto. Para futuras actualizaciones se propone snapshot mínimo de archivos afectados, local y autorizado, sin secretos; si usuario rechaza rollback, explicar riesgo antes de cambios.
+## Seguridad y compatibilidad
+No tocar proyectos ni AGENTS.md raíz de usuario/proyecto sin merge explícito. No copiar legacy. Preservar credenciales, MCP/plugins ajenos, settings y modificaciones manuales; detectar drift, abortar en colisiones. Validar ruta canónica y no seguir enlaces/junctions fuera de alcance; instalación atómica cuando sea posible, permisos de usuario, error y rollback selectivo. No ejecutar scripts descargados sin verificar procedencia/hash. No habilitar AutoApprove global ni reiniciar editores sin aviso.
+## Pack de release
+Manifiesto con id, versión Harness, rango Desktop probado, paths relativos, destino lógico, hashes, dependencias, versiones de componentes y propiedad. Incluir solo artefactos certificados, README de instalación, scripts, licencias/atribuciones, pruebas mínimas y changelog; excluir legacy, datos locales, credenciales, caches, logs y candidatos no certificados. Publicación con tag y artefacto verificado; probar instalación limpia, repetida, actualización, conflictos, desinstalación y fallo parcial en Windows.

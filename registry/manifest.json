@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "metadata": {
+    "version": "0.1.0",
+    "last_modified": "2026-11-24"
+  },
+  "id": "kilo-global-harness-team",
+  "targetHarnessVersion": "1.0.0",
+  "status": "design-only",
+  "installable": false,
+  "target": {
+    "os": "Windows",
+    "host": "Kilo Code Desktop",
+    "baselineCandidate": "1.0.0",
+    "verifiedVersions": []
+  },
+  "leader": "native Code",
+  "components": [],
+  "dependencies": {
+    "candidateRequired": [
+      "Kilo Desktop",
+      "PowerShell 7",
+      "Git (development)"
+    ],
+    "pinned": [],
+    "optional": []
+  },
+  "excluded": [
+    "legacy/",
+    "local state",
+    "credentials",
+    "uncertified artifacts"
+  ],
+  "nextPhase": "F02"
+}
