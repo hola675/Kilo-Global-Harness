@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.23.0",
+    "version": "0.24.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
   "targetHarnessVersion": "1.0.0",
-  "status": "native-poc-in-progress",
+  "status": "native-poc-limited-core-preparation",
   "installable": false,
   "target": {
     "os": "Windows",
@@ -69,12 +69,13 @@
         "granular-fixtures-preparation-and-unchanged-hashes",
         "granular-agent-dispatch-recovered",
         "granular-file-edit-positive-negative",
-        "explicit-agent-edit-denial-with-protected-hash-unchanged"
+        "explicit-agent-edit-denial-with-protected-hash-unchanged",
+        "two-background-notifications-without-reported-resume",
+        "leader-independent-read-and-partial-integration"
       ],
       "pendingChecks": [
         "billing",
         "global-installation",
-        "coordination-without-redundant-resume",
         "session-permission-inheritance",
         "filesystem-isolation",
         "builder-pre-post-hash-comparison-not-supplied",
@@ -85,7 +86,9 @@
         "terminal-task-failure-recovery",
         "operational-state-persistence",
         "child-resume-after-restart",
-        "compaction-reconciliation-current-state-not-conclusive"
+        "compaction-reconciliation-current-state-not-conclusive",
+        "coordination-no-redundant-polling",
+        "global-instruction-resolution-and-shadowing"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",
@@ -147,6 +150,16 @@
         "granularProtectedHashUnchangedReported": true,
         "patchToolAvailableReported": true,
         "exactMutatingToolCallVerified": false
+      },
+      "coordinationEvidence": {
+        "status": "PASS_REPORTED_PARTIAL_INTEGRATION",
+        "desktopWorkedForSeconds": 80,
+        "backgroundChildrenReported": 2,
+        "completionNotificationsReported": 2,
+        "redundantResumeReported": false,
+        "absenceOfPollingVerified": false,
+        "scopedBuilderDeliverableAccepted": false,
+        "routeErrorReported": true
       }
     }
   },
@@ -167,7 +180,7 @@
     "credentials",
     "uncertified artifacts"
   ],
-  "nextPhase": "F03",
+  "nextPhase": "F04",
   "modelPolicy": {
     "mode": "operator-configurable-model-independent",
     "provisionalLabReference": "kilo/openai/gpt-6-luna",
@@ -192,5 +205,13 @@
     "centralSelectionStatus": "PASS_REPORTED_MATCH_WITHOUT_INDIVIDUAL_MODEL",
     "centralConfigurationMatchReported": true,
     "subagentModelPrecedenceVerified": false
+  },
+  "phaseGate": {
+    "F03": "DONE_POC_LIMITED",
+    "F04": "IN_PROGRESS",
+    "developmentCandidatesAllowed": true,
+    "globalActivationAuthorized": false,
+    "fullRuntimeCertification": false,
+    "releaseAuthorized": false
   }
 }

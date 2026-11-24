@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.23.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.24.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -93,3 +93,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — edición granular comprobada
 - Calidad: despacho corregido, edición autorizada y rechazo explícito de edición protegida reportados; hashes externos verifican diferencia e integridad. apply_patch comparte permiso edit según fuente; herramienta exacta por llamada no acreditada.
 - Política/contrato: capacidades semánticas y herramientas expuestas, sin eludir denegaciones. Preparada F03.8 de coordinación sin reanudación redundante. Sin instalación global.
+
+## 2026-11-24 — coordinación y transición limitada a F04
+- Calidad: dos notificaciones, trabajo independiente y no reanudación reportados; integración parcial por error de ruta, ausencia de polling no acreditada.
+- Política/contrato: referencias concretas y base de workspace; retorno terminal no equivale a aceptación. F03 cerrada como PoC limitada para desarrollo candidato; F04.1 preparación de prueba de instrucciones globales, sin instalación ni certificación integral.
