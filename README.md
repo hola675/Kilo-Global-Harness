@@ -1,11 +1,13 @@
 # KILO-GLOBAL-HARNESS-TEAM
 
-Nueva etapa del proyecto iniciada el 2026-11-24.
+Nueva etapa iniciada el 2026-11-24. Code, el agente nativo de Kilo Desktop, será el líder; los especialistas serán subagentes nativos. El equipo aprovechará las herramientas, skills, plugins y MCP disponibles sin sustituir el motor de Kilo.
 
-El agente nativo Code de Kilo Code Desktop sera el lider. Los especialistas seran subagentes nativos. La arquitectura se definira a partir de las capacidades verificadas de Kilo, sus plugins y MCP.
+## Investigación
 
-## Archivo historico
+[Investigación inicial y plan de certificación](docs/INVESTIGACION-KILO-NATIVO.md).
 
-`legacy/` conserva exactamente el arbol Git de la implementacion anterior, commit `79879427a9799a53bafce5f4fd466ccf417da484`. Es solo referencia; no es un paquete activo ni debe instalarse desde esta nueva etapa.
+## Archivo histórico
 
-Estado: investigacion y diseno; no hay instalador nuevo certificado.
+`legacy/` conserva exactamente el árbol Git de la implementación anterior, commit `79879427a9799a53bafce5f4fd466ccf417da484`. Es solo referencia; no es un paquete activo ni debe instalarse desde esta nueva etapa.
+
+Estado: investigación y diseño; no hay instalador nuevo certificado.
