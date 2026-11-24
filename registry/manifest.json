@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.34.0",
+    "version": "0.35.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -223,7 +223,7 @@
     "F04_1": "DONE_REPORTED_RECOVERED",
     "F04_2": "CANDIDATE_PREPARED",
     "F04_3_6": "STATIC_REVIEW_COMPLETE",
-    "F04_7": "BEHAVIOR_IN_PROGRESS"
+    "F04_7": "BEHAVIOR_IN_PROGRESS_CORRECTION_REQUIRED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -315,7 +315,24 @@
         "toolTraceSupplied": false
       },
       "C2": {
-        "status": "NOT_RUN"
+        "status": "FAIL_COORDINATION_ACCEPTANCE",
+        "functionalStatus": "PASS_REPORTED",
+        "desktopWorkedForSeconds": 129,
+        "delegationsReported": 2,
+        "assignedRolesExplicit": true,
+        "autonomousRoleSelectionVerified": false,
+        "bothResultsReported": true,
+        "backgroundVerified": false,
+        "independentCompletionNotificationsVerified": false,
+        "leaderReadDelegatedFixturesBeforeDispatch": true,
+        "redundantReadsStatus": "FAIL",
+        "scopeDisciplineStatus": "FAIL",
+        "globalFilesReadReported": true,
+        "resumeVisibleReported": false,
+        "exhaustiveNoResumeVerified": false,
+        "noMutationReported": true,
+        "gitStatusUnchangedReported": true,
+        "untrackedFileContentIntegrityVerified": false
       },
       "C3": {
         "status": "NOT_RUN"
@@ -329,6 +346,16 @@
       "C6": {
         "status": "NOT_RUN"
       }
+    },
+    "pendingPolicyRefinement": {
+      "status": "PROPOSED_NOT_ACTIVE",
+      "topics": [
+        "minimum-preflight-before-dispatch",
+        "exclusive-execution-ownership",
+        "scope-bounded-discovery",
+        "skill-relevance",
+        "proportionate-evidence-validation"
+      ]
     }
   }
 }
