@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.33.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.34.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -125,3 +125,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — recuperación textual del núcleo
 - Calidad: versión, marcador temporal, proyecto, identidad declarada y routing reportados; cotejo persistente de marcador/hashes pendiente. Preparado C1 sin inducir selección de nivel ni herramienta. Conducta y retirada NOT_RUN.
+
+## 2026-11-24 — carga del núcleo y primer resultado funcional
+- Calidad: cuatro MATCH del script Verificar y marcador cotejado; C1 contenido correcto, routing no acreditado. Preparado C2 de coordinación con rutas exactas y aceptación de resultados. Retirada y certificación completa pendientes.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.33.0",
+    "version": "0.34.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -223,7 +223,7 @@
     "F04_1": "DONE_REPORTED_RECOVERED",
     "F04_2": "CANDIDATE_PREPARED",
     "F04_3_6": "STATIC_REVIEW_COMPLETE",
-    "F04_7": "LOAD_REPORTED_PENDING_LOCAL_VERIFICATION"
+    "F04_7": "BEHAVIOR_IN_PROGRESS"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -278,12 +278,12 @@
     "path": "team/policies/AGENTS.md",
     "version": "0.14.0",
     "evaluation": "tests/F04-NUCLEO.md",
-    "runtimeStatus": "LOAD_REPORTED_PENDING_LOCAL_VERIFICATION",
+    "runtimeStatus": "LOAD_PASS_REPORTED_BEHAVIOR_IN_PROGRESS",
     "active": false,
     "probe": {
       "path": "scripts/Probar-Nucleo-KiloTeam.ps1",
       "version": "0.1.0",
-      "runtimeStatus": "MARKER_RETURNED_REPORTED",
+      "runtimeStatus": "VERIFY_PASS_REPORTED",
       "persistentOwnership": true,
       "installation": false
     },
@@ -299,9 +299,36 @@
         "N3",
         "N4"
       ],
-      "persistentMarkerAndHashesVerified": false,
-      "behaviorStatus": "NOT_RUN",
-      "cleanupStatus": "NOT_RUN"
+      "persistentMarkerAndHashesVerified": true,
+      "behaviorStatus": "IN_PROGRESS",
+      "cleanupStatus": "NOT_RUN",
+      "verificationScope": "operator-reported-local-script",
+      "originalHashMatchReported": true,
+      "overlayHashMatchReported": true,
+      "policyHashMatchReported": true,
+      "markerMatchReported": true
+    },
+    "behaviorEvidence": {
+      "C1": {
+        "functionalStatus": "PASS_REPORTED",
+        "routingStatus": "NOT_VERIFIED",
+        "toolTraceSupplied": false
+      },
+      "C2": {
+        "status": "NOT_RUN"
+      },
+      "C3": {
+        "status": "NOT_RUN"
+      },
+      "C4": {
+        "status": "NOT_RUN"
+      },
+      "C5": {
+        "status": "NOT_RUN"
+      },
+      "C6": {
+        "status": "NOT_RUN"
+      }
     }
   }
 }
