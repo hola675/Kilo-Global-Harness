@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.11.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.12.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -48,3 +48,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — resiliencia e independencia de modelos
 - Runtime: selección explícita por agente y coincidencia comercial de Luna reportadas; proveedor independiente y facturación no verificados.
 - Gobierno/arquitectura: Luna provisional; selección central configurable, modelos gratuitos y de pago autorizados, contratos y verificación objetiva independientes del modelo, adaptación acotada y comparación F12. F03.4E preparada. Se consolidó detalle de resolución en integración y evidencia en laboratorio; sin instalación global.
+
+## 2026-11-24 — configuración central y continuidad
+- Runtime: lector sin modelo individual ejecutado con modelo coincidente con configuración central; precedencia exacta y facturación pendientes.
+- Calidad: casos focalizados de reanudación de hijo propio, aislamiento Swarm y rechazo de reanudación desde otra raíz preparados; sin instalación global.
