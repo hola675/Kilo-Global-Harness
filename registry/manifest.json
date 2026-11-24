@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.25.0",
+    "version": "0.26.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -224,8 +224,14 @@
     "claudeFallbackInstructionsExistReported": false,
     "powershellEnvOverridesPresentReported": false,
     "desktopProcessEnvIndependentlyVerified": false,
-    "effectiveLoadStatus": "NOT_RUN",
+    "effectiveLoadStatus": "NOT_VERIFIED",
     "shadowingPrecedenceVerified": false,
-    "temporaryProbePrepared": true
+    "temporaryProbePrepared": true,
+    "automaticGlobalMarkerStatus": "NOT_AVAILABLE_REPORTED",
+    "projectMarkerRecoveredReported": true,
+    "probeCreationAndCleanupIndependentlyVerified": false,
+    "serviceConfigOverrideSourceConfirmed": true,
+    "explicitGlobalInstructionsSourceConfirmed": true,
+    "explicitGlobalInstructionsProbeStatus": "NOT_RUN"
   }
 }

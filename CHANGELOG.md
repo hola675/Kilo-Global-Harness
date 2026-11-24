@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.25.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.26.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -100,3 +100,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — diagnóstico de rutas globales
 - Integración: directorios de usuario y perfil Desktop existentes; tres archivos globales ausentes según operador. Preparada prueba temporal de marcador aleatorio, creación exclusiva y retirada por hash; carga efectiva pendiente. Sin instalación global definitiva.
+
+## 2026-11-24 — resolución de instrucciones globales
+- Runtime: marcador global no disponible, marcador proyecto correcto. Auditoría distingue Global.Path.config XDG y servicio global.config con override de Desktop; preparada alternativa instructions absoluta desde JSONC global de usuario, condicionada a ausencia de conflictos y propiedad comprobable. Sin instalación global ni modificación de perfil.

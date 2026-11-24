@@ -1,5 +1,5 @@
 # Auditoría de código fuente: Desktop 1.0.0 y motor CLI 7.8.27
-Versión del archivo: 0.1.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
 Estado: auditoría estática focalizada, no certificación Windows.
 
 ## Referencias fijadas
@@ -46,3 +46,6 @@ Fuentes: https://github.com/Kilo-Org/kilo-desktop/blob/0e86bc8c350b5ee2009bbb8d4
 - Mantener Team Learning como metaskill de Code y no segundo líder.
 
 Estado: F02 runtime sigue pendiente; sin compilación ni ejecución de Desktop/CLI, ni pruebas en Windows. No se modifica upstream ni legacy. Las conclusiones de código son de snapshots fijados, no afirmaciones sobre releases posteriores.
+
+## Adenda F04.1B — distinción Global.Path.config y servicio global.config
+Corrección de auditoría estática: https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/core/src/global.ts define Global.Path.config XDG, pero make() fija servicio global.config = Flag.KILO_CONFIG_DIR ?? Path.config. En https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/session/instruction.ts#L63-L73 las dos primeras rutas pueden ser iguales bajo override; no hay fallback automático garantizado a AGENTS.md XDG. systemSources reevalúa existencia en cada invocación (145–150); no atribuir a caché sin evidencia. Desktop fija KILO_CONFIG_DIR en https://github.com/Kilo-Org/kilo-desktop/blob/0e86bc8c350b5ee2009bbb8d4722c955355bbe10/plugins/core/src/main/agent/KiloServerManager.ts#L760-L794. Por separado, config.ts carga JSON/JSONC globales mediante Global.Path.config (https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/config/config.ts#L459-L480), merge conserva origen confiable global (646–665) e Instruction.systemSources admite instrucciones absolutas configuradas (165–182). Hipótesis fundamentada: usar instructions explícito desde JSONC global del usuario, sin modificar perfil Desktop. No afirmar causa observada ni soporte funcional hasta prueba.
