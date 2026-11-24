@@ -1,5 +1,5 @@
 # Equipo nativo — diseño de roles
-Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
 
 No hay agentes nuevos instalables aún. Identificadores candidatos team-*, mode: subagent, nombre/description/prompt y permisos según esquema certificado en F02. Resolución nativa de modelos por defecto (puede usar configuración/estado y fallback al padre); override dinámico solo cuando el usuario lo solicite y exista catálogo verificable. Code, general y explore nativos no se duplican.
 
@@ -19,3 +19,6 @@ No hay agentes nuevos instalables aún. Identificadores candidatos team-*, mode:
 Matriz de intención, no configuración efectiva: constructores pueden leer/escribir/ejecutar dentro de asignación; investigadores leen y reportan; revisores ejecutan comprobaciones seguras y no mutan entregable revisado. MCP por necesidad y capacidad; skills accesibles según permisos nativos. Profundidad nativa inicial 1; delegación anidada opt-in solo con caso probado, lista autorizada y profundidad/concurrencia medida. No heredar globalmente los permisos de Code; comprobar guardas de sesión padre, agente propio y Desktop. Code coordina. No asumir que prompt impide escrituras; verificar enforcement nativo y límites de shell/MCP. El snapshot Desktop deshabilita sandbox de agente: checkout separado reduce colisiones, no confina filesystem. Restringir herramientas o usar aislamiento técnico verificable si requerido. Probar permisos positivos y negativos con cada rol.
 ## Alta de rol
 Crear solo cuando no cubre un rol existente, demostrar beneficio, definir descripción discriminante, responsabilidades, entradas/salidas, herramientas, permisos, ejemplos de routing, eval y versionado.
+
+## Evidencia de laboratorio y consecuencia de diseño
+F03.4A reportó read operativo y herramientas edit/write/apply_patch/bash/task ausentes en lector; hash del fixture inalterado confirmado por operador. Ausencia de herramienta no es rechazo de llamada, ni demuestra confinamiento. No extrapolar esta matriz a constructores: F03.4B prueba edit y bash positivos con agente separado. En roles de desarrollo buscar capacidad efectiva de editar y ejecutar pruebas; en roles de revisión/investigación evitar mutación no necesaria. No usar permisos de un rol lector como plantilla indiscriminada del equipo. El glob de rutas ocultas tuvo resultados vacíos en esta muestra; usar read de directorio conocido como alternativa de lectura autorizada, sin concluir defecto general.

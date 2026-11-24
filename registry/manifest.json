@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.6.0",
+    "version": "0.7.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -37,16 +37,22 @@
         "both-native-completion-notifications",
         "swarm-bounded-interval-overlap",
         "leader-marker-during-overlap",
-        "board-incremental-cursor"
+        "board-incremental-cursor",
+        "reader-read-operation",
+        "reader-mutating-tools-not-exposed",
+        "reader-fixture-hash-unchanged"
       ],
       "pendingChecks": [
         "child-model",
         "billing",
         "board-root-isolation",
-        "effective-permissions",
         "recovery",
         "global-installation",
-        "coordination-without-redundant-resume"
+        "coordination-without-redundant-resume",
+        "builder-edit-shell-positive",
+        "session-permission-inheritance",
+        "explicit-denial-if-exposed",
+        "filesystem-isolation"
       ],
       "overlapEvidence": {
         "type": "operator-reported-swarm-publication-intervals",

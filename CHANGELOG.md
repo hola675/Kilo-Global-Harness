@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.6.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.7.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -30,3 +30,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — solapamiento observable
 - Runtime/calidad: intervalos Swarm A/B con 17.256 ms de intersección, marca Code dentro, cursor incremental y notificaciones originales reportados. No certifica inferencia simultánea ni modelo de hijos. F03 abierta.
 - Política: evitar reanudación por mera demora de notificación; task_id solo para trabajo adicional autorizado o recuperación de fallo confirmado. Preparada prueba focalizada de permisos; sin instalación global.
+
+## 2026-11-24 — permisos del lector
+- Calidad/runtime: lectura y ausencia reportada de herramientas mutantes; hash del fixture antes/después idéntico. No hubo rechazo explícito ni prueba de aislamiento.
+- Equipo: distinguir lector de constructor; F03.4B de edición y shell positivos preparada. Sin instalación global ni cambios en legacy.
