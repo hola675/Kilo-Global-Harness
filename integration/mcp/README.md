@@ -1,9 +1,9 @@
 # Estrategia MCP y plugins
-Versión del archivo: 0.1.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
 
-F09: primero inventariar herramientas existentes y nativas. Para cada servidor: nombre, origen oficial, versión fijada, transport, capacidades, ámbito, dependencias, permiso, estado de conexión, llamada inocua y agentes autorizados. No registrar secretos. No instalar catálogo entero ni confiar solo en marketplace o tool annotations.
+F09: primero inventariar herramientas nativas, gateway interno desktop_* (sin tocar autenticación), MCP estándar existentes y plugins de motor. Separar plugins Desktop (kernel/main/web, contribución kilo.core/tool) de plugins CLI (hooks/config). Marketplace usa API del CLI; preferir integración soportada y verificar herramientas por chat/agente. Para cada servidor: nombre, origen oficial, versión fijada, transport, capacidades, ámbito, dependencias, permiso, estado de conexión, llamada inocua y agentes autorizados. No registrar secretos. No instalar catálogo entero ni confiar solo en marketplace o tool annotations.
 Candidatos sujetos a revisión: GitHub oficial (repositorios), Playwright (navegador/pruebas), Chrome DevTools (diagnóstico), shadcn (componentes), documentación técnica (fuentes oficiales), diseño/imagen según herramientas ya instaladas y autorizadas, análisis de código/LSP y DB solo si requeridos. Reutilizar MCP ya presentes. Elegir un navegador principal por tarea; no duplicar Playwright/DevTools si no hay beneficio.
-F10: MCP propios solo para carencias demostradas. Candidatos:
+F10: después de F07, F09 y F11, MCP propios solo para carencias demostradas. Estado nativo y archivos simples de aprendizaje primero; no duplicar gateway Desktop ni usar tokens internos, ASAR o endpoints privados como interfaz del Harness. Candidatos:
 | Candidato | Brecha a demostrar | Herramientas propuestas |
 |---|---|---|
 | team-state | no existe persistencia/consulta nativa de contrato | status, checkpoint, list_ready (alcance local) |

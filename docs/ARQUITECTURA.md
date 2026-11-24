@@ -1,5 +1,5 @@
 # Arquitectura y estructura
-Versión del archivo: 0.1.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
 
 ## Capas
 1. Host: Kilo Desktop y su engine, proveedor/modelo ya configurado. Code conserva modo y prompt nativos.
@@ -30,3 +30,9 @@ Usuario → Code → clasificación/objetivo/criterios → ejecución directa o 
 
 ## Estado
 Separar definición versionada en Git, configuración instalada, credenciales del proveedor y datos efímeros. Checkpoints contienen identificadores, alcance, commit base, resultados y siguiente acción, nunca secretos. Identidad estable por proyecto y sesión; no basarse en basename. No afirmar persistencia tras cerrar Desktop sin prueba. Si una capacidad falta, degradar a ejecución secuencial o manual con evidencia.
+
+## Ajustes derivados de la auditoría
+Desktop (kernel Electron/React y plugins) → kilo.core → CLI empaquetado kilo serve → sesión Code → Task hijas. Desktop work session agrupa chats; chat equivale a sesión del motor, no a un trabajador autónomo. Workspace-board visual no es Swarm; cola de prompts no es grafo de dependencias.
+La coordinación usa eventos de finalización del Task y árbol de sesiones nativos; no implementar scheduler/polling/servidor adicional. Un contrato es lógico: no extender schema Task ni confundir task_ref del Harness con task_id nativo de reanudación.
+Separar configuración global XDG, perfil administrado KILO_CONFIG_DIR y configuración de proyecto/checkout principal. No escribir en perfil administrado ni sidecar de Desktop. Reutilizar gateway desktop_* sin acceder a su autenticación interna. Plugins de motor y Desktop tienen ciclos y contratos distintos.
+La auditoría indica sandbox de agente deshabilitado en el snapshot Desktop: aislamiento de checkout no es sandbox de ejecución. Restringir herramientas o usar entorno aislado verificable cuando el riesgo lo requiera. Referencia: [auditoría](AUDITORIA-CODIGO-KILO-DESKTOP.md).

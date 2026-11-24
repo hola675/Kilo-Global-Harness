@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.1.0",
+    "version": "0.2.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -12,7 +12,14 @@
     "os": "Windows",
     "host": "Kilo Code Desktop",
     "baselineCandidate": "1.0.0",
-    "verifiedVersions": []
+    "verifiedVersions": [],
+    "sourceAudit": {
+      "desktopVersion": "1.0.0",
+      "desktopCommit": "0e86bc8c350b5ee2009bbb8d4722c955355bbe10",
+      "cliVersion": "7.8.27",
+      "cliCommit": "03a6f07d053cd7e6aa88fa1e258e93510335259f",
+      "status": "static-only"
+    }
   },
   "leader": "native Code",
   "components": [],
