@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.27.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.28.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -106,3 +106,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — protección de configuración existente
 - Integración: preflight abortó por kilo.jsonc de usuario existente. Preparada prueba de overlay kilo.json mediante merge nativo, condicionada a ausencia de instructions y otros candidatos, con verificación de hashes y retirada selectiva. No se sobrescribe configuración existente.
+
+## 2026-11-24 — recuperación de instrucciones explícitas
+- Integración: overlay creado sin sobrescribir JSONC, último informe devuelve marcador global y de proyecto; cotejo local exacto y retirada pendientes. Estrategia complementaria candidata condicionada a compatibilidad y propiedad. Sin instalación definitiva.

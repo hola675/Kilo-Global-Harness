@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.27.0",
+    "version": "0.28.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -72,7 +72,9 @@
         "explicit-agent-edit-denial-with-protected-hash-unchanged",
         "two-background-notifications-without-reported-resume",
         "leader-independent-read-and-partial-integration",
-        "global-instruction-candidate-path-inventory-no-existing-files"
+        "global-instruction-candidate-path-inventory-no-existing-files",
+        "global-config-overlay-created-original-unchanged-at-creation",
+        "explicit-global-marker-returned-reported"
       ],
       "pendingChecks": [
         "billing",
@@ -224,7 +226,7 @@
     "claudeFallbackInstructionsExistReported": false,
     "powershellEnvOverridesPresentReported": false,
     "desktopProcessEnvIndependentlyVerified": false,
-    "effectiveLoadStatus": "NOT_VERIFIED",
+    "effectiveLoadStatus": "POSITIVE_REPORTED_PENDING_EXACT_MATCH",
     "shadowingPrecedenceVerified": false,
     "temporaryProbePrepared": true,
     "automaticGlobalMarkerStatus": "NOT_AVAILABLE_REPORTED",
@@ -232,11 +234,19 @@
     "probeCreationAndCleanupIndependentlyVerified": false,
     "serviceConfigOverrideSourceConfirmed": true,
     "explicitGlobalInstructionsSourceConfirmed": true,
-    "explicitGlobalInstructionsProbeStatus": "NOT_RUN",
+    "explicitGlobalInstructionsProbeStatus": "MARKER_RETURNED_REPORTED",
     "existingUserJsoncDetectedReported": true,
     "existingConfigOverwriteGuardStatus": "PASS_REPORTED",
-    "overlayProbeStatus": "NOT_RUN",
+    "overlayProbeStatus": "MARKER_RETURNED_REPORTED",
     "overlayProbePrepared": true,
-    "existingConfigContentVerified": false
+    "existingConfigContentVerified": false,
+    "existingConfigPropertyCountReported": 1,
+    "existingConfigInstructionsAbsentReported": true,
+    "originalConfigIntactAtOverlayCreationReported": true,
+    "globalMarkerReturnedReported": true,
+    "exactMarkerMatchVerified": false,
+    "cleanupStatus": "PENDING",
+    "earlierUnavailableReportsObserved": true,
+    "preferredCandidate": "user-kilo-json-overlay-explicit-instructions"
   }
 }

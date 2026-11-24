@@ -1,5 +1,5 @@
 # Dependencias, instalación y distribución
-Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
 
 No hay instalador activo. Windows, usuario habitual sin administrador por defecto; Kilo Desktop instalado desde canal oficial y autenticado por usuario. No asumir disponibilidad de red ni instalar dependencias automáticamente.
 ## Dependencias
@@ -13,3 +13,6 @@ Manifiesto con id, versión Harness, rango Desktop probado, paths relativos, des
 
 ## Compatibilidad y propiedad tras auditoría
 Certificar el par Desktop/CLI empaquetado (referencia estática 1.0.0/7.8.27), no instalar otro CLI por defecto. Detectar actualizaciones del host y recertificar si cambian contratos. Registrar hash del binario real, configuración global XDG y perfil administrado Desktop por separado. No editar sidecar de propiedad ni perfil administrado, ni copiar tokens; si AGENTS.md global queda oculto por perfil, bloquear activación y elegir integración soportada tras prueba. Resolver rutas de checkout principal y colisiones de agente/skill. Manifiesto de propiedad propio solo para archivos del Harness; no apropiarse de componentes nativos o Marketplace. Verificar con sesión nueva después de cambio; reinicio del servidor solo si necesario y autorizado.
+
+## Estrategia candidata de instrucciones globales
+F04.1C-R1 recuperó marcador global mediante referencia absoluta instructions en kilo.json complementario de usuario, con kilo.jsonc existente intacto al crear; comparación exacta y retirada pendientes. Preferir esta vía solo si se certifica y no hay conflicto de archivos o instructions. No asumir que todos los candidatos se combinan sin colisiones. Proteger configuración ajena, perfil Desktop y sidecar; registrar propiedad y hashes, prever cambio de precedencia, actualizaciones y drift. No convertir overlay temporal en instalación permanente sin pruebas del núcleo y autorización. Ver integración Kilo y roadmap.
