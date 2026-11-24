@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.29.0",
+    "version": "0.30.0",
     "last_modified": "2026-11-24"
   },
   "id": "kilo-global-harness-team",
@@ -245,13 +245,19 @@
     "originalConfigIntactAtOverlayCreationReported": true,
     "globalMarkerReturnedReported": true,
     "exactMarkerMatchVerified": false,
-    "cleanupStatus": "BLOCKED_MISSING_SESSION_REFERENCES",
+    "cleanupStatus": "BLOCKED_OVERLAY_HASH_DRIFT",
     "earlierUnavailableReportsObserved": true,
     "preferredCandidate": "user-kilo-json-overlay-explicit-instructions",
     "cleanupRecoveryPrepared": true,
     "historicalConfigHashesAvailable": true,
     "historicalMarkerHashAvailable": false,
     "markerTemplateRecoveryStatus": "NOT_RUN",
-    "persistentProbeOwnershipRecordRequired": true
+    "persistentProbeOwnershipRecordRequired": true,
+    "originalConfigHistoricalHashMatchReported": true,
+    "overlayHistoricalHashMismatchReported": true,
+    "overlayCurrentContentVerified": false,
+    "nativeSchemaInsertionSourceConfirmed": true,
+    "overlayDriftCauseVerified": false,
+    "semanticRecoveryPrepared": true
   }
 }

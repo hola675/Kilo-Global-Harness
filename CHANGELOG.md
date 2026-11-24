@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.29.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.30.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -112,3 +112,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — recuperación de referencias de la prueba global
 - Integración: cierre abortado antes de retirar por variables de sesión ausentes. Preparada recuperación con hashes históricos de configs y comparación exacta con plantilla conocida del marcador; no se afirma hash histórico de AGENTS.md. Incorporar registro local persistente de propiedad en futuras pruebas. Limpieza aún pendiente.
+
+## 2026-11-24 — normalización nativa de configuración
+- Integración: hash original coincide según flujo, overlay difiere; retirada abortada. Fuente confirma inserción automática de $schema, causa local no verificada. Preparada comprobación semántica estricta y retirada autorizada solo de temporales identificados. F13 deberá contemplar normalización nativa y propiedad persistente.
