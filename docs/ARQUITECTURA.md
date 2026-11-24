@@ -1,8 +1,8 @@
 # Arquitectura y estructura
-Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
 
 ## Capas
-1. Host: Kilo Desktop y su engine, proveedor/modelo ya configurado. Code conserva modo y prompt nativos.
+1. Host: Kilo Desktop y su engine, proveedor/modelo seleccionado por el usuario. Code conserva modo y prompt nativos. Selección de modelos independiente de roles, skills y coordinación.
 2. Comportamiento: política global breve, instrucciones del proyecto y skills bajo demanda; sin duplicar instrucciones nativas.
 3. Equipo: agentes Markdown subagent; Code elige roles por descripción; general/explore existentes se reutilizan.
 4. Coordinación: task foreground/background y board donde estén expuestos; contratos y propiedad de archivos; estado nativo primero, checkpoints propios solo si falta continuidad.
@@ -36,3 +36,6 @@ Desktop (kernel Electron/React y plugins) → kilo.core → CLI empaquetado kilo
 La coordinación usa eventos de finalización del Task y árbol de sesiones nativos; no implementar scheduler/polling/servidor adicional. Un contrato es lógico: no extender schema Task ni confundir task_ref del Harness con task_id nativo de reanudación.
 Separar configuración global XDG, perfil administrado KILO_CONFIG_DIR y configuración de proyecto/checkout principal. No escribir en perfil administrado ni sidecar de Desktop. Reutilizar gateway desktop_* sin acceder a su autenticación interna. Plugins de motor y Desktop tienen ciclos y contratos distintos.
 La auditoría indica sandbox de agente deshabilitado en el snapshot Desktop: aislamiento de checkout no es sandbox de ejecución. Restringir herramientas o usar entorno aislado verificable cuando el riesgo lo requiera. Referencia: [auditoría](AUDITORIA-CODIGO-KILO-DESKTOP.md).
+
+## Resiliencia frente al modelo
+Capas de control (diseño, no runtime instalado): selección nativa autorizada → contrato de tarea y contexto suficiente → ejecución acotada según capacidades observadas → verificación objetiva → integración o corrección acotada → aprendizaje reutilizable. El modelo interpreta y ejecuta; el contrato define qué se acepta, las herramientas aportan evidencia y el líder integra. Ninguna capa garantiza compensar ausencia de razonamiento, contexto o tool calling. No rebajar controles ni cambiar proveedor sin autorización. Comparación entre modelos en F12; reutilizar fixtures y pruebas existentes. Política normativa en [plan maestro](PLAN-MAESTRO.md).

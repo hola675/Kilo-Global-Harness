@@ -1,5 +1,5 @@
 # Política de pruebas y certificación
-Versión del archivo: 0.2.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
 
 ## Estrategia
 - T0 estática: esquema, YAML/JSONC, nombres, metadatos, referencias, licencias y manifiesto.
@@ -21,3 +21,6 @@ Tiempo total, trabajo simultáneo observado (intervalos solapados), llamadas, re
 - T3/T4: selección nativa de modelo, detección de skill, Team Learning sin plugin primero, aislamiento multi-root de observaciones.
 - T5: proteger perfil administrado y sidecar, configuración ajena, divergencias de versión del host y recertificación. No exponer credenciales.
 La referencia estática no acredita PASS de ningún caso.
+
+## Comparación de resiliencia por modelo (F12)
+Usar mismos fixtures, contratos, límites de herramientas y criterios de aceptación; registrar modelo/proveedor cuando observable, variante, contexto, operaciones correctas, fallos, reintentos, latencia, coste observable y recuperación. Seleccionar al menos dos modelos representativos autorizados (gratuito y de pago/suscripción si disponibles) sin prometer equivalencia. No ampliar coste sin autorización. Una prueba no ejecutada queda NOT_RUN/BLOCKED, no PASS. Comparar con baseline sin Harness cuando sea viable y proporcional. Revisar divergencias, adaptar granularidad/contexto y repetir solo caso afectado; no bajar criterios de seguridad/calidad ni confundir evaluación de salida con introspección del modelo.
