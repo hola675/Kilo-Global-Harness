@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.69.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.70.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -245,3 +245,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — F05-C-PERM-D4
 - Pruebas: aprobación única confirmada por operador y salida de versión reportada; ask focalizado PASS_REPORTADO. Siguiente restricción shell de Faro sin habilitar permisos. Sin cambios de código, agentes, configuración o instalación.
+
+## 2026-11-24 — F05-C-PERM-03
+- Pruebas: Faro sin shell expuesto, PASS_EXPOSICION_REPORTADO; denegación dinámica NOT_RUN. Reutilizar inventarios de revisores; siguiente retirada selectiva de extensión tras huella y autorización. Sin cambios de código, permisos o instalación.
