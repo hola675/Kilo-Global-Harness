@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.75.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.76.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -300,3 +300,6 @@ B1 directo PASS_REPORTADO semántico; B2 despacho agrupado de Seguridad y Editor
 
 ## F05-B-R — integración reportada y revisión bloqueada
 Historial reportado: tres tareas completed y resultados recibidos antes de entrega, ninguna activa observable, aportaciones y ajustes identificados. PASS_REPORTADO de selección/recepción/integración/cierre de ejecución; Veritas BLOCKED al no recibir diseño concreto, FAIL de dependencia de revisión, no aceptación final. Herramientas de hijos y solape no acreditados. Doce MATCH, auxiliar MATCH_TEMPLATE, PASS_INTEGRIDAD_LOCAL. Siguiente F05-B-RQ: recuperar revisión del diseño existente con contexto concreto y una delegación focalizada, sin repetir resultados válidos, sin mutación ni ejecución. Mantener política 0.17.0; registrar defecto inicial para regresión F07/F11. F05.4 IN_PROGRESS, instalación global pendiente.
+
+## F05-B-RQ — recuperación asistida y entrada a retirada
+Code reporta revisión focalizada con diseño concreto y correcciones de idempotencia, autorización y resultado incierto; una delegación Quality observable, aceptación conceptual condicionada y recuperación PASS_REPORTADO. Informe final de no nuevas delegaciones es ambiguo frente a traza; revisión independiente del delta material NOT_VERIFIED. Mantener defecto inicial para F07/F11; no repetir diseño ni cambiar política. F05.4 cierre PoC limitado condicionado a integridad posterior; F05.5 IN_PROGRESS: Kilo cerrado, Verificar doce MATCH, consentimiento de retirada propia/auxiliar, Retirar y Diagnostico F05_AUSENTE. Tras evidencia consolidar F05 DONE_POC_LIMITED y continuar F06; no activar globalmente ni declarar permisos/aislamiento universales.
