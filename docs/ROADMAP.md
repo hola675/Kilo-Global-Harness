@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.67.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.68.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -276,3 +276,6 @@ Registro reportado confirma mismo especialista y sesiones hijas nuevas; segundo 
 
 ## F05-C-PERM-D2 — candidato de autorización global y D3
 Captura actual Manual, variables ausentes en alcances comprobados, regla global echo * = allow, definición directa única en rutas comprobadas, huella intacta. Candidato explica plausiblemente PERM-02, no origen/precedencia histórica confirmados; snapshot también incluye regla nativa echo *. Siguiente D3 en chat nuevo Manual: sonda node --version con binario previamente aprobado y revalidado, rechazo primero y aprobación puntual separada solo si rechazo PASS. Sin tocar configuración global ni agentes; no repetir echo ni suite. F05.4 IN_PROGRESS, permisos BLOCKED.
+
+## F05-C-PERM-D3 — rechazo alternativo positivo
+Operador reporta Veritas/functions.bash, node --version, solicitud nativa y rechazo sin ejecución; control PASS_REPORTADO, operación BLOCKED. Identidad revalidada de Node no aportada en este informe; confirmar antes de D4. Evidencia favorable de ask fuera de echo *, no causalidad histórica acreditada. Siguiente D4: nueva Task, misma sonda, Manual y aprobación única con salida real. Sin cambios de permisos ni repetición de suite. F05.4 IN_PROGRESS; permisos y activación global pendientes.
