@@ -1,10 +1,10 @@
 # F06 — Evaluación de skills base
-Versión del archivo: 0.14.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.15.0 | Última modificación: 2026-11-25
 
-Estado: diseño de evaluación, runtime NOT_RUN. Conservar la política 0.17.0 y los nueve agentes 0.2.0 como referencia; no activar globalmente. Usar laboratorio registrado y descartable, modelo explícitamente autorizado, sin secretos ni cambios en proyectos reales. Verificar colisiones y disponibilidad por sesión y rol antes de probar. Una descripción visible no demuestra carga; carga no demuestra mejora.
+Estado: diseño de evaluación, runtime NOT_RUN. Conservar la política 0.17.0 y los nueve agentes 0.2.0 como referencia histórica inicial; cada sección fija su comparación histórica. Para candidato conjunto F06-AUD-R usar inventario actual del manifiesto y política 0.21.0; no activar globalmente. Usar laboratorio registrado y descartable, modelo explícitamente autorizado, sin secretos ni cambios en proyectos reales. Verificar colisiones y disponibilidad por sesión y rol antes de probar. Una descripción visible no demuestra carga; carga no demuestra mejora.
 
 ## F06.1 — team-routing (candidato 0.2.0)
-Fuentes: especificación Agent Skills y documentación Kilo consultadas el 2026-11-25; cargador CLI fijado en el SKILL.md, MIT, inspección selectiva, no auditoría de descubrimiento. Sin material externo copiado. El enfoque nativo bajo demanda evita sumar instrucciones a cada interacción; alternativa es ampliar AGENTS.md, descartada inicialmente por costo de contexto y solapamiento. No scripts ni comandos embebidos.
+Fuentes: especificación Agent Skills y documentación Kilo consultadas el 2026-11-25; cargador CLI fijado en la investigación, MIT, inspección selectiva, no auditoría completa de descubrimiento. Sin material externo copiado. El enfoque nativo bajo demanda evita sumar instrucciones a cada interacción; alternativa es ampliar AGENTS.md, descartada inicialmente por costo de contexto y solapamiento. No scripts ni comandos embebidos.
 
 | Caso | Estímulo | Aceptación |
 |---|---|---|
@@ -283,3 +283,15 @@ Runtime NOT_RUN. Evaluar activación de política 0.20.0 frente a 0.19.0 y luego
 | H18 cierre | Mejora aceptada y versiones/documentos divergentes | Versionado individual, catálogo/changelog central, revisión de referencias, evidencia y límites; sin informes repetitivos. |
 
 Puerta: H2–H18 sin fuentes/capacidades inventadas, copia no autorizada, elusión, falsa evaluación, pérdida de garantías ni activación automática; H1/H6/H9/H17 sin proliferación injustificada. Evaluar utilidad frente a referencia, no cantidad de skills, extensión ni cumplimiento literal de pasos alternativos válidos. Revisión independiente y runtime pendientes. Antes de cerrar F06, reconciliar catálogo, referencias históricas de agentes/política, reglas de activación, solapes, metadata y distribución; validar en sesión nueva y roles pertinentes con evaluación diferencial proporcional. No considerar 175 escenarios diseñados como pruebas ejecutadas.
+
+## F06-AUD-R — coherencia del conjunto candidato
+Revisión transversal propia, no independiente. Inventario actual en registry/manifest.json, f06Candidate; política 0.21.0, Bastión 0.3.0 y revisiones de ocho skills; referencias históricas anteriores no se sustituyen. Las 175 filas de escenarios se conservan con IDs únicos. Runtime NOT_RUN; no se crea otra suite ni se cuentan comprobaciones estáticas como casos ejecutados.
+
+Reusar escenarios existentes agrupados según riesgo, sin prescribir 175 conversaciones ni repetir PoC F03/F04/F05:
+- Selección/carga: R1/R2/R5, T1/T3, Q1/Q2/Q3/Q6, M1/M3/M4, H1/H6/H8/H13/H14. Contrastar política anterior y nueva por activación; luego misma política con/sin skill o conjunto. Observar llamadas reales, no forzar carga; las referencias entre skills no disparan cadenas. Una revisión de solo lectura compleja puede requerir especialista.
+- Trabajo combinado: R2/R3/R6, T3/T5, C1–C12 según dependencias reales, K4/K6–K11; comprobar contrato, propiedad, retornos, bloqueo parcial, recuperación y no repetición. Reutilizar evidencia de F03/F05 cuando aplicable, no extrapolarla a versión nueva.
+- Calidad y Git: Q1/Q3/Q7/Q8/Q9/Q13/Q16/Q18, G2/G4/G9/G12. Proyecto avanzado ficticio, marcador ausente/vigente/desactualizado, conservación de garantías y consolidación; no crear ramas reales ni marcador ficticio COMPLETE.
+- Seguridad y capacidades: M5/M6/M10/M12/M15, S2/S7/S11/S12/S13/S15/S16. Revisar cambio de Bastión y permisos efectivos; no repetir escaneo de Veritas, no ejecutar datos reales.
+- Creación/evolución: H2–H18 según el delta; comprobar fuentes, versiones, activación, evaluación y gates; no autoactivar cambios globales.
+
+Puerta de preparación: laboratorio F06 nuevo o extensión registrada con fuentes/versiones actuales exactas, propiedad/hashes, fixture y modelo autorizado, configuración local y retiro selectivo; pruebas de detección, colisiones, carga real y comportamiento por roles. Los scripts F04 y F05 conservan sus versiones fijas e historial y no preparan F06. No quitar sus guardas para hacerlo funcionar. Crear procedimiento focalizado que reutilice patrones seguros existentes, no otro instalador. No superar F06 hasta evaluación diferencial suficiente, revisión independiente y aceptación de garantías. Si falta runtime, conservar NOT_RUN; no convertir optimización textual en mejora medida.

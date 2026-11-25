@@ -1,15 +1,15 @@
 ---
 name: team-routing
-description: "Decide si Code debe ejecutar, delegar o coordinar una misión de ingeniería según competencias, acoplamiento, riesgo, dependencias y coste. Usar al repartir trabajos no triviales o replantear un reparto fallido. No cargar para lecturas, respuestas breves o cambios locales de bajo riesgo."
+description: "Decide si Code debe ejecutar, delegar o coordinar una misión de ingeniería según competencias, acoplamiento, riesgo, dependencias y coste. Usar al repartir trabajos no triviales o replantear un reparto fallido. No cargar para lecturas conocidas, respuestas directas o cambios locales sin necesidad especializada ni riesgo material."
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
   last_modified: "2026-11-25"
 ---
 
 # Routing de ingeniería proporcional
 
 ## Contrato
-Code es dueño de la misión, la decisión de reparto y la integración. Esta skill decide quién debe intervenir y cuándo una unidad es delegable; team-task-contract definirá entradas y handoff y team-coordination gestionará la ejecución. No depende de que esas skills existan. Aplicar AGENTS.md y los contratos vigentes. Si la carga un hijo, solo recomienda a Code, sin subdelegar. No modifica permisos, modelo, configuración ni archivos por sí sola; no requiere red ni comandos.
+Code es dueño de la misión, la decisión de reparto y la integración. Esta skill decide quién debe intervenir y cuándo una unidad es delegable; team-task-contract define entradas y handoff; team-coordination gobierna ejecución. No requiere cargarlas. Aplicar AGENTS.md y los contratos vigentes. Si la carga un hijo, solo recomienda a Code, sin subdelegar. No modifica permisos, modelo, configuración ni archivos por sí sola; no requiere red ni comandos.
 
 ## 1. Clasificar antes de explorar
 Extraer objetivo, aceptación, alcance permitido, incertidumbre material y garantías que no pueden degradarse. No leer por anticipado el objeto que analizará otro salvo prerrequisito. Si el usuario restringe delegación, coste, fuentes o herramientas, respetarlo. Resolver supuestos reversibles; consultar solo decisiones materiales no inferibles o autorizaciones ausentes.
@@ -65,4 +65,4 @@ En N2–N4 basta comunicar el reparto y su razón en términos útiles al usuari
 - Prohibición de delegar: respetarla, declarar límite de independencia si necesario.
 
 ## Evidencia de utilidad
-Comparar criterios satisfechos, duplicación, bloqueos evitables, llamadas y tiempos observables con política sola. No declarar mejora por cargar la skill ni por aumentar el número de hijos. Referencias, decisiones de adaptación y límites: ../../../docs/INVESTIGACION-SKILLS.md (documentación del repositorio; no es dependencia de ejecución). Evaluación: tests/F06-SKILLS.md.
+Comparar criterios satisfechos, duplicación, bloqueos evitables, llamadas y tiempos observables con política sola. No declarar mejora por cargar la skill ni por aumentar el número de hijos. Investigación y evaluación: docs/INVESTIGACION-SKILLS.md y tests/F06-SKILLS.md, rutas del repositorio de desarrollo, no dependencias runtime.

@@ -2,14 +2,14 @@
 name: tool-mcp-discovery
 description: "Descubre y selecciona capacidades nativas, locales, Desktop y MCP según objetivo, exposición efectiva, permiso, coste y evidencia. Usar ante herramienta desconocida, necesidad especializada, alternativas solapadas, fallo de capacidad, incorporación de servidor o cambio de entorno. No cargar para operaciones conocidas con herramienta autorizada y contrato inequívoco."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   last_modified: "2026-11-25"
 ---
 
 # Capacidades dinámicas con autorización efectiva
 
 ## Responsabilidad
-Code asigna capacidades semánticas y decide alternativas dentro de autorización; cada especialista verifica las herramientas efectivamente disponibles en su sesión. Faro investiga fuentes, Forja contrasta instalación/entorno y Bastión evalúa riesgo material, cuando corresponda por routing. No sustituir política ni controles del host/proveedor; no convertir descubrimiento en elevación de permisos. Team-task-contract transporta required_capabilities, systematic-debugging diagnostica fallos y secure-development abordará seguridad de implementación. No depender de esas skills, catálogo propio, servidor adicional ni inventario estático de herramientas. La estrategia integration/mcp del Harness gobierna F09/F10; esta skill no declara esas fases completadas.
+Code asigna capacidades semánticas y decide alternativas dentro de autorización; cada especialista verifica las herramientas efectivamente disponibles en su sesión. Faro investiga fuentes, Forja contrasta instalación/entorno y Bastión evalúa riesgo material, cuando corresponda por routing. No sustituir política ni controles del host/proveedor; no convertir descubrimiento en elevación de permisos. Team-task-contract transporta required_capabilities, systematic-debugging diagnostica fallos y secure-development gobierna seguridad de implementación. No depender de esas skills, catálogo propio, servidor adicional ni inventario estático de herramientas. La estrategia integration/mcp del Harness gobierna F09/F10; esta skill no declara esas fases completadas.
 
 ## 1. Descubrir lo necesario
 Traducir objetivo a operación semántica, objeto y alcance, fidelidad requerida, datos que necesita, efectos, criterio y riesgo. Antes de buscar herramientas nuevas, comprobar catálogo expuesto en la sesión, esquemas y descripción aplicables, capacidades ya verificadas para mismo agente/proyecto/entorno y convenciones del proyecto. Para operación conocida no repetir descubrimiento ni prueba inocua por rutina. No enumerar todos los MCP, procesos, archivos globales o aplicaciones si basta una capacidad. No leer configuraciones sensibles ni tokens para saber si una herramienta existe.

@@ -1,7 +1,7 @@
 # Equipo nativo — diseño de roles
-Versión del archivo: 0.16.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.17.0 | Última modificación: 2026-11-25
 
-Nueve definiciones candidatas implementadas; no instalables globalmente ni certificadas en runtime. Identificadores team-* derivados de nombre de archivo, mode: subagent, description y permission en frontmatter, cuerpo como prompt. Definiciones neutrales respecto al modelo; selección central por el operador, común por defecto. No depender solo del fallback al padre. Admitir modelos gratuitos/de pago/suscripción autorizados; no fijar el modelo provisional en roles distribuidos. Code, general y explore nativos no se duplican.
+Nueve definiciones candidatas implementadas; F05 DONE_POC_LIMITED con evidencia histórica y laboratorio retirado. Inventario candidato actual F06: [manifiesto](../../registry/manifest.json), f06Candidate; Bastión 0.3.0 por coherencia normativa, restantes 0.2.0, permisos sin cambios. No instalables globalmente ni certificados integralmente en runtime. Las secciones F05 siguientes describen su estado histórico, no la versión actual. Identificadores team-* derivados de nombre de archivo, mode: subagent, description y permission en frontmatter, cuerpo como prompt. Definiciones neutrales respecto al modelo; selección central por el operador, común por defecto. No depender solo del fallback al padre. Admitir modelos gratuitos/de pago/suscripción autorizados; no fijar el modelo provisional en roles distribuidos. Code, general y explore nativos no se duplican.
 
 | Rol | Responsabilidad | Capacidades candidatas |
 |---|---|---|

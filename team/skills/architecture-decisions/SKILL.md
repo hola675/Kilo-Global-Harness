@@ -2,14 +2,14 @@
 name: architecture-decisions
 description: "Selecciona y evoluciona arquitectura mediante requisitos, alternativas viables, límites, consecuencias y evidencia. Usar para decisiones estructurales, selección tecnológica, integraciones, cambios de contratos, despliegue o datos con impacto material. No cargar para ajustes locales que conservan arquitectura ni sustituir requisitos, implementación o especialización de stack."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   last_modified: "2026-11-25"
 ---
 
 # Arquitectura suficiente, verificable y evolutiva
 
 ## Responsabilidad y límites
-Code integra y decide dentro de autorización; Atlas aporta criterio arquitectónico especializado y los especialistas pertinentes contrastan consecuencias de su dominio. Una decisión material se revisa según riesgo y política; una propuesta no autoriza implementación, compra, migración ni despliegue. Requirements-acceptance delimita qué resolver; esta skill determina cómo estructurarlo, implementation-discipline llevará cambios al código y focused-testing comprobará resultados. No depende de que existan o estén cargadas. No añadir permisos, scripts, plantillas obligatorias, motores ni stacks globales.
+Code integra y decide dentro de autorización; Atlas aporta criterio arquitectónico especializado y los especialistas pertinentes contrastan consecuencias de su dominio. Una decisión material se revisa según riesgo y política; una propuesta no autoriza implementación, compra, migración ni despliegue. Requirements-acceptance delimita qué resolver; esta skill determina cómo estructurarlo, implementation-discipline lleva cambios al código y focused-testing comprueba resultados. No requiere cargarlas. No añadir permisos, scripts, plantillas obligatorias, motores ni stacks globales.
 
 ## 1. Identificar la decisión real
 Distinguir elección local reversible de cambio arquitectónico: límites de responsabilidad, contratos públicos, datos/consistencia, dependencias, topología, seguridad, operación o coste de sustitución. Si las convenciones vigentes resuelven el ajuste local, seguirlas sin ADR ni análisis masivo.

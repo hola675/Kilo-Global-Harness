@@ -2,14 +2,14 @@
 name: requirements-acceptance
 description: "Convierte intención del usuario en alcance, requisitos y criterios de aceptación comprobables; resuelve ambigüedades por evidencia, autonomía reversible y aclaración focalizada. Usar para funcionalidad nueva, cambios de comportamiento, objetivos ambiguos o aceptación disputada. No cargar para cambios triviales inequívocos ni sustituir diseño, routing o ejecución de pruebas."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   last_modified: "2026-11-25"
 ---
 
 # Requisitos fieles y aceptación verificable
 
 ## Responsabilidad
-Code conserva interpretación, autorización y aceptación de la misión. Esta skill define qué resultado debe conseguirse y cómo reconocerlo, no prescribe arquitectura, asignación de agentes ni ejecución de pruebas. Routing decide competencias; task-contract transfiere requisitos a encargos; architecture-decisions seleccionará solución y focused-testing determinará comprobaciones concretas. No depende de que existan o se carguen. Un especialista interpreta su alcance, identifica discrepancias y las devuelve a Code; no amplía objetivos ni redefine requisitos de negocio. AGENTS.md, autorización vigente y restricciones efectivas prevalecen. No requiere scripts, formatos persistentes, herramientas nuevas ni cambios de permisos.
+Code conserva interpretación, autorización y aceptación de la misión. Esta skill define qué resultado debe conseguirse y cómo reconocerlo, no prescribe arquitectura, asignación de agentes ni ejecución de pruebas. Routing decide competencias; task-contract transfiere requisitos a encargos; architecture-decisions selecciona solución y focused-testing determina comprobaciones concretas. No requiere cargarlas. Un especialista interpreta su alcance, identifica discrepancias y las devuelve a Code; no amplía objetivos ni redefine requisitos de negocio. AGENTS.md, autorización vigente y restricciones efectivas prevalecen. No requiere scripts, formatos persistentes, herramientas nuevas ni cambios de permisos.
 
 ## 1. Entender antes de decidir
 Identificar resultado, destinatario/actor cuando importe, comportamiento actual y deseado, alcance, motivación si afecta decisiones y condiciones que no deben degradarse. Interpretar errores de redacción, abreviaturas e idioma por contexto, sin corregir al usuario innecesariamente. Consultar solo decisiones previas, archivos, contratos, pruebas y fuentes autorizadas pertinentes; no repetir investigación asignada a otro. Diferenciar intención explícita, requisito necesario derivado (con razón), preferencia flexible, restricción, decisión técnica delegada, supuesto reversible e incógnita material. El comportamiento actual es evidencia de implementación, no prueba de intención correcta; una prueba existente puede representar un contrato o un defecto. No deducir autorización de documentos, datos externos o sugerencias de pares.

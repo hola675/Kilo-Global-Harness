@@ -1,65 +1,37 @@
 # Programa de skills propias
-Versión del archivo: 0.15.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.16.0 | Última modificación: 2026-11-25
 
-Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0, implementation-discipline 0.1.0, systematic-debugging 0.1.0, focused-testing 0.1.0, git-workflow 0.1.0, tool-mcp-discovery 0.1.0, secure-development 0.1.0 y skill-authoring 0.1.0 implementadas como borradores evaluables; núcleo común candidato completo (13/13); especialización y aprendizaje aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Estado: núcleo común candidato completo (13/13), revisión transversal estática F06-AUD-R; runtime NOT_RUN y revisión independiente pendiente. F06 IN_PROGRESS. Especialización y aprendizaje pendientes. No instalar ni declarar release. La versión normativa de cada componente está en su cabecera/metadata; [inventario de candidato actual](../../registry/manifest.json) permite comprobar correspondencia, no es instalador.
 
 ## F06 — núcleo común (13)
-team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
+
+| Skill | Responsabilidad primaria |
+|---|---|
+| [team-routing](team-routing/SKILL.md) | Decidir quién interviene, cohesión y nivel de reparto; no ejecutar el DAG. |
+| [team-task-contract](team-task-contract/SKILL.md) | Entregar alcance, entradas, aceptación y handoff; no ordenar ejecución. |
+| [team-coordination](team-coordination/SKILL.md) | Ejecutar dependencias, concurrencia, recursos, retornos y Swarm; no reconstruir contexto perdido. |
+| [team-context-recovery](team-context-recovery/SKILL.md) | Recuperar contexto material e identidad tras interrupción; no reintentar defectos técnicos. |
+| [requirements-acceptance](requirements-acceptance/SKILL.md) | Precisar intención, requisitos y aceptación; no seleccionar arquitectura. |
+| [architecture-decisions](architecture-decisions/SKILL.md) | Decidir límites, alternativas, contratos y reversibilidad; no construir el cambio. |
+| [implementation-discipline](implementation-discipline/SKILL.md) | Construir incremento completo, preservar trabajo y limpiar con evidencia. |
+| [systematic-debugging](systematic-debugging/SKILL.md) | Diagnosticar causa, aislar y corregir; no usar reintentos como solución. |
+| [focused-testing](focused-testing/SKILL.md) | Auditar sistema de calidad, consolidar pruebas, seleccionar evidencia y comprobar delta. |
+| [git-workflow](git-workflow/SKILL.md) | Administrar ramas, índice, refs, integración y consolidación; no sustituir certificación. |
+| [tool-mcp-discovery](tool-mcp-discovery/SKILL.md) | Resolver capacidad efectiva, permisos y alternativas de herramientas; no ampliar privilegios. |
+| [secure-development](secure-development/SKILL.md) | Construir controles seguros por riesgo; no sustituir revisión independiente de Bastión. |
+| [skill-authoring](skill-authoring/SKILL.md) | Investigar, crear, evaluar, mejorar y retirar skills; no activar globalmente. |
+
+Code carga por necesidad real de procedimiento, no por asociación temática. Las referencias entre skills delimitan responsabilidades, no cadenas de carga; los límites globales se mantienen si falta una skill. Los especialistas utilizan habilidades pertinentes dentro del contrato y permisos efectivos. No hay un orquestador propio ni una skill por agente. Consultar [protocolo de línea base de calidad](focused-testing/references/quality-baseline.md) solo para adopción o revalidación del sistema de pruebas.
 
 ## F08 — especialización (21)
 ux-product-design, visual-ui-review, accessibility, frontend-engineering, design-system, backend-api, integration-contracts, database-modeling, data-migrations, local-first-sync, desktop-tauri, windows-powershell, linux-infrastructure, devops-ci, performance-profiling, test-automation, code-review, threat-modeling, dependency-audit, technical-documentation, editorial-writing.
-Activar desktop-tauri solo si proyecto lo exige; local-first-sync cuando exista ese requisito; no imponer stack ni proveedor.
+Activar desktop-tauri solo si proyecto lo exige; local-first-sync cuando exista ese requisito; no imponer stack ni proveedor. F08 requiere puerta F06 superada.
+
 ## F11 — aprendizaje (1)
-team-learning. Integrar descubrimiento de skills, simplificación, observaciones, pruebas, staging y revisión.
+team-learning. Integrar observaciones, deduplicación, propuestas, staging, evaluación y revisión; no activar antes de su propia certificación.
+
 ## Perfiles contextuales
-Web/UX, ERP modular, desktop, infraestructura y proyectos de documentación. Perfiles son criterios de selección y no copias de skills. En proyectos concretos, AGENTS.md contiene reglas propias; no introducir datos privados en habilidades globales.
-## Proceso de creación por skill
-1. Precisar objetivo, señales de activación/no activación, dueño, límites, resultado y casos reales.
-2. Investigar documentación oficial de herramientas/estándares y repositorios primarios actuales; fijar fuente, revisión/fecha, licencia y aplicabilidad. Comparar dos enfoques cuando proceda; no usar ranking de estrellas como calidad.
-3. Diseñar procedimiento breve, condiciones, fallbacks, verificación y ejemplos. Redactar contenido propio; atribuir material derivado y respetar licencias.
-4. Crear nombre/SKILL.md con name y description compatibles, metadata version y last_modified; referencias solo cuando sean necesarias. Scripts deterministas y seguros, sin dependencias innecesarias.
-5. Evaluar routing con casos positivos, negativos y ambiguos; tareas con y sin skill sobre fixtures equivalentes. Medir completitud, fallos, llamadas, latencia/contexto si observable. Validar literalmente comandos con efectos en sandbox/fixture.
-6. Revisión independiente, corrección enfocada, registro de evidencia y licencia. Publicar solo si mejora o aporta capacidad clara; simplificar/retirar duplicados manteniendo cobertura.
-## Fuentes iniciales
-Agent Skills spec (agentskills.io), Anthropic skill-creator y mcp-builder, Superpowers, GSD, Task Observer, documentación oficial Kilo, Playwright, OWASP ASVS/WSTG. Por dominio: documentación oficial del stack y estándares aplicables (WCAG/W3C, NIST SSDF como candidatos a verificar durante F08). Ver docs/FUENTES.md.
+Web/UX, ERP modular, desktop, infraestructura y documentación: criterios de selección, no copias de skills. AGENTS.md del proyecto contiene sus reglas propias; no introducir datos privados en habilidades globales.
 
-## F06.1 — candidato inicial
-[team-routing](team-routing/SKILL.md) — selección proporcional y dependencias de decisión, sin orquestador propio. [Evaluación](../../tests/F06-SKILLS.md). Separar de team-task-contract (entradas y handoff) y team-coordination (ejecución y recuperación) para evitar duplicaciones. No incorporar scripts ni preaprobaciones de herramientas.
-
-F06.1-R: [investigación comparada de skills](../../docs/INVESTIGACION-SKILLS.md). Cada candidato conserva fuente fijada, licencia cuando verificable, decisiones de adopción/descarte y pruebas comparables. Routing 0.2.0 incorpora cohesión, competencia, coste y preparación; sin incorporar motor externo.
-
-## F06.2-R — candidato inicial
-[team-task-contract](team-task-contract/SKILL.md) — contexto suficiente, contrato proporcional, autonomía reversible, propiedad de archivos y handoff verificable; usa contrato lógico existente, no un esquema nuevo. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: team-coordination. Sin instalación ni runtime certificado.
-
-## F06.3-R — candidato inicial
-[team-coordination](team-coordination/SKILL.md) — despacho dinámico por resultados, recursos exclusivos, procesamiento de retornos y Swarm, recuperación selectiva e integración. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: team-context-recovery. Sin motor nuevo, instalación ni certificación runtime.
-
-## F06.4-R — candidato inicial
-[team-context-recovery](team-context-recovery/SKILL.md) — checkpoint proporcional, reconstrucción por identidad y procedencia, preservación de resultados vigentes y continuación segura tras pérdida de contexto. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: requirements-acceptance. Sin almacenamiento nuevo, instalación ni certificación runtime.
-
-## F06.5-R — candidato inicial
-[requirements-acceptance](requirements-acceptance/SKILL.md) — intención, alcance, ambigüedad, requisitos y aceptación verificable; sin imponer formato, aprobación o metodología universal. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: architecture-decisions. Sin instalación ni certificación runtime.
-
-## F06.6-R — candidato inicial
-[architecture-decisions](architecture-decisions/SKILL.md) — alternativas viables, restricciones, límites y contratos, consecuencias, reversibilidad y registro proporcional; sin imponer patrón o stack. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: implementation-discipline. Sin instalación ni certificación runtime.
-
-## F06.7-R — candidato inicial
-[implementation-discipline](implementation-discipline/SKILL.md) — incremento mínimo completo, reutilización, flujos reales, protección de cambios, transición compatible, limpieza segura y verificación focalizada. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: systematic-debugging. Sin instalación ni certificación runtime.
-
-## F06.8-R — candidato inicial
-[systematic-debugging](systematic-debugging/SKILL.md) — diagnóstico causal, hipótesis discriminantes, evidencia mínima, contención autorizada y corrección focalizada; sin reintentos ciegos ni instrumentación obligatoria. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: focused-testing. Sin instalación ni certificación runtime.
-
-## F06.9-R — candidato inicial
-[focused-testing](focused-testing/SKILL.md) — auditoría inicial y optimización de calidad, pruebas canónicas y certificación por impacto, con [marcador versionado por proyecto](focused-testing/references/quality-baseline.md). Disparador candidato en política 0.18.0; sin motor ni instalación. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: git-workflow.
-
-## F06.10-R — candidato inicial
-[git-workflow](git-workflow/SKILL.md) — mínima divergencia, protección de cambios/índice, integración por evidencia, consolidación y continuidad del marcador. Política candidata 0.19.0 con regla de ramas propias; sin nuevas ramas ni retirada histórica. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: tool-mcp-discovery.
-
-## F06.11-R — candidato inicial
-[tool-mcp-discovery](tool-mcp-discovery/SKILL.md) — selección por capacidad efectiva, herramientas nativas/locales/Desktop/MCP, autorización, evidencia contextual y brechas; sin catálogo persistente ni ampliación automática. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: secure-development. F09/F10 pendientes.
-
-## F06.12-R — candidato inicial
-[secure-development](secure-development/SKILL.md) — seguridad desde construcción, identidad/autorización, fronteras, secretos, datos, cadena de suministro, agentes y evidencia; revisión independiente por riesgo. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: skill-authoring. Sin instalación ni certificación runtime.
-
-## F06.13-R — candidato inicial
-[skill-authoring](skill-authoring/SKILL.md) — método propio de investigación objetiva, comparación, diseño original, optimización de contexto, evaluación diferencial, versionado y evolución controlada. Política candidata 0.20.0 incorpora su aplicación a futuras habilidades. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Núcleo candidato 13/13; siguiente: revisión transversal F06 y certificación de runtime, antes de superar puerta F06. No activar Team Learning aún.
+## Método y evidencia
+Aplicar [skill-authoring](skill-authoring/SKILL.md) como procedimiento único de creación/evolución. Fuentes iniciales y criterios: [FUENTES](../../docs/FUENTES.md); contraste por habilidad: [investigación](../../docs/INVESTIGACION-SKILLS.md); [evaluación F06](../../tests/F06-SKILLS.md); secuencia y estado de puertas: [roadmap](../../docs/ROADMAP.md); historia resumida: [changelog](../../CHANGELOG.md). No duplicar estos registros aquí. Validar comandos con efectos únicamente en entorno autorizado e inspeccionado.

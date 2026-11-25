@@ -2,14 +2,14 @@
 name: systematic-debugging
 description: "Diagnostica defectos, fallos técnicos, regresiones y comportamiento inesperado mediante evidencia, aislamiento causal, hipótesis discriminantes y corrección verificable. Usar cuando la causa no sea inequívoca, haya recurrencia o riesgo de modificar el componente incorrecto. No cargar para consultas normales, errores triviales con causa demostrada o reanudación de contexto sin defecto técnico."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   last_modified: "2026-11-25"
 ---
 
 # Diagnóstico causal con presupuesto proporcional
 
 ## Responsabilidad
-Code decide alcance, prioridades y aceptación; el especialista competente diagnostica y corrige solo dentro de autorización y propiedad de recursos. Requirements-acceptance determina comportamiento esperado; architecture-decisions resuelve cambios estructurales justificados; implementation-discipline gobierna la mutación; focused-testing seleccionará pruebas; team-coordination y team-context-recovery gobiernan ejecución y continuidad. No depende de estas skills ni sustituye revisión independiente. No concede permisos, herramientas, acceso a producción ni autorización para reiniciar, instalar, cambiar configuración global o repetir efectos externos.
+Code decide alcance, prioridades y aceptación; el especialista competente diagnostica y corrige solo dentro de autorización y propiedad de recursos. Requirements-acceptance determina comportamiento esperado; architecture-decisions resuelve cambios estructurales justificados; implementation-discipline gobierna la mutación; focused-testing selecciona pruebas; team-coordination y team-context-recovery gobiernan ejecución y continuidad. No depende de estas skills ni sustituye revisión independiente. No concede permisos, herramientas, acceso a producción ni autorización para reiniciar, instalar, cambiar configuración global o repetir efectos externos.
 
 ## 1. Estabilizar y definir el problema
 Identificar comportamiento esperado, síntoma real, alcance afectado, primer evento relevante, impacto, frecuencia y condición de aparición. Recoger error exacto sanitizado, operación, resultado, versión/base, entorno efectivo y referencias disponibles; distinguir hechos de informes, hipótesis e incógnitas. No concluir por texto genérico ni por el último mensaje de una cadena de errores. Comprobar si la entrada/contrato o el propio criterio esperado es incorrecto antes de atribuir defecto al código.

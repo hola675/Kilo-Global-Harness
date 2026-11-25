@@ -1,5 +1,5 @@
 # Investigación comparada de skills propias
-Versión del archivo: 0.13.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.14.0 | Última modificación: 2026-11-25
 
 ## F06.1-R — team-routing
 Objetivo: mejorar selección proporcional y evitar el bloqueo de revisión observado en F05-B-R sin reconstruir Task ni cambiar modelo. Consulta web y lectura selectiva de archivos fijados en GitHub el 2026-11-25. No se ejecutaron harness externos; no es ranking de popularidad, auditoría integral, benchmark ni prueba de superioridad.
@@ -179,3 +179,17 @@ Consulta 2026-11-25; objetivo explícito del operador: incorporar a futuras skil
 | [Investigación F06.1–F06.12](INVESTIGACION-SKILLS.md), [Team Learning](../team/learning/README.md) y [laboratorio F03](../tests/F03-LABORATORIO.md) | Comparación de alternativas, brechas reales, versionado, evidencia histórica y gates de aprobación. | Consolidar método original de investigación, síntesis adoptado/adaptado/descartado, revisión y retirada sin pérdida de garantías. |
 
 Método: investigación enfocada y fuentes contrastadas, no cuota fija de repositorios ni copia de packs. Licencias de páginas documentales externas no verificadas individualmente; uso conceptual, sin código ni texto extenso incorporado. El intento inicial de ruta Kilo skill/skill.ts devolvió 404; se resolvió mediante listado del directorio y lectura de index.ts/discovery.ts, sin inferir ausencia del cargador. No se ejecutó harness externo ni se midió superioridad. Política candidata 0.20.0 exige método para futuras skills; no activa Team Learning ni cambia agentes/permisos. F06 diseño candidato completo 13/13; revisión transversal y runtime aún pendientes.
+
+## F06-AUD-R — auditoría transversal del núcleo (2026-11-25)
+Objeto: revisión candidata 7b6e84347154cd4fdea7275e17533d2255ae65f6, 13 skills, nueve agentes, política 0.20.0, contrato lógico, catálogo, manifiesto, pruebas y guardas de laboratorio. Se reutiliza investigación fijada F06.1–F06.13; no se añade búsqueda externa por cambios de coherencia interna.
+
+| Hallazgo comprobado | Decisión |
+|---|---|
+| Manifiesto 0.39.0 conserva nextPhase F05, F05 IN_PROGRESS, versiones parciales 0.1.0 y sin catálogo actual. | Inventario F06 explícito y fase actual; preservar contenido de coreCandidate/teamCandidate como evidencia histórica etiquetada, no transferir certificación. |
+| Bastión cita política 0.16.0; siete skills describen responsabilidades vecinas como futuras, routing referencia evaluación de forma ambigua. | Referir política vigente y responsabilidades actuales, no cargar cadenas; actualizar versiones individuales. |
+| Catálogo duplica procedimiento de skill-authoring, listas y relatos por fase; política repite clasificación N1–N4 en párrafo posterior y reglas de evolución. | Un procedimiento canónico, tabla única de competencias, historial en changelog/roadmap/investigación; compactar sin eliminar condiciones de seguridad ni revisión. |
+| Descripción de routing excluye lecturas en general; focused-testing puede activarse para todo cambio material; política excluye ambiguamente «trabajo ajeno a calidad». | Distinguir lectura conocida de análisis especializado, verificación conocida suficiente de selección no trivial; conservar auditoría inicial para proyecto desarrollado. |
+| Scripts F04/F05 fijan versiones de política 0.15.0/0.17.0 y F05 agentes 0.2.0; no incluyen conjunto de skills. | Preservar guardas y evidencia; preparar laboratorio específico F06 antes de prueba, no alterar versiones históricas ni declarar instalación. |
+| 175 IDs de evaluación únicos; 13 metadatos siguen patrón restringido de nuestro formato; referencia quality-baseline disponible y ejemplo JSON parcial. | Conservar casos y agrupar reevaluación por garantías/delta, no añadir suite redundante. Revisión estructural no certifica comportamiento. |
+
+No se fusionan skills por similitud textual: routing/contrato/coordinación/contexto, requisitos/arquitectura/implementación/diagnóstico/calidad/Git, herramientas/seguridad/creación tienen resultados diferenciados. Reutilización explícita de límites globales y autonomía de carga; se conservan guardas locales de seguridad y fallback aunque se repitan cuando la skill no esté disponible. No se elimina prueba, no se modifica permiso, no se mide reducción de tokens ni latencia. Revisión propia no independiente; laboratorio y runtime NOT_RUN.

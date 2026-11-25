@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.90.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.91.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -323,3 +323,8 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.13-R ingeniería de skills
 - Skills: skill-authoring 0.1.0, método propio de investigación objetiva, alternativas, compatibilidad, diseño original, evaluación diferencial, simplificación y evolución controlada; dieciocho casos H1–H18.
 - Política: candidato 0.20.0 incorpora método de creación/evolución; núcleo candidato 13/13 y 175 escenarios diseñados. Sin agentes/permisos nuevos ni instalación; revisión transversal, revisión independiente y runtime NOT_RUN. Team Learning pendiente.
+
+## 2026-11-25 — F06-AUD-R auditoría transversal
+- Política 0.21.0: routing compacto, carga selectiva y adopción de calidad sin ambigüedad; mantiene autorización, independencia y gates.
+- Skills: team-routing 0.3.0; team-coordination, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, tool-mcp-discovery y focused-testing 0.2.0; restantes intactas. Catálogo 0.16.0 unifica responsabilidades y remite a fuente normativa; 175 escenarios preservados.
+- Equipo/registro: Bastión 0.3.0 sin cambio de permisos; manifiesto 0.40.0 separa inventario F06 de evidencias históricas, corrige fase. F06 sigue IN_PROGRESS; laboratorio compatible pendiente, revisión independiente y runtime NOT_RUN.

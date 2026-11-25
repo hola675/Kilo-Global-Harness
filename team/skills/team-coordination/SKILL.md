@@ -2,14 +2,14 @@
 name: team-coordination
 description: "Coordina tareas delegadas concurrentes o dependientes: libera trabajo listo, protege recursos compartidos, procesa resultados y mensajes nativos y recupera fallos selectivos. Usar al ejecutar misiones N3/N4 o ante conflictos, bloqueos y retornos materiales. No cargar para trabajo directo ni delegación aislada sin necesidad de coordinación."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   last_modified: "2026-11-25"
 ---
 
 # Coordinación dinámica por resultados
 
 ## Autoridad y límites
-Code mantiene el control de la misión, la propiedad de recursos, la integración y la aceptación. Routing decide el reparto; task-contract define entradas y retorno; context-recovery tratará pérdida de contexto entre turnos/reinicio. Esta skill gobierna ejecución activa, sin depender de esas skills ni de un motor externo. Un hijo comunica hallazgos y respeta su encargo; no asigna trabajo ni cambia la autorización de otro. AGENTS.md y los controles reales prevalecen. No añadir permisos, scripts, polling, servicio, registro compartido obligatorio ni parámetros de Task.
+Code mantiene el control de la misión, la propiedad de recursos, la integración y la aceptación. Routing decide el reparto; task-contract define entradas y retorno; team-context-recovery gobierna pérdida de contexto entre turnos/reinicio. Esta skill gobierna ejecución activa, sin depender de esas skills ni de un motor externo. Un hijo comunica hallazgos y respeta su encargo; no asigna trabajo ni cambia la autorización de otro. AGENTS.md y los controles reales prevalecen. No añadir permisos, scripts, polling, servicio, registro compartido obligatorio ni parámetros de Task.
 
 ## 1. Preparar solo la coordinación necesaria
 Para cada unidad existente conservar task_ref, dueño, salida requerida, dependencias sobre resultados concretos, recursos de escritura y estado lógico; vincular native_task_id cuando exista. Usar contexto/todo nativo si está disponible y aporta claridad; no crear otra base de tareas. Comprobar referencias válidas y DAG acíclico; ante ciclo resolver contrato o agrupar unidad cohesionada antes de lanzar afectados. Diferenciar dependencias de datos, decisión, aceptación y exclusión de recursos. Una tarea no está lista por tener especialista libre.

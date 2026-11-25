@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.90.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.91.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -345,3 +345,6 @@ Candidato secure-development 0.1.0 y dieciocho casos S1–S18; doce de trece ski
 
 ## F06.13-R — ingeniería de skills (2026-11-25)
 Candidato skill-authoring 0.1.0 y dieciocho casos H1–H18; trece de trece skills base con candidato, 175 escenarios diseñados. Metodología propia de investigación objetiva, contraste de alternativas, diseño original, activación discriminante, evaluación diferencial y evolución controlada. Política candidata 0.20.0 añade método para futuras skills; sin cambios de agentes/permisos, nuevas dependencias ni instalación. F06 IN_PROGRESS: siguiente revisión transversal de coherencia, reconciliación de referencias históricas y evaluación runtime/revisión independiente antes de superar puerta. F07/F08/F11 no desbloqueadas por mero diseño.
+
+## F06-AUD-R — auditoría transversal y reconciliación (2026-11-25)
+Candidato completo 13/13, nueve especialistas, 175 escenarios de diseño preservados. Política 0.21.0 compacta routing y aclara relevancia de skills y adopción de calidad; Bastión 0.3.0 elimina referencia normativa obsoleta; ocho skills revisadas por activadores y referencias; catálogo consolidado, inventario actual de candidatos en manifiesto 0.40.0 separado de evidencia F04/F05 histórica. Sin cambio de permisos, contratos, motor, dependencias ni eliminación de pruebas. Revisión estática propia; independiente y runtime NOT_RUN. F06 IN_PROGRESS. Siguiente: preparar y verificar laboratorio F06 con versiones actuales, sin reutilizar directamente guardas históricas de scripts F04/F05; ejecutar evaluación por garantías antes de cerrar puerta. F07/F08/F11 siguen pendientes.

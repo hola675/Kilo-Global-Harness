@@ -2,14 +2,14 @@
 name: implementation-discipline
 description: "Implementa cambios de software completos, incrementales y mantenibles: inspecciona el flujo real, reutiliza capacidades, protege cambios ajenos, elimina duplicación justificada y verifica el delta. Usar al construir o modificar comportamiento no trivial, refactorizar o retirar código. No cargar para lectura, diseño sin implementación o ediciones triviales inequívocas."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   last_modified: "2026-11-25"
 ---
 
 # Implementación mínima completa
 
 ## Responsabilidad y límites
-Code dirige e integra; el constructor es dueño del alcance asignado y de sus comprobaciones. Requirements-acceptance define el resultado; architecture-decisions fija límites e interfaces; team-coordination resuelve concurrencia; systematic-debugging localizará causas y focused-testing definirá selección de pruebas. Esta skill guía la escritura y revisión propia, sin depender de las anteriores ni sustituir contraste independiente de Veritas u otros revisores. No autoriza instalar, desplegar, migrar datos reales, publicar ni ampliar permisos. No requiere scripts, framework, TDD ritual, herramientas ni formatos nuevos. AGENTS.md y autorización vigente prevalecen.
+Code dirige e integra; el constructor es dueño del alcance asignado y de sus comprobaciones. Requirements-acceptance define el resultado; architecture-decisions fija límites e interfaces; team-coordination resuelve concurrencia; systematic-debugging localiza causas y focused-testing define selección de pruebas. Esta skill guía la escritura y revisión propia, sin depender de las anteriores ni sustituir contraste independiente de Veritas u otros revisores. No autoriza instalar, desplegar, migrar datos reales, publicar ni ampliar permisos. No requiere scripts, framework, TDD ritual, herramientas ni formatos nuevos. AGENTS.md y autorización vigente prevalecen.
 
 ## 1. Establecer el punto de partida
 Confirmar objetivo, aceptación, alcance de escritura, base/workspace, contratos, convenciones, versiones aplicables y capacidad efectiva. Consultar solo rutas y referencias necesarias, incluyendo consumidores afectados, pruebas existentes, manifiestos y generadores cuando importen. Identificar el flujo real desde entrada hasta resultado/efecto; no confundir componente presente con flujo conectado o API declarada con API operativa. No leer ni ejecutar el trabajo asignado a otro escritor.
