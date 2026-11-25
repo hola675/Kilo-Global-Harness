@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.50.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.51.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -188,3 +188,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — revalidación F05.3-R1
 - Pruebas: corrección 0.1.1 PASS reportado de parser, integridad y plantilla; PASS_LOAD_REPORTED. Descubrimiento siguiente mediante descripción nativa de Task; no repetir preparación ni marcador. Sin modificación de código, agentes ni política; F05.3 IN_PROGRESS.
+
+## 2026-11-24 — descubrimiento F05-A
+- Pruebas: nueve IDs y responsabilidades reportados desde Task; PASS_REPORTED_DISCOVERY, F05.3 DONE_POC_LIMITED. F05.4 IN_PROGRESS: primera Task focalizada de Faro, lectura y exposición de capacidades; no certificar por recitación ni confundir modo y modelo. Sin cambios de código o instalación.
