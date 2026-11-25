@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.1.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.2.0 | Última modificación: 2026-11-25
 
-Catálogo candidato, no skills implementadas. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Catálogo candidato: team-routing 0.1.0 implementada como borrador evaluable; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
 
 ## F06 — núcleo común (13)
 team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
@@ -22,3 +22,6 @@ Web/UX, ERP modular, desktop, infraestructura y proyectos de documentación. Per
 6. Revisión independiente, corrección enfocada, registro de evidencia y licencia. Publicar solo si mejora o aporta capacidad clara; simplificar/retirar duplicados manteniendo cobertura.
 ## Fuentes iniciales
 Agent Skills spec (agentskills.io), Anthropic skill-creator y mcp-builder, Superpowers, GSD, Task Observer, documentación oficial Kilo, Playwright, OWASP ASVS/WSTG. Por dominio: documentación oficial del stack y estándares aplicables (WCAG/W3C, NIST SSDF como candidatos a verificar durante F08). Ver docs/FUENTES.md.
+
+## F06.1 — candidato inicial
+[team-routing](team-routing/SKILL.md) — selección proporcional y dependencias de decisión, sin orquestador propio. [Evaluación](../../tests/F06-SKILLS.md). Separar de team-task-contract (entradas y handoff) y team-coordination (ejecución y recuperación) para evitar duplicaciones. No incorporar scripts ni preaprobaciones de herramientas.
