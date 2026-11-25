@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.59.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.60.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -252,3 +252,6 @@ Retirada editorial y posterior doce MATCH reportados PASS; ciclo de vida DONE_PO
 
 ## F05-C-DEV — preparación Windows positiva
 Operador reporta parser 0.3.0 PASS, Node v26.12.1, SQLite en memoria ok:1, doce MATCH y seis BASELINE con PASS_F05_DESARROLLO_PREPARADO sobre dafb9c1. No repetir preparación. Siguiente misión única Code: construcción por cuatro hijos directos con propiedad exclusiva y contrato protegido, paralelo nativo si disponible; sin ejecución. VerificarDesarrollo tras cierre de escritores y revisión Veritas/Bastión antes de autorización de ejecución. F05.4 IN_PROGRESS; implementación, revisión, concurrencia y suite NOT_RUN. Sin cambios de candidatos ni instalación.
+
+## F05-C-DEV — construcción e integridad positivas; revisión siguiente
+Cuatro Task reportadas en llamada paralela, running y completed; 134s proceso frente a 237s suma de duraciones individuales (no benchmark ni intervalos independientes). Prisma/Nexo/Lumen/Forja implementan archivos propios, lectura/edición/lectura reportadas; verificador devuelve doce MATCH, dos BASELINE, cuatro CHANGED_UNREVIEWED y PASS_F05_INTEGRIDAD_DESARROLLO. Integridad PASS dentro de alcance, no aceptación de código. F05.4 IN_PROGRESS: F05-C-DEV-R revisión estática independiente por Veritas/Bastión, sin ejecución o mutación; conservar huella y verificar estabilidad antes de autorización posterior. Observación candidata F07/F11: evitar mensajes duplicados de finalización, sin cambiar política aún. Routing autónomo, permisos negativos y pruebas funcionales pendientes.
