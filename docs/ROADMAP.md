@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.69.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.70.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -282,3 +282,6 @@ Operador reporta Veritas/functions.bash, node --version, solicitud nativa y rech
 
 ## F05-C-PERM-D4 — aprobación puntual confirmada
 Salida v26.12.1 reportada por Veritas; informe inicial no acreditaba decisión, operador confirma solicitud nativa y Permitir una vez. PASS_REPORTADO de ask focalizado junto a D3; sin metadata de regla ganadora ni nueva evidencia de hash Node. Mantener FAIL histórico de echo, no repetir suite. Siguiente PERM-03: Faro shell deny, comprobar exposición y solo si disponible solicitar sonda inocua sin conceder permiso, tras preflight vigente. Diferenciar ausencia de herramienta, rechazo voluntario y denegación del motor. F05.4 IN_PROGRESS, deny y cierre pendientes, activación global bloqueada; sin cambios de configuración.
+
+## F05-C-PERM-03 — exposición restringida y cierre de extensión
+Faro reporta inventario sin shell, edición ni Task; ninguna operación solicitada ni ejecutada. PASS_EXPOSICION_REPORTADO, denegación dinámica NOT_RUN. Reutilizar inventarios Veritas/Bastión de revisión, sin repetir pruebas vacías ni forzar herramientas ausentes. ASK focalizado aprobado, FAIL histórico de echo conservado. Siguiente F05-C-DEV-X: verificar huella revisada, retirada selectiva autorizada de seis archivos y registro de desarrollo, después verificar baseline original. Mantener laboratorio original para routing discriminante F05-B; F05.4 IN_PROGRESS, F05.5 y activación global pendientes. Sin cambios de agentes ni configuración.
