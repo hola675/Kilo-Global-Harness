@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.54.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.55.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -200,3 +200,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — invocación F05-C-G1
 - Pruebas: Ágora PASS_REPORTADO de invocación, composición y fidelidad semántica; tiempos 54s/68s reportados, edición/enforcement NOT_RUN. Cierre de ronda por hashes pendiente; siguiente conjunto de fixtures mutantes requiere registro separado y procedimiento compatible. F05.4 IN_PROGRESS, sin cambios de código ni instalación.
+
+## 2026-11-24 — integridad y fixture editorial F05-C-G2
+- Pruebas: doce hashes y auxiliar reportados MATCH al cerrar ronda no mutante. Script 0.2.0 incorpora modos de preparación/verificación/retirada de fixture editorial con propiedad separada, resultado fijo, sin alterar registro original. Parser/ejecución de ampliación NOT_RUN. F05.4 IN_PROGRESS; sin cambios de agentes, política ni instalación global.
