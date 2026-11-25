@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.79.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.80.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -279,3 +279,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.2-R contrato de tarea
 - Equipo/skills: candidato team-task-contract 0.1.0, entrada proporcional, autonomía acotada y handoff con evidencia; sin nuevo protocolo ni cambios de política, agentes o motor.
 - Investigación/calidad: fuentes contrastadas y diez casos focalizados; revisión independiente y runtime NOT_RUN; F06 continúa abierta, sin instalación ni release.
+
+## 2026-11-25 — F06.3-R coordinación de tareas
+- Skills: candidato team-coordination 0.1.0, dependencias dinámicas, conflictos de recursos, comunicación material, recuperación de ejecución y aceptación.
+- Investigación/calidad: código Task/Swarm fijado y doce escenarios focalizados; sin cambios de política, agentes o motor. Revisión independiente y runtime NOT_RUN; sin instalación/release.

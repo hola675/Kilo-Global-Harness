@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.4.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.5.0 | Última modificación: 2026-11-25
 
-Catálogo candidato: team-routing 0.2.0 y team-task-contract 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0 y team-coordination 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
 
 ## F06 — núcleo común (13)
 team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
@@ -30,3 +30,6 @@ F06.1-R: [investigación comparada de skills](../../docs/INVESTIGACION-SKILLS.md
 
 ## F06.2-R — candidato inicial
 [team-task-contract](team-task-contract/SKILL.md) — contexto suficiente, contrato proporcional, autonomía reversible, propiedad de archivos y handoff verificable; usa contrato lógico existente, no un esquema nuevo. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: team-coordination. Sin instalación ni runtime certificado.
+
+## F06.3-R — candidato inicial
+[team-coordination](team-coordination/SKILL.md) — despacho dinámico por resultados, recursos exclusivos, procesamiento de retornos y Swarm, recuperación selectiva e integración. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: team-context-recovery. Sin motor nuevo, instalación ni certificación runtime.

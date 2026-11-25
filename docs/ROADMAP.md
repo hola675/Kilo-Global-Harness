@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.79.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.80.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -312,3 +312,6 @@ Candidato team-routing 0.2.0 refinado a partir de seis fuentes primarias, con ma
 
 ## F06.2-R — contrato de delegación (2026-11-25)
 Candidato team-task-contract 0.1.0 y diez escenarios de evaluación documentados; dos de trece skills base tienen candidato. Investigación comparada y contraste de contrato lógico 0.4.0/política 0.17.0; no modificar motor ni agentes. Revisión independiente y runtime NOT_RUN; F06 sigue IN_PROGRESS. Próximo candidato: team-coordination, sin dependencia de su existencia en las dos primeras skills.
+
+## F06.3-R — coordinación dinámica (2026-11-25)
+Candidato team-coordination 0.1.0 y doce casos C1–C12; tres de trece skills base con candidato, ninguna certificada en F06. Task/Swarm inspeccionados en revisión fijada; ejecución por resultado, exclusividad de recursos, cancelación y fallo de entrega distinguidos. Sin motor ni cambios a política/agentes. Runtime NOT_RUN y revisión independiente pendientes. Siguiente: team-context-recovery; F06 IN_PROGRESS.
