@@ -1,7 +1,7 @@
 # KILO-GLOBAL-HARNESS-TEAM
-Versión del archivo: 0.3.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.4.0 | Última modificación: 2026-11-25
 
-Estado: F02 inventario completado; F03 PoC limitada con evidencia reportada; F04 preparación del núcleo iniciada, sin activación global ni certificación integral. Consultar límites y puertas en roadmap. Objetivo de release: 1.0.0 del Harness (independiente de Kilo).
+Estado: F02 inventario completado; F03 PoC limitada con evidencia reportada; F04 y F05 PoC limitadas completadas; F06 skills base en desarrollo, sin activación global ni certificación integral. Consultar límites y puertas en roadmap. Objetivo de release: 1.0.0 del Harness (independiente de Kilo).
 Code nativo es el único líder. El equipo amplía Kilo Desktop mediante subagentes, políticas, skills y capacidades nativas; no instala un motor paralelo.
 
 ## Entrada
