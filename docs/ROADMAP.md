@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.76.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.77.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -10,8 +10,8 @@ Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certific
 | F02 Runtime y laboratorio | F01 | DONE_INVENTORY | F02.1–F02.4: binario empaquetado y hash, perfil global/administrado, procedencia y colisiones, matriz de capacidades y fixture aislado; informe sanitizado |
 | F03 PoC nativa y línea base | F02 | DONE_POC_LIMITED | F03.1–F03.8: Code, marker de instrucciones, subagente y skill reales, task foreground/background, board incremental, permisos y aislamiento, recuperación y baseline |
 | F04 Núcleo Code y políticas | F03 (alcance limitado) | DONE_POC_LIMITED | AGENTS global y configuración mínima por ruta verificada; prueba de shadowing y sesión nueva; no sustituir Code ni tocar propiedad Desktop; política base sin depender de team-learning aún inexistente |
-| F05 Equipo mínimo | F04 (alcance limitado) | IN_PROGRESS | arquitectura, frontend, backend, datos, plataforma, investigación, calidad, seguridad, editorial; reutilizar general/explore; cada rol prueba herramientas positivas/negativas, techos de sesión y resultado; profundidad inicial 1; modelos nativos |
-| F06 Skills base propias | F04 | PENDING | coordinación, requisitos, arquitectura, implementación, depuración, pruebas, Git, contexto, herramientas, seguridad y creación de skills; evals positivas/negativas y comparación sin skill; probar colisiones y disponibilidad por agente |
+| F05 Equipo mínimo | F04 (alcance limitado) | DONE_POC_LIMITED | arquitectura, frontend, backend, datos, plataforma, investigación, calidad, seguridad, editorial; reutilizar general/explore; cada rol prueba herramientas positivas/negativas, techos de sesión y resultado; profundidad inicial 1; modelos nativos |
+| F06 Skills base propias | F04 | IN_PROGRESS | coordinación, requisitos, arquitectura, implementación, depuración, pruebas, Git, contexto, herramientas, seguridad y creación de skills; evals positivas/negativas y comparación sin skill; probar colisiones y disponibilidad por agente |
 | F07 Coordinación avanzada | F05,F06 | PENDING | dependencias, concurrencia, handoff, Swarm, recuperación y consolidación; probar conflicto, cancelación, reanudación de hijo propio, reinicio/compactación por separado y límites; sin polling ni doble escritor; nesting opcional justificado |
 | F08 Skills especializadas | F05,F06 | PENDING | familias por stack, UX, frontend, backend, datos, plataforma, QA y editorial; fuentes actualizadas por skill, evals, perfiles de proyectos |
 | F09 MCP y plugins existentes | F02,F05 | PENDING | inventario nativo/desktop_*/MCP externo/plugins de motor; procedencia, conexión, exposición e invocación real por rol; perfiles opt-in sin duplicados |
@@ -303,3 +303,6 @@ Historial reportado: tres tareas completed y resultados recibidos antes de entre
 
 ## F05-B-RQ — recuperación asistida y entrada a retirada
 Code reporta revisión focalizada con diseño concreto y correcciones de idempotencia, autorización y resultado incierto; una delegación Quality observable, aceptación conceptual condicionada y recuperación PASS_REPORTADO. Informe final de no nuevas delegaciones es ambiguo frente a traza; revisión independiente del delta material NOT_VERIFIED. Mantener defecto inicial para F07/F11; no repetir diseño ni cambiar política. F05.4 cierre PoC limitado condicionado a integridad posterior; F05.5 IN_PROGRESS: Kilo cerrado, Verificar doce MATCH, consentimiento de retirada propia/auxiliar, Retirar y Diagnostico F05_AUSENTE. Tras evidencia consolidar F05 DONE_POC_LIMITED y continuar F06; no activar globalmente ni declarar permisos/aislamiento universales.
+
+## F05.5 — cierre y apertura F06
+Retirada autorizada reportada, doce MATCH previos y F05_AUSENTE. F05 DONE_POC_LIMITED; límites y regresiones conservados, no instalación global. F06 IN_PROGRESS: primer candidato team-routing 0.1.0 y matriz F06.1 preparados; validación estática de estructura y evaluación runtime pendientes según evidencia. Siguientes: team-task-contract y team-coordination con entradas concretas, propiedad y barrera de aceptación; después otras skills base por brecha, sin duplicar política. Evaluar descubrimiento y conducta comparada antes de promoción. F07/F11 no desbloqueados por mera existencia de skills.
