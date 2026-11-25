@@ -1,0 +1,225 @@
+# KILO-GLOBAL-HARNESS-TEAM
+# Version: 0.1.0
+# Fecha: 2026-11-24
+# F05.3: laboratorio temporal de proyecto. No es instalador global.
+# Exit 0: operacion completada en su alcance; 1: bloqueo/error.
+[CmdletBinding()]
+param(
+    [ValidateSet('Diagnostico','Preparar','Verificar','Retirar')]
+    [string]$Modo = 'Diagnostico',
+    [string]$Modelo,
+    [switch]$ConfirmarKiloCerrado,
+    [switch]$ConfirmarPrueba,
+    [switch]$ConfirmarRetirada,
+    [switch]$ComprobarMarcador
+)
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+function Assert-Directory([string]$Path) {
+    $Dir = [IO.DirectoryInfo]::new([IO.Path]::GetFullPath($Path))
+    while ($null -ne $Dir) {
+        $Item = Get-Item -LiteralPath $Dir.FullName -Force
+        if (-not $Item.PSIsContainer -or ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+            throw "Directorio no seguro: $($Dir.FullName)"
+        }
+        $Dir = $Dir.Parent
+    }
+}
+function Assert-File([string]$Path) {
+    Assert-Directory (Split-Path -Parent $Path)
+    $Item = Get-Item -LiteralPath $Path -Force
+    if ($Item.PSIsContainer -or ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw "Archivo no seguro: $Path" }
+}
+function Get-Hash([string]$Path) {
+    Assert-File $Path
+    (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
+}
+function Get-BytesHash([byte[]]$Bytes) {
+    [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($Bytes))
+}
+function Write-New([string]$Path, [byte[]]$Bytes) {
+    Assert-Directory (Split-Path -Parent $Path)
+    $Stream = [IO.File]::Open($Path,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
+    try { $Stream.Write($Bytes,0,$Bytes.Length); $Stream.Flush($true) }
+    finally { $Stream.Dispose() }
+}
+function Assert-Absent([string]$Parent,[string]$Name) {
+    Assert-Directory $Parent
+    if (@(Get-ChildItem -LiteralPath $Parent -Force | Where-Object Name -EQ $Name).Count -ne 0) {
+        throw "Colision: $Parent\$Name"
+    }
+}
+function Assert-Tree {
+    # Solo directorios conocidos; no recorrer arboles ajenos ni enlaces.
+    foreach ($Entry in @(
+        @{Dir=$Root; Names=@('ownership.json','workspace')},
+        @{Dir=$Workspace; Names=@('AGENTS.md','kilo.jsonc','fixture.txt','.kilo')},
+        @{Dir=(Join-Path $Workspace '.kilo'); Names=@('agents')},
+        @{Dir=(Join-Path $Workspace '.kilo\agents'); Names=$AgentNames}
+    )) {
+        if (-not (Test-Path -LiteralPath $Entry.Dir)) { continue }
+        Assert-Directory $Entry.Dir
+        foreach ($Item in Get-ChildItem -LiteralPath $Entry.Dir -Force) {
+            if ($Item.Name -cnotin $Entry.Names -or ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
+                throw "Entrada no administrada o enlace: $($Item.FullName)"
+            }
+        }
+    }
+}
+function Get-State {
+    Assert-File $StateFile
+    $S = Get-Content -LiteralPath $StateFile -Raw | ConvertFrom-Json -AsHashtable
+    if ($S.id -cne 'kilo-team-f05-lab-v1' -or $S.root -cne $Root -or $S.policyVersion -cne '0.16.0' -or $S.agentVersion -cne '0.2.0') {
+        throw 'Registro incompatible.'
+    }
+    if ($S.marker -cnotmatch '^KTEAM-F05-[0-9a-f]{32}$' -or $S.files -isnot [Collections.IDictionary] -or $S.files.Count -ne $RelativeFiles.Count) {
+        throw 'Registro de propiedad invalido.'
+    }
+    foreach ($Rel in $RelativeFiles) {
+        if (-not $S.files.Contains($Rel) -or $S.files[$Rel] -cnotmatch '^[0-9A-F]{64}$') { throw "Hash invalido: $Rel" }
+    }
+    $S
+}
+function Get-Status([string]$Path,[string]$Expected) {
+    if (-not (Test-Path -LiteralPath $Path)) { return 'ABSENT' }
+    if ((Get-Hash $Path) -ceq $Expected) { return 'MATCH' }
+    'DRIFT'
+}
+function Assert-KnownCollisions {
+    # Preflight limitado a rutas conocidas; no leer configuracion, auth ni tokens.
+    if (Test-Path -LiteralPath (Join-Path $env:LOCALAPPDATA 'KiloTeam-F04-Lab\ownership.json')) {
+        throw 'Registro F04 presente. Retirar mediante su procedimiento historico.'
+    }
+    $Locations = @(
+        (Join-Path $HOME '.config\kilo'),
+        (Join-Path $env:APPDATA 'Kilo Desktop\plugins\kilo.core\agent\runtime\config\kilo')
+    )
+    foreach ($Location in $Locations) {
+        if (-not (Test-Path -LiteralPath $Location)) { continue }
+        Assert-Directory $Location
+        Assert-Absent $Location 'AGENTS.md'
+        foreach ($Name in @('agent','agents')) {
+            $Dir = Join-Path $Location $Name
+            if (-not (Test-Path -LiteralPath $Dir)) { continue }
+            foreach ($Agent in $AgentNames) { Assert-Absent $Dir $Agent }
+        }
+    }
+    $Claude = Join-Path $HOME '.claude'
+    if (Test-Path -LiteralPath $Claude) {
+        Assert-Absent $Claude 'CLAUDE.md'
+        $Dir = Join-Path $Claude 'agents'
+        if (Test-Path -LiteralPath $Dir) {
+            foreach ($Agent in $AgentNames) { Assert-Absent $Dir $Agent }
+        }
+    }
+}
+
+try {
+    if (-not $IsWindows -or $PSVersionTable.PSVersion.Major -lt 7) { throw 'Requiere Windows y PowerShell 7.' }
+    if (-not $env:LOCALAPPDATA -or -not $env:APPDATA) { throw 'Rutas de usuario no disponibles.' }
+    Assert-Directory $env:LOCALAPPDATA
+    $Root = [IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA 'KiloTeam-F05-Lab'))
+    $Workspace = Join-Path $Root 'workspace'
+    $StateFile = Join-Path $Root 'ownership.json'
+    $Repo = Split-Path -Parent $PSScriptRoot
+    $Roles = @('architect','frontend','backend','data','platform','research','quality','security','editorial')
+    $AgentNames = @($Roles | ForEach-Object { "team-$_.md" })
+    $RelativeFiles = @('AGENTS.md','kilo.jsonc','fixture.txt') + @($AgentNames | ForEach-Object { ".kilo/agents/$_" })
+
+    if ($Modo -eq 'Preparar') {
+        if (-not $ConfirmarKiloCerrado -or -not $ConfirmarPrueba) { throw 'Requiere autorizacion de prueba y confirmacion de Kilo cerrado.' }
+        if ($Modelo -cnotmatch '^[^/\s]+/[^\s]+$') { throw 'Indicar referencia providerID/modelID autorizada; no hay modelo por defecto.' }
+        if ($env:XDG_CONFIG_HOME -or $env:KILO_CONFIG_DIR -or $env:KILO_CONFIG -or $env:KILO_CONFIG_CONTENT) { throw 'Overrides presentes en PowerShell; revisar antes de preparar.' }
+        Assert-Absent $env:LOCALAPPDATA 'KiloTeam-F05-Lab'
+        Assert-KnownCollisions
+        $Files = [ordered]@{}
+        foreach ($Name in $AgentNames) {
+            $Source = Join-Path $Repo "team\agents\$Name"
+            Assert-File $Source
+            $Bytes = [IO.File]::ReadAllBytes($Source)
+            $Text = [Text.Encoding]::UTF8.GetString($Bytes)
+            if ($Text -notmatch '(?m)^Versión del archivo: 0\.2\.0 \|' -or $Text -notmatch '(?m)^mode: subagent\s*$' -or $Text -match '(?m)^model:') { throw "Candidato incompatible: $Name" }
+            $Files[".kilo/agents/$Name"] = $Bytes
+        }
+        $Source = Join-Path $Repo 'team\policies\AGENTS.md'
+        Assert-File $Source
+        $Policy = [IO.File]::ReadAllText($Source)
+        if ($Policy -notmatch '(?m)^Versión del archivo: 0\.16\.0 \|') { throw 'Version de politica inesperada.' }
+        $Marker = 'KTEAM-F05-' + [guid]::NewGuid().ToString('N')
+        $NL = [Environment]::NewLine
+        $Policy += $NL + $NL + '## Control temporal F05 (solo evaluacion)' + $NL + "Al solicitar KTEAM-F05-LOAD, devuelve este marcador desde las instrucciones cargadas, sin leer archivos: $Marker" + $NL
+        $Files['AGENTS.md'] = [Text.Encoding]::UTF8.GetBytes($Policy)
+        $Config = [ordered]@{ '$schema'='https://app.kilo.ai/config.json'; model=$Modelo; subagent_model=$Modelo }
+        $Files['kilo.jsonc'] = [Text.Encoding]::UTF8.GetBytes(($Config | ConvertTo-Json -Depth 4))
+        $Files['fixture.txt'] = [Text.Encoding]::UTF8.GetBytes('F05-DISCOVERY-FIXTURE: inventario ficticio de tres cajas.' + $NL + 'No modificar en F05.3.' + $NL)
+        $Hashes = [ordered]@{}
+        foreach ($Rel in $RelativeFiles) { $Hashes[$Rel] = Get-BytesHash $Files[$Rel] }
+        $State = [ordered]@{ id='kilo-team-f05-lab-v1'; root=$Root; policyVersion='0.16.0'; agentVersion='0.2.0'; marker=$Marker; files=$Hashes }
+        # Directorio exclusivo. Registro previo a escritura de workspace.
+        New-Item -ItemType Directory -Path $Root | Out-Null
+        Write-New $StateFile ([Text.Encoding]::UTF8.GetBytes(($State | ConvertTo-Json -Depth 5)))
+        foreach ($Dir in @($Workspace,(Join-Path $Workspace '.kilo'),(Join-Path $Workspace '.kilo\agents'))) {
+            New-Item -ItemType Directory -Path $Dir | Out-Null
+            Assert-Directory $Dir
+        }
+        foreach ($Rel in $RelativeFiles) { Write-New (Join-Path $Workspace $Rel) $Files[$Rel] }
+        Assert-Tree
+        foreach ($Rel in $RelativeFiles) {
+            if ((Get-Status (Join-Path $Workspace $Rel) $Hashes[$Rel]) -cne 'MATCH') { throw "Integridad posterior: $Rel" }
+        }
+        Write-Host "F05_PREPARADO_LOCAL: $Workspace"
+        Write-Host 'Configuracion global no modificada por este script. Runtime NOT_RUN.'
+        exit 0
+    }
+
+    if (-not (Test-Path -LiteralPath $Root)) {
+        if ($Modo -eq 'Diagnostico') { Write-Host 'F05_AUSENTE: sin laboratorio en ruta conocida.'; exit 0 }
+        throw 'Laboratorio ausente.'
+    }
+    Assert-Tree
+    $StateHash = Get-Hash $StateFile
+    $State = Get-State
+    $Results = [ordered]@{}
+    foreach ($Rel in $RelativeFiles) { $Results[$Rel] = Get-Status (Join-Path $Workspace $Rel) $State.files[$Rel] }
+
+    if ($Modo -in @('Diagnostico','Verificar')) {
+        $Results.GetEnumerator() | Format-Table Key,Value -AutoSize
+        $Complete = @($Results.Values | Where-Object { $_ -cne 'MATCH' }).Count -eq 0
+        $MarkerStatus = 'NOT_RUN'
+        if ($Modo -eq 'Verificar' -and $ComprobarMarcador) {
+            $Received = Read-Host 'Marcador devuelto por Code (no compartirlo en Git ni chat externo)'
+            $MarkerStatus = if ($Received -ceq $State.marker) { 'MATCH' } else { 'MISMATCH' }
+        }
+        Write-Host "Workspace: $Workspace"
+        Write-Host "Integridad: $(if ($Complete) {'MATCH'} else {'INCOMPLETE_OR_DRIFT'}); Marcador: $MarkerStatus"
+        if (-not $Complete -or $MarkerStatus -eq 'MISMATCH') { throw 'Verificacion incompleta o deriva.' }
+        if ($MarkerStatus -eq 'MATCH') { Write-Host 'PASS_LOAD_REPORTED (no certifica descubrimiento ni permisos).' }
+        else { Write-Host 'PASS_INTEGRIDAD_LOCAL; runtime NOT_RUN por el script.' }
+        exit 0
+    }
+
+    if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada) { throw 'Requiere confirmacion de cierre y retirada.' }
+    if (@($Results.Values | Where-Object { $_ -eq 'DRIFT' }).Count -ne 0) { throw 'Deriva: conservar registro y archivos, revisar.' }
+    if ((Get-Hash $StateFile) -cne $StateHash) { throw 'Registro cambiado.' }
+    foreach ($Rel in $RelativeFiles) {
+        $Path = Join-Path $Workspace $Rel
+        if (Test-Path -LiteralPath $Path) {
+            if ((Get-Hash $Path) -cne $State.files[$Rel]) { throw "Archivo cambiado: $Rel" }
+            Remove-Item -LiteralPath $Path -ErrorAction Stop
+        }
+    }
+    # Sin borrado recursivo: un directorio no vacio detiene retirada.
+    foreach ($Dir in @((Join-Path $Workspace '.kilo\agents'),(Join-Path $Workspace '.kilo'),$Workspace)) {
+        if (Test-Path -LiteralPath $Dir) { Assert-Directory $Dir; [IO.Directory]::Delete($Dir,$false) }
+    }
+    Assert-Tree
+    if ((Get-Hash $StateFile) -cne $StateHash) { throw 'Registro cambiado.' }
+    Remove-Item -LiteralPath $StateFile -ErrorAction Stop
+    [IO.Directory]::Delete($Root,$false)
+    Write-Host 'F05_RETIRADO: archivos propios y directorios vacios retirados.'
+    exit 0
+} catch {
+    Write-Error -Message ("F05_BLOCKED: " + $_.Exception.Message) -ErrorAction Continue
+    exit 1
+}
