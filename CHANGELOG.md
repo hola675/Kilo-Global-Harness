@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.77.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.78.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -271,3 +271,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — cierre F05 y apertura F06
 - Pruebas: integridad y retirada autorizada F05 reportadas PASS; DONE_POC_LIMITED con límites conservados.
 - Skills: team-routing 0.1.0 candidato original, matriz de evaluación F06.1 y catálogo actualizados. Sin instalación ni certificación de runtime.
+
+## 2026-11-25 — F06.1-R
+- Investigación: patrones de selección y coordinación de seis fuentes primarias; decisiones y referencias fijadas en INVESTIGACION-SKILLS.md.
+- Skills: team-routing 0.2.0, selección por cohesión, competencias, coste y readiness; matriz R1–R9, sin cambios de política ni permisos. Runtime NOT_RUN.
