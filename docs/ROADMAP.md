@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.71.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.72.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -288,3 +288,6 @@ Faro reporta inventario sin shell, edición ni Task; ninguna operación solicita
 
 ## F05-C-DEV-X — extensión retirada y routing siguiente
 Operador reporta identidad Node PASS, huella previa intacta, retirada autorizada F05_DESARROLLO_RETIRADO y Verificar posterior doce MATCH, auxiliar MATCH_TEMPLATE, PASS_INTEGRIDAD_LOCAL. Extensión cerrada DONE_POC_LIMITED; laboratorio original conservado. Siguiente F05-B: contraste de lectura sencilla directa y misión hipotética de aprobación de mantenimiento, sin indicar roles, número ni estrategia al líder; observar Task y resultado integrado, no mutar ni usar red/shell. Verificar baseline tras ronda. F05.4 IN_PROGRESS, F05.5 y F06 pendientes; no instalar globalmente ni repetir pruebas válidas.
+
+## F05-B-R — ajuste del liderazgo y recertificación
+B1 PASS_REPORTADO semántico, directo; B2 diseño útil, routing autónomo NOT_VERIFIED sin traza de Task. Por solicitud del operador, política candidata 0.17.0 precisa umbrales N1–N4, delegación de competencias en diseño, revisión independiente, integración, notificaciones y evidencia. Code nativo intacto. Script 0.4.0 prepara nueva política, conserva verificación/retirada de registros 0.16.0. Siguiente: parser, retirada autorizada del baseline antiguo y nueva preparación exclusiva; verificar carga y repetir solo B1/B2 con condiciones equivalentes. F05.4 IN_PROGRESS; runtime nuevo NOT_RUN, no instalación global.

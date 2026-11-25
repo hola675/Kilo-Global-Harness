@@ -1,5 +1,5 @@
 # KILO-GLOBAL-HARNESS-TEAM
-# Version: 0.3.0
+# Version: 0.4.0
 # Fecha: 2026-11-24
 # F05.3/F05.4: laboratorio temporal y extensiones editorial/desarrollo. No es instalador global.
 # Exit 0: operacion completada en su alcance; 1: bloqueo/error.
@@ -94,7 +94,7 @@ function Assert-Tree([switch]$PermitirAuxiliar,[switch]$PermitirEdicion,[switch]
 function Get-State {
     Assert-File $StateFile
     $S = Get-Content -LiteralPath $StateFile -Raw | ConvertFrom-Json -AsHashtable
-    if ($S.id -cne 'kilo-team-f05-lab-v1' -or $S.root -cne $Root -or $S.policyVersion -cne '0.16.0' -or $S.agentVersion -cne '0.2.0') {
+    if ($S.id -cne 'kilo-team-f05-lab-v1' -or $S.root -cne $Root -or $S.policyVersion -cnotin @('0.16.0','0.17.0') -or $S.agentVersion -cne '0.2.0') {
         throw 'Registro incompatible.'
     }
     if ($S.marker -cnotmatch '^KTEAM-F05-[0-9a-f]{32}$' -or $S.files -isnot [Collections.IDictionary] -or $S.files.Count -ne $RelativeFiles.Count) {
@@ -271,7 +271,7 @@ try {
         $Source = Join-Path $Repo 'team\policies\AGENTS.md'
         Assert-File $Source
         $Policy = [IO.File]::ReadAllText($Source)
-        if ($Policy -notmatch '(?m)^Versión del archivo: 0\.16\.0 \|') { throw 'Version de politica inesperada.' }
+        if ($Policy -notmatch '(?m)^Versión del archivo: 0\.17\.0 \|') { throw 'Version de politica inesperada.' }
         $Marker = 'KTEAM-F05-' + [guid]::NewGuid().ToString('N')
         $NL = [Environment]::NewLine
         $Policy += $NL + $NL + '## Control temporal F05 (solo evaluacion)' + $NL + "Al solicitar KTEAM-F05-LOAD, devuelve este marcador desde las instrucciones cargadas, sin leer archivos: $Marker" + $NL
@@ -281,7 +281,7 @@ try {
         $Files['fixture.txt'] = [Text.Encoding]::UTF8.GetBytes('F05-DISCOVERY-FIXTURE: inventario ficticio de tres cajas.' + $NL + 'No modificar en F05.3.' + $NL)
         $Hashes = [ordered]@{}
         foreach ($Rel in $RelativeFiles) { $Hashes[$Rel] = Get-BytesHash $Files[$Rel] }
-        $State = [ordered]@{ id='kilo-team-f05-lab-v1'; root=$Root; policyVersion='0.16.0'; agentVersion='0.2.0'; marker=$Marker; files=$Hashes }
+        $State = [ordered]@{ id='kilo-team-f05-lab-v1'; root=$Root; policyVersion='0.17.0'; agentVersion='0.2.0'; marker=$Marker; files=$Hashes }
         # Directorio exclusivo. Registro previo a escritura de workspace.
         New-Item -ItemType Directory -Path $Root | Out-Null
         Write-New $StateFile ([Text.Encoding]::UTF8.GetBytes(($State | ConvertTo-Json -Depth 5)))
