@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.51.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.52.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -228,3 +228,6 @@ Operador reporta parser PASS de 0.1.1, doce MATCH, auxiliar MATCH_TEMPLATE, marc
 
 ## F05-A — descubrimiento reportado y arranque F05.4
 Operador reporta nueve IDs exactos team-* (9/9) y responsabilidades coherentes desde descripción de Task. PASS_REPORTED_DISCOVERY, sin traza independiente de no lectura. Confusión textual entre modo y modelo: identidad del líder no se acredita por nombre de modelo, mantener Code nativo y selección autorizada. F05.3 DONE_POC_LIMITED para desarrollo y descubrimiento reportado; F05.4 IN_PROGRESS con F05-C-R1, primera invocación focalizada de Faro sobre fixture inmutable (ver tests/F05-EQUIPO.md). No repetir descubrimiento ni marcador; invocación, permisos, coordinación y pruebas negativas siguen pendientes. Sin instalación definitiva ni cambios al laboratorio.
+
+## F05-C-R1 — Faro y siguiente Atlas
+PASS_REPORTADO de Task foreground nueva a team-research y lectura fiel de fixture, entrega y separación de observación/inferencia/desconocidos. Exposición reportada coincide con matriz consultada (edit/bash/task/MCP no visibles, web visible sin uso); modelo reportado coincide con selección central, 12s de muestra, sin benchmark ni facturación comprobada. No certificar enforcement ni integridad posterior por informe; comprobar hashes al cerrar ronda de lectura. F05.4 IN_PROGRESS: F05-C-A1 Atlas diseña contrato de inventario hipotético reutilizando hallazgo de Faro, sin relectura ni mutación. No declarar routing autónomo por selección explícita. Candidatos intactos.
