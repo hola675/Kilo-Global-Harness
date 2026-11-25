@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.72.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.73.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -255,3 +255,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — F05-B-R
 - Gobierno: política 0.17.0 refuerza liderazgo Code, selección proporcional por competencias, delegación de diseño, revisión independiente y evidencia; no reemplaza modo nativo.
 - Pruebas: B1 directo reportado PASS, B2 routing NOT_VERIFIED; script 0.4.0 prepara candidato nuevo y reconoce baseline anterior. Recertificación focalizada pendiente, sin cambios de especialistas o permisos.
+
+## 2026-11-24 — carga F05-B-R
+- Pruebas: parser, retirada autorizada, preparación 0.17.0 y carga por marcador reportados PASS. Siguiente contraste B1/B2 sin selección impuesta; sin cambios de código, política o instalación global.
