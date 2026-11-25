@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.86.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.87.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -307,3 +307,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.9-R pruebas focalizadas y adopción de calidad
 - Skills: focused-testing 0.1.0 y protocolo quality-baseline 0.1.0/schema 1; auditoría inicial, consolidación por equivalencia, evidencia y certificación incremental. Dieciocho escenarios Q1–Q18.
 - Política: candidato 0.18.0, disparador de inspección por proyecto y revisión focalizada; sin modificar agentes, permisos o motor. Marcador propio no acredita release; no se creó registro real ni se ejecutó auditoría de proyecto. Revisión independiente y runtime NOT_RUN.
+
+## 2026-11-25 — F06.10-R disciplina Git
+- Skills: git-workflow 0.1.0, ramas mínimas, preservación de índice/worktree, integración verificable, consolidación y continuidad quality-baseline; catorce casos G1–G14.
+- Política: 0.19.0 candidata, máximo tres ramas propias incluyendo principal, tercera excepcional y consolidación previa; sin modificar agentes, permisos o protección. No se retiraron ramas históricas ni se integró PR. Revisión independiente y runtime NOT_RUN.
