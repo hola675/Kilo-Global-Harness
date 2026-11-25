@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.73.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.74.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -258,3 +258,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — carga F05-B-R
 - Pruebas: parser, retirada autorizada, preparación 0.17.0 y carga por marcador reportados PASS. Siguiente contraste B1/B2 sin selección impuesta; sin cambios de código, política o instalación global.
+
+## 2026-11-24 — selección autónoma F05-B-R
+- Pruebas: B1 directo PASS semántico reportado; B2 tres delegaciones pertinentes elegidas por Code, selección PASS_REPORTADO. Retornos, integración y revisión completada no acreditados; recuperar evidencia existente y verificar integridad. Sin cambios de política, agentes, scripts o instalación.

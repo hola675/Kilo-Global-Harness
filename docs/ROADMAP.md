@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.73.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.74.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -294,3 +294,6 @@ B1 PASS_REPORTADO semántico, directo; B2 diseño útil, routing autónomo NOT_V
 
 ## F05-B-R — carga reportada y entrada a routing
 Operador reporta parser 0.4.0 PASS, retirada autorizada de baseline 0.16.0, ausencia confirmada, nueva preparación exclusiva 0.17.0 con modelo conservado y doce MATCH. Verificación posterior: auxiliar MATCH_TEMPLATE, marcador MATCH, PASS_LOAD_REPORTED. Carga reportada PASS en su alcance; no procedencia universal ni certificación conductual. Siguiente B1/B2 originales en chat nuevo Code, sin sugerir especialistas, observar delegaciones, revisión e integración, comprobar integridad posterior. No repetir marcador ni suite. F05.4 IN_PROGRESS, routing nuevo NOT_RUN, F05.5 y activación global pendientes.
+
+## F05-B-R — selección autónoma observada
+B1 directo PASS_REPORTADO semántico; B2 despacho agrupado de Seguridad y Editorial y delegación adicional de Calidad, sin selección impuesta. PASS_REPORTADO de selección pertinente, revisión independiente solicitada; retorno, integración, independencia efectiva, cierre y solape NOT_VERIFIED en registro aportado. Diseño útil, casos propuestos no ejecutados, no benchmark ni causalidad exclusiva. Siguiente: recuperar únicamente evidencia de tareas ya existentes y verificar integridad sin marcador al terminar; no repetir B1/B2 ni modificar política por falta de traza. F05.4 IN_PROGRESS; no instalación global.
