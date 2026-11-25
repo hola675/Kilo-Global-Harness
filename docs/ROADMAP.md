@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.52.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.53.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -231,3 +231,6 @@ Operador reporta nueve IDs exactos team-* (9/9) y responsabilidades coherentes d
 
 ## F05-C-R1 — Faro y siguiente Atlas
 PASS_REPORTADO de Task foreground nueva a team-research y lectura fiel de fixture, entrega y separación de observación/inferencia/desconocidos. Exposición reportada coincide con matriz consultada (edit/bash/task/MCP no visibles, web visible sin uso); modelo reportado coincide con selección central, 12s de muestra, sin benchmark ni facturación comprobada. No certificar enforcement ni integridad posterior por informe; comprobar hashes al cerrar ronda de lectura. F05.4 IN_PROGRESS: F05-C-A1 Atlas diseña contrato de inventario hipotético reutilizando hallazgo de Faro, sin relectura ni mutación. No declarar routing autónomo por selección explícita. Candidatos intactos.
+
+## F05-C-A1 — Atlas y siguiente Ágora
+PASS_REPORTADO de Task foreground nueva, arquitectura modular, contrato propuesto y reutilización del hallazgo de Faro sin relectura reportada; 26s de muestra, cero herramientas y cambios reportados. Code acepta diseño inicial, no producción; invariantes y pruebas solo propuestas, permisos ask no ejercidos, sin traza independiente ni benchmark. F05.4 IN_PROGRESS: F05-C-G1 Ágora redacta mensajes de reserva preservando semántica y estados, sin mutación; después verificar hashes de ronda y preparar fixtures propios antes de editar. No repetir investigación/diseño ni instalar globalmente.

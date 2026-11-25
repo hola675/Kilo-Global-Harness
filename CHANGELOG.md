@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.52.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.53.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -194,3 +194,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — primera invocación F05-C-R1
 - Pruebas: Faro PASS_REPORTADO de invocación, lectura, evidencia y exposición consultada; 12s reportados, enforcement/benchmark NOT_RUN. Siguiente F05-C-A1 Atlas con evidencia reutilizada, sin mutación. F05.4 IN_PROGRESS; sin cambios de código ni instalación.
+
+## 2026-11-24 — invocación F05-C-A1
+- Pruebas: Atlas PASS_REPORTADO de invocación, diseño y reutilización de evidencia; 26s reportados, contrato no aprobado para producción, pruebas/ask NOT_RUN. Siguiente F05-C-G1 Ágora (redacción sin mutación), cierre de ronda por hashes y fixtures registrados para edición posterior. Sin cambios de código ni instalación.
