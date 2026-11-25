@@ -1,5 +1,5 @@
 # KILO-GLOBAL-HARNESS-TEAM
-# Version: 0.1.0
+# Version: 0.1.1
 # Fecha: 2026-11-24
 # F05.3: laboratorio temporal de proyecto. No es instalador global.
 # Exit 0: operacion completada en su alcance; 1: bloqueo/error.
@@ -11,6 +11,7 @@ param(
     [switch]$ConfirmarKiloCerrado,
     [switch]$ConfirmarPrueba,
     [switch]$ConfirmarRetirada,
+    [switch]$ConfirmarRetiradaAuxiliar,
     [switch]$ComprobarMarcador
 )
 Set-StrictMode -Version Latest
@@ -50,7 +51,20 @@ function Assert-Absent([string]$Parent,[string]$Name) {
         throw "Colision: $Parent\$Name"
     }
 }
-function Assert-Tree {
+function Get-AuxiliaryStatus {
+    # Plantilla de Config.ensureGitignore del CLI 7.8.27 auditado.
+    # Solo esta ruta y contenido; no asumir propiedad de un archivo ajeno.
+    if (-not (Test-Path -LiteralPath $AuxiliaryFile)) { return 'ABSENT' }
+    Assert-File $AuxiliaryFile
+    $Expected = @('node_modules','package.json','package-lock.json','pnpm-lock.yaml','bun.lock','yarn.lock','.gitignore','agent-manager.json')
+    $Actual = [IO.File]::ReadAllLines($AuxiliaryFile)
+    if ($Actual.Count -ne $Expected.Count) { throw 'Plantilla .kilo/.gitignore distinta; preservar y revisar.' }
+    for ($i = 0; $i -lt $Expected.Count; $i++) {
+        if ($Actual[$i] -cne $Expected[$i]) { throw 'Plantilla .kilo/.gitignore distinta; preservar y revisar.' }
+    }
+    'MATCH_TEMPLATE'
+}
+function Assert-Tree([switch]$PermitirAuxiliar) {
     # Solo directorios conocidos; no recorrer arboles ajenos ni enlaces.
     foreach ($Entry in @(
         @{Dir=$Root; Names=@('ownership.json','workspace')},
@@ -61,6 +75,11 @@ function Assert-Tree {
         if (-not (Test-Path -LiteralPath $Entry.Dir)) { continue }
         Assert-Directory $Entry.Dir
         foreach ($Item in Get-ChildItem -LiteralPath $Entry.Dir -Force) {
+            if ($PermitirAuxiliar -and $Entry.Dir -ceq (Join-Path $Workspace '.kilo') -and $Item.Name -ceq '.gitignore') {
+                if ($Item.PSIsContainer -or ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Auxiliar no seguro.' }
+                if ((Get-AuxiliaryStatus) -cne 'MATCH_TEMPLATE') { throw 'Auxiliar cambiado durante verificacion.' }
+                continue
+            }
             if ($Item.Name -cnotin $Entry.Names -or ($Item.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
                 throw "Entrada no administrada o enlace: $($Item.FullName)"
             }
@@ -122,6 +141,7 @@ try {
     $Root = [IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA 'KiloTeam-F05-Lab'))
     $Workspace = Join-Path $Root 'workspace'
     $StateFile = Join-Path $Root 'ownership.json'
+    $AuxiliaryFile = Join-Path $Workspace '.kilo\.gitignore'
     $Repo = Split-Path -Parent $PSScriptRoot
     $Roles = @('architect','frontend','backend','data','platform','research','quality','security','editorial')
     $AgentNames = @($Roles | ForEach-Object { "team-$_.md" })
@@ -177,7 +197,8 @@ try {
         if ($Modo -eq 'Diagnostico') { Write-Host 'F05_AUSENTE: sin laboratorio en ruta conocida.'; exit 0 }
         throw 'Laboratorio ausente.'
     }
-    Assert-Tree
+    Assert-Tree -PermitirAuxiliar
+    $AuxiliaryStatus = Get-AuxiliaryStatus
     $StateHash = Get-Hash $StateFile
     $State = Get-State
     $Results = [ordered]@{}
@@ -192,6 +213,7 @@ try {
             $MarkerStatus = if ($Received -ceq $State.marker) { 'MATCH' } else { 'MISMATCH' }
         }
         Write-Host "Workspace: $Workspace"
+        Write-Host "Auxiliar .kilo/.gitignore: $AuxiliaryStatus (no incluido en propiedad)"
         Write-Host "Integridad: $(if ($Complete) {'MATCH'} else {'INCOMPLETE_OR_DRIFT'}); Marcador: $MarkerStatus"
         if (-not $Complete -or $MarkerStatus -eq 'MISMATCH') { throw 'Verificacion incompleta o deriva.' }
         if ($MarkerStatus -eq 'MATCH') { Write-Host 'PASS_LOAD_REPORTED (no certifica descubrimiento ni permisos).' }
@@ -202,6 +224,14 @@ try {
     if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada) { throw 'Requiere confirmacion de cierre y retirada.' }
     if (@($Results.Values | Where-Object { $_ -eq 'DRIFT' }).Count -ne 0) { throw 'Deriva: conservar registro y archivos, revisar.' }
     if ((Get-Hash $StateFile) -cne $StateHash) { throw 'Registro cambiado.' }
+    # No iniciar retirada parcial por un auxiliar sin consentimiento.
+    if ($AuxiliaryStatus -eq 'MATCH_TEMPLATE') {
+        if (-not $ConfirmarRetiradaAuxiliar) { throw 'Auxiliar no propio presente; requiere ConfirmarRetiradaAuxiliar para retirar la plantilla conocida.' }
+        $AuxiliaryHash = Get-Hash $AuxiliaryFile
+        if ((Get-AuxiliaryStatus) -cne 'MATCH_TEMPLATE' -or (Get-Hash $AuxiliaryFile) -cne $AuxiliaryHash) { throw 'Auxiliar cambiado; preservar.' }
+        Remove-Item -LiteralPath $AuxiliaryFile -ErrorAction Stop
+    }
+    Assert-Tree
     foreach ($Rel in $RelativeFiles) {
         $Path = Join-Path $Workspace $Rel
         if (Test-Path -LiteralPath $Path) {
