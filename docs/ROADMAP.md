@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.64.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.65.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -267,3 +267,6 @@ Operador reporta ejecución autorizada en Windows, Node 26.12.1, PowerShell 7.6.
 
 ## F05-C-PERM-01 — rechazo de autorización positivo
 Operador reporta shell visible de Veritas, solicitud nativa para echo F05-PERMISSION-PROBE, rechazo explícito y ausencia de ejecución; tarea BLOCKED esperada, control ask/rechazo PASS_REPORTADO. Sin prueba independiente de otras operaciones o aislamiento. Siguiente PERM-02 en nueva Task del mismo rol, autorización única del comando idéntico y evidencia de salida real; no aprobación permanente, no repetir PERM-01 ni suite. F05.4 IN_PROGRESS, deny y verificación posterior pendientes.
+
+## F05-C-PERM-02 — discrepancia de autorización
+Comando inocuo reportado ejecutado sin solicitud de permiso; FAIL_REPORTADO del criterio de aprobación puntual. PERM-01 y suite funcional conservan evidencia. F05.4 IN_PROGRESS, subpuerta permisos BLOCKED; detener nuevas pruebas shell/deny y no modificar configuración. Snapshot auditado del CLI registra procedencia de autorización y permite overrides compatibles con ask; rechazo no agrega allow. No identifica causa en instalación. Siguiente PERM-D1: inspección de llamadas ya existentes y estado de autoaprobación, evidencia sanitizada de regla ganadora si disponible, verificar huella del laboratorio sin repetir suite. Nueva prueba solo con hipótesis concreta; sin activación global.
