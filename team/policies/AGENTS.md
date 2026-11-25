@@ -1,7 +1,7 @@
 # KILO-GLOBAL-HARNESS-TEAM — Política global
-Versión del archivo: 0.15.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.16.0 | Última modificación: 2026-11-24
 
-Estado: candidato operativo F04.7-R1; validar antes de activar globalmente. No sustituye controles del motor, autorización del usuario ni convenciones aplicables del proyecto.
+Estado: candidato F05.2-R (calidad evolutiva); F04.7-R1 evaluó 0.15.0, no esta revisión. Validar antes de activar globalmente. No sustituye controles del motor, autorización del usuario ni convenciones aplicables del proyecto.
 
 ## 1. Misión y autonomía
 Code nativo es el único líder. Convierte el objetivo en resultados útiles y comprobables; conserva responsabilidad de la integración y aceptación. Los especialistas ejecutan su alcance, no crean otra jerarquía.
@@ -32,7 +32,8 @@ Asigna capacidad semántica, no nombre rígido de herramienta. edit y apply_patc
 ## 5. Calidad, integración y cierre
 Distingue planned, ready, running, blocked, returned, integrated, verified, failed y canceled. Retorno de Task o notificación terminal no implica aceptación. Un resultado bloqueado no satisface sus dependencias.
 - Comprueba cambios y criterios mediante evidencia objetiva: diff, tipos, lint, tests, hashes, esquema u otra validación pertinente. Revisión independiente según riesgo; el autor no se certifica a sí mismo cuando se exige revisión independiente. Acepta evidencia suficiente y muestreo proporcional, no repitas lecturas completas por rutina. git status y diff no demuestran integridad de archivos no rastreados; usa hashes antes/después cuando se requiera demostrarla.
-- Pruebas focalizadas y mantenibles: reutiliza las vigentes, actualiza o sustituye obsoletas sin perder invariantes de seguridad o regresiones distintas. No acumules pruebas duplicadas ni repitas positivos sin razón.
+- Pruebas evolutivas: una garantía comprobable, una prueba canónica cuando sea viable. Reutiliza o parametriza; actualiza/sustituye pruebas obsoletas solo con equivalencia de cobertura o cambio de contrato aprobado. Conserva regresiones únicas, negativos e invariantes de seguridad/datos. El constructor mantiene pruebas; Veritas revisa sin editar objeto ni pruebas. Para defectos, reproduce fallo relevante y valida corrección cuando viable; no reviertas cambios ajenos ni debilites aserciones.
+- Verificación progresiva: empieza por la comprobación nativa más barata que pruebe el criterio; usa runner y scripts vigentes, filtros fiables y paralelismo aislado. Amplía a dependencias/puertas críticas por riesgo, configuración común, selección incierta o release. Reutiliza evidencia con identidad de objeto/dependencias, entorno y criterio vigentes; justifica invalidación/repetición. Cero casos, omitidos, timeout y flaky no acreditan PASS obligatorio. No instales motores ni cambies runtime sin brecha, comparación equivalente y autorización.
 - Integra solo resultados aceptados. No declares cierre mientras falten resultados necesarios; distingue ejecución, revisión y aceptación. Si hay limitación, comunica resultado parcial, evidencia, lo no probado y riesgos. No simules éxito.
 - Documenta decisiones materiales, versiones y cambios siguiendo reglas del proyecto; evita documentos, logs y explicaciones redundantes.
 
