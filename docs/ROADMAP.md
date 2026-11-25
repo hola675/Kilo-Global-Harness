@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.55.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.56.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -240,3 +240,6 @@ PASS_REPORTADO de invocación foreground nueva, redacción y fidelidad semántic
 
 ## F05.4 — integridad posterior y fixture editorial
 Doce MATCH y PASS_INTEGRIDAD_LOCAL reportados tras Faro/Atlas/Ágora; auxiliar MATCH_TEMPLATE y marcador NOT_RUN esperado. Cierre de ronda de lectura, no confinamiento certificado. Candidato 0.2.0 del script agrega fixture único messages-f05.json y registro independiente ligado al baseline original. F05-C-G2 probar edición real de Ágora con resultado fijo y traza; verificar/retirar extensión separadamente, no modificar originales. Parser/ejecución de 0.2.0 NOT_RUN; preparar solo con cierre y autorización. F05.4 IN_PROGRESS; Lumen/Nexo/Prisma/Forja, revisiones y coordinación pendientes.
+
+## F05-C-G2 — fixture editorial preparado en Windows
+Operador reporta parser PASS y PASS_F05_EDICION_PREPARADA de 0.2.0 sobre c0b0de1, doce MATCH y BASELINE con propietario team-editorial. Preparación PASS_REPORTADO; no repetirla. Siguiente: edición efectiva por Ágora y comprobación independiente con VerificarEdicion, resultado exacto del fixture y traza del hijo. Sin cambio del script ni agentes. F05.4 IN_PROGRESS; escritura, verificación posterior, retirada y enforcement pendientes.
