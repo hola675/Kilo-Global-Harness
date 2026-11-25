@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.44.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.45.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -166,3 +166,8 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — refinamiento Faro
 - Investigación: seis archivos de tres repositorios fijados y cinco referencias técnicas contrastadas por extractos oficiales; tres rutas 404 excluidas.
 - Equipo: Faro v0.2.0 refuerza investigación dirigida, trazabilidad, compatibilidad, contraste de capacidades y protección de información; permisos intactos. FR1–FR5 preparados, runtime NOT_RUN. Sin instalación, dependencias ni cambios a otros agentes.
+
+## 2026-11-24 — refinamiento Veritas y pruebas evolutivas
+- Investigación: seis archivos de tres repositorios fijados y documentación de motores consultada selectivamente; sin benchmark local.
+- Equipo: Veritas v0.2.0 refuerza revisión independiente, selección por riesgo, mantenimiento y evidencia; permisos intactos. V1–V5 preparados.
+- Política/calidad: candidata global 0.16.0 y estrategia 0.6.0 consolidan reutilización, sustitución equivalente, selección progresiva y evaluación de motores. F04 histórico conserva guardia 0.15.0; F05 valida nuevo candidato. Runtime/benchmark NOT_RUN. Sin instalación, dependencias ni cambios a otros agentes.
