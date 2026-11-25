@@ -1,5 +1,5 @@
 # Plan de scripts Windows
-Versión del archivo: 0.16.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.17.0 | Última modificación: 2026-11-25
 
 F02: Diagnosticar-KiloTeam.ps1 (solo lectura, versiones, paths, presencia de configuraciones sin secretos, procesos, herramientas y salida JSON sanitizada). F03: fixture de PoC aislado y verificación manual de sesión. F13: Administrar-KiloTeam.ps1 con modos Diagnostico, Simular, Instalar, Verificar, Actualizar, Desinstalar y Restaurar. F04: Probar-Nucleo-KiloTeam.ps1 es un procedimiento temporal de laboratorio, no el instalador F13. PowerShell 7, rutas con espacios y Unicode, códigos de salida documentados, sin admin por defecto, sin sobrescribir archivos no administrados, pruebas idempotentes y protección de junctions. No utilizar legacy como instalador.
 
@@ -41,3 +41,6 @@ Cierre F05.5 reportado PASS sobre cc3f4c9: doce MATCH, retirada autorizada y F05
 
 ## F06-LAB-R1 — laboratorio comparativo (candidato 0.1.0)
 [Probar-Skills-KiloTeam.ps1](Probar-Skills-KiloTeam.ps1): Diagnostico/Preparar/Verificar/Retirar; dos workspaces en %LOCALAPPDATA%\KiloTeam-F06-Lab\baseline y candidate, sin instalación global. 24 fuentes fijadas por blob Git de 8fe21568fc8362b3f743d33b0c27c0f682110908 (normalización CRLF controlada), 38 archivos por SHA-256 y registro previo hermano. Misma política/agentes/modelo/fixture, candidate agrega 13 skills y referencia; preflight acotado, confirmar catálogo efectivo en sesión. No leer tokens/configuración privada, no iniciar procesos ni modificar perfil. Preparar exclusivo con consentimiento; Verificar compara registro contra payload fijado y hashes reales; retirada solo íntegra, con auxiliar conocido y autorización separada, sin recursión ni adopción de drift. Requiere checkout que conserve fuentes fijadas. Si falla parcialmente, preservar para reconciliación, no usar F04/F05 ni recrear. Primera ronda solo lectura/diseño. [Procedimiento F06](../tests/F06-SKILLS.md). Windows parser y runtime NOT_RUN.
+
+## F06-LAB-R1.2 — contenedor F04 histórico (0.1.1)
+Preparar 0.1.0 bloqueado por nombre F04 reportado. El script histórico retira registro, no directorio. Aceptar solo directorio F04 exacto, regular, vacío (incluidas entradas ocultas) y sin enlaces, conservarlo; si contiene registro u otra entrada bloquear. F05 y todas las demás guardas intactas. No borrar ni mover laboratorio previo. Parser y runtime de 0.1.1 NOT_RUN.

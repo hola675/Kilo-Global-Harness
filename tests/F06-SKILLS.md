@@ -1,5 +1,5 @@
 # F06 — Evaluación de skills base
-Versión del archivo: 0.17.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.18.0 | Última modificación: 2026-11-25
 
 Estado: diseño de evaluación, runtime NOT_RUN. Conservar la política 0.17.0 y los nueve agentes 0.2.0 como referencia histórica inicial; cada sección fija su comparación histórica. Para candidato conjunto F06-AUD-R usar inventario actual del manifiesto y política 0.21.0; no activar globalmente. Usar laboratorio registrado y descartable, modelo explícitamente autorizado, sin secretos ni cambios en proyectos reales. Verificar colisiones y disponibilidad por sesión y rol antes de probar. Una descripción visible no demuestra carga; carga no demuestra mejora.
 
@@ -321,3 +321,6 @@ Conservar ambos workspaces para comparación mientras estén íntegros, no repet
 
 ### F06-LAB-R1 — diagnóstico reportado (2026-11-25)
 Operador reporta fetch correcto, worktree detached en b4f930351de0f4adfdb1c06a6286e4e0ec3139a2, PARSER: PASS, Fuentes fijadas MATCH: 24 (8fe21568fc8362b3f743d33b0c27c0f682110908) y F06_AUSENTE. PASS_REPORTED de parser y diagnóstico en host, no de preparación/carga/comportamiento; no se ejecutó independientemente desde el entorno de desarrollo. Conservar el worktree y script 0.1.0 sin cambios. Siguiente: cerrar Kilo sin trabajo activo, seleccionar referencia providerID/modelID autorizada y ejecutar Preparar con confirmaciones de cierre/prueba. Esperar MATCH de 38 archivos, auxiliares inicialmente ABSENT y F06_PREPARADO. Si bloqueo, conservar registro y archivos, no limpiar ni repetir preparación. No modificar global, no repetir diagnóstico. Luego R1a y R1b según evidencia. F06 IN_PROGRESS; revisión independiente y runtime NOT_RUN.
+
+### F06-LAB-R1.2 — colisión preventiva F04 (2026-11-25)
+Operador reporta modelo autorizado y confirmación, Preparar 0.1.0 BLOCKED por KiloTeam-F04-Lab. El flujo verifica esta ruta antes de crear F06; no se ha inspeccionado el contenido local ni confirmado ausencia posterior de F06. Código histórico Probar-Nucleo-KiloTeam.ps1 0.2.0 elimina ownership.json al retirar pero no StateDir; explica posible falso positivo, no demuestra que carpeta real esté vacía. Corrección 0.1.1: tolerar exclusivamente nombre exacto F04, directorio normal, ancestros sin reparse, cero entradas incluso ocultas; no modificarlo. Si no vacío, enlace o entrada distinta, bloquear y preservar. Mantener F05, otras colisiones, fuentes, payloads, permisos, registro y retiro intactos. Revalidar parser y preflight/Preparar únicamente tras comprobar estado local y cierre/consentimiento; conservar evidencia previa del parser 0.1.0, no extenderla a 0.1.1. Runtime de corrección NOT_RUN; F06 IN_PROGRESS.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.42.0",
+    "version": "0.43.0",
     "last_modified": "2026-11-25"
   },
   "id": "kilo-global-harness-team",
@@ -231,7 +231,7 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "DIAGNOSTIC_PASS_REPORTED_PREPARATION_PENDING"
+    "F06_LAB_R1": "PREFLIGHT_FIX_CANDIDATE"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -675,10 +675,10 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Preparar una sola vez desde el worktree existente b4f9303, modelo explícitamente autorizado y Kilo cerrado; verificar 38 archivos antes de abrir variantes. No repetir fetch, parser ni diagnóstico ya reportados.",
+    "next": "Revalidar parser de 0.1.1 en worktree existente, comprobar contenido F04 sin leer registro ni borrar, preparar solo si contenedor vacío o ausente y F06 ausente; si no, conservar y diagnosticar.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "sourceRevision": "8fe21568fc8362b3f743d33b0c27c0f682110908",
       "protectedSourceFiles": 24,
       "protectedWorkspaceFiles": 38,
@@ -688,7 +688,7 @@
       ],
       "scope": "read-only-and-design",
       "runtimeStatus": "NOT_RUN",
-      "windowsParserStatus": "PASS_REPORTED",
+      "windowsParserStatus": "NOT_RUN",
       "installable": false,
       "diagnosticEvidence": {
         "status": "PASS_REPORTED",
@@ -701,7 +701,18 @@
         "provenance": "operator-reported PowerShell output",
         "independentlyExecuted": false
       },
-      "preparationStatus": "NOT_RUN"
+      "preparationStatus": "BLOCKED_REPORTED_PREVIOUS_VERSION",
+      "priorPreparationEvidence": {
+        "scriptVersion": "0.1.0",
+        "status": "BLOCKED_REPORTED",
+        "reason": "F04 container name collision",
+        "actualContainerContents": "NOT_VERIFIED",
+        "stage": "before F06 root creation per script control flow"
+      },
+      "preflightFix": {
+        "scope": "accept only exact F04 empty regular directory without reparse; retain F05 and other collision guards",
+        "runtimeStatus": "NOT_RUN"
+      }
     }
   }
 }

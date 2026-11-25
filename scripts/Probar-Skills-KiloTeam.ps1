@@ -1,5 +1,5 @@
 # KILO-GLOBAL-HARNESS-TEAM
-# Version: 0.1.0
+# Version: 0.1.1
 # Fecha: 2026-11-25
 # F06-LAB-R1: comparación local de solo lectura/diseño; no instalador.
 # Exit 0: operación acotada completada; 1: error/bloqueo.
@@ -177,7 +177,20 @@ function Confirm-Integrity($Record) {
     Write-Host "MATCH: $($Record.Files.Count) archivos protegidos (integridad local, no runtime)."
 }
 function Assert-KnownCollisions {
-    foreach ($Previous in @('KiloTeam-F04-Lab','KiloTeam-F05-Lab')) { Assert-Absent $env:LOCALAPPDATA $Previous }
+    # F04 histórico retira ownership.json pero conserva su directorio contenedor.
+    # Solo tolerar la carpeta regular, vacía y sin enlaces; no modificarla.
+    $F04Entries = @(Get-ChildItem -LiteralPath $env:LOCALAPPDATA -Force | Where-Object Name -IEQ 'KiloTeam-F04-Lab')
+    if ($F04Entries.Count -gt 0) {
+        if ($F04Entries.Count -ne 1 -or $F04Entries[0].Name -cne 'KiloTeam-F04-Lab' -or
+            -not $F04Entries[0].PSIsContainer -or
+            ($F04Entries[0].Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Entrada F04 insegura; preservar.' }
+        Assert-Directory $F04Entries[0].FullName
+        if (@(Get-ChildItem -LiteralPath $F04Entries[0].FullName -Force).Count -ne 0) {
+            throw 'F04 contiene entradas; preservar y revisar registro mediante procedimiento histórico.'
+        }
+        Write-Host 'F04_EMPTY_CONTAINER: directorio histórico vacío, conservado.'
+    }
+    Assert-Absent $env:LOCALAPPDATA 'KiloTeam-F05-Lab'
     # Revisar únicamente rutas/nombres conocidos, sin leer configuraciones ni credenciales.
     $Homes = @(
         (Join-Path $HOME '.config/kilo'),

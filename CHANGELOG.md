@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.93.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.94.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -335,3 +335,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-25 — F06-LAB-R1 diagnóstico local
 - Evidencia reportada: parser PASS, 24 fuentes MATCH, F06_AUSENTE, checkout b4f9303 detached. Registro documental únicamente; preparación, runtime y revisión independiente pendientes. Manifiesto 0.42.0.
+
+## 2026-11-25 — F06-LAB-R1.2 preflight
+- Script 0.1.1: corrige falso positivo potencial por directorio F04 vacío tras retirada histórica, sin borrado ni excepción para entradas activas/enlaces. Preparación anterior BLOCKED reportada; parser/runtime de corrección pendientes. Manifiesto 0.43.0.
