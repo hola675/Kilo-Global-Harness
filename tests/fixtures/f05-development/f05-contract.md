@@ -1,7 +1,7 @@
 # F05-C-DEV — contrato de laboratorio
 Versión del archivo: 0.1.0 | Última modificación: 2026-11-24
 
-Caso ficticio, no producto ni contrato de producción. Node >=22.13 con node:sqlite disponible, sin paquetes externos. Base SQLite exclusivamente :memory:, sin persistencia en disco, red, servidor, procesos hijos, credenciales ni archivos nuevos. No ejecutar código generado antes de revisión de Code y Bastión y autorización explícita del operador. Ningún agente modifica este contrato ni f05-acceptance.test.mjs.
+Caso ficticio, no producto ni contrato de producción. Node >=22.13 con node:sqlite disponible, sin paquetes externos. Base SQLite exclusivamente :memory:, sin persistencia en disco, red, servidor, procesos hijos, credenciales ni archivos nuevos. No ejecutar código generado antes de revisión de Code y Bastión y autorización explícita del operador. Ningún agente modifica f05-contract.md ni f05-acceptance.test.mjs.
 
 ## Propiedad y dependencias
 
