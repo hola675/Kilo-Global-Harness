@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.58.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.59.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -249,3 +249,6 @@ Operador reporta traza read/apply_patch/read de Ágora, 17s hijo y 31s proceso, 
 
 ## F05-C-G2 — retirada y siguiente F05-C-DEV
 Retirada editorial y posterior doce MATCH reportados PASS; ciclo de vida DONE_POC_LIMITED. Script 0.3.0 prepara seis fixtures con registro separado, dos protegidos y cuatro propietarios (Prisma/Nexo/Lumen/Forja); contrato local sin dependencias, SQLite en memoria, ejecución posterior revisada y autorizada, pruebas protegidas. Veritas/Bastión no editan. Verificador de desarrollo no ejecuta ni acepta código; retirada exige huella revisada. Parser y preparación Windows NOT_RUN; no repetir G2. F05.4 IN_PROGRESS; coordinación y permisos pendientes.
+
+## F05-C-DEV — preparación Windows positiva
+Operador reporta parser 0.3.0 PASS, Node v26.12.1, SQLite en memoria ok:1, doce MATCH y seis BASELINE con PASS_F05_DESARROLLO_PREPARADO sobre dafb9c1. No repetir preparación. Siguiente misión única Code: construcción por cuatro hijos directos con propiedad exclusiva y contrato protegido, paralelo nativo si disponible; sin ejecución. VerificarDesarrollo tras cierre de escritores y revisión Veritas/Bastión antes de autorización de ejecución. F05.4 IN_PROGRESS; implementación, revisión, concurrencia y suite NOT_RUN. Sin cambios de candidatos ni instalación.
