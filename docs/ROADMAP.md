@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.49.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.50.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -222,3 +222,6 @@ Script Probar-Equipo-KiloTeam.ps1 0.1.0 y procedimiento en tests/F05-EQUIPO.md. 
 
 ## F05.3-R1 — auxiliar de configuración del motor
 Operador reporta parser PASS, creación y doce hashes MATCH de 0.1.0 en Windows. Code devuelve versión 0.16.0 y marcador; Verificar bloqueado por .kilo/.gitignore antes de comparación. Código fuente CLI fijado confirma creación de plantilla por ensureGitignore; versión/contenido del host aún no confirmados. Corrección 0.1.1 reconoce solo plantilla exacta regular, no cambia registro ni candidatos; retirada con autorización adicional. Revalidar parser y Verificar en laboratorio existente, no repetir preparación/consulta; no registrar marcador. F05.3 IN_PROGRESS, descubrimiento y ejecución de corrección NOT_RUN.
+
+## F05.3-R1 — revalidación positiva reportada
+Operador reporta parser PASS de 0.1.1, doce MATCH, auxiliar MATCH_TEMPLATE, marcador MATCH y PASS_LOAD_REPORTED en laboratorio existente, commit ef10dac. Se resuelve bloqueo de verificación en esta muestra. Descubrimiento pendiente: descripción Task filtra agentes no primarios y task deny según fuente fijada en tests/F05-EQUIPO.md. Siguiente comprobación sin mutación ni delegación, no repetir preparación o marcador. F05.3 IN_PROGRESS; permisos, invocación, negativos de guardas, retirada y coordinación no certificados.

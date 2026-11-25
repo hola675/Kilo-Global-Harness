@@ -1,5 +1,5 @@
 # Plan de scripts Windows
-Versión del archivo: 0.6.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.7.0 | Última modificación: 2026-11-24
 
 F02: Diagnosticar-KiloTeam.ps1 (solo lectura, versiones, paths, presencia de configuraciones sin secretos, procesos, herramientas y salida JSON sanitizada). F03: fixture de PoC aislado y verificación manual de sesión. F13: Administrar-KiloTeam.ps1 con modos Diagnostico, Simular, Instalar, Verificar, Actualizar, Desinstalar y Restaurar. F04: Probar-Nucleo-KiloTeam.ps1 es un procedimiento temporal de laboratorio, no el instalador F13. PowerShell 7, rutas con espacios y Unicode, códigos de salida documentados, sin admin por defecto, sin sobrescribir archivos no administrados, pruebas idempotentes y protección de junctions. No utilizar legacy como instalador.
 
@@ -17,3 +17,5 @@ F04.7-R1 — candidato global 0.15.0: cambios acotados a relevancia de skills, r
 
 ## F05.3-R1 — auxiliar de configuración del motor
 Script 0.1.1: el operador reportó PASS de parser, preparación y doce hashes en Windows con 0.1.0; al abrir Desktop apareció .kilo/.gitignore y Verificar bloqueó antes de comparar marcador. [Config.ensureGitignore](https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/config/config.ts#L543-L569) del CLI fijado crea esa plantilla si falta, invocado al cargar directorios de configuración (línea 857). No acredita versión exacta instalada ni contenido del archivo local. Permitir únicamente archivo regular en esa ruta con ocho líneas exactas de plantilla, sin añadirlo a propiedad; cualquier otra entrada/enlace/deriva sigue bloqueando. Diagnostico/Verificar solo leen y reportan MATCH_TEMPLATE/ABSENT. Retirar requiere autorización adicional ConfirmarRetiradaAuxiliar si existe plantilla reconocida, antes de mutar archivos propios; no retirar contenido distinto. Registro v1, candidatos y preparación estricta intactos. Revalidar parser y solo Verificar -ComprobarMarcador sobre laboratorio existente; no regenerar ni repetir chat. Corrección runtime NOT_RUN.
+
+Revalidación reportada de 0.1.1 en Windows (ef10dac): parser PASS, doce MATCH, auxiliar MATCH_TEMPLATE y PASS_LOAD_REPORTED. Bloqueo resuelto sin recreación. No modificar script por este resultado; retirada y guardas negativas NOT_RUN. Mantener registro existente y laboratorio para descubrimiento.
