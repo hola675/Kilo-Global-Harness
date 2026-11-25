@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.70.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.71.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -285,3 +285,6 @@ Salida v26.12.1 reportada por Veritas; informe inicial no acreditaba decisión, 
 
 ## F05-C-PERM-03 — exposición restringida y cierre de extensión
 Faro reporta inventario sin shell, edición ni Task; ninguna operación solicitada ni ejecutada. PASS_EXPOSICION_REPORTADO, denegación dinámica NOT_RUN. Reutilizar inventarios Veritas/Bastión de revisión, sin repetir pruebas vacías ni forzar herramientas ausentes. ASK focalizado aprobado, FAIL histórico de echo conservado. Siguiente F05-C-DEV-X: verificar huella revisada, retirada selectiva autorizada de seis archivos y registro de desarrollo, después verificar baseline original. Mantener laboratorio original para routing discriminante F05-B; F05.4 IN_PROGRESS, F05.5 y activación global pendientes. Sin cambios de agentes ni configuración.
+
+## F05-C-DEV-X — extensión retirada y routing siguiente
+Operador reporta identidad Node PASS, huella previa intacta, retirada autorizada F05_DESARROLLO_RETIRADO y Verificar posterior doce MATCH, auxiliar MATCH_TEMPLATE, PASS_INTEGRIDAD_LOCAL. Extensión cerrada DONE_POC_LIMITED; laboratorio original conservado. Siguiente F05-B: contraste de lectura sencilla directa y misión hipotética de aprobación de mantenimiento, sin indicar roles, número ni estrategia al líder; observar Task y resultado integrado, no mutar ni usar red/shell. Verificar baseline tras ronda. F05.4 IN_PROGRESS, F05.5 y F06 pendientes; no instalar globalmente ni repetir pruebas válidas.
