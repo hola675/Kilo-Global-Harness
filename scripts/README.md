@@ -1,5 +1,5 @@
 # Plan de scripts Windows
-Versión del archivo: 0.9.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.10.0 | Última modificación: 2026-11-24
 
 F02: Diagnosticar-KiloTeam.ps1 (solo lectura, versiones, paths, presencia de configuraciones sin secretos, procesos, herramientas y salida JSON sanitizada). F03: fixture de PoC aislado y verificación manual de sesión. F13: Administrar-KiloTeam.ps1 con modos Diagnostico, Simular, Instalar, Verificar, Actualizar, Desinstalar y Restaurar. F04: Probar-Nucleo-KiloTeam.ps1 es un procedimiento temporal de laboratorio, no el instalador F13. PowerShell 7, rutas con espacios y Unicode, códigos de salida documentados, sin admin por defecto, sin sobrescribir archivos no administrados, pruebas idempotentes y protección de junctions. No utilizar legacy como instalador.
 
@@ -24,3 +24,5 @@ Revalidación reportada de 0.1.1 en Windows (ef10dac): parser PASS, doce MATCH, 
 Con integridad de ronda reportada, ampliar el script existente con PrepararEdicion/VerificarEdicion/RetirarEdicion. Registro separado editing-ownership.json hermano de workspace, ligado al hash de ownership.json y baseline fijo; archivo único messages-f05.json, propietario contractual team-editorial. Preparación exclusiva con cierre/consentimiento y doce MATCH; no modificar registro original. Verificación exige doce MATCH y resultado exacto previamente revisado (UTF-8 sin BOM, dos espacios de sangría, LF/CRLF y salto final opcional), no acepta cambios arbitrarios. Los modos originales bloquean la extensión activa; usar VerificarEdicion. RetirarEdicion con cierre y autorización solo retira fixture baseline o resultado exacto y su registro; si deriva o preparación incompleta, detener sin borrado recursivo. No acreditar escritor ni enforcement por hash. Sin cambios globales, dependencias o candidatos. Parser/ejecución de 0.2.0 NOT_RUN; prueba en Windows antes de editar.
 
 Preparación reportada en Windows de 0.2.0 (c0b0de1): parser PASS, doce MATCH, fixture BASELINE y PASS_F05_EDICION_PREPARADA. Conservar extensión activa, usar solo VerificarEdicion después de la intervención del hijo. No repetir preparación. Verificación posterior, retirada y negativos NOT_RUN.
+
+VerificarEdicion de 0.2.0 reportado PASS tras edición real: doce MATCH y EXPECTED_EDIT. No repetir escritura. Siguiente RetirarEdicion -ConfirmarKiloCerrado -ConfirmarRetirada con consentimiento, luego Verificar sin marcador; no ejecutar Retirar general. Retirada y negativos aún NOT_RUN. Preservar si bloqueo.
