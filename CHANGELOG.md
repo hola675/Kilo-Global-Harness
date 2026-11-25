@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.64.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.65.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -230,3 +230,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — F05-C-PERM-01
 - Pruebas: solicitud ask y rechazo reportados PASS; Veritas BLOCKED sin ejecución, como se esperaba. Siguiente aprobación única en nueva Task. Sin cambios de código, permisos, agentes ni instalación.
+
+## 2026-11-24 — F05-C-PERM-02
+- Pruebas: FAIL_REPORTADO de aprobación puntual (comando ejecutado sin solicitud); causa desconocida. Contraste de fuentes de permisos y procedencia del snapshot auditado; siguiente diagnóstico no mutante de llamadas existentes. Subpuerta permisos BLOCKED, sin cambios de código, configuración o instalación.
