@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.10.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.11.0 | Última modificación: 2026-11-25
 
-Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0, implementation-discipline 0.1.0 y systematic-debugging 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0, implementation-discipline 0.1.0, systematic-debugging 0.1.0 y focused-testing 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
 
 ## F06 — núcleo común (13)
 team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
@@ -48,3 +48,6 @@ F06.1-R: [investigación comparada de skills](../../docs/INVESTIGACION-SKILLS.md
 
 ## F06.8-R — candidato inicial
 [systematic-debugging](systematic-debugging/SKILL.md) — diagnóstico causal, hipótesis discriminantes, evidencia mínima, contención autorizada y corrección focalizada; sin reintentos ciegos ni instrumentación obligatoria. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: focused-testing. Sin instalación ni certificación runtime.
+
+## F06.9-R — candidato inicial
+[focused-testing](focused-testing/SKILL.md) — auditoría inicial y optimización de calidad, pruebas canónicas y certificación por impacto, con [marcador versionado por proyecto](focused-testing/references/quality-baseline.md). Disparador candidato en política 0.18.0; sin motor ni instalación. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: git-workflow.

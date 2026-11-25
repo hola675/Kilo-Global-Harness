@@ -1,5 +1,5 @@
 # Investigación comparada de skills propias
-Versión del archivo: 0.8.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.9.0 | Última modificación: 2026-11-25
 
 ## F06.1-R — team-routing
 Objetivo: mejorar selección proporcional y evitar el bloqueo de revisión observado en F05-B-R sin reconstruir Task ni cambiar modelo. Consulta web y lectura selectiva de archivos fijados en GitHub el 2026-11-25. No se ejecutaron harness externos; no es ranking de popularidad, auditoría integral, benchmark ni prueba de superioridad.
@@ -108,3 +108,17 @@ Consulta 2026-11-25; contraste con política 0.17.0, implementación 0.1.0 y lab
 | [Kilo: Task](https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/tool/task.ts), revisión fijada, MIT según auditoría previa; [laboratorio F03](../tests/F03-LABORATORIO.md) | Completed/error/cancelled y fallo de entrega diferenciados; F03.5C read fallido, BLOCKED lógico, Task completada y entrada corregida; F03.8 referencia exacta omitida, búsqueda no coincidente. | Clasificar capa y estado, comprobar referencia exacta antes de ampliar, no inferir desaparición ni defecto de motor por informe lógico; conservar evidencia del operador con límites. |
 
 Licencias de documentación Google/Git/Microsoft no verificadas individualmente en esta fase; uso conceptual, sin copiar código, plantillas o texto extenso. Alternativas descartadas: cambios aleatorios, reintentos idénticos, desactivar seguridad, reproducir efectos peligrosos, logging indiscriminado, afirmar causa única sin evidencia y reconstrucción automática tras tres fallos. Candidato 0.1.0; evaluación comparativa y revisión independiente pendientes.
+
+## F06.9-R — focused-testing y adopción en proyectos existentes
+Consulta web 2026-11-25; contraste con política 0.17.0, Veritas 0.2.0 y petición del operador de auditar primera incorporación, reducir redundancia sin pérdida de garantías y guardar un marcador.
+
+| Fuente | Patrón observado | Adaptación propia |
+|---|---|---|
+| [The Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html), Ham Vocke (2018) | Evitar duplicación entre niveles sin perder verificaciones de integración de valor propio. | Mapear garantía/escenario/frontera/observación; conservar negativos y regresiones únicas, retirar solo con equivalencia y revisión. Sin proporciones fijas. |
+| [Nx affected](https://nx.dev/docs/features/ci-features/affected), extracto indexado consultado; apertura directa falló | Selección de tareas afectadas por entradas y dependencias; una configuración insuficiente puede omitir dependientes. | Selección por impacto transitivo con fallback conservador; no instalar Nx ni afirmar grafo infalible. |
+| [pytest cache](https://docs.pytest.org/en/stable/how-to/cache.html), documentación estable consultada | Cache persiste nodeids/lastfailed y puede no ejecutar casos; aislamiento importa. | Marcador de auditoría separado de evidencia y runner; no considerar cache PASS. |
+| [PIT basic concepts](https://pitest.org/quickstart/basic_concepts/), documentación consultada | Mutaciones detectadas, sobrevivientes y errores distinguen detección de mera ejecución. | Prueba discriminante focalizada cuando viable; mutación opcional con herramienta existente, no dependencia ni métrica universal. |
+| [GitHub required checks](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks), documentación consultada | Requisitos de revisión vigente, efectos de filtros y checks omitidos. | Respetar puertas reales; evidencia local reutilizable no sustituye checks requeridos. |
+| [Superpowers TDD y verificación](https://github.com/obra/superpowers/tree/22f0b463e7a5e579904dd6211a520321035526f7/skills), revisión fijada ya inspeccionada F06.7-R, MIT según F06.1-R | Rojo-verde y evidencia antes de cierre; repetición estricta de suite. | Reutilizar garantías vigentes y comprobar delta; no borrar código ni repetir suite completa por rutina. |
+
+Decisión original: auditoría inicial de proyecto desarrollado sin marcador, inspección de solo lectura antes de cambios, clasificación de redundancia y equivalencia, revisión independiente de reducciones materiales, baseline comparable y marcador JSON semántico v1 en ruta propia .kilo-harness/quality-baseline.json o registro existente equivalente. No Git tag, nueva base, plugin, caché ni motor. El marcador no certifica software ni sustituye CI; estado parcial y vigencia por ámbito evitan repetir auditoría global. Se incorpora disparador mínimo a política 0.18.0 candidata, sin cambiar agentes/permisos. Licencias de documentación externa no verificadas individualmente; uso conceptual sin copiar código ni plantillas. Nx solo extracto indexado, no lectura completa. Runtime y revisión independiente NOT_RUN; no se afirma reducción medida ni auditoría de proyectos reales.

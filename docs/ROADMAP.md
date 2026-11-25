@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.85.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.86.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -330,3 +330,6 @@ Candidato implementation-discipline 0.1.0 y doce casos I1–I12; siete de trece 
 
 ## F06.8-R — diagnóstico sistemático (2026-11-25)
 Candidato systematic-debugging 0.1.0 y doce casos B1–B12; ocho de trece skills base con candidato. Contraste Superpowers, Google SRE, Git, Microsoft y Kilo/F03; causalidad, aislamiento, contención, evidencia sanitizada y reintentos discriminantes. Sin nuevos permisos, herramientas ni cambios de agentes/política. Revisión independiente y runtime NOT_RUN; F06 IN_PROGRESS. Próxima: focused-testing.
+
+## F06.9-R — pruebas focalizadas y adopción de calidad (2026-11-25)
+Candidato focused-testing 0.1.0 y referencia de marcador 0.1.0/schema 1; dieciocho casos Q1–Q18, nueve de trece skills base con candidato. Política candidata 0.18.0 incorpora disparador de auditoría inicial de proyecto desarrollado sin marcador válido; revalidación por ámbito, equivalencia, revisión independiente y certificación del delta separada. Sin cambios de agentes/permisos, nuevos motores ni marcador ficticio en proyecto real. Evaluación de regresión de política y runtime NOT_RUN; F06 IN_PROGRESS. Próxima: git-workflow.
