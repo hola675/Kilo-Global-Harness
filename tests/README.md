@@ -1,5 +1,5 @@
 # Política de pruebas y certificación
-Versión del archivo: 0.6.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.7.0 | Última modificación: 2026-11-25
 
 ## Estrategia
 - T0 estática: esquema, YAML/JSONC, nombres, metadatos, referencias, licencias y manifiesto.
@@ -53,3 +53,6 @@ Investigación documental selectiva 2026-11-24, sin benchmark local, instalació
 | Medición / ejecución de comandos | Measure-Command, reloj monotónico, scripts/package scripts existentes | [Hyperfine](https://github.com/sharkdp/hyperfine) benchmark CLI repetido con warmups; [just](https://just.systems/man/en/) command runner solo si hay fricción real. No son validadores de comportamiento ni requieren instalación global. |
 
 Adopción: Forja inventaría versiones/capacidades locales y propone dependencia solo ante brecha; Faro confirma fuentes y compatibilidad; Veritas compara y Code decide. Primero ejecutar parser/validación focalizada y un caso de comportamiento existente sobre fixture; F05 runtime requiere Kilo real. No fijar ganadores por publicidad. Para candidatos, medir mismos criterios y casos (incluidos fallos conocidos), mismo host y revisión, caché fría/caliente por separado, compilación/preparación/ejecución total, al menos varias repeticiones si coste permite, mediana y dispersión, estabilidad/omisiones, recursos si observables, dependencias y mantenimiento. Cualquier pérdida de cobertura/compatibilidad descarta reemplazo; si no hay medición suficiente, NOT_RUN. No crear nuevos runners, servicios, suites duplicadas ni instalar herramientas en esta ronda.
+
+## Skills F06
+[Matriz de evaluación F06](F06-SKILLS.md): descubrimiento, activación positiva/negativa y contraste con/sin skill; reutilizar pruebas existentes, mantener regresión de dependencias F05.
