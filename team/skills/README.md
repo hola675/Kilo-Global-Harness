@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.9.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.10.0 | Última modificación: 2026-11-25
 
-Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0 y implementation-discipline 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0, implementation-discipline 0.1.0 y systematic-debugging 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
 
 ## F06 — núcleo común (13)
 team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
@@ -45,3 +45,6 @@ F06.1-R: [investigación comparada de skills](../../docs/INVESTIGACION-SKILLS.md
 
 ## F06.7-R — candidato inicial
 [implementation-discipline](implementation-discipline/SKILL.md) — incremento mínimo completo, reutilización, flujos reales, protección de cambios, transición compatible, limpieza segura y verificación focalizada. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: systematic-debugging. Sin instalación ni certificación runtime.
+
+## F06.8-R — candidato inicial
+[systematic-debugging](systematic-debugging/SKILL.md) — diagnóstico causal, hipótesis discriminantes, evidencia mínima, contención autorizada y corrección focalizada; sin reintentos ciegos ni instrumentación obligatoria. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: focused-testing. Sin instalación ni certificación runtime.

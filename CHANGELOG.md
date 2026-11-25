@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.84.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.85.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -299,3 +299,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.7-R disciplina de implementación
 - Skills: candidato implementation-discipline 0.1.0, incremento mínimo completo, reutilización, protección de cambios, flujos reales, compatibilidad y limpieza comprobada.
 - Investigación/calidad: cinco fuentes comparadas, doce casos focalizados; sin TDD destructivo, nueva dependencia, cambios de política/agentes, instalación ni release. Revisión independiente y runtime NOT_RUN.
+
+## 2026-11-25 — F06.8-R diagnóstico sistemático
+- Skills: candidato systematic-debugging 0.1.0, síntoma/causa, hipótesis discriminantes, reproducción segura, contención y corrección verificable.
+- Investigación/calidad: cinco grupos de fuentes contrastados y doce escenarios focalizados; sin umbral arbitrario de intentos, instrumentación obligatoria, nuevas dependencias, instalación ni release. Revisión independiente y runtime NOT_RUN.
