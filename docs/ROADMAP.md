@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.65.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.66.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -270,3 +270,6 @@ Operador reporta shell visible de Veritas, solicitud nativa para echo F05-PERMIS
 
 ## F05-C-PERM-02 — discrepancia de autorización
 Comando inocuo reportado ejecutado sin solicitud de permiso; FAIL_REPORTADO del criterio de aprobación puntual. PERM-01 y suite funcional conservan evidencia. F05.4 IN_PROGRESS, subpuerta permisos BLOCKED; detener nuevas pruebas shell/deny y no modificar configuración. Snapshot auditado del CLI registra procedencia de autorización y permite overrides compatibles con ask; rechazo no agrega allow. No identifica causa en instalación. Siguiente PERM-D1: inspección de llamadas ya existentes y estado de autoaprobación, evidencia sanitizada de regla ganadora si disponible, verificar huella del laboratorio sin repetir suite. Nueva prueba solo con hipótesis concreta; sin activación global.
+
+## F05-C-PERM-D1 — discrepancia reproducida, diagnóstico D2
+Registro reportado confirma mismo especialista y sesiones hijas nuevas; segundo caso y repetición posterior usan bash y reportan ejecución sin solicitud. Procedencia/regla/YOLO NOT_AVAILABLE; causa UNKNOWN, no reutilización de hija según informe. Snapshot auditado confirma composición de reglas y capas de configuración, no regla ganadora instalada. Siguiente D2: observar estado nativo sin cambiar, verificar huella y obtener inventario local sanitizado de reglas shell, comodín, overrides y candidatos conocidos; no repetir comandos, no leer almacenes internos, no cambiar permisos ni activar globalmente. F05.4 IN_PROGRESS, subpuerta permisos BLOCKED; suite 6/6 conserva aceptación.

@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.65.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.66.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -233,3 +233,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — F05-C-PERM-02
 - Pruebas: FAIL_REPORTADO de aprobación puntual (comando ejecutado sin solicitud); causa desconocida. Contraste de fuentes de permisos y procedencia del snapshot auditado; siguiente diagnóstico no mutante de llamadas existentes. Subpuerta permisos BLOCKED, sin cambios de código, configuración o instalación.
+
+## 2026-11-24 — F05-C-PERM-D1
+- Pruebas: mismo rol y nuevas hijas reportados, fallo de aprobación reproducido; procedencia no disponible, causa desconocida. Fuentes de composición/configuración contrastadas; siguiente inventario local sanitizado D2, sin mutación. Permisos BLOCKED, sin cambios de código o instalación.
