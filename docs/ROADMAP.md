@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.56.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.57.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -243,3 +243,6 @@ Doce MATCH y PASS_INTEGRIDAD_LOCAL reportados tras Faro/Atlas/Ágora; auxiliar M
 
 ## F05-C-G2 — fixture editorial preparado en Windows
 Operador reporta parser PASS y PASS_F05_EDICION_PREPARADA de 0.2.0 sobre c0b0de1, doce MATCH y BASELINE con propietario team-editorial. Preparación PASS_REPORTADO; no repetirla. Siguiente: edición efectiva por Ágora y comprobación independiente con VerificarEdicion, resultado exacto del fixture y traza del hijo. Sin cambio del script ni agentes. F05.4 IN_PROGRESS; escritura, verificación posterior, retirada y enforcement pendientes.
+
+## F05-C-G2 — edición editorial verificada
+Operador reporta traza read/apply_patch/read de Ágora, 17s hijo y 31s proceso, sin intervención de escritura de Code reportada. Verificador 0.2.0 devuelve doce MATCH, EXPECTED_EDIT y PASS_F05_EDICION_VERIFICADA; resultado exacto y UTF-8 sin BOM confirmados por comparación con bytes autorizados. PASS dentro del caso, sin acreditar autor solo por hash, ni enforcement o benchmark. Siguiente: retirada autorizada de extensión editorial con Kilo cerrado y Verificar del baseline, sin retirar laboratorio original; después fixtures de implementación. F05.4 IN_PROGRESS, seis especialistas aún sin primera tarea funcional reportada.

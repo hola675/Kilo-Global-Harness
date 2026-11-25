@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.56.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.57.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -206,3 +206,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — preparación F05-C-G2
 - Pruebas: parser y preparación editorial 0.2.0 PASS_REPORTADO, doce MATCH y BASELINE. Siguiente edición real de Ágora y verificación independiente; sin cambios de código o instalación. F05.4 IN_PROGRESS.
+
+## 2026-11-24 — edición efectiva F05-C-G2
+- Pruebas: traza de lectura/edición/lectura reportada de Ágora y PASS_F05_EDICION_VERIFICADA, doce MATCH y resultado exacto; 17s/31s reportados. Siguiente retirada selectiva y verificación de baseline. Sin cambios de código, política ni instalación. F05.4 IN_PROGRESS.
