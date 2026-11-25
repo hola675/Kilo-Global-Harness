@@ -1,5 +1,5 @@
 # Plan de scripts Windows
-Versión del archivo: 0.14.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.15.0 | Última modificación: 2026-11-25
 
 F02: Diagnosticar-KiloTeam.ps1 (solo lectura, versiones, paths, presencia de configuraciones sin secretos, procesos, herramientas y salida JSON sanitizada). F03: fixture de PoC aislado y verificación manual de sesión. F13: Administrar-KiloTeam.ps1 con modos Diagnostico, Simular, Instalar, Verificar, Actualizar, Desinstalar y Restaurar. F04: Probar-Nucleo-KiloTeam.ps1 es un procedimiento temporal de laboratorio, no el instalador F13. PowerShell 7, rutas con espacios y Unicode, códigos de salida documentados, sin admin por defecto, sin sobrescribir archivos no administrados, pruebas idempotentes y protección de junctions. No utilizar legacy como instalador.
 
@@ -36,3 +36,5 @@ Preparación reportada PASS en Windows de 0.3.0 (dafb9c1): parser, Node v26.12.1
 Preparar exige política 0.17.0 y mantiene nueve agentes 0.2.0; Get-State reconoce registros históricos 0.16.0 y nuevos 0.17.0 sin adoptar hashes ni modificar contenido existente. Verificar y Retirar conservan guardas. Para cambiar versión: cerrar Kilo, verificar baseline antiguo, autorizar Retirar y retirada del auxiliar conocido por separado, confirmar Diagnostico F05_AUSENTE, preparar nueva copia exclusiva con modelo autorizado explícito. No editar AGENTS.md ni ownership.json in situ, no tocar perfil global. Validar parser antes de cualquier acción. Carga por marcador privado y B1/B2 en chat nuevo. Parser y runtime 0.4.0 NOT_RUN.
 
 Preparación y carga reportadas PASS en Windows sobre 41186ae: parser 0.4.0, retirada autorizada 0.16.0, ausencia, nueva preparación 0.17.0, doce MATCH; después auxiliar MATCH_TEMPLATE y PASS_LOAD_REPORTED. No repetir preparación ni marcador. Conservar laboratorio para B1/B2 y verificar sin marcador al finalizar. Runtime conductual aún NOT_RUN.
+
+Cierre F05.5 reportado PASS sobre cc3f4c9: doce MATCH, retirada autorizada y F05_AUSENTE. No volver a preparar F05 por rutina. F06 requiere procedimiento propio de evaluación de skills sin modificar configuración global; script 0.4.0 histórico intacto.
