@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.61.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.62.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -258,3 +258,6 @@ Cuatro Task reportadas en llamada paralela, running y completed; 134s proceso fr
 
 ## F05-C-DEV-R — revisiones completadas y puerta de ejecución pendiente
 Nueve especialistas con al menos una tarea devuelta. Veritas/Bastión revisiones estáticas independientes reportadas, sin bloqueantes de código, huella posterior idéntica y PASS_F05_INTEGRIDAD_DESARROLLO. Riesgos residuales: procedencia de Node por PATH requiere verificación previa, acceso directo al almacén fuera de contrato y límites de entradas; brechas de cobertura de rechazo/reutilización de clave y DOM. No ampliar alcance ni declarar certificación dinámica. Siguiente F05-C-DEV-E: diagnóstico de solo lectura del ejecutable y revisión de cuatro fuentes completas antes de autorización explícita del operador; no ejecutar aún. F05.4 IN_PROGRESS, permisos negativos y suite NOT_RUN.
+
+## F05-C-DEV-E — fuentes contrastadas y entorno diagnosticado
+Operador aporta Node 26.12.1, una aplicación, Authenticode Valid/OpenJS Foundation y ausencia de NODE_OPTIONS/NODE_PATH; procedencia favorable pendiente confirmación del operador. Reconstrucción y SHA256 independiente de cuatro fuentes coincide 4/4 con verificación de revisión. Inspección directa sin bloqueantes adicionales en PoC; riesgos residuales de frontera de almacén y objetos JS no ordinarios, rollback fallido y cobertura permanecen limitados. No ejecutar por cuenta del revisor. Siguiente: autorización explícita, Kilo cerrado, revalidar identidad de Node y huella de revisión, parser del lanzador, ejecutar suite canónica una vez y verificar integridad posterior. F05.4 IN_PROGRESS; resultados funcionales y permisos negativos NOT_RUN. Sin cambios de implementación, política ni instalación.
