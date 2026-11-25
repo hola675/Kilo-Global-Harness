@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.51.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.52.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -191,3 +191,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — descubrimiento F05-A
 - Pruebas: nueve IDs y responsabilidades reportados desde Task; PASS_REPORTED_DISCOVERY, F05.3 DONE_POC_LIMITED. F05.4 IN_PROGRESS: primera Task focalizada de Faro, lectura y exposición de capacidades; no certificar por recitación ni confundir modo y modelo. Sin cambios de código o instalación.
+
+## 2026-11-24 — primera invocación F05-C-R1
+- Pruebas: Faro PASS_REPORTADO de invocación, lectura, evidencia y exposición consultada; 12s reportados, enforcement/benchmark NOT_RUN. Siguiente F05-C-A1 Atlas con evidencia reutilizada, sin mutación. F05.4 IN_PROGRESS; sin cambios de código ni instalación.
