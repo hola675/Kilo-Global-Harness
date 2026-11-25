@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.48.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.49.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -219,3 +219,6 @@ F05.2-R calidad: política 0.16.0 candidata (no certificada) y estrategia de pru
 
 ## F05.3 — laboratorio candidato preparado en repositorio
 Script Probar-Equipo-KiloTeam.ps1 0.1.0 y procedimiento en tests/F05-EQUIPO.md. Alcance local de proyecto mediante .kilo/agents (patrón F03), copia de política 0.16.0 y modelo autorizado explícito, sin modificación global. Registro hermano, hashes, creación exclusiva y retirada no recursiva. Preflight conocido no acredita ausencia de colisiones en configuración efectiva. F05.3 IN_PROGRESS: parser Windows, preparación local, carga y descubrimiento NOT_RUN; obtener evidencia antes de F05.4. No instalar, no cambiar script F04 ni ejecutar pruebas de mutación en fixture inmutable; F05.4 planificará fixtures propios.
+
+## F05.3-R1 — auxiliar de configuración del motor
+Operador reporta parser PASS, creación y doce hashes MATCH de 0.1.0 en Windows. Code devuelve versión 0.16.0 y marcador; Verificar bloqueado por .kilo/.gitignore antes de comparación. Código fuente CLI fijado confirma creación de plantilla por ensureGitignore; versión/contenido del host aún no confirmados. Corrección 0.1.1 reconoce solo plantilla exacta regular, no cambia registro ni candidatos; retirada con autorización adicional. Revalidar parser y Verificar en laboratorio existente, no repetir preparación/consulta; no registrar marcador. F05.3 IN_PROGRESS, descubrimiento y ejecución de corrección NOT_RUN.
