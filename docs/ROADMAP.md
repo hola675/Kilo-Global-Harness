@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.92.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.93.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -351,3 +351,6 @@ Candidato completo 13/13, nueve especialistas, 175 escenarios de diseño preserv
 
 ## F06-LAB-R1 — preparación de laboratorio comparativo (2026-11-25)
 Candidato Probar-Skills-KiloTeam.ps1 0.1.0, dos variantes con 38 archivos protegidos, 24 fuentes fijadas, modelo autorizado y política 0.21.0 común. Primera ronda lectura/diseño, carga y catálogo reales antes de comparación; 175 casos existentes intactos. Manifiesto 0.41.0. No preparar globalmente, no modificar scripts históricos. Parser Windows, preparación, carga, comparación, retirada y revisión independiente NOT_RUN. Siguiente: validar parser y preparar en host autorizado, después R1a/R1b; rondas de mutación/recuperación real separadas. F06 IN_PROGRESS.
+
+## F06-LAB-R1 — diagnóstico local reportado (2026-11-25)
+Operador confirma checkout b4f9303 detached, parser PowerShell PASS, 24 fuentes MATCH y F06_AUSENTE. Manifiesto 0.42.0. Preparación/carga/comportamiento y revisión independiente NOT_RUN; siguiente Preparar autorizado desde mismo worktree y script 0.1.0, sin repetir diagnóstico ni actualizar fuentes. F06 IN_PROGRESS.

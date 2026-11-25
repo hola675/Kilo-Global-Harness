@@ -1,5 +1,5 @@
 # F06 — Evaluación de skills base
-Versión del archivo: 0.16.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.17.0 | Última modificación: 2026-11-25
 
 Estado: diseño de evaluación, runtime NOT_RUN. Conservar la política 0.17.0 y los nueve agentes 0.2.0 como referencia histórica inicial; cada sección fija su comparación histórica. Para candidato conjunto F06-AUD-R usar inventario actual del manifiesto y política 0.21.0; no activar globalmente. Usar laboratorio registrado y descartable, modelo explícitamente autorizado, sin secretos ni cambios en proyectos reales. Verificar colisiones y disponibilidad por sesión y rol antes de probar. Una descripción visible no demuestra carga; carga no demuestra mejora.
 
@@ -318,3 +318,6 @@ Estas son agrupaciones de escenarios existentes, no nuevos casos ejecutados ni c
 
 ### Cierre y siguientes puertas
 Conservar ambos workspaces para comparación mientras estén íntegros, no repetir preparación por turno. Retirar solo al finalizar con autorización y cierre; si auxiliares conocidos presentes, confirmación separada. No aceptar hashes nuevos ni borrar recursivamente. Una preparación/retirada parcial requiere reconciliación puntual; no recrear ni limpiar por rutina. Rondas posteriores de mutación, runner/quality-baseline, Git, permisos negativos y recuperación real requieren fixtures y propiedad autorizados aparte; no alterar estos 38 archivos protegidos. Revisión independiente y evaluación diferencial pendientes; F06 sigue IN_PROGRESS.
+
+### F06-LAB-R1 — diagnóstico reportado (2026-11-25)
+Operador reporta fetch correcto, worktree detached en b4f930351de0f4adfdb1c06a6286e4e0ec3139a2, PARSER: PASS, Fuentes fijadas MATCH: 24 (8fe21568fc8362b3f743d33b0c27c0f682110908) y F06_AUSENTE. PASS_REPORTED de parser y diagnóstico en host, no de preparación/carga/comportamiento; no se ejecutó independientemente desde el entorno de desarrollo. Conservar el worktree y script 0.1.0 sin cambios. Siguiente: cerrar Kilo sin trabajo activo, seleccionar referencia providerID/modelID autorizada y ejecutar Preparar con confirmaciones de cierre/prueba. Esperar MATCH de 38 archivos, auxiliares inicialmente ABSENT y F06_PREPARADO. Si bloqueo, conservar registro y archivos, no limpiar ni repetir preparación. No modificar global, no repetir diagnóstico. Luego R1a y R1b según evidencia. F06 IN_PROGRESS; revisión independiente y runtime NOT_RUN.

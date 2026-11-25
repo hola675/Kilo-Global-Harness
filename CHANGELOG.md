@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.92.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.93.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -332,3 +332,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06-LAB-R1 laboratorio comparativo
 - Scripts: Probar-Skills-KiloTeam.ps1 0.1.0, 24 fuentes fijadas, dos workspaces, 38 archivos protegidos, creación/retirada selectiva y verificación por propiedad. No modifica F04/F05 ni perfil global.
 - Evaluación: preparación y primera ronda comparativa de solo lectura/diseño; reutiliza 175 escenarios sin atribuir cobertura automática. Manifiesto 0.41.0; parser Windows, runtime y revisión independiente NOT_RUN.
+
+## 2026-11-25 — F06-LAB-R1 diagnóstico local
+- Evidencia reportada: parser PASS, 24 fuentes MATCH, F06_AUSENTE, checkout b4f9303 detached. Registro documental únicamente; preparación, runtime y revisión independiente pendientes. Manifiesto 0.42.0.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.41.0",
+    "version": "0.42.0",
     "last_modified": "2026-11-25"
   },
   "id": "kilo-global-harness-team",
@@ -231,7 +231,7 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "CANDIDATE_PREPARED_STATIC"
+    "F06_LAB_R1": "DIAGNOSTIC_PASS_REPORTED_PREPARATION_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -675,7 +675,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Validar parser y preparar laboratorio F06-R1 en Windows autorizado; confirmar carga y catálogo real antes de comparación de comportamiento. Rondas con mutación requieren extensión aislada registrada; revisión independiente pendiente.",
+    "next": "Preparar una sola vez desde el worktree existente b4f9303, modelo explícitamente autorizado y Kilo cerrado; verificar 38 archivos antes de abrir variantes. No repetir fetch, parser ni diagnóstico ya reportados.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.0",
@@ -688,8 +688,20 @@
       ],
       "scope": "read-only-and-design",
       "runtimeStatus": "NOT_RUN",
-      "windowsParserStatus": "NOT_RUN",
-      "installable": false
+      "windowsParserStatus": "PASS_REPORTED",
+      "installable": false,
+      "diagnosticEvidence": {
+        "status": "PASS_REPORTED",
+        "checkoutRevision": "b4f930351de0f4adfdb1c06a6286e4e0ec3139a2",
+        "sourceRevision": "8fe21568fc8362b3f743d33b0c27c0f682110908",
+        "worktree": "detached",
+        "sourceMatches": 24,
+        "sourceTotal": 24,
+        "priorLabStatus": "ABSENT_REPORTED",
+        "provenance": "operator-reported PowerShell output",
+        "independentlyExecuted": false
+      },
+      "preparationStatus": "NOT_RUN"
     }
   }
 }
