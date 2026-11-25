@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.61.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.62.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -221,3 +221,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — revisiones F05-C-DEV-R
 - Pruebas: Veritas y Bastión completados, revisión estática reportada sin bloqueantes de código; huella posterior estable. Nueve especialistas con primera tarea devuelta. Puerta de ejecución pendiente de procedencia Node, contraste de fuentes y autorización explícita. Sin cambios de código, agentes, política o instalación.
+
+## 2026-11-24 — contraste F05-C-DEV-E
+- Pruebas: diagnóstico Node favorable reportado y cuatro fuentes reconstruidas con hashes coincidentes; inspección directa sin nuevos bloqueantes del PoC. Autorización y ejecución pendientes; comprobar identidad de binario/huella antes y después según alcance. Sin cambios de código o instalación.
