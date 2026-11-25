@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.47.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.48.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -179,3 +179,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — refinamiento Ágora y cierre de diseño individual
 - Investigación: seis archivos de tres repositorios fijados, extractos de W3C, GOV.UK, Google y Diátaxis; una ruta 404 excluida.
 - Equipo: Ágora v0.2.0 refuerza UX writing, documentación, claridad, significado, localización y contenido; permisos intactos. G1–G5 preparados. Nueve candidatos v0.2.0; F05.2-R DONE_DOC, F05 IN_PROGRESS, F05.3 siguiente. Runtime y comprensión con usuarios NOT_RUN. Política 0.16.0 intacta; sin instalación, dependencias ni cambios a otros agentes.
+
+## 2026-11-24 — laboratorio F05.3
+- Integración/pruebas: candidato Probar-Equipo-KiloTeam.ps1 0.1.0, workspace exclusivo local, política 0.16.0, nueve agentes 0.2.0, modelo autorizado, registro y retirada selectiva. Procedimiento focalizado sin repetir F03/F04. Sin modificación global ni dependencias. Parser/ejecución Windows y descubrimiento NOT_RUN; F05.3 IN_PROGRESS.
