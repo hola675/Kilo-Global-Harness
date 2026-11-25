@@ -1,5 +1,5 @@
 # Plan de scripts Windows
-Versión del archivo: 0.10.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.11.0 | Última modificación: 2026-11-24
 
 F02: Diagnosticar-KiloTeam.ps1 (solo lectura, versiones, paths, presencia de configuraciones sin secretos, procesos, herramientas y salida JSON sanitizada). F03: fixture de PoC aislado y verificación manual de sesión. F13: Administrar-KiloTeam.ps1 con modos Diagnostico, Simular, Instalar, Verificar, Actualizar, Desinstalar y Restaurar. F04: Probar-Nucleo-KiloTeam.ps1 es un procedimiento temporal de laboratorio, no el instalador F13. PowerShell 7, rutas con espacios y Unicode, códigos de salida documentados, sin admin por defecto, sin sobrescribir archivos no administrados, pruebas idempotentes y protección de junctions. No utilizar legacy como instalador.
 
@@ -26,3 +26,6 @@ Con integridad de ronda reportada, ampliar el script existente con PrepararEdici
 Preparación reportada en Windows de 0.2.0 (c0b0de1): parser PASS, doce MATCH, fixture BASELINE y PASS_F05_EDICION_PREPARADA. Conservar extensión activa, usar solo VerificarEdicion después de la intervención del hijo. No repetir preparación. Verificación posterior, retirada y negativos NOT_RUN.
 
 VerificarEdicion de 0.2.0 reportado PASS tras edición real: doce MATCH y EXPECTED_EDIT. No repetir escritura. Siguiente RetirarEdicion -ConfirmarKiloCerrado -ConfirmarRetirada con consentimiento, luego Verificar sin marcador; no ejecutar Retirar general. Retirada y negativos aún NOT_RUN. Preservar si bloqueo.
+
+## F05.4 — extensión de desarrollo 0.3.0
+Retirada editorial reportada PASS y doce MATCH posteriores. PrepararDesarrollo crea seis archivos fijos en workspace y registro hermano development-ownership.json, vinculado al hash original y baseline reproducible. Dos protegidos (contrato y pruebas de tests/fixtures/f05-development), cuatro placeholders con propietario contractual único. Sin ejecutar código, instalar, ni modificar originales. VerificarDesarrollo solo comprueba estructura/registro/hashes, informa CHANGED_UNREVIEWED y huella de revisión; no certifica funcionalidad. RetirarDesarrollo exige consentimiento, cierre y HuellaAprobada exacta tras revisión explícita del contenido; nunca adoptar hashes arbitrarios, no borrar recursivamente. Si hay falta/deriva protegida/enlace/entrada ajena, preservar. Preparación parcial requiere revisión manual, no borrado automático. Los modos anteriores bloquean extensión activa. Node >=22.13 y node:sqlite requeridos para ejecución posterior, no instalar si ausentes. No ejecutar código generado hasta revisión y autorización. Parser Windows y ejecución 0.3.0 NOT_RUN.
