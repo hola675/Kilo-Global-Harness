@@ -1,11 +1,11 @@
 # KILO-GLOBAL-HARNESS-TEAM
-# Version: 0.1.1
+# Version: 0.2.0
 # Fecha: 2026-11-24
-# F05.3: laboratorio temporal de proyecto. No es instalador global.
+# F05.3/F05.4: laboratorio temporal de proyecto y fixture editorial. No es instalador global.
 # Exit 0: operacion completada en su alcance; 1: bloqueo/error.
 [CmdletBinding()]
 param(
-    [ValidateSet('Diagnostico','Preparar','Verificar','Retirar')]
+    [ValidateSet('Diagnostico','Preparar','Verificar','Retirar','PrepararEdicion','VerificarEdicion','RetirarEdicion')]
     [string]$Modo = 'Diagnostico',
     [string]$Modelo,
     [switch]$ConfirmarKiloCerrado,
@@ -64,11 +64,14 @@ function Get-AuxiliaryStatus {
     }
     'MATCH_TEMPLATE'
 }
-function Assert-Tree([switch]$PermitirAuxiliar) {
+function Assert-Tree([switch]$PermitirAuxiliar,[switch]$PermitirEdicion) {
+    $RootNames = @('ownership.json','workspace')
+    $WorkspaceNames = @('AGENTS.md','kilo.jsonc','fixture.txt','.kilo')
+    if ($PermitirEdicion) { $RootNames += 'editing-ownership.json'; $WorkspaceNames += 'messages-f05.json' }
     # Solo directorios conocidos; no recorrer arboles ajenos ni enlaces.
     foreach ($Entry in @(
-        @{Dir=$Root; Names=@('ownership.json','workspace')},
-        @{Dir=$Workspace; Names=@('AGENTS.md','kilo.jsonc','fixture.txt','.kilo')},
+        @{Dir=$Root; Names=$RootNames},
+        @{Dir=$Workspace; Names=$WorkspaceNames},
         @{Dir=(Join-Path $Workspace '.kilo'); Names=@('agents')},
         @{Dir=(Join-Path $Workspace '.kilo\agents'); Names=$AgentNames}
     )) {
@@ -104,6 +107,52 @@ function Get-Status([string]$Path,[string]$Expected) {
     if (-not (Test-Path -LiteralPath $Path)) { return 'ABSENT' }
     if ((Get-Hash $Path) -ceq $Expected) { return 'MATCH' }
     'DRIFT'
+}
+function Get-EditFixture([switch]$Target) {
+    if ($Target) {
+        return (@(
+            '{',
+            '  "RESERVATION_PENDING": "Solicitud de reserva enviada. Aún no se ha confirmado el resultado.",',
+            '  "INSUFFICIENT_STOCK": "No se reservó ningún producto porque no hay existencias suficientes de {sku}.",',
+            '  "RETRYABLE_CONFLICT": "Conflicto técnico: no se pudo confirmar el resultado de la reserva."',
+            '}'
+        ) -join "`n")
+    }
+    return (@(
+        '{',
+        '  "RESERVATION_PENDING": "¡Compra realizada con éxito!",',
+        '  "INSUFFICIENT_STOCK": "Error al ejecutar transacción para {sku}",',
+        '  "RETRYABLE_CONFLICT": "Error crítico. Vuelva a comprar el producto"',
+        '}'
+    ) -join "`n")
+}
+function Get-EditBaselineHash {
+    Get-BytesHash ([Text.Encoding]::UTF8.GetBytes((Get-EditFixture) + "`n"))
+}
+function Get-EditState([string]$ParentHash) {
+    Assert-File $EditStateFile
+    $E = Get-Content -LiteralPath $EditStateFile -Raw | ConvertFrom-Json -AsHashtable
+    if ($E -isnot [Collections.IDictionary] -or $E.Count -ne 5 -or
+        $E.id -cne 'kilo-team-f05-editorial-v1' -or $E.parentHash -cne $ParentHash -or
+        $E.relativePath -cne 'messages-f05.json' -or $E.owner -cne 'team-editorial' -or
+        $E.baseline -cne (Get-EditBaselineHash)) {
+        throw 'Registro editorial incompatible; preservar.'
+    }
+    $E
+}
+function Get-EditStatus {
+    if (-not (Test-Path -LiteralPath $EditFixture)) { throw 'Fixture editorial ausente; preservar registro.' }
+    $Actual = Get-Hash $EditFixture
+    if ($Actual -ceq (Get-EditBaselineHash)) { return 'BASELINE' }
+    # Solo resultados exactos autorizados, UTF-8 sin BOM, LF o CRLF, salto final opcional.
+    $Target = Get-EditFixture -Target
+    foreach ($Sep in @("`n","`r`n")) {
+        $Text = $Target.Replace("`n",$Sep)
+        foreach ($Suffix in @('',$Sep)) {
+            if ($Actual -ceq (Get-BytesHash ([Text.Encoding]::UTF8.GetBytes($Text + $Suffix)))) { return 'EXPECTED_EDIT' }
+        }
+    }
+    throw 'Fixture editorial distinto del baseline o resultado autorizado; preservar.'
 }
 function Assert-KnownCollisions {
     # Preflight limitado a rutas conocidas; no leer configuracion, auth ni tokens.
@@ -142,6 +191,8 @@ try {
     $Workspace = Join-Path $Root 'workspace'
     $StateFile = Join-Path $Root 'ownership.json'
     $AuxiliaryFile = Join-Path $Workspace '.kilo\.gitignore'
+    $EditStateFile = Join-Path $Root 'editing-ownership.json'
+    $EditFixture = Join-Path $Workspace 'messages-f05.json'
     $Repo = Split-Path -Parent $PSScriptRoot
     $Roles = @('architect','frontend','backend','data','platform','research','quality','security','editorial')
     $AgentNames = @($Roles | ForEach-Object { "team-$_.md" })
@@ -197,12 +248,56 @@ try {
         if ($Modo -eq 'Diagnostico') { Write-Host 'F05_AUSENTE: sin laboratorio en ruta conocida.'; exit 0 }
         throw 'Laboratorio ausente.'
     }
-    Assert-Tree -PermitirAuxiliar
+    if ($Modo -in @('VerificarEdicion','RetirarEdicion')) { Assert-Tree -PermitirAuxiliar -PermitirEdicion }
+    else { Assert-Tree -PermitirAuxiliar }
     $AuxiliaryStatus = Get-AuxiliaryStatus
     $StateHash = Get-Hash $StateFile
     $State = Get-State
     $Results = [ordered]@{}
     foreach ($Rel in $RelativeFiles) { $Results[$Rel] = Get-Status (Join-Path $Workspace $Rel) $State.files[$Rel] }
+
+    if ($Modo -in @('PrepararEdicion','VerificarEdicion','RetirarEdicion')) {
+        if (@($Results.Values | Where-Object { $_ -cne 'MATCH' }).Count -ne 0) { throw 'Baseline original incompleto o cambiado; preservar.' }
+        if ($ComprobarMarcador) { throw 'No repetir marcador en fase editorial.' }
+        $Results.GetEnumerator() | Format-Table Key,Value -AutoSize
+        if ($Modo -eq 'PrepararEdicion') {
+            if (-not $ConfirmarKiloCerrado -or -not $ConfirmarPrueba) { throw 'Requiere autorizacion de prueba y cierre de Kilo.' }
+            Assert-Absent $Root 'editing-ownership.json'
+            Assert-Absent $Workspace 'messages-f05.json'
+            $E = [ordered]@{ id='kilo-team-f05-editorial-v1'; parentHash=$StateHash; relativePath='messages-f05.json'; owner='team-editorial'; baseline=(Get-EditBaselineHash) }
+            Write-New $EditStateFile ([Text.Encoding]::UTF8.GetBytes(($E | ConvertTo-Json -Depth 3)))
+            Write-New $EditFixture ([Text.Encoding]::UTF8.GetBytes((Get-EditFixture) + "`n"))
+            Assert-Tree -PermitirAuxiliar -PermitirEdicion
+            $null = Get-EditState $StateHash
+            if ((Get-EditStatus) -cne 'BASELINE' -or (Get-Hash $StateFile) -cne $StateHash) { throw 'Preparacion editorial incompleta.' }
+            foreach ($Rel in $RelativeFiles) {
+                if ((Get-Status (Join-Path $Workspace $Rel) $State.files[$Rel]) -cne 'MATCH') { throw "Baseline cambiado: $Rel" }
+            }
+            Write-Host 'messages-f05.json: BASELINE; propietario: team-editorial'
+            Write-Host 'PASS_F05_EDICION_PREPARADA; runtime NOT_RUN.'
+            exit 0
+        }
+        $EditStateHash = Get-Hash $EditStateFile
+        $null = Get-EditState $StateHash
+        $EditStatus = Get-EditStatus
+        Write-Host "messages-f05.json: $EditStatus"
+        if ($Modo -eq 'VerificarEdicion') {
+            if ($EditStatus -cne 'EXPECTED_EDIT') { throw 'Edicion esperada no realizada.' }
+            if ((Get-Hash $EditStateFile) -cne $EditStateHash -or (Get-Hash $StateFile) -cne $StateHash) { throw 'Registro cambiado.' }
+            Write-Host 'PASS_F05_EDICION_VERIFICADA; no acredita autor, herramientas ni permisos.'
+            exit 0
+        }
+        if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada) { throw 'Requiere cierre y retirada editorial autorizada.' }
+        $EditHash = Get-Hash $EditFixture
+        if ((Get-EditStatus) -cne $EditStatus -or (Get-Hash $EditFixture) -cne $EditHash -or
+            (Get-Hash $EditStateFile) -cne $EditStateHash -or (Get-Hash $StateFile) -cne $StateHash) { throw 'Estado editorial cambiado; preservar.' }
+        Remove-Item -LiteralPath $EditFixture -ErrorAction Stop
+        if ((Get-Hash $EditStateFile) -cne $EditStateHash) { throw 'Registro editorial cambiado; preservar.' }
+        Remove-Item -LiteralPath $EditStateFile -ErrorAction Stop
+        Assert-Tree -PermitirAuxiliar
+        Write-Host 'F05_EDICION_RETIRADA; baseline original conservado.'
+        exit 0
+    }
 
     if ($Modo -in @('Diagnostico','Verificar')) {
         $Results.GetEnumerator() | Format-Table Key,Value -AutoSize
