@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.48.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.49.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -182,3 +182,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — laboratorio F05.3
 - Integración/pruebas: candidato Probar-Equipo-KiloTeam.ps1 0.1.0, workspace exclusivo local, política 0.16.0, nueve agentes 0.2.0, modelo autorizado, registro y retirada selectiva. Procedimiento focalizado sin repetir F03/F04. Sin modificación global ni dependencias. Parser/ejecución Windows y descubrimiento NOT_RUN; F05.3 IN_PROGRESS.
+
+## 2026-11-24 — corrección F05.3-R1
+- Pruebas: parser, preparación y doce hashes iniciales reportados PASS con 0.1.0; marcador devuelto pero comparación bloqueada por auxiliar .kilo/.gitignore. Script 0.1.1 reconoce plantilla exacta del CLI fijado y exige autorización adicional para su retirada; registro y guardas intactos. Revalidación focalizada pendiente, sin recrear laboratorio ni almacenar marcador.
