@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.74.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.75.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -261,3 +261,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — selección autónoma F05-B-R
 - Pruebas: B1 directo PASS semántico reportado; B2 tres delegaciones pertinentes elegidas por Code, selección PASS_REPORTADO. Retornos, integración y revisión completada no acreditados; recuperar evidencia existente y verificar integridad. Sin cambios de política, agentes, scripts o instalación.
+
+## 2026-11-24 — integración y recuperación F05-B-R
+- Pruebas: recepción 3/3, integración y cierre de ejecución reportados; revisión Veritas BLOCKED por falta de objeto concreto, integridad PASS. Siguiente revisión focalizada de propuesta existente, sin repetir tareas ni modificar política, permisos o instalación.
