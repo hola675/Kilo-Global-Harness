@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.40.0",
+    "version": "0.41.0",
     "last_modified": "2026-11-25"
   },
   "id": "kilo-global-harness-team",
@@ -230,7 +230,8 @@
     "F05_1_2": "CANDIDATES_PREPARED_STATIC",
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
-    "F06_AUD_R": "STATIC_REVIEW_CANDIDATE"
+    "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
+    "F06_LAB_R1": "CANDIDATE_PREPARED_STATIC"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -674,6 +675,21 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Preparar laboratorio F06 registrado, no usar scripts F04/F05 para preparar revisiones nuevas; revisión independiente y evaluación diferencial antes de activar/integrar."
+    "next": "Validar parser y preparar laboratorio F06-R1 en Windows autorizado; confirmar carga y catálogo real antes de comparación de comportamiento. Rondas con mutación requieren extensión aislada registrada; revisión independiente pendiente.",
+    "laboratory": {
+      "path": "scripts/Probar-Skills-KiloTeam.ps1",
+      "version": "0.1.0",
+      "sourceRevision": "8fe21568fc8362b3f743d33b0c27c0f682110908",
+      "protectedSourceFiles": 24,
+      "protectedWorkspaceFiles": 38,
+      "variants": [
+        "baseline",
+        "candidate"
+      ],
+      "scope": "read-only-and-design",
+      "runtimeStatus": "NOT_RUN",
+      "windowsParserStatus": "NOT_RUN",
+      "installable": false
+    }
   }
 }

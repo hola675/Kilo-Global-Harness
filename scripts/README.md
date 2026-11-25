@@ -1,5 +1,5 @@
 # Plan de scripts Windows
-Versión del archivo: 0.15.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.16.0 | Última modificación: 2026-11-25
 
 F02: Diagnosticar-KiloTeam.ps1 (solo lectura, versiones, paths, presencia de configuraciones sin secretos, procesos, herramientas y salida JSON sanitizada). F03: fixture de PoC aislado y verificación manual de sesión. F13: Administrar-KiloTeam.ps1 con modos Diagnostico, Simular, Instalar, Verificar, Actualizar, Desinstalar y Restaurar. F04: Probar-Nucleo-KiloTeam.ps1 es un procedimiento temporal de laboratorio, no el instalador F13. PowerShell 7, rutas con espacios y Unicode, códigos de salida documentados, sin admin por defecto, sin sobrescribir archivos no administrados, pruebas idempotentes y protección de junctions. No utilizar legacy como instalador.
 
@@ -38,3 +38,6 @@ Preparar exige política 0.17.0 y mantiene nueve agentes 0.2.0; Get-State recono
 Preparación y carga reportadas PASS en Windows sobre 41186ae: parser 0.4.0, retirada autorizada 0.16.0, ausencia, nueva preparación 0.17.0, doce MATCH; después auxiliar MATCH_TEMPLATE y PASS_LOAD_REPORTED. No repetir preparación ni marcador. Conservar laboratorio para B1/B2 y verificar sin marcador al finalizar. Runtime conductual aún NOT_RUN.
 
 Cierre F05.5 reportado PASS sobre cc3f4c9: doce MATCH, retirada autorizada y F05_AUSENTE. No volver a preparar F05 por rutina. F06 requiere procedimiento propio de evaluación de skills sin modificar configuración global; script 0.4.0 histórico intacto.
+
+## F06-LAB-R1 — laboratorio comparativo (candidato 0.1.0)
+[Probar-Skills-KiloTeam.ps1](Probar-Skills-KiloTeam.ps1): Diagnostico/Preparar/Verificar/Retirar; dos workspaces en %LOCALAPPDATA%\KiloTeam-F06-Lab\baseline y candidate, sin instalación global. 24 fuentes fijadas por blob Git de 8fe21568fc8362b3f743d33b0c27c0f682110908 (normalización CRLF controlada), 38 archivos por SHA-256 y registro previo hermano. Misma política/agentes/modelo/fixture, candidate agrega 13 skills y referencia; preflight acotado, confirmar catálogo efectivo en sesión. No leer tokens/configuración privada, no iniciar procesos ni modificar perfil. Preparar exclusivo con consentimiento; Verificar compara registro contra payload fijado y hashes reales; retirada solo íntegra, con auxiliar conocido y autorización separada, sin recursión ni adopción de drift. Requiere checkout que conserve fuentes fijadas. Si falla parcialmente, preservar para reconciliación, no usar F04/F05 ni recrear. Primera ronda solo lectura/diseño. [Procedimiento F06](../tests/F06-SKILLS.md). Windows parser y runtime NOT_RUN.

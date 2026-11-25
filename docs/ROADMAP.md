@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.91.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.92.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -348,3 +348,6 @@ Candidato skill-authoring 0.1.0 y dieciocho casos H1–H18; trece de trece skill
 
 ## F06-AUD-R — auditoría transversal y reconciliación (2026-11-25)
 Candidato completo 13/13, nueve especialistas, 175 escenarios de diseño preservados. Política 0.21.0 compacta routing y aclara relevancia de skills y adopción de calidad; Bastión 0.3.0 elimina referencia normativa obsoleta; ocho skills revisadas por activadores y referencias; catálogo consolidado, inventario actual de candidatos en manifiesto 0.40.0 separado de evidencia F04/F05 histórica. Sin cambio de permisos, contratos, motor, dependencias ni eliminación de pruebas. Revisión estática propia; independiente y runtime NOT_RUN. F06 IN_PROGRESS. Siguiente: preparar y verificar laboratorio F06 con versiones actuales, sin reutilizar directamente guardas históricas de scripts F04/F05; ejecutar evaluación por garantías antes de cerrar puerta. F07/F08/F11 siguen pendientes.
+
+## F06-LAB-R1 — preparación de laboratorio comparativo (2026-11-25)
+Candidato Probar-Skills-KiloTeam.ps1 0.1.0, dos variantes con 38 archivos protegidos, 24 fuentes fijadas, modelo autorizado y política 0.21.0 común. Primera ronda lectura/diseño, carga y catálogo reales antes de comparación; 175 casos existentes intactos. Manifiesto 0.41.0. No preparar globalmente, no modificar scripts históricos. Parser Windows, preparación, carga, comparación, retirada y revisión independiente NOT_RUN. Siguiente: validar parser y preparar en host autorizado, después R1a/R1b; rondas de mutación/recuperación real separadas. F06 IN_PROGRESS.
