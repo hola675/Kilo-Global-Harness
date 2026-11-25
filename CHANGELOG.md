@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.88.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.89.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -315,3 +315,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.11-R descubrimiento de herramientas y MCP
 - Skills: tool-mcp-discovery 0.1.0, capacidades efectivas por agente/sesión, selección autorizada y no redundante, invocación, fallbacks y brecha demostrada; dieciséis casos M1–M16.
 - Investigación/calidad: fuentes CLI/Desktop fijadas y documentación MCP; sin nuevas dependencias, inventario persistente, cambios de agentes/política/permisos ni instalación. F09/F10 pendientes; revisión independiente y runtime NOT_RUN.
+
+## 2026-11-25 — F06.12-R ingeniería segura
+- Skills: secure-development 0.1.0, controles por frontera/identidad/recurso, secretos, privacidad, dependencias, agentes y evidencia focalizada; dieciocho casos S1–S18.
+- Investigación/calidad: NIST, OWASP, SLSA y Kilo; sin nuevas herramientas, permisos, cambios de agentes/política ni instalación. Referencia histórica de política en Bastión pendiente de reconciliación transversal. Revisión independiente y runtime NOT_RUN.
