@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.5.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.6.0 | Última modificación: 2026-11-25
 
-Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0 y team-coordination 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0 y team-context-recovery 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
 
 ## F06 — núcleo común (13)
 team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
@@ -33,3 +33,6 @@ F06.1-R: [investigación comparada de skills](../../docs/INVESTIGACION-SKILLS.md
 
 ## F06.3-R — candidato inicial
 [team-coordination](team-coordination/SKILL.md) — despacho dinámico por resultados, recursos exclusivos, procesamiento de retornos y Swarm, recuperación selectiva e integración. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: team-context-recovery. Sin motor nuevo, instalación ni certificación runtime.
+
+## F06.4-R — candidato inicial
+[team-context-recovery](team-context-recovery/SKILL.md) — checkpoint proporcional, reconstrucción por identidad y procedencia, preservación de resultados vigentes y continuación segura tras pérdida de contexto. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: requirements-acceptance. Sin almacenamiento nuevo, instalación ni certificación runtime.

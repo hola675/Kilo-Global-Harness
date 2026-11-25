@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.80.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.81.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -283,3 +283,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.3-R coordinación de tareas
 - Skills: candidato team-coordination 0.1.0, dependencias dinámicas, conflictos de recursos, comunicación material, recuperación de ejecución y aceptación.
 - Investigación/calidad: código Task/Swarm fijado y doce escenarios focalizados; sin cambios de política, agentes o motor. Revisión independiente y runtime NOT_RUN; sin instalación/release.
+
+## 2026-11-25 — F06.4-R recuperación de contexto
+- Skills: candidato team-context-recovery 0.1.0, checkpoint mínimo, reconstrucción focalizada, conciliación de evidencia y continuación segura; no persistencia nueva ni cambios de agentes/política.
+- Investigación/calidad: compactación/Swarm y F03.5 contrastados, doce casos focalizados; revisión independiente y runtime NOT_RUN, sin instalación/release.
