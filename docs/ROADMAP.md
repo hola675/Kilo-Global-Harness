@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.68.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.69.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -279,3 +279,6 @@ Captura actual Manual, variables ausentes en alcances comprobados, regla global 
 
 ## F05-C-PERM-D3 — rechazo alternativo positivo
 Operador reporta Veritas/functions.bash, node --version, solicitud nativa y rechazo sin ejecución; control PASS_REPORTADO, operación BLOCKED. Identidad revalidada de Node no aportada en este informe; confirmar antes de D4. Evidencia favorable de ask fuera de echo *, no causalidad histórica acreditada. Siguiente D4: nueva Task, misma sonda, Manual y aprobación única con salida real. Sin cambios de permisos ni repetición de suite. F05.4 IN_PROGRESS; permisos y activación global pendientes.
+
+## F05-C-PERM-D4 — aprobación puntual confirmada
+Salida v26.12.1 reportada por Veritas; informe inicial no acreditaba decisión, operador confirma solicitud nativa y Permitir una vez. PASS_REPORTADO de ask focalizado junto a D3; sin metadata de regla ganadora ni nueva evidencia de hash Node. Mantener FAIL histórico de echo, no repetir suite. Siguiente PERM-03: Faro shell deny, comprobar exposición y solo si disponible solicitar sonda inocua sin conceder permiso, tras preflight vigente. Diferenciar ausencia de herramienta, rechazo voluntario y denegación del motor. F05.4 IN_PROGRESS, deny y cierre pendientes, activación global bloqueada; sin cambios de configuración.
