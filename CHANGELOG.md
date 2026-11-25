@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.57.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.58.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -209,3 +209,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — edición efectiva F05-C-G2
 - Pruebas: traza de lectura/edición/lectura reportada de Ágora y PASS_F05_EDICION_VERIFICADA, doce MATCH y resultado exacto; 17s/31s reportados. Siguiente retirada selectiva y verificación de baseline. Sin cambios de código, política ni instalación. F05.4 IN_PROGRESS.
+
+## 2026-11-24 — retirada editorial y desarrollo F05-C-DEV
+- Pruebas: retirada editorial y doce MATCH posteriores reportados PASS. Script 0.3.0 incorpora extensión de desarrollo, contrato/pruebas protegidos y cuatro propietarios; verificación sin ejecución, retirada con huella revisada. Parser Windows y ejecución pendientes. Sin cambios de agentes, política o instalación global.
