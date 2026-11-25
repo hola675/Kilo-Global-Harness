@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.74.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.75.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -297,3 +297,6 @@ Operador reporta parser 0.4.0 PASS, retirada autorizada de baseline 0.16.0, ause
 
 ## F05-B-R — selección autónoma observada
 B1 directo PASS_REPORTADO semántico; B2 despacho agrupado de Seguridad y Editorial y delegación adicional de Calidad, sin selección impuesta. PASS_REPORTADO de selección pertinente, revisión independiente solicitada; retorno, integración, independencia efectiva, cierre y solape NOT_VERIFIED en registro aportado. Diseño útil, casos propuestos no ejecutados, no benchmark ni causalidad exclusiva. Siguiente: recuperar únicamente evidencia de tareas ya existentes y verificar integridad sin marcador al terminar; no repetir B1/B2 ni modificar política por falta de traza. F05.4 IN_PROGRESS; no instalación global.
+
+## F05-B-R — integración reportada y revisión bloqueada
+Historial reportado: tres tareas completed y resultados recibidos antes de entrega, ninguna activa observable, aportaciones y ajustes identificados. PASS_REPORTADO de selección/recepción/integración/cierre de ejecución; Veritas BLOCKED al no recibir diseño concreto, FAIL de dependencia de revisión, no aceptación final. Herramientas de hijos y solape no acreditados. Doce MATCH, auxiliar MATCH_TEMPLATE, PASS_INTEGRIDAD_LOCAL. Siguiente F05-B-RQ: recuperar revisión del diseño existente con contexto concreto y una delegación focalizada, sin repetir resultados válidos, sin mutación ni ejecución. Mantener política 0.17.0; registrar defecto inicial para regresión F07/F11. F05.4 IN_PROGRESS, instalación global pendiente.
