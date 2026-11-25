@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.50.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.51.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -225,3 +225,6 @@ Operador reporta parser PASS, creación y doce hashes MATCH de 0.1.0 en Windows.
 
 ## F05.3-R1 — revalidación positiva reportada
 Operador reporta parser PASS de 0.1.1, doce MATCH, auxiliar MATCH_TEMPLATE, marcador MATCH y PASS_LOAD_REPORTED en laboratorio existente, commit ef10dac. Se resuelve bloqueo de verificación en esta muestra. Descubrimiento pendiente: descripción Task filtra agentes no primarios y task deny según fuente fijada en tests/F05-EQUIPO.md. Siguiente comprobación sin mutación ni delegación, no repetir preparación o marcador. F05.3 IN_PROGRESS; permisos, invocación, negativos de guardas, retirada y coordinación no certificados.
+
+## F05-A — descubrimiento reportado y arranque F05.4
+Operador reporta nueve IDs exactos team-* (9/9) y responsabilidades coherentes desde descripción de Task. PASS_REPORTED_DISCOVERY, sin traza independiente de no lectura. Confusión textual entre modo y modelo: identidad del líder no se acredita por nombre de modelo, mantener Code nativo y selección autorizada. F05.3 DONE_POC_LIMITED para desarrollo y descubrimiento reportado; F05.4 IN_PROGRESS con F05-C-R1, primera invocación focalizada de Faro sobre fixture inmutable (ver tests/F05-EQUIPO.md). No repetir descubrimiento ni marcador; invocación, permisos, coordinación y pruebas negativas siguen pendientes. Sin instalación definitiva ni cambios al laboratorio.
