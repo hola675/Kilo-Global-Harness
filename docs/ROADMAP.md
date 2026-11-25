@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.57.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.58.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -246,3 +246,6 @@ Operador reporta parser PASS y PASS_F05_EDICION_PREPARADA de 0.2.0 sobre c0b0de1
 
 ## F05-C-G2 — edición editorial verificada
 Operador reporta traza read/apply_patch/read de Ágora, 17s hijo y 31s proceso, sin intervención de escritura de Code reportada. Verificador 0.2.0 devuelve doce MATCH, EXPECTED_EDIT y PASS_F05_EDICION_VERIFICADA; resultado exacto y UTF-8 sin BOM confirmados por comparación con bytes autorizados. PASS dentro del caso, sin acreditar autor solo por hash, ni enforcement o benchmark. Siguiente: retirada autorizada de extensión editorial con Kilo cerrado y Verificar del baseline, sin retirar laboratorio original; después fixtures de implementación. F05.4 IN_PROGRESS, seis especialistas aún sin primera tarea funcional reportada.
+
+## F05-C-G2 — retirada y siguiente F05-C-DEV
+Retirada editorial y posterior doce MATCH reportados PASS; ciclo de vida DONE_POC_LIMITED. Script 0.3.0 prepara seis fixtures con registro separado, dos protegidos y cuatro propietarios (Prisma/Nexo/Lumen/Forja); contrato local sin dependencias, SQLite en memoria, ejecución posterior revisada y autorizada, pruebas protegidas. Veritas/Bastión no editan. Verificador de desarrollo no ejecuta ni acepta código; retirada exige huella revisada. Parser y preparación Windows NOT_RUN; no repetir G2. F05.4 IN_PROGRESS; coordinación y permisos pendientes.
