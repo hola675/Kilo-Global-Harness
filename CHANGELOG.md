@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.40.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.41.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -150,3 +150,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — refinamiento Lumen
 - Investigación: siete archivos de cuatro repositorios y tres referencias técnicas consultados selectivamente; registro compartido actualizado.
 - Equipo: Lumen v0.2.0 integra criterio visual, UX, implementación, accesibilidad, rendimiento y handoff; permisos intactos. L1–L5 preparados, runtime NOT_RUN. Sin instalación, dependencias ni cambios a otros agentes.
+
+## 2026-11-24 — refinamiento Nexo
+- Investigación: siete archivos de cuatro repositorios fijados y cuatro fuentes técnicas consultadas selectivamente; registro compartido actualizado.
+- Equipo: Nexo v0.2.0 refuerza dominio, contratos, seguridad aplicada, concurrencia, resiliencia y pruebas de efectos; permisos intactos. N1–N5 preparados, runtime NOT_RUN. Sin instalación, dependencias ni cambios a otros agentes.
