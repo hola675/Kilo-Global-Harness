@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.68.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.69.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -242,3 +242,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — F05-C-PERM-D3
 - Pruebas: rechazo nativo reportado PASS para node --version; operación BLOCKED. Siguiente D4 aprobación única tras confirmar identidad Node; FAIL histórico de echo conservado. Sin cambios de código, configuración o instalación.
+
+## 2026-11-24 — F05-C-PERM-D4
+- Pruebas: aprobación única confirmada por operador y salida de versión reportada; ask focalizado PASS_REPORTADO. Siguiente restricción shell de Faro sin habilitar permisos. Sin cambios de código, agentes, configuración o instalación.
