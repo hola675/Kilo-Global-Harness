@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.43.0",
+    "version": "0.44.0",
     "last_modified": "2026-11-25"
   },
   "id": "kilo-global-harness-team",
@@ -231,7 +231,7 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "PREFLIGHT_FIX_CANDIDATE"
+    "F06_LAB_R1": "POLICY_LOAD_PASS_REPORTED_DISCOVERY_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -675,7 +675,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Revalidar parser de 0.1.1 en worktree existente, comprobar contenido F04 sin leer registro ni borrar, preparar solo si contenedor vacío o ausente y F06 ausente; si no, conservar y diagnosticar.",
+    "next": "R1a descubrimiento: observar catálogo de Code en ambos workspaces y especialistas directos, sin leer SKILL.md para simular disponibilidad, sin cargar aún; comprobar modelo real por UI, ausencia de las 13 skills propias en baseline y presencia en candidate, procedencia si expuesta. Después invocación explícita de team-routing solo en candidate, en conversación separada de evaluación autónoma. Si catálogo no observable o contaminación, bloquear comparación. Conservar script y worktree; no repetir preparación ni marcador.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -687,8 +687,8 @@
         "candidate"
       ],
       "scope": "read-only-and-design",
-      "runtimeStatus": "NOT_RUN",
-      "windowsParserStatus": "NOT_RUN",
+      "runtimeStatus": "PARTIAL_REPORTED_POLICY_LOAD",
+      "windowsParserStatus": "PASS_REPORTED",
       "installable": false,
       "diagnosticEvidence": {
         "status": "PASS_REPORTED",
@@ -701,7 +701,7 @@
         "provenance": "operator-reported PowerShell output",
         "independentlyExecuted": false
       },
-      "preparationStatus": "BLOCKED_REPORTED_PREVIOUS_VERSION",
+      "preparationStatus": "PASS_REPORTED",
       "priorPreparationEvidence": {
         "scriptVersion": "0.1.0",
         "status": "BLOCKED_REPORTED",
@@ -711,8 +711,41 @@
       },
       "preflightFix": {
         "scope": "accept only exact F04 empty regular directory without reparse; retain F05 and other collision guards",
-        "runtimeStatus": "NOT_RUN"
-      }
+        "runtimeStatus": "PASS_REPORTED_EMPTY_CONTAINER_CASE_ONLY"
+      },
+      "preparationEvidence": {
+        "status": "PASS_REPORTED",
+        "checkoutRevision": "b78e4b23f77cd4f26f21ab3beeab73d745be60c7",
+        "scriptVersion": "0.1.1",
+        "parser": "PASS_REPORTED",
+        "f04EmptyContainerPreserved": "REPORTED",
+        "confirmedAuthorization": true,
+        "modelReference": "kilo/openai/gpt-6-luna",
+        "modelEffectiveInSession": "NOT_VERIFIED",
+        "protectedWorkspaceFilesMatched": 38,
+        "protectedWorkspaceFilesTotal": 38,
+        "auxiliaryBaseline": "ABSENT_REPORTED",
+        "auxiliaryCandidate": "ABSENT_REPORTED",
+        "postPreparationIntegrity": "PASS_REPORTED",
+        "provenance": "operator-reported PowerShell output",
+        "independentlyExecuted": false
+      },
+      "policyLoadEvidence": {
+        "status": "PASS_LOAD_REPORTED",
+        "baseline": "PASS_LOAD_REPORTED",
+        "candidate": "PASS_LOAD_REPORTED",
+        "protectedWorkspaceFilesMatched": 38,
+        "protectedWorkspaceFilesTotal": 38,
+        "auxiliaryBaseline": "MATCH_TEMPLATE",
+        "auxiliaryCandidate": "MATCH_TEMPLATE",
+        "markerValuesStored": false,
+        "provenance": "operator-reported local script verification",
+        "independentlyExecuted": false,
+        "automaticInstructionInjectionTrace": "NOT_VERIFIED",
+        "effectiveModel": "NOT_VERIFIED"
+      },
+      "loadStatus": "PASS_LOAD_REPORTED_POLICY_ONLY",
+      "discoveryStatus": "NOT_RUN"
     }
   }
 }

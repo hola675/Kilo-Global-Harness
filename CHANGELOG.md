@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.94.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.95.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -338,3 +338,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-25 — F06-LAB-R1.2 preflight
 - Script 0.1.1: corrige falso positivo potencial por directorio F04 vacío tras retirada histórica, sin borrado ni excepción para entradas activas/enlaces. Preparación anterior BLOCKED reportada; parser/runtime de corrección pendientes. Manifiesto 0.43.0.
+
+## 2026-11-25 — F06-LAB-R1a preparación y carga reportadas
+- Evidencia del operador: parser 0.1.1 PASS, F04_EMPTY_CONTAINER, F06_PREPARADO, 38/38 MATCH, auxiliares MATCH_TEMPLATE tras uso y ambos PASS_LOAD_REPORTED. Manifiesto 0.44.0; catálogo, modelo efectivo, invocación, comportamiento y revisión independiente pendientes. Sin cambios de script ni núcleo.
