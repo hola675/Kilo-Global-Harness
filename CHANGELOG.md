@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.58.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.59.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -212,3 +212,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — retirada editorial y desarrollo F05-C-DEV
 - Pruebas: retirada editorial y doce MATCH posteriores reportados PASS. Script 0.3.0 incorpora extensión de desarrollo, contrato/pruebas protegidos y cuatro propietarios; verificación sin ejecución, retirada con huella revisada. Parser Windows y ejecución pendientes. Sin cambios de agentes, política o instalación global.
+
+## 2026-11-24 — preparación F05-C-DEV
+- Pruebas: parser 0.3.0, preflight Node/SQLite y preparación PASS_REPORTADO; doce MATCH, seis BASELINE. Siguiente construcción por cuatro propietarios con paralelismo nativo si disponible, verificación de integridad y revisión previa a ejecución. F05.4 IN_PROGRESS, sin cambios de código o instalación.
