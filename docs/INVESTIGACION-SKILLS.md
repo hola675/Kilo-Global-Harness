@@ -1,5 +1,5 @@
 # Investigación comparada de skills propias
-Versión del archivo: 0.6.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.7.0 | Última modificación: 2026-11-25
 
 ## F06.1-R — team-routing
 Objetivo: mejorar selección proporcional y evitar el bloqueo de revisión observado en F05-B-R sin reconstruir Task ni cambiar modelo. Consulta web y lectura selectiva de archivos fijados en GitHub el 2026-11-25. No se ejecutaron harness externos; no es ranking de popularidad, auditoría integral, benchmark ni prueba de superioridad.
@@ -82,3 +82,16 @@ Consulta 2026-11-25; contraste con plan maestro 0.5.0, política 0.17.0 y requir
 | [Google Cloud Well-Architected Framework](https://docs.cloud.google.com/architecture/framework), documentación consultada 2026-11-25 | Simplicidad arquitectónica, diseño operacional y registro de cambios. | Comparar operación, mantenibilidad, recuperación y coste total; no imponer proveedor, nube ni catálogo de servicios. |
 
 Licencias de documentación SEI/Fowler/AWS/Google no verificadas individualmente; consulta conceptual sin incorporar texto extenso, código ni plantillas. Decisión: evaluar alternativas viables, priorizar restricciones obligatorias, modularidad con razón, evidencia antes de compromiso, migración y reversibilidad real. Alternativas descartadas: imponer Clean Architecture/DDD/microservicios a todo proyecto, stack fijo, ADR por cambio trivial, scoring sin medidas y prometer rollback por Git. Candidato 0.1.0; revisión independiente y evaluación runtime pendientes.
+
+## F06.7-R — implementation-discipline
+Consulta 2026-11-25; contraste con política 0.17.0, contrato 0.4.0 y skills de requisitos, arquitectura y coordinación. Enfoque: incremento mínimo completo, compatibilidad, preservación de trabajo y evidencia sin rituales.
+
+| Fuente | Patrón observado | Adaptación propia |
+|---|---|---|
+| [Superpowers: test-driven-development](https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/test-driven-development/SKILL.md), revisión fijada, MIT según F06.1-R | Rojo por motivo esperado, verde con código mínimo, refactor con evidencia; exige borrar código previo si no siguió orden y suite completa antes de terminar. | Adoptar comprobación previa cuando viable y cambios pequeños; descartar borrado ritual, reversiones de trabajo ajeno y suite indiscriminada. Conservar evidencia y cobertura canónica. |
+| [Superpowers: verification-before-completion](https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/verification-before-completion/SKILL.md), misma revisión/licencia | Distingue prueba, build y resultado; exige nueva ejecución completa para cada afirmación. | Evidencia específica por criterio, revalidar al cambiar objeto/entorno/dependencia, reutilizar evidencia vigente; no exigir repetición en cada mensaje. |
+| [Google Engineering Practices: Small CLs](https://github.com/google/eng-practices/blob/3bb3ec25b3b0199f4940b1aa75f0ac5c5753301c/review/developer/small-cls.md), revisión fijada; licencia específica no verificada (metadato NOASSERTION) | Cambios autocontenidos, pruebas relacionadas, continuidad funcional y revisión manejable. | Incremento coherente por comportamiento, no límite fijo de líneas/archivos ni commit obligatorio por subpaso. |
+| [Martin Fowler: Parallel Change](https://martinfowler.com/bliki/ParallelChange.html), artículo consultado 2026-11-25 | Transición compatible de interfaces: expansión, migración y contracción. | Aplicar solo cuando coexistencia sea necesaria, retirar tras comprobar consumidores; no duplicar caminos por defecto. |
+| [Government Digital Service: Test-driven development](https://gds-way.digital.cabinet-office.gov.uk/standards/test-driven-development.html), documentación consultada 2026-11-25 | Ciclo corto rojo-verde-refactor; dificultad de prueba como señal para reconsiderar diseño. | Usar prueba de comportamiento pertinente y refactor local; no imponer herramienta, framework ni secuencia destructiva. |
+
+Licencias de documentación Fowler/GDS no verificadas individualmente; uso conceptual y lectura selectiva, sin incorporar código, plantillas ni texto extenso. Se prioriza política propia sobre prescripciones externas. Descartados: TDD dogmático con borrado de código, suite completa por cada edición, reescritura masiva, mocks productivos como éxito, capas/dependencias preventivas y limpieza sin comprobar uso dinámico. Candidato 0.1.0; evaluación comparativa y revisión independiente pendientes. Systematic-debugging abordará diagnóstico causal y focused-testing la estrategia detallada de selección, sustitución y certificación de pruebas.

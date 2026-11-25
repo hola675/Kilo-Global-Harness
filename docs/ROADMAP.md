@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.83.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.84.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -324,3 +324,6 @@ Candidato requirements-acceptance 0.1.0 y doce casos A1–A12; cinco de trece sk
 
 ## F06.6-R — decisiones arquitectónicas (2026-11-25)
 Candidato architecture-decisions 0.1.0 y doce casos D1–D12; seis de trece skills base con candidato. Contraste MADR, Wshobson Agents, SEI/ATAM, Fowler, AWS y Google; evaluación contextual, modularidad justificada, consecuencias, migración y reversibilidad. Sin cambios de agentes/política ni dependencias. Revisión independiente y runtime NOT_RUN; F06 IN_PROGRESS. Próxima: implementation-discipline.
+
+## F06.7-R — disciplina de implementación (2026-11-25)
+Candidato implementation-discipline 0.1.0 y doce casos I1–I12; siete de trece skills base con candidato. Contraste de Superpowers, Google Engineering Practices, Fowler y GDS; cambios coherentes, flujo real, transición compatible, limpieza y evidencia focalizada sin TDD destructivo ni suites indiscriminadas. Sin cambios de agentes/política ni dependencias. Revisión independiente y runtime NOT_RUN; F06 IN_PROGRESS. Próxima: systematic-debugging.
