@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.82.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.83.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -291,3 +291,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.5-R requisitos y aceptación
 - Skills: candidato requirements-acceptance 0.1.0, clasificación de intención, resolución proporcional de ambigüedad, cobertura y aceptación por evidencia.
 - Investigación/calidad: seis referencias comparadas y doce casos focalizados; sin nuevo motor, cambios de política/agentes, instalación ni release. Revisión independiente y runtime NOT_RUN.
+
+## 2026-11-25 — F06.6-R decisiones arquitectónicas
+- Skills: candidato architecture-decisions 0.1.0, selección contextual, límites, alternativas, evidencia, reversibilidad y registro de decisiones proporcional.
+- Investigación/calidad: seis fuentes comparadas, doce casos focalizados; sin imponer patrón/stack, dependencias nuevas, cambios de política/agentes, instalación ni release. Revisión independiente y runtime NOT_RUN.

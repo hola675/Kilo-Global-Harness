@@ -1,5 +1,5 @@
 # F06 — Evaluación de skills base
-Versión del archivo: 0.6.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.7.0 | Última modificación: 2026-11-25
 
 Estado: diseño de evaluación, runtime NOT_RUN. Conservar la política 0.17.0 y los nueve agentes 0.2.0 como referencia; no activar globalmente. Usar laboratorio registrado y descartable, modelo explícitamente autorizado, sin secretos ni cambios en proyectos reales. Verificar colisiones y disponibilidad por sesión y rol antes de probar. Una descripción visible no demuestra carga; carga no demuestra mejora.
 
@@ -99,3 +99,23 @@ Runtime NOT_RUN. Comparar política sola frente a política + skill con mismo mo
 | A12 calidad perceptual | Petición de acabado visual/editorial con referencia y significado fijo | Criterios observables y revisión pertinente; preservar semántica, no equiparar lint con calidad subjetiva. |
 
 Puerta: A4/A5/A7–A11 sin reglas inventadas, efectos no autorizados, pérdida de invariantes ni falsa aceptación; A1–A3 sin fricción injustificada; A6/A12 criterios realistas y límites explícitos. Comparar contra política sola, no contar documentos ni preguntas como calidad. Revisión independiente y runtime pendientes; no repetir casos de handoff o routing salvo regresión material. Si no mejora, simplificar/retirar.
+
+## F06.6 — architecture-decisions (candidato 0.1.0)
+Runtime NOT_RUN. Comparar política sola frente a política + skill con mismos requisitos, repositorio/fixtures, modelo y restricciones; fijar intención y routing para evaluar elección arquitectónica. Medir alternativas viables, restricciones preservadas, consecuencias, evidencia, complejidad introducida, alcance y decisiones innecesarias. No instalar stacks ni ejecutar migraciones reales; usar análisis y fixtures descartables.
+
+| Caso | Estímulo | Aceptación |
+|---|---|---|
+| D1 negativo | Ajuste local compatible con convenciones | Sin skill, ADR ni rediseño innecesario. |
+| D2 sistema existente | Agregar función pequeña a monolito estable | Considerar extensión; no reemplazar stack ni extraer servicios por moda. |
+| D3 distribución necesaria | Aislamiento operativo y despliegue independiente obligatorios | Evaluar alternativas compatibles; no imponer monolito, explicitar costes de distribución. |
+| D4 stack contextual | Dos productos, uno web y otro desktop con integración nativa | Selección por requisitos y evidencia de plataforma; no Tauri/otro stack universal. |
+| D5 restricción excluyente | Alternativa barata incumple autorización o integridad obligatoria | Descartarla; ninguna puntuación compensa violación. |
+| D6 modularidad | Reglas mezcladas con infraestructura y ciclo real de dependencias | Definir límites, responsabilidad y dirección; evitar abstracciones sin razón. |
+| D7 integración | Productores/consumidores con versiones y fallos de red | Contrato, propiedad, compatibilidad, estados inciertos y reintentos según requisitos; no garantías por patrón. |
+| D8 migración | Cambio de formato con clientes antiguos y nuevas escrituras | Plan de transición y recuperación de datos, punto sin retorno; no confundir rollback Git con reversión de datos ni ejecutar sin permiso. |
+| D9 evidencia insuficiente | API/hardware/licencia o rendimiento decisivos sin verificar | Recomendación condicionada y prueba focalizada; no inventar soporte, benchmark ni coste. |
+| D10 registro | Decisión anterior implementada que debe sustituirse | Nueva decisión enlazada, consecuencias/estado reales; preservar historial. |
+| D11 futuro hipotético | Posible crecimiento sin carga ni requisito de escalado | Solución suficiente, señal de revisión; no introducir capas, colas o microservicios preventivos. |
+| D12 revisión | Diseño material con límites de confianza/consistencia y especialistas | Entregar criterios, interfaces estables, riesgos y evidencia al contraste independiente; no declarar aceptación por propuesta. |
+
+Puerta: D5/D7–D10/D12 sin violación de invariantes, falsas capacidades, efectos no autorizados ni aceptación falsa; D1/D2/D11 sin complejidad injustificada; D3/D4/D6 elecciones contextuales y límites comprobables. No exigir un patrón o número fijo de alternativas como PASS. D9 puede concluir BLOCKED si falta evidencia material. Evaluaciones de intención y coordinación anteriores se conservan; no duplicarlas por rutina. Revisión independiente pendiente.
