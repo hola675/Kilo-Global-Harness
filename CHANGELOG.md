@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.41.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.42.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -154,3 +154,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — refinamiento Nexo
 - Investigación: siete archivos de cuatro repositorios fijados y cuatro fuentes técnicas consultadas selectivamente; registro compartido actualizado.
 - Equipo: Nexo v0.2.0 refuerza dominio, contratos, seguridad aplicada, concurrencia, resiliencia y pruebas de efectos; permisos intactos. N1–N5 preparados, runtime NOT_RUN. Sin instalación, dependencias ni cambios a otros agentes.
+
+## 2026-11-24 — refinamiento Prisma
+- Investigación: seis archivos de tres repositorios fijados y cuatro páginas técnicas consultadas selectivamente; una ruta adicional 404 excluida.
+- Equipo: Prisma v0.2.0 refuerza modelado, integridad, migraciones, rendimiento, recuperación y sincronización; permisos intactos. P1–P5 preparados, runtime NOT_RUN. Sin instalación, dependencias ni cambios a otros agentes.
