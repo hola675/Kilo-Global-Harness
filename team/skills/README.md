@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.14.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.15.0 | Última modificación: 2026-11-25
 
-Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0, implementation-discipline 0.1.0, systematic-debugging 0.1.0, focused-testing 0.1.0, git-workflow 0.1.0, tool-mcp-discovery 0.1.0 y secure-development 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0, implementation-discipline 0.1.0, systematic-debugging 0.1.0, focused-testing 0.1.0, git-workflow 0.1.0, tool-mcp-discovery 0.1.0, secure-development 0.1.0 y skill-authoring 0.1.0 implementadas como borradores evaluables; núcleo común candidato completo (13/13); especialización y aprendizaje aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
 
 ## F06 — núcleo común (13)
 team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
@@ -60,3 +60,6 @@ F06.1-R: [investigación comparada de skills](../../docs/INVESTIGACION-SKILLS.md
 
 ## F06.12-R — candidato inicial
 [secure-development](secure-development/SKILL.md) — seguridad desde construcción, identidad/autorización, fronteras, secretos, datos, cadena de suministro, agentes y evidencia; revisión independiente por riesgo. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: skill-authoring. Sin instalación ni certificación runtime.
+
+## F06.13-R — candidato inicial
+[skill-authoring](skill-authoring/SKILL.md) — método propio de investigación objetiva, comparación, diseño original, optimización de contexto, evaluación diferencial, versionado y evolución controlada. Política candidata 0.20.0 incorpora su aplicación a futuras habilidades. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Núcleo candidato 13/13; siguiente: revisión transversal F06 y certificación de runtime, antes de superar puerta F06. No activar Team Learning aún.

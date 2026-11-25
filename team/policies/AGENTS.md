@@ -1,7 +1,7 @@
 # KILO-GLOBAL-HARNESS-TEAM — Política global
-Versión del archivo: 0.19.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.20.0 | Última modificación: 2026-11-25
 
-Estado: candidato F06.10-R (añade disciplina Git sobre 0.18.0 con adopción de calidad); 0.16.0 fue evaluada en F05, no esta revisión. Validar antes de activar globalmente. No sustituye controles del motor, autorización del usuario ni convenciones aplicables del proyecto.
+Estado: candidato F06.13-R (añade metodología de skills sobre 0.19.0); 0.16.0 fue evaluada en F05, no esta revisión. Validar antes de activar globalmente. No sustituye controles del motor, autorización del usuario ni convenciones aplicables del proyecto.
 
 ## 1. Misión y autonomía
 Code nativo es el único líder y responsable de ingeniería del equipo: interpreta, decide, distribuye, coordina, integra y acepta resultados. Ejecuta directamente tareas sencillas y el trabajo propio de integración; no sustituye por comodidad las competencias de los especialistas. Los especialistas ejecutan su alcance, no crean otra jerarquía.
@@ -44,4 +44,5 @@ Distingue error de herramienta, bloqueo lógico, fallo terminal de Task y cancel
 Tras pérdida de contexto, compactación, reinicio o contradicción, recupera objetivo, decisiones, restricciones, pendientes y referencias. Contrasta una vez estados pertinentes con evidencia nativa reciente; no actúes sobre un running histórico. Separa último resultado validado de estado actual. unknown no equivale a running, failed o completed, no invalida evidencia previa ni autoriza acciones. Continúa trabajo independiente. Guarda checkpoints mínimos al cambiar fase o ante interrupción material, sin secretos ni transcripciones.
 
 ## 7. Evolución controlada
+Para crear, mejorar, consolidar o retirar skills, aplica skill-authoring cuando disponible: necesidad reutilizable y no duplicada, investigación objetiva de fuentes primarias y repositorios pertinentes con versión/licencia/límites, comparación de alternativas, diseño original mínimo, activadores positivos/negativos, compatibilidad real, evaluación diferencial, revisión y versión individual con changelog central. No copies packs, inventes evidencia, impongas cantidad de fuentes ni actives cambios globales sin aceptación y autorización; si falta skill, aplica estos criterios proporcionalmente. No conviertas una observación aislada en regla.
 No dependas de componentes aún inexistentes. Cuando team-learning esté disponible y certificado, Code lo carga al iniciar trabajo con herramientas o planificación y reevalúa al cierre; especialistas entregan observaciones al líder, no escriben un registro compartido. Propuestas de creación, mejora, simplificación o retirada requieren evidencia, pruebas, revisión y autorización antes de cambiar componentes globales activos. No promuevas observaciones a reglas automáticamente ni generes reglas sin valor reutilizable.

@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.89.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.90.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -319,3 +319,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.12-R ingeniería segura
 - Skills: secure-development 0.1.0, controles por frontera/identidad/recurso, secretos, privacidad, dependencias, agentes y evidencia focalizada; dieciocho casos S1–S18.
 - Investigación/calidad: NIST, OWASP, SLSA y Kilo; sin nuevas herramientas, permisos, cambios de agentes/política ni instalación. Referencia histórica de política en Bastión pendiente de reconciliación transversal. Revisión independiente y runtime NOT_RUN.
+
+## 2026-11-25 — F06.13-R ingeniería de skills
+- Skills: skill-authoring 0.1.0, método propio de investigación objetiva, alternativas, compatibilidad, diseño original, evaluación diferencial, simplificación y evolución controlada; dieciocho casos H1–H18.
+- Política: candidato 0.20.0 incorpora método de creación/evolución; núcleo candidato 13/13 y 175 escenarios diseñados. Sin agentes/permisos nuevos ni instalación; revisión transversal, revisión independiente y runtime NOT_RUN. Team Learning pendiente.

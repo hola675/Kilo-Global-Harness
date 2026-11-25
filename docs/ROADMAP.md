@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.89.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.90.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -342,3 +342,6 @@ Candidato tool-mcp-discovery 0.1.0, dieciséis casos M1–M16; once de trece ski
 
 ## F06.12-R — ingeniería segura (2026-11-25)
 Candidato secure-development 0.1.0 y dieciocho casos S1–S18; doce de trece skills base con candidato. Contraste NIST SSDF 1.1 (1.2 borrador), OWASP ASVS 5.0.0, Cheat Sheets, Agentic/LLM 2026, SLSA 1.1 y Kilo; controles de construcción, mínimo privilegio, datos, cadena de suministro y revisión independiente. Política 0.19.0, agentes, permisos y configuración intactos. Registrar reconciliación de referencia 0.16.0 de Bastión antes de activación. Runtime NOT_RUN, revisión independiente pendiente; F06 IN_PROGRESS. Próxima: skill-authoring.
+
+## F06.13-R — ingeniería de skills (2026-11-25)
+Candidato skill-authoring 0.1.0 y dieciocho casos H1–H18; trece de trece skills base con candidato, 175 escenarios diseñados. Metodología propia de investigación objetiva, contraste de alternativas, diseño original, activación discriminante, evaluación diferencial y evolución controlada. Política candidata 0.20.0 añade método para futuras skills; sin cambios de agentes/permisos, nuevas dependencias ni instalación. F06 IN_PROGRESS: siguiente revisión transversal de coherencia, reconciliación de referencias históricas y evaluación runtime/revisión independiente antes de superar puerta. F07/F08/F11 no desbloqueadas por mero diseño.
