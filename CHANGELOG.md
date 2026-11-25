@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.46.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.47.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -175,3 +175,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-24 — refinamiento Bastión
 - Investigación: cinco archivos de dos repositorios fijados y referencias oficiales de seguridad y escáneres consultadas selectivamente; dos rutas 404 excluidas.
 - Equipo: Bastión v0.2.0 refuerza amenazas, autorización, MCP, secretos, suministro y verificación defensiva focalizada; permisos intactos. B1–B5 preparados, runtime/benchmark NOT_RUN. Política 0.16.0 intacta; sin instalación, dependencias ni cambios a otros agentes.
+
+## 2026-11-24 — refinamiento Ágora y cierre de diseño individual
+- Investigación: seis archivos de tres repositorios fijados, extractos de W3C, GOV.UK, Google y Diátaxis; una ruta 404 excluida.
+- Equipo: Ágora v0.2.0 refuerza UX writing, documentación, claridad, significado, localización y contenido; permisos intactos. G1–G5 preparados. Nueve candidatos v0.2.0; F05.2-R DONE_DOC, F05 IN_PROGRESS, F05.3 siguiente. Runtime y comprensión con usuarios NOT_RUN. Política 0.16.0 intacta; sin instalación, dependencias ni cambios a otros agentes.
