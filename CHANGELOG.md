@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.45.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.46.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -171,3 +171,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 - Investigación: seis archivos de tres repositorios fijados y documentación de motores consultada selectivamente; sin benchmark local.
 - Equipo: Veritas v0.2.0 refuerza revisión independiente, selección por riesgo, mantenimiento y evidencia; permisos intactos. V1–V5 preparados.
 - Política/calidad: candidata global 0.16.0 y estrategia 0.6.0 consolidan reutilización, sustitución equivalente, selección progresiva y evaluación de motores. F04 histórico conserva guardia 0.15.0; F05 valida nuevo candidato. Runtime/benchmark NOT_RUN. Sin instalación, dependencias ni cambios a otros agentes.
+
+## 2026-11-24 — refinamiento Bastión
+- Investigación: cinco archivos de dos repositorios fijados y referencias oficiales de seguridad y escáneres consultadas selectivamente; dos rutas 404 excluidas.
+- Equipo: Bastión v0.2.0 refuerza amenazas, autorización, MCP, secretos, suministro y verificación defensiva focalizada; permisos intactos. B1–B5 preparados, runtime/benchmark NOT_RUN. Política 0.16.0 intacta; sin instalación, dependencias ni cambios a otros agentes.
