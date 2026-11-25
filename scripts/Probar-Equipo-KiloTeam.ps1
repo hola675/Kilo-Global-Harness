@@ -1,7 +1,7 @@
 # KILO-GLOBAL-HARNESS-TEAM
 # Version: 0.3.0
 # Fecha: 2026-11-24
-# F05.3/F05.4: laboratorio temporal de proyecto y fixture editorial. No es instalador global.
+# F05.3/F05.4: laboratorio temporal y extensiones editorial/desarrollo. No es instalador global.
 # Exit 0: operacion completada en su alcance; 1: bloqueo/error.
 [CmdletBinding()]
 param(
@@ -352,99 +352,7 @@ try {
             Write-Host 'PASS_F05_INTEGRIDAD_DESARROLLO; codigo no ejecutado ni aceptado.'
             exit 0
         }
-        if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada -or $HuellaAprobada -cnotmatch '^[0-9A-F]{64}
-        if (@($Results.Values | Where-Object { $_ -cne 'MATCH' }).Count -ne 0) { throw 'Baseline original incompleto o cambiado; preservar.' }
-        if ($ComprobarMarcador) { throw 'No repetir marcador en fase editorial.' }
-        $Results.GetEnumerator() | Format-Table Key,Value -AutoSize
-        if ($Modo -eq 'PrepararEdicion') {
-            if (-not $ConfirmarKiloCerrado -or -not $ConfirmarPrueba) { throw 'Requiere autorizacion de prueba y cierre de Kilo.' }
-            Assert-Absent $Root 'editing-ownership.json'
-            Assert-Absent $Workspace 'messages-f05.json'
-            $E = [ordered]@{ id='kilo-team-f05-editorial-v1'; parentHash=$StateHash; relativePath='messages-f05.json'; owner='team-editorial'; baseline=(Get-EditBaselineHash) }
-            Write-New $EditStateFile ([Text.Encoding]::UTF8.GetBytes(($E | ConvertTo-Json -Depth 3)))
-            Write-New $EditFixture ([Text.Encoding]::UTF8.GetBytes((Get-EditFixture) + "`n"))
-            Assert-Tree -PermitirAuxiliar -PermitirEdicion
-            $null = Get-EditState $StateHash
-            if ((Get-EditStatus) -cne 'BASELINE' -or (Get-Hash $StateFile) -cne $StateHash) { throw 'Preparacion editorial incompleta.' }
-            foreach ($Rel in $RelativeFiles) {
-                if ((Get-Status (Join-Path $Workspace $Rel) $State.files[$Rel]) -cne 'MATCH') { throw "Baseline cambiado: $Rel" }
-            }
-            Write-Host 'messages-f05.json: BASELINE; propietario: team-editorial'
-            Write-Host 'PASS_F05_EDICION_PREPARADA; runtime NOT_RUN.'
-            exit 0
-        }
-        $EditStateHash = Get-Hash $EditStateFile
-        $null = Get-EditState $StateHash
-        $EditStatus = Get-EditStatus
-        Write-Host "messages-f05.json: $EditStatus"
-        if ($Modo -eq 'VerificarEdicion') {
-            if ($EditStatus -cne 'EXPECTED_EDIT') { throw 'Edicion esperada no realizada.' }
-            if ((Get-Hash $EditStateFile) -cne $EditStateHash -or (Get-Hash $StateFile) -cne $StateHash) { throw 'Registro cambiado.' }
-            Write-Host 'PASS_F05_EDICION_VERIFICADA; no acredita autor, herramientas ni permisos.'
-            exit 0
-        }
-        if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada) { throw 'Requiere cierre y retirada editorial autorizada.' }
-        $EditHash = Get-Hash $EditFixture
-        if ((Get-EditStatus) -cne $EditStatus -or (Get-Hash $EditFixture) -cne $EditHash -or
-            (Get-Hash $EditStateFile) -cne $EditStateHash -or (Get-Hash $StateFile) -cne $StateHash) { throw 'Estado editorial cambiado; preservar.' }
-        Remove-Item -LiteralPath $EditFixture -ErrorAction Stop
-        if ((Get-Hash $EditStateFile) -cne $EditStateHash) { throw 'Registro editorial cambiado; preservar.' }
-        Remove-Item -LiteralPath $EditStateFile -ErrorAction Stop
-        Assert-Tree -PermitirAuxiliar
-        Write-Host 'F05_EDICION_RETIRADA; baseline original conservado.'
-        exit 0
-    }
-
-    if ($Modo -in @('Diagnostico','Verificar')) {
-        $Results.GetEnumerator() | Format-Table Key,Value -AutoSize
-        $Complete = @($Results.Values | Where-Object { $_ -cne 'MATCH' }).Count -eq 0
-        $MarkerStatus = 'NOT_RUN'
-        if ($Modo -eq 'Verificar' -and $ComprobarMarcador) {
-            $Received = Read-Host 'Marcador devuelto por Code (no compartirlo en Git ni chat externo)'
-            $MarkerStatus = if ($Received -ceq $State.marker) { 'MATCH' } else { 'MISMATCH' }
-        }
-        Write-Host "Workspace: $Workspace"
-        Write-Host "Auxiliar .kilo/.gitignore: $AuxiliaryStatus (no incluido en propiedad)"
-        Write-Host "Integridad: $(if ($Complete) {'MATCH'} else {'INCOMPLETE_OR_DRIFT'}); Marcador: $MarkerStatus"
-        if (-not $Complete -or $MarkerStatus -eq 'MISMATCH') { throw 'Verificacion incompleta o deriva.' }
-        if ($MarkerStatus -eq 'MATCH') { Write-Host 'PASS_LOAD_REPORTED (no certifica descubrimiento ni permisos).' }
-        else { Write-Host 'PASS_INTEGRIDAD_LOCAL; runtime NOT_RUN por el script.' }
-        exit 0
-    }
-
-    if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada) { throw 'Requiere confirmacion de cierre y retirada.' }
-    if (@($Results.Values | Where-Object { $_ -eq 'DRIFT' }).Count -ne 0) { throw 'Deriva: conservar registro y archivos, revisar.' }
-    if ((Get-Hash $StateFile) -cne $StateHash) { throw 'Registro cambiado.' }
-    # No iniciar retirada parcial por un auxiliar sin consentimiento.
-    if ($AuxiliaryStatus -eq 'MATCH_TEMPLATE') {
-        if (-not $ConfirmarRetiradaAuxiliar) { throw 'Auxiliar no propio presente; requiere ConfirmarRetiradaAuxiliar para retirar la plantilla conocida.' }
-        $AuxiliaryHash = Get-Hash $AuxiliaryFile
-        if ((Get-AuxiliaryStatus) -cne 'MATCH_TEMPLATE' -or (Get-Hash $AuxiliaryFile) -cne $AuxiliaryHash) { throw 'Auxiliar cambiado; preservar.' }
-        Remove-Item -LiteralPath $AuxiliaryFile -ErrorAction Stop
-    }
-    Assert-Tree
-    foreach ($Rel in $RelativeFiles) {
-        $Path = Join-Path $Workspace $Rel
-        if (Test-Path -LiteralPath $Path) {
-            if ((Get-Hash $Path) -cne $State.files[$Rel]) { throw "Archivo cambiado: $Rel" }
-            Remove-Item -LiteralPath $Path -ErrorAction Stop
-        }
-    }
-    # Sin borrado recursivo: un directorio no vacio detiene retirada.
-    foreach ($Dir in @((Join-Path $Workspace '.kilo\agents'),(Join-Path $Workspace '.kilo'),$Workspace)) {
-        if (Test-Path -LiteralPath $Dir) { Assert-Directory $Dir; [IO.Directory]::Delete($Dir,$false) }
-    }
-    Assert-Tree
-    if ((Get-Hash $StateFile) -cne $StateHash) { throw 'Registro cambiado.' }
-    Remove-Item -LiteralPath $StateFile -ErrorAction Stop
-    [IO.Directory]::Delete($Root,$false)
-    Write-Host 'F05_RETIRADO: archivos propios y directorios vacios retirados.'
-    exit 0
-} catch {
-    Write-Error -Message ("F05_BLOCKED: " + $_.Exception.Message) -ErrorAction Continue
-    exit 1
-}
- -or
+        if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada -or $HuellaAprobada -cnotmatch '^[0-9A-F]{64}$' -or
             $HuellaAprobada -cne $Snap.digest) { throw 'Requiere cierre, retirada y huella exacta revisada; preservar.' }
         Assert-Tree -PermitirAuxiliar -PermitirDesarrollo
         $Again = Get-DevSnapshot $StateHash $DevStateHash $D
