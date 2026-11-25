@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.60.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.61.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -218,3 +218,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — construcción F05-C-DEV
 - Pruebas: cuatro implementaciones y despacho concurrente PASS_REPORTADO; integridad de catorce protegidos y cuatro cambios reportada PASS. Revisión Veritas/Bastión sin ejecución siguiente; observación de notificaciones redundantes para fase posterior. F05.4 IN_PROGRESS; sin cambios de código, agentes, política ni instalación.
+
+## 2026-11-24 — revisiones F05-C-DEV-R
+- Pruebas: Veritas y Bastión completados, revisión estática reportada sin bloqueantes de código; huella posterior estable. Nueve especialistas con primera tarea devuelta. Puerta de ejecución pendiente de procedencia Node, contraste de fuentes y autorización explícita. Sin cambios de código, agentes, política o instalación.

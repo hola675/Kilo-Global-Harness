@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.60.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.61.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -255,3 +255,6 @@ Operador reporta parser 0.3.0 PASS, Node v26.12.1, SQLite en memoria ok:1, doce 
 
 ## F05-C-DEV — construcción e integridad positivas; revisión siguiente
 Cuatro Task reportadas en llamada paralela, running y completed; 134s proceso frente a 237s suma de duraciones individuales (no benchmark ni intervalos independientes). Prisma/Nexo/Lumen/Forja implementan archivos propios, lectura/edición/lectura reportadas; verificador devuelve doce MATCH, dos BASELINE, cuatro CHANGED_UNREVIEWED y PASS_F05_INTEGRIDAD_DESARROLLO. Integridad PASS dentro de alcance, no aceptación de código. F05.4 IN_PROGRESS: F05-C-DEV-R revisión estática independiente por Veritas/Bastión, sin ejecución o mutación; conservar huella y verificar estabilidad antes de autorización posterior. Observación candidata F07/F11: evitar mensajes duplicados de finalización, sin cambiar política aún. Routing autónomo, permisos negativos y pruebas funcionales pendientes.
+
+## F05-C-DEV-R — revisiones completadas y puerta de ejecución pendiente
+Nueve especialistas con al menos una tarea devuelta. Veritas/Bastión revisiones estáticas independientes reportadas, sin bloqueantes de código, huella posterior idéntica y PASS_F05_INTEGRIDAD_DESARROLLO. Riesgos residuales: procedencia de Node por PATH requiere verificación previa, acceso directo al almacén fuera de contrato y límites de entradas; brechas de cobertura de rechazo/reutilización de clave y DOM. No ampliar alcance ni declarar certificación dinámica. Siguiente F05-C-DEV-E: diagnóstico de solo lectura del ejecutable y revisión de cuatro fuentes completas antes de autorización explícita del operador; no ejecutar aún. F05.4 IN_PROGRESS, permisos negativos y suite NOT_RUN.
