@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.63.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.64.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -227,3 +227,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — aceptación F05-C-DEV-E
 - Pruebas: ejecución autorizada reportada 6/6 PASS, salida 0 y huella previa/posterior intacta. PoC funcional aceptado en su alcance; siguiente comprobación focalizada de ask/deny sin mutación. Sin cambios de código, agentes, política ni instalación.
+
+## 2026-11-24 — F05-C-PERM-01
+- Pruebas: solicitud ask y rechazo reportados PASS; Veritas BLOCKED sin ejecución, como se esperaba. Siguiente aprobación única en nueva Task. Sin cambios de código, permisos, agentes ni instalación.
