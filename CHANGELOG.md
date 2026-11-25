@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.78.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.79.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -275,3 +275,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.1-R
 - Investigación: patrones de selección y coordinación de seis fuentes primarias; decisiones y referencias fijadas en INVESTIGACION-SKILLS.md.
 - Skills: team-routing 0.2.0, selección por cohesión, competencias, coste y readiness; matriz R1–R9, sin cambios de política ni permisos. Runtime NOT_RUN.
+
+## 2026-11-25 — F06.2-R contrato de tarea
+- Equipo/skills: candidato team-task-contract 0.1.0, entrada proporcional, autonomía acotada y handoff con evidencia; sin nuevo protocolo ni cambios de política, agentes o motor.
+- Investigación/calidad: fuentes contrastadas y diez casos focalizados; revisión independiente y runtime NOT_RUN; F06 continúa abierta, sin instalación ni release.

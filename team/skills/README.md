@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.3.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.4.0 | Última modificación: 2026-11-25
 
-Catálogo candidato: team-routing 0.2.0 implementada como borrador evaluable; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Catálogo candidato: team-routing 0.2.0 y team-task-contract 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
 
 ## F06 — núcleo común (13)
 team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
@@ -27,3 +27,6 @@ Agent Skills spec (agentskills.io), Anthropic skill-creator y mcp-builder, Super
 [team-routing](team-routing/SKILL.md) — selección proporcional y dependencias de decisión, sin orquestador propio. [Evaluación](../../tests/F06-SKILLS.md). Separar de team-task-contract (entradas y handoff) y team-coordination (ejecución y recuperación) para evitar duplicaciones. No incorporar scripts ni preaprobaciones de herramientas.
 
 F06.1-R: [investigación comparada de skills](../../docs/INVESTIGACION-SKILLS.md). Cada candidato conserva fuente fijada, licencia cuando verificable, decisiones de adopción/descarte y pruebas comparables. Routing 0.2.0 incorpora cohesión, competencia, coste y preparación; sin incorporar motor externo.
+
+## F06.2-R — candidato inicial
+[team-task-contract](team-task-contract/SKILL.md) — contexto suficiente, contrato proporcional, autonomía reversible, propiedad de archivos y handoff verificable; usa contrato lógico existente, no un esquema nuevo. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: team-coordination. Sin instalación ni runtime certificado.

@@ -1,5 +1,5 @@
 # Investigación comparada de skills propias
-Versión del archivo: 0.1.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.2.0 | Última modificación: 2026-11-25
 
 ## F06.1-R — team-routing
 Objetivo: mejorar selección proporcional y evitar el bloqueo de revisión observado en F05-B-R sin reconstruir Task ni cambiar modelo. Consulta web y lectura selectiva de archivos fijados en GitHub el 2026-11-25. No se ejecutaron harness externos; no es ranking de popularidad, auditoría integral, benchmark ni prueba de superioridad.
@@ -15,3 +15,15 @@ Objetivo: mejorar selección proporcional y evitar el bloqueo de revisión obser
 
 ## Síntesis y criterio de aceptación
 Versión 0.2.0: decisión por cohesión, competencia, coste cualitativo, riesgo y preparación de entradas. Contrastes semánticos para nueve roles, no obligación de convocarlos. Separación: routing decide reparto; task-contract especificará handoff; coordination ejecutará dependencias y recuperación. La política conserva autoridad. Alternativas: ampliar política global (coste recurrente de contexto), adoptar orquestador externo (duplicación del motor), mantener candidato anterior (no discrimina suficientes fronteras ni coste). Elegir skill nativa bajo demanda y comparar con política sola en F06. Si no mejora o induce sobredelegación, simplificar/revertir candidato. Sin material externo copiado ni licencia ajena incorporada. No se atribuye licencia propia sin decisión del propietario.
+
+## F06.2-R — team-task-contract
+Consulta selectiva el 2026-11-25; contraste con team/contracts/README.md 0.4.0 y política 0.17.0. No ejecutar otros harness ni incorporar sus prompts/código. El contrato lógico existente es fuente normativa; no crear un segundo protocolo o esquema de Task.
+
+| Fuente | Patrón observado | Adaptación y descarte |
+|---|---|---|
+| [Superpowers: implementer-prompt](https://github.com/obra/superpowers/blob/22f0b463e7a5e579904dd6211a520321035526f7/skills/subagent-driven-development/implementer-prompt.md), revisión fijada, MIT según LICENSE verificado en F06.1-R | Contexto específico, límites, revisión propia, retorno y escalamiento explícito. | Retorno nativo proporcional, no exigir archivo de informe, commit por hijo, suite completa siempre, cambio de modelo ni revisión por cada ajuste. |
+| [Anthropic: multi-agent research system](https://www.anthropic.com/research/multi-agent-research-system), artículo consultado 2026-11-25 | Delegación con objetivo, límites, herramientas y formato de resultado; información insuficiente genera duplicación y omisiones. | Contrato mínimo suficiente, referencias accesibles, aceptación observable; no extrapolar métricas ni usar su arquitectura como dependencia. |
+| [OpenAI Agents SDK: agents as tools](https://openai.github.io/openai-agents-python/tools/#agents-as-tools), documentación consultada 2026-11-25 | Líder conserva control, parámetros estructurados y extracción/validación de retorno. | Campos lógicos en prompt; no integrar SDK, Pydantic, filtros de runtime ni transferir autoridad. Uso conceptual de documentación, sin código copiado; licencia del SDK no verificada en esta fase. |
+| [Kilo Task](https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/tool/task.ts), revisión fijada, MIT según auditoría previa; [subagentes](https://kilo.ai/docs/customize/custom-subagents), documentación consultada 2026-11-25 | Schema de Task contiene prompt y selección de hijo; sesión hija con permisos derivados, question deshabilitada, retorno terminal diferenciado; control de parentesco al reanudar. | Contexto transferido explícitamente; alcance no equivale a permiso ni lock, escalar dudas por retorno a Code. No inventar argumentos, ni inferir aislamiento de archivos, ni cambiar modelo. |
+
+Decisión: dos presentaciones proporcionales de un mismo contrato lógico (compacta/ampliada), con verificación de entradas y revisión/base, autonomía reversible y handoff comprobable. No exigir formatos rígidos cuando el objetivo se puede expresar de forma breve; no recortar garantías materiales por ahorrar texto. Se mantiene la política y el contrato 0.4.0 sin modificación. Se descartó un schema/runtime nuevo por duplicación de Task y ausencia de brecha demostrada. Candidato inicial 0.1.0; revisión independiente y runtime NOT_RUN. La comparación debe medir criterios cumplidos, contexto innecesario, aclaraciones, retrabajo, alcance y falsas aceptaciones frente a política sola; no medir utilidad por longitud de prompt.
