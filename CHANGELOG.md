@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.66.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.67.0 | Última modificación: 2026-11-24
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -236,3 +236,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-24 — F05-C-PERM-D1
 - Pruebas: mismo rol y nuevas hijas reportados, fallo de aprobación reproducido; procedencia no disponible, causa desconocida. Fuentes de composición/configuración contrastadas; siguiente inventario local sanitizado D2, sin mutación. Permisos BLOCKED, sin cambios de código o instalación.
+
+## 2026-11-24 — F05-C-PERM-D2
+- Pruebas: modo Manual actual, regla global echo * allow e integridad reportados. Causa probable no demostrada; siguiente sonda fuera de patrón en chat nuevo, sin cambios de permisos ni instalación.
