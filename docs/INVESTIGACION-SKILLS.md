@@ -1,5 +1,5 @@
 # Investigación comparada de skills propias
-Versión del archivo: 0.10.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.11.0 | Última modificación: 2026-11-25
 
 ## F06.1-R — team-routing
 Objetivo: mejorar selección proporcional y evitar el bloqueo de revisión observado en F05-B-R sin reconstruir Task ni cambiar modelo. Consulta web y lectura selectiva de archivos fijados en GitHub el 2026-11-25. No se ejecutaron harness externos; no es ranking de popularidad, auditoría integral, benchmark ni prueba de superioridad.
@@ -136,3 +136,17 @@ Consulta 2026-11-25; contraste con política 0.18.0, contrato de tareas, coordin
 | [GitHub: required checks](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/troubleshooting-required-status-checks), documentación consultada | Checks de revisión exigida y reglas de protección. | Comprobar revisión vigente, no reemplazar CI por evidencia histórica o marcador; no modificar protección. |
 
 Licencias de documentación externa no verificadas individualmente en esta fase; adaptación conceptual sin copiar código o plantillas. Decisión: límite de ramas propias condicionado a reglas del proyecto, consolidación previa, actualización condicional cuando disponible, preservación de trabajo/índice y continuidad de marcador por evidencia. Política candidata 0.19.0 con disparador Git; no alterar agentes, permisos, protección ni ramas históricas. Runtime y revisión independiente pendientes.
+
+## F06.11-R — tool-mcp-discovery
+Consulta 2026-11-25; contraste de política 0.19.0, contrato 0.4.0, estrategia integration/mcp 0.2.0 y fuentes fijadas de Kilo. Diseño de selección semántica por agente/sesión, sin reconstruir inventario ni gateway.
+
+| Fuente | Patrón observado | Adaptación propia |
+|---|---|---|
+| [Kilo Tool Registry](https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/tool/registry.ts#L365-L445), revisión fijada MIT según auditoría | Selección edit/apply_patch, disponibilidad/modelo, catálogo Code Mode condicionado a configuración/red y permisos combinados. | Resolver capacidad y schema actuales; no asumir execute ni nombres fijos; distinguir exposición y autorización. |
+| [Kilo Session Tools](https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/session/tools.ts#L470-L565) y [subagent permissions](https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/agent/subagent-permissions.ts), misma revisión | Invocación MCP con ctx.ask, controles de red, salida truncada; reglas de sesión padre seleccionadas, restricciones del hijo. | No herencia total ni visibilidad como permiso; comprobar efecto, no eludir deny por otro mecanismo/rol. |
+| [Kilo MCP](https://github.com/Kilo-Org/kilocode/blob/03a6f07d053cd7e6aa88fa1e258e93510335259f/packages/opencode/src/mcp/index.ts), revisión fijada | connected/disabled/failed/needs_auth/needs_client_registration; catálogo cacheado y actualización list changed; puede faltar catálogo de conectado. | Separar dimensiones y revalidar por cambios materiales; sin polling, sin OAuth/reinstalación por rutina. |
+| [Desktop agent tools](https://github.com/Kilo-Org/kilo-desktop/blob/0e86bc8c350b5ee2009bbb8d4722c955355bbe10/docs/agent-tools.md), revisión fijada | Gateway interno y apps externas opt-in, nombres sanitizados, contexto de llamada, aprobación diferenciada. | Usar interfaz expuesta, respetar sesión/propiedad y no acceder a tokens/endpoints internos ni confundir plugins. |
+| [Kilo MCP](https://kilo.ai/docs/automate/mcp/using-in-kilo-code), [Agent Permissions](https://kilo.ai/docs/customize/agent-permissions), documentación consultada | allow/ask/deny y configuración; capacidades varían por versión y rol. | Verificar permiso y efecto reales; no inferir configuración activa por documentación actual. |
+| [MCP TypeScript SDK](https://ts.sdk.modelcontextprotocol.io/v2/clients/calling), [MCP tool annotations](https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/), documentación consultada | Listar/llamar herramientas, recursos y prompts distintos; anotaciones informativas y no confiables por defecto. | Descubrimiento focalizado, contrato y autorización independientes; no imponer protocolo/SDK de versión distinta al host ni asumir readOnly/idempotencia. |
+
+Licencias documentales externas no verificadas individualmente; uso conceptual y referencias, sin incorporar código ni instalar SDK. Inspección selectiva de snapshots, no certificación del binario instalado ni de todos los MCP. Decisión: capacidad semántica, prioridad nativa suficiente, selección por seguridad/fidelidad/coste, evidencia por contexto, alternativas sin eludir controles y ampliación condicionada. Se conserva política 0.19.0 porque ya regula capacidades y permisos; no modificar agentes, permisos ni configuración. F09/F10 permanecen pendientes.

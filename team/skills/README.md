@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.12.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.13.0 | Última modificación: 2026-11-25
 
-Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0, implementation-discipline 0.1.0, systematic-debugging 0.1.0, focused-testing 0.1.0 y git-workflow 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
+Catálogo candidato: team-routing 0.2.0, team-task-contract 0.1.0, team-coordination 0.1.0, team-context-recovery 0.1.0, requirements-acceptance 0.1.0, architecture-decisions 0.1.0, implementation-discipline 0.1.0, systematic-debugging 0.1.0, focused-testing 0.1.0, git-workflow 0.1.0 y tool-mcp-discovery 0.1.0 implementadas como borradores evaluables; las demás aún por desarrollar, sin instalación ni certificación de runtime. Diseño original basado en investigación y fuentes oficiales actualizadas durante cada fase. No clonar packs masivos.
 
 ## F06 — núcleo común (13)
 team-routing, team-task-contract, team-coordination, team-context-recovery, requirements-acceptance, architecture-decisions, implementation-discipline, systematic-debugging, focused-testing, git-workflow, tool-mcp-discovery, secure-development, skill-authoring.
@@ -54,3 +54,6 @@ F06.1-R: [investigación comparada de skills](../../docs/INVESTIGACION-SKILLS.md
 
 ## F06.10-R — candidato inicial
 [git-workflow](git-workflow/SKILL.md) — mínima divergencia, protección de cambios/índice, integración por evidencia, consolidación y continuidad del marcador. Política candidata 0.19.0 con regla de ramas propias; sin nuevas ramas ni retirada histórica. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: tool-mcp-discovery.
+
+## F06.11-R — candidato inicial
+[tool-mcp-discovery](tool-mcp-discovery/SKILL.md) — selección por capacidad efectiva, herramientas nativas/locales/Desktop/MCP, autorización, evidencia contextual y brechas; sin catálogo persistente ni ampliación automática. [Investigación](../../docs/INVESTIGACION-SKILLS.md) y [evaluación](../../tests/F06-SKILLS.md). Próxima: secure-development. F09/F10 pendientes.

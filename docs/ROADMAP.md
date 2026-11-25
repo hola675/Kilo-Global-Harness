@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.87.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.88.0 | Última modificación: 2026-11-25
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -336,3 +336,6 @@ Candidato focused-testing 0.1.0 y referencia de marcador 0.1.0/schema 1; diecioc
 
 ## F06.10-R — disciplina Git (2026-11-25)
 Candidato git-workflow 0.1.0, catorce casos G1–G14; diez de trece skills base con candidato. Política candidata 0.19.0 añade regla de ramas propias, consolidación, escritor de índice/refs y revisión vigente. Inventario remoto 46 ramas; sin crear o retirar ramas, sin merge, cambios de agentes/permisos ni dependencias. Evaluación de regresión de política y runtime NOT_RUN, revisión independiente pendiente; F06 IN_PROGRESS. Próxima: tool-mcp-discovery.
+
+## F06.11-R — descubrimiento de herramientas y MCP (2026-11-25)
+Candidato tool-mcp-discovery 0.1.0, dieciséis casos M1–M16; once de trece skills base con candidato. Contraste Kilo CLI/Desktop fijados y documentación MCP, selección semántica, exposición/autorización/efecto, Code Mode condicionado, datos mínimos y brechas. Política 0.19.0, agentes, permisos y configuración intactos. Sin nuevas herramientas ni inventario persistente. Revisión independiente y runtime NOT_RUN; F06 IN_PROGRESS, F09/F10 pendientes. Próxima: secure-development.

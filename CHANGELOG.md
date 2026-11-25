@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.87.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.88.0 | Última modificación: 2026-11-25
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -311,3 +311,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-25 — F06.10-R disciplina Git
 - Skills: git-workflow 0.1.0, ramas mínimas, preservación de índice/worktree, integración verificable, consolidación y continuidad quality-baseline; catorce casos G1–G14.
 - Política: 0.19.0 candidata, máximo tres ramas propias incluyendo principal, tercera excepcional y consolidación previa; sin modificar agentes, permisos o protección. No se retiraron ramas históricas ni se integró PR. Revisión independiente y runtime NOT_RUN.
+
+## 2026-11-25 — F06.11-R descubrimiento de herramientas y MCP
+- Skills: tool-mcp-discovery 0.1.0, capacidades efectivas por agente/sesión, selección autorizada y no redundante, invocación, fallbacks y brecha demostrada; dieciséis casos M1–M16.
+- Investigación/calidad: fuentes CLI/Desktop fijadas y documentación MCP; sin nuevas dependencias, inventario persistente, cambios de agentes/política/permisos ni instalación. F09/F10 pendientes; revisión independiente y runtime NOT_RUN.
