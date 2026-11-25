@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.62.0 | Última modificación: 2026-11-24
+Versión del archivo: 0.63.0 | Última modificación: 2026-11-24
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -261,3 +261,6 @@ Nueve especialistas con al menos una tarea devuelta. Veritas/Bastión revisiones
 
 ## F05-C-DEV-E — fuentes contrastadas y entorno diagnosticado
 Operador aporta Node 26.12.1, una aplicación, Authenticode Valid/OpenJS Foundation y ausencia de NODE_OPTIONS/NODE_PATH; procedencia favorable pendiente confirmación del operador. Reconstrucción y SHA256 independiente de cuatro fuentes coincide 4/4 con verificación de revisión. Inspección directa sin bloqueantes adicionales en PoC; riesgos residuales de frontera de almacén y objetos JS no ordinarios, rollback fallido y cobertura permanecen limitados. No ejecutar por cuenta del revisor. Siguiente: autorización explícita, Kilo cerrado, revalidar identidad de Node y huella de revisión, parser del lanzador, ejecutar suite canónica una vez y verificar integridad posterior. F05.4 IN_PROGRESS; resultados funcionales y permisos negativos NOT_RUN. Sin cambios de implementación, política ni instalación.
+
+## F05-C-DEV-E — aceptación funcional del PoC
+Operador reporta ejecución autorizada en Windows, Node 26.12.1, PowerShell 7.6.8, identidad y parser PASS; seis pruebas aprobadas, cero fallos/omitidos/cancelados, código 0, runner 121.5947 ms. Huella de revisión intacta antes/después, catorce archivos protegidos intactos. PASS funcional reportado dentro del contrato, no producción ni benchmark. No repetir suite sin causa. Siguiente F05-C-PERM: Veritas bash ask, rechazo y aprobación única de comando inocuo en tareas separadas, sin mutación; después deny/exposición focalizados y retirada autorizada. No confundir herramienta ausente o rechazo voluntario con enforcement. F05.4 IN_PROGRESS, sin cambios de candidatos.
