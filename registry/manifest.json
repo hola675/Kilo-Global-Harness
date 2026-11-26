@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.49.0",
+    "version": "0.50.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -231,7 +231,8 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "R1B2_REVIEW_GAP_RECOVERY_PENDING"
+    "F06_LAB_R1": "RECOVERY_REPORTED_TRANSFER_GAP",
+    "F06_R1B2_R": "POLICY_REFINEMENT_CANDIDATE_STATIC"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -675,7 +676,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Verificar integridad posterior R1b.2 sin marcador. Recuperar exclusivamente revisión independiente faltante en conversación Candidate existente: conservar diseño concreto, enviar a revisor distinto con criterios de riesgo y pedir cambios focalizados/limitaciones; no rediseñar ni recargar skills por rutina. Registrar Task visible, objeto transmitido, retorno e integración; recuperación dirigida no cuenta como activación espontánea. Después evaluar causa y decidir delta mínimo si procede, con nueva revisión/fixture y comparación autónoma; no alterar laboratorio activo ni relajar puerta F06.",
+    "next": "Verificar 38 archivos tras recuperación desde worktree 0.21.0 existente, sin marcador. No actualizar fuentes ni registro activos. 0.22.0 es delta estático separado; revisar de forma independiente, preparar actualización focalizada del mismo script con nuevos pins tras cierre/retirada autorizada de 0.21.0, luego evaluar caso análogo nuevo en ambas variantes 0.22.0 sin sugerir reparto. Mantener R1b.2 inicial FAIL/PARTIAL y recuperación asistida. No repetir diseño de devolución ni ampliar política por rutina.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -687,7 +688,7 @@
         "candidate"
       ],
       "scope": "read-only-and-design",
-      "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_ACTIVATION_REVIEW_GAP",
+      "runtimeStatus": "PARTIAL_REPORTED_RECOVERY_TRANSFER_GAP",
       "windowsParserStatus": "PASS_REPORTED",
       "installable": false,
       "diagnosticEvidence": {
@@ -915,7 +916,7 @@
           "executionOrMutation": "NONE_REPORTED",
           "providerGuarantees": "UNVERIFIED",
           "content": "both address actor authorization, balance, local idempotence, uncertain effects, messages and acceptance criteria",
-          "postRoundIntegrity": "NOT_RUN",
+          "postRoundIntegrity": "NOT_RUN_AFTER_DESIGN_AND_RECOVERY",
           "performanceBenefitAtEqualGuarantees": "NOT_ESTABLISHED",
           "independentCompleteTrace": "NOT_VERIFIED"
         },
@@ -943,10 +944,93 @@
               "reserve-at-request eligibility, abuse prevention and safe expiry/cancellation"
             ],
             "baselineLimit": "independent findings identify residual material decisions; no accepted or implemented design"
+          },
+          {
+            "id": "F06-R1b2-G3",
+            "priority": "HIGH",
+            "criterion": "review object accessible in initial dispatch",
+            "status": "FAIL_REPORTED_RECOVERED_ASSISTED",
+            "evidence": "both child reports BLOCKED on absent parent design; corrected prompts include concrete object; two roles return findings; same class as F05-B-R",
+            "causality": "missing input in supplied initial prompts; internal cause of leader selection not established"
           }
         ],
-        "efficiencyConclusion": "110s versus 34s; workloads and review coverage differ, not a comparable efficiency improvement"
-      }
+        "efficiencyConclusion": "110s versus 34s; workloads and review coverage differ, not a comparable efficiency improvement",
+        "recoveryEvidence": {
+          "status": "PASS_REPORTED_ASSISTED_WITH_INITIAL_HANDOFF_FAILURE",
+          "date": "2026-11-26",
+          "elapsedSeconds": 88,
+          "visibleReviewRoles": [
+            "team-security",
+            "team-data"
+          ],
+          "initialReviewInputs": "inaccessible references to parent conversation",
+          "initialChildResults": "BLOCKED_BOTH_REPORTED",
+          "initialChildElapsedSeconds": {
+            "security": 9,
+            "data": 10
+          },
+          "correctedChildElapsedSeconds": {
+            "security": 36,
+            "data": 37
+          },
+          "correctedInput": "concrete sanitized design in prompt",
+          "correctedReviewReturns": "REPORTED_BOTH",
+          "integratedChanges": [
+            "atomic exclusive dispatch and durable ambiguous state before provider call",
+            "immutable canonical operation and approval policy/quorum binding",
+            "provider reconciliation account/payment/amount/currency/state identity validation and quarantine",
+            "transactional durable audit"
+          ],
+          "residualGaps": [
+            "explicit tenant/resource checks and replay reauthorization including revocation",
+            "business uniqueness and stable receipt/retention",
+            "webhook authentication and atomic deduplication/order",
+            "lease expiry and stale worker fencing/equivalent",
+            "reserve-at-request eligibility, abusive holds and safe expiry/cancellation",
+            "business policy change handling not yet decided consistently"
+          ],
+          "actualNativeTaskIds": "NOT_VERIFIED",
+          "childNesting": "NOT_VERIFIED_AMBIGUOUS_UI_LABELS",
+          "postRoundIntegrity": "NOT_RUN",
+          "autonomousRecovery": false,
+          "deltaReview": "NOT_RUN",
+          "performanceBenefitAtEqualGuarantees": "NOT_ESTABLISHED"
+        }
+      },
+      "policyVersion": "0.21.0"
+    },
+    "recordScope": "Inventario y evidencia del núcleo 0.21.0 fijado en sourceRevision del laboratorio activo; propuesta posterior 0.22.0 registrada separadamente en refinementCandidate; no aplicar inventario histórico a archivos actuales sin reconciliar.",
+    "refinementCandidate": {
+      "status": "STATIC_CANDIDATE",
+      "policy": {
+        "path": "team/policies/AGENTS.md",
+        "version": "0.22.0",
+        "previousVersion": "0.21.0"
+      },
+      "unchangedRoles": true,
+      "unchangedSkills": true,
+      "unchangedPermissions": true,
+      "unchangedRuntime": true,
+      "labCompatibility": "REQUIRES_NEW_PINNED_SOURCE_REVISION_AFTER_AUTHORIZED_OLD_LAB_RETIREMENT",
+      "runtimeStatus": "NOT_RUN",
+      "independentReview": "NOT_RUN",
+      "installable": false,
+      "reason": [
+        "review required for material risk requested in design mission",
+        "deliver accessible concrete object before dispatch; no assumption of parent context or board reception"
+      ],
+      "regressionCases": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R8",
+        "T3",
+        "T6",
+        "T7",
+        "S16"
+      ],
+      "oldEvidenceRetained": true
     }
   }
 }

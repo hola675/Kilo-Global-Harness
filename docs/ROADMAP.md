@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.100.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.101.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -375,3 +375,6 @@ Baseline 6s y candidate 8s; ambos una búsqueda y lectura visible, sin Task ni s
 
 ## F06-R1b.2 — activación autónoma y brecha de revisión (2026-11-26)
 Integridad tras R1b.1 reportada 38 MATCH. Diseño baseline 110s, Atlas y Bastión; candidate 34s y tres skills pertinentes activadas espontáneamente, sin Task visible ni contraste independiente acreditado. Coberturas distintas, no beneficio de rendimiento establecido. F06-R1b2-G1/G2 requieren contraste concreto y precisión contractual; no atribuir causalidad a skills. Manifiesto 0.49.0. Verificar integridad posterior y recuperar solo revisión pendiente en conversación candidate; no repetir diseño ni alterar laboratorio. F06 IN_PROGRESS.
+
+## F06-R1b.2-R — recuperación y refinamiento de Code (2026-11-26)
+Recuperación dirigida 88s reportada; Bastión/Prisma inicialmente BLOCKED por objeto no accesible, luego retornan revisiones concretas e integración de cuatro ajustes. G3 repite clase F05-B-R; G1 autonomía inicial no superada, G2 parcial. Política 0.22.0 candidata refuerza entradas accesibles y contraste independiente solicitado; skills, agentes, permisos y script 0.1.1 intactos. Manifiesto 0.50.0 separa inventario activo 0.21.0 de refinamiento. Verificar laboratorio antiguo; preparar revisión focalizada y nuevo pin solo tras retirada autorizada. Prueba análoga y control negativo; runtime y revisión independiente de 0.22.0 NOT_RUN. F06 IN_PROGRESS.

@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.100.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.101.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -356,3 +356,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1b.2 evaluación diferencial
 - Evidencia: 38 MATCH antes del diseño; baseline 110s con dos especialistas; candidate 34s y tres activaciones pertinentes visibles, sin contraste independiente acreditado. Hallazgos G1/G2, aceptación no concedida y rendimiento no comparable. Manifiesto 0.49.0; solo documentación, recuperación focalizada pendiente.
+
+## 2026-11-26 — F06-R1b.2-R recuperación y política candidata
+- Evidencia: recuperación asistida de 88s, dos revisores inicialmente BLOCKED sin objeto; revisión concreta recuperada e integración focalizada. No certifica autonomía ni equivalencia de rendimiento; G1/G2/G3 pendientes según alcance.
+- Política 0.22.0: preflight de objeto accesible y contraste independiente de riesgos materiales solicitado, límite explícito ante capacidad o autorización ausente. Sin cambios de agentes, skills, permisos ni script. Manifiesto 0.50.0 distingue versión activa 0.21.0 e hipótesis candidata; evaluación y revisión independiente pendientes.
