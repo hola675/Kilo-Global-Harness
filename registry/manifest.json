@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.45.0",
+    "version": "0.46.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -231,7 +231,7 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "DISCOVERY_PASS_REPORTED_INVOCATION_PENDING"
+    "F06_LAB_R1": "EXPLICIT_INVOCATION_REPORTED_COMPARISON_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -675,7 +675,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "R1a.3: en chat Code nuevo exclusivamente candidate, mismo modelo autorizado, invocar una vez team-routing mediante herramienta skill nativa, verificar retorno y aplicar a dos casos hipotéticos breves sin Task/shell/escritura. Registrar operación visible y respuesta, modelo UI si observable; no confundir carga explícita con selección autónoma. R1b en chats nuevos separados, control lectura conocida seguido de diseño comparativo si procede.",
+    "next": "R1b.1 control lectura conocida: chat Code nuevo por variante, mismo modelo autorizado, misma petición exacta de fixture.txt, sin precarga ni sugerir routing. Comparar contenido y operaciones visibles, ausencia de Task y skill innecesarios, sin red ni escritura. Registrar tiempos solo observados. Verificar integridad al cierre; después diseño complejo R1b.2 en chats nuevos. No repetir invocación explícita por rutina.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -687,7 +687,7 @@
         "candidate"
       ],
       "scope": "read-only-and-design",
-      "runtimeStatus": "PARTIAL_REPORTED_POLICY_AND_DISCOVERY",
+      "runtimeStatus": "PARTIAL_REPORTED_POLICY_DISCOVERY_INVOCATION",
       "windowsParserStatus": "PASS_REPORTED",
       "installable": false,
       "diagnosticEvidence": {
@@ -804,9 +804,39 @@
         "uiModelConfirmation": "NOT_VERIFIED",
         "independentCatalogTrace": "NOT_VERIFIED",
         "perRoleEffectivePermissions": "NOT_RUN",
-        "nativeSkillInvocation": "NOT_RUN",
+        "nativeSkillInvocation": "PASS_REPORTED_TRACE_NOT_VERIFIED",
         "autonomousActivation": "NOT_RUN",
         "postDiscoveryIntegrity": "NOT_RUN"
+      },
+      "explicitInvocationEvidence": {
+        "status": "PASS_REPORTED",
+        "date": "2026-11-26",
+        "variant": "candidate",
+        "skill": "team-routing",
+        "versionExpected": "0.3.0",
+        "mode": "explicit-request",
+        "provenance": "operator-provided Code response",
+        "invocationTrace": "NOT_VERIFIED",
+        "callCount": "NOT_VERIFIED",
+        "otherActions": "NOT_VERIFIED",
+        "scenarios": [
+          {
+            "id": "A",
+            "expected": "N1",
+            "reported": "N1",
+            "decision": "direct known file read",
+            "responseAssessment": "PASS"
+          },
+          {
+            "id": "B",
+            "expected": "N3",
+            "reported": "N3",
+            "decision": "independent component owners, stable contract, parallel work",
+            "responseAssessment": "PASS"
+          }
+        ],
+        "actualDelegation": "NOT_RUN",
+        "autonomousActivation": "NOT_RUN"
       }
     }
   }

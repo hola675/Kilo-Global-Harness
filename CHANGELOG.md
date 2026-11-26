@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.96.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.97.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -344,3 +344,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1a.2 descubrimiento
 - Evidencia del operador: 9/9 agentes propios en ambas variantes, 0/13 skills propias baseline y 13/13 candidate, builtin común kilo-config. Manifiesto 0.45.0; catálogo reportado, no invocación ni permisos probados; sin cambios del núcleo o script.
+
+## 2026-11-26 — F06-R1a.3 invocación explícita
+- Evidencia del operador: invocación team-routing declarada satisfactoria y decisiones N1/N3 correctas. Traza y operaciones no verificadas, no prueba autónoma. Manifiesto 0.46.0; sin cambios de componentes ni script.

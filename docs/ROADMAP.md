@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.96.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.97.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -363,3 +363,6 @@ Parser 0.1.1, F04 vacío conservado, F06_PREPARADO, 38 MATCH antes y después de
 
 ## F06-R1a.2 — descubrimiento diferencial reportado (2026-11-26)
 Code reporta 9/9 especialistas en ambas variantes, explore/general, kilo-config builtin común; baseline 0/13 skills propias y candidate 13/13 con origen local reportado. Referencias de modelo consistentes, confirmación UI/proveedor y traza independiente no verificadas. Manifiesto 0.45.0. Siguiente invocación explícita única de team-routing en candidate y contraste hipotético; activación autónoma y comportamiento aún pendientes. F06 IN_PROGRESS.
+
+## F06-R1a.3 — invocación explícita reportada (2026-11-26)
+Code declara carga satisfactoria de team-routing y responde N1 directo/N3 paralelo correctamente en dos hipótesis. Traza, cantidad de llamadas y ausencia de otras operaciones NOT_VERIFIED; no acredita selección autónoma. Manifiesto 0.46.0. R1b.1 lectura conocida comparativa en chats nuevos, mismo modelo, sin inducir routing. F06 IN_PROGRESS.
