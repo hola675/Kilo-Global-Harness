@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.52.0",
+    "version": "0.53.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -232,7 +232,7 @@
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
-    "F06_R1B2_R": "OLD_LAB_RETIRED_REFINEMENT_PREPARATION_PENDING"
+    "F06_R1B2_R": "REFINEMENT_PREPARATION_PASS_REPORTED_LOAD_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -676,7 +676,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Actualizar worktree limpio al commit fa74708972d41f554b5d6e11bfe50b92900e50ae con script 0.1.2. Validar parser y diagnóstico 24 fuentes de 86e1163 y F06_AUSENTE; preparar con Kilo cerrado, consentimiento específico y modelo kilo/openai/gpt-6-luna; Verificar 38 archivos. Después validar carga y catálogo diferencial, control sencillo y misión análoga. Revisión independiente de 0.22.0 aún pendiente; no integrar main ni activar globalmente.",
+    "next": "No actualizar checkout ni preparar de nuevo. Abrir Code en baseline y candidate con modelo autorizado, confirmar marcador privado en ambos mediante Verificar -ComprobarMarcador; confirmar catálogo diferencial reportado (baseline 0/13 propias, candidate 13/13, 9 especialistas comunes), modelo UI si visible. Después control negativo directo y nueva misión análoga sin inducir skills o reparto, con contexto accesible en primera Task y revisión independiente integrada. Conservar evidencia previa. Revisión independiente de política 0.22.0 y evaluación runtime pendientes.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1070,10 +1070,33 @@
           "baseline",
           "candidate"
         ],
-        "windowsParserStatus": "NOT_RUN",
-        "preparationStatus": "NOT_RUN",
+        "windowsParserStatus": "PASS_REPORTED",
+        "preparationStatus": "PASS_REPORTED",
         "runtimeStatus": "NOT_RUN",
-        "migration": "retire 0.21.0 with script 0.1.1 and original checkout b78e4b2 before switching to new revision; no adoption or in-place updates"
+        "migration": "retire 0.21.0 with script 0.1.1 and original checkout b78e4b2 before switching to new revision; no adoption or in-place updates",
+        "preparationEvidence": {
+          "status": "PASS_REPORTED",
+          "checkoutRevision": "fa74708972d41f554b5d6e11bfe50b92900e50ae",
+          "sourceRevision": "86e11637ace4cfa4794946af8b0af34c7173626b",
+          "sourceMatches": 24,
+          "sourceTotal": 24,
+          "priorLabStatus": "ABSENT_REPORTED",
+          "consentReported": true,
+          "modelReference": "kilo/openai/gpt-6-luna",
+          "modelEffectiveInSession": "NOT_VERIFIED",
+          "protectedWorkspaceFilesMatched": 38,
+          "protectedWorkspaceFilesTotal": 38,
+          "integrityChecksReported": 2,
+          "f04EmptyContainerPreserved": "REPORTED",
+          "auxiliaryBaseline": "ABSENT_REPORTED",
+          "auxiliaryCandidate": "ABSENT_REPORTED",
+          "postPreparationIntegrity": "PASS_REPORTED",
+          "provenance": "operator supplied local PowerShell output",
+          "independentlyExecuted": false
+        },
+        "loadStatus": "NOT_RUN",
+        "discoveryStatus": "NOT_RUN",
+        "retirementStatus": "NOT_RUN"
       }
     }
   }

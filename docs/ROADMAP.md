@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.103.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.104.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -384,3 +384,6 @@ Integridad posterior a recuperación reportada 38 MATCH y auxiliares reconocidos
 
 ## F06-R1b.2-R — retirada histórica reportada (2026-11-26)
 38 MATCH dos veces, auxiliares reconocidos, F06_RETIRADO, 24 fuentes antiguas MATCH y F06_AUSENTE reportados. Manifiesto 0.52.0. Ciclo físico 0.21.0 cerrado; hallazgos de comportamiento preservados. Siguiente preparar 0.22.0 mediante script 0.1.2 fijado, parser/diagnóstico, consentimiento y verificación. F06 IN_PROGRESS; revisión independiente pendiente.
+
+## F06-R1b.2-R — nuevo laboratorio preparado (2026-11-26)
+Parser 0.1.2, 24 fuentes de 86e1163, F06_AUSENTE, autorización, F04 vacío conservado, 38/38 MATCH y F06_PREPARADO/PASS_INTEGRIDAD_LOCAL_F06 reportados. Manifiesto 0.53.0; carga y catálogo de 0.22.0 pendientes. No repetir preparación ni actualizar checkout. F06 IN_PROGRESS; revisión independiente pendiente.
