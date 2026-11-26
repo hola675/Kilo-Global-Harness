@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.107.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.108.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -378,3 +378,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1b.2-R contraste y cierre focalizado
 - Evidencia: prompts/retornos de ambos baseline y único candidate; G1/G3 PASS_REPORTED en muestra, G2 parcial y delta NOT_RUN. Integridad posterior 38 MATCH y auxiliares reconocidos. Manifiesto 0.56.0; continuar escenarios pendientes sin modificar núcleo ni laboratorio.
+
+## 2026-11-26 — F06-R1b.3/R1b.4
+- Evidencia: cuatro respuestas conceptuales, prevención de reintentos inseguros y proliferación de skills, activación autónoma visible de skill-authoring. Manifiesto 0.57.0; integridad posterior, revisión independiente y pruebas reales pendientes. Sin cambios de componentes.

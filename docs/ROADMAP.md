@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.107.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.108.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -396,3 +396,6 @@ Lectura directa reportada 14/10s, una búsqueda/lectura por variante, sin skill/
 
 ## F06-R1b.2-R — contraste de hijos y cierre focalizado (2026-11-26)
 Candidate recibe diseño concreto en primera Task, Bastión retorna 5 hallazgos en 24s, integración sustantiva parcial; baseline diseño independiente 32s y contraste concreto 36s. G1/G3 PASS_REPORTED en esta muestra, G2 parcial, delta no revisado; sin comparación temporal equivalente. Integridad posterior 38 MATCH y auxiliares reconocidos. Manifiesto 0.56.0; conservar versiones y laboratorio, continuar R1b.3/R1b.4. Revisión de política y F06 pendientes.
+
+## F06-R1b.3/R1b.4 — recuperación y autoría (2026-11-26)
+Ambas variantes decisiones conceptuales seguras; candidate comprobación puntual y skill-authoring visible con NO_NECESARIO provisional, casos comparativos aislados y NOT_RUN; baseline mejor precisión de reintento condicionado y verificación de fuentes. No recuperación real ni pruebas de pack/skill ejecutadas. Manifiesto 0.57.0; verificar integridad posterior y preparar siguiente fixture focalizado. F06 IN_PROGRESS.

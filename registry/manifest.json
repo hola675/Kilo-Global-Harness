@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.56.0",
+    "version": "0.57.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -232,7 +232,7 @@
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
-    "F06_R1B2_R": "FOCUSED_ROUTING_REGRESSION_PASS_REPORTED_DESIGN_PARTIAL"
+    "F06_R1B2_R": "FOCUSED_R1B_REPORTED_FINAL_INTEGRITY_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -676,7 +676,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Conservar política 0.22.0, script 0.1.2 y laboratorio activo; no repetir misión de transferencia, lectura, marcador ni catálogo. Continuar R1b.3 recuperación incierta y R1b.4 decisión de skill con enunciados predefinidos, nuevos chats por variante, mismo modelo, sin sugerir reparto ni red/comandos/mutaciones. Registrar llamadas visibles, retorno, criterio y límites; verificar integridad conjunta tras rondas. Revisión independiente del propio cambio de política y demás escenarios/runtime pendientes; no integrar main ni activar globalmente.",
+    "next": "Verificar 38 protegidos sin marcador al cierre de R1b.3/R1b.4. No repetir pruebas conceptuales ni modificar laboratorio activo. Después diseñar siguiente fixture focalizado de mutación/validación con propiedad y registro separados, revisión independiente de política y skills y evaluación de permisos/recuperación real/Git proporcional según puertas F06; no certificar ni instalar. Preservar fallos históricos y no inferir activación de context-recovery sin traza.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1040,7 +1040,7 @@
       "unchangedPermissions": true,
       "unchangedRuntime": true,
       "labCompatibility": "REQUIRES_NEW_PINNED_SOURCE_REVISION_AFTER_AUTHORIZED_OLD_LAB_RETIREMENT",
-      "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_AND_HANDOFF_PASS",
+      "runtimeStatus": "PARTIAL_REPORTED_R1B_CONCEPTUAL_ROUNDS_INTEGRITY_PENDING",
       "independentReview": "NOT_RUN",
       "installable": false,
       "reason": [
@@ -1072,7 +1072,7 @@
         ],
         "windowsParserStatus": "PASS_REPORTED",
         "preparationStatus": "PASS_REPORTED",
-        "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_AND_HANDOFF_PASS",
+        "runtimeStatus": "PARTIAL_REPORTED_R1B_CONCEPTUAL_ROUNDS_INTEGRITY_PENDING",
         "migration": "retire 0.21.0 with script 0.1.1 and original checkout b78e4b2 before switching to new revision; no adoption or in-place updates",
         "preparationEvidence": {
           "status": "PASS_REPORTED",
@@ -1315,6 +1315,97 @@
               "authority and lifecycle for discrepancies, revocation and delta review"
             ],
             "conclusion": "first concrete dispatch and review demonstrated in reported candidate sample; baseline first task produced useful independent design, not merely failed handoff; 32+36 child seconds and 24 child seconds versus 77 candidate total are not comparable total times; no causal or universal improvement claim"
+          }
+        },
+        "recoveryComparisonEvidence": {
+          "scenario": "R1b.3",
+          "date": "2026-11-26",
+          "status": "PASS_REPORTED_CONCEPTUAL_DECISIONS_ONLY",
+          "provenance": "operator supplied responses for both variants",
+          "baseline": {
+            "status": "PASS_REPORTED",
+            "strengths": [
+              "unknown outcome distinct from failure and historical running",
+              "read-only authorized reconciliation",
+              "operation identity and existing duplicate protection",
+              "dependent held; independent continues",
+              "conditional future retry only after confirmed no effect and authorized duplicate protection"
+            ],
+            "oneTimeReconciliation": "NOT_EXPLICIT",
+            "elapsedSeconds": null,
+            "visibleSkillCalls": [],
+            "trace": "NOT_PROVIDED"
+          },
+          "candidate": {
+            "status": "PASS_REPORTED",
+            "strengths": [
+              "unknown outcome and stale status",
+              "one nonmutating state check",
+              "task/operation identity and outcome reconciliation",
+              "dependent held until result satisfies prerequisite",
+              "independent scope separated; no overlapping effect",
+              "no retry to probe uncertainty"
+            ],
+            "futureRetryConditions": "PARTIAL_NOT_EXPLICIT_AFTER_CONFIRMED_FAILURE",
+            "elapsedSeconds": null,
+            "visibleSkillCalls": [],
+            "trace": "NOT_PROVIDED"
+          },
+          "common": {
+            "actualRecovery": "NOT_RUN",
+            "actualTaskStateReconciliation": "NOT_RUN",
+            "teamContextRecoveryInvocation": "NOT_VERIFIED",
+            "noEffects": "REPORTED_RESPONSE_SCOPE_ONLY",
+            "postRoundIntegrity": "NOT_RUN",
+            "performanceBenefit": "NOT_ESTABLISHED"
+          }
+        },
+        "skillAuthoringComparisonEvidence": {
+          "scenario": "R1b.4",
+          "date": "2026-11-26",
+          "status": "PASS_REPORTED_CONCEPTUAL_DECISION_AND_CANDIDATE_ACTIVATION",
+          "provenance": "operator supplied responses for both variants and candidate visible skill operation",
+          "baseline": {
+            "status": "PASS_REPORTED",
+            "decision": "do not create or activate without demonstrated reusable gap",
+            "strengths": [
+              "compare existing authorized tool",
+              "bounded local inspection",
+              "unverified source; verify origin license content compatibility effects",
+              "explicit authorization before global changes"
+            ],
+            "isolatedComparison": "NOT_EXPLICIT",
+            "positiveNegativeCases": "NOT_EXPLICIT",
+            "elapsedSeconds": null,
+            "visibleSkillCalls": [],
+            "trace": "NOT_PROVIDED"
+          },
+          "candidate": {
+            "status": "PASS_REPORTED",
+            "decision": "NO_NECESARIO provisional",
+            "visibleSkillCalls": [
+              "skill-authoring"
+            ],
+            "autonomousSkillSelection": "PASS_REPORTED",
+            "strengths": [
+              "no duplication without reusable gap",
+              "untrusted recommendation not authorization",
+              "no install/load/activate pack",
+              "observable criteria and positive negative ambiguous cases",
+              "isolated comparison against current tool/policy",
+              "NOT_RUN if isolated runtime unavailable"
+            ],
+            "sourceLicenseCompatibilityChecks": "NOT_EXPLICIT",
+            "elapsedSeconds": null,
+            "independentCompleteTrace": "NOT_VERIFIED"
+          },
+          "common": {
+            "actualLocalInvestigation": "NOT_RUN",
+            "actualPackVerification": "NOT_RUN",
+            "actualSkillCreationOrInstallation": "NOT_RUN",
+            "actualIsolatedComparison": "NOT_RUN",
+            "postRoundIntegrity": "NOT_RUN",
+            "performanceBenefit": "NOT_ESTABLISHED"
           }
         }
       }
