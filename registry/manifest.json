@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.58.0",
+    "version": "0.59.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -233,7 +233,7 @@
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
     "F06_R1B2_R": "R1_DONE_REPORTED_LIMITED",
-    "F06_R2_1": "FIXTURE_CANDIDATE_PREPARED_STATIC"
+    "F06_R2_1": "PREPARATION_PASS_REPORTED_PREFLIGHT_AND_REVIEW_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -677,7 +677,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "R1 cerrado con integridad reportada. R2.1 candidato estático: cerrar Kilo y validar checkout limpio; actualizar worktree a script 0.1.3 (mismos pins R1), parser y Verificar R1; diagnóstico Node de solo lectura/procedencia y aprobación separada. PrepararR2 con consentimiento, VerificarR2 exige 38+4 protegidos y 2 BASELINE. Revisar fixture y script independientemente antes de ejecutar; reproducir seis casos en cada variante con Node autorizado, esperar 4 PASS/2 FAIL y salida 1, no corregir ante otra salida. En chats nuevos misma misión y modelo, solo editar reservation.mjs, sin shell/red ni cambios de suite/registro. VerificarR2 y revisión de fuentes antes de autorizar ejecución final. No modificar global ni certificar F06.",
+    "next": "No preparar R2 otra vez ni actualizar checkout. Obtener diagnóstico de Node de solo lectura (resolución única, ruta/metadatos, firma, SHA256 local y presencia de NODE_OPTIONS/NODE_PATH; no valores privados ni ejecución). Revisión independiente del delta del script 0.1.3 y fixture exactos en contexto separado de comparación, solo lectura; confirmar límites, propiedad y retirada. No ejecutar Node hasta revisar procedencia, fuentes y autorización específica. Después reproducir rojo 4/2 en cada variante y autorizar edición acotada; revisar código generado y huellas antes del verde. No instalar globalmente.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1488,15 +1488,35 @@
             "exitCode": 0
           },
           "provenance": "isolated developer container; reference solution not committed",
-          "windowsRuntime": "NOT_RUN"
+          "windowsRuntime": "NOT_RUN",
+          "blobVerification": "MATCH_BOTH_PUBLISHED_CODE_AND_TEST",
+          "recheck": "PASS_REPRODUCED_4_2_AND_6_0"
         },
-        "windowsParserStatus": "NOT_RUN",
-        "preparationStatus": "NOT_RUN",
+        "windowsParserStatus": "PASS_REPORTED",
+        "preparationStatus": "PASS_REPORTED",
         "independentReview": "NOT_RUN",
         "operatorExecutionAuthorization": "NOT_GRANTED",
         "agentExecutionAuthorization": "NOT_GRANTED",
         "retirementStatus": "NOT_RUN",
-        "installable": false
+        "installable": false,
+        "preparationEvidence": {
+          "status": "PASS_REPORTED",
+          "checkoutRevision": "fb55c2386692d0f088392a2f1c26258561d5c3cf",
+          "scriptVersion": "0.1.3",
+          "consentReported": true,
+          "originalProtectedFilesMatched": 38,
+          "additionalProtectedFilesMatched": 4,
+          "registryMatch": true,
+          "auxiliaryBaseline": "MATCH_TEMPLATE",
+          "auxiliaryCandidate": "MATCH_TEMPLATE",
+          "baselineMutableStatus": "BASELINE",
+          "candidateMutableStatus": "BASELINE",
+          "mutableSourceDigestEqual": true,
+          "mutableSourceDigestMatchesReference": true,
+          "provenance": "operator supplied local PowerShell output; public fixture source SHA256 compared in developer container",
+          "independentlyExecuted": false
+        },
+        "nodePreflightStatus": "NOT_RUN"
       }
     }
   }

@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.109.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.110.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -402,3 +402,6 @@ Ambas variantes decisiones conceptuales seguras; candidate comprobación puntual
 
 ## F06-R2.1 — cierre R1 y fixture de reserva (2026-11-26)
 R1 integridad final 38 MATCH reportada, alcance limitado cerrado. Fixture y script 0.1.3 candidatos; Node Linux base 4/2, referencia 6/0; proteger cuatro archivos y registro aparte, dos fuentes mutables. Manifiesto 0.58.0. Preparación, revisión independiente y runtime Windows pendientes; no ejecución automática ni instalación global. F06 IN_PROGRESS.
+
+## F06-R2.1 — preparación reportada (2026-11-26)
+Parser 0.1.3 PASS, 38+4 protegidos y registro MATCH, dos fuentes BASELINE con huellas iguales reportados. Manifiesto 0.59.0; blobs del fixture ejecutable cotejados con prueba Linux repetida. Diagnóstico Node, revisión independiente y autorización de ejecución pendientes. Conservar checkout y extensión activa; F06 IN_PROGRESS.
