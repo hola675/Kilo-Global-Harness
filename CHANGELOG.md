@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.110.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.111.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -387,3 +387,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R2.1 preparación
 - Evidencia: parser 0.1.3 y preparación reportados, 38+4 protegidos y registro MATCH, dos fuentes BASELINE; fixture ejecutable cotejado con pruebas Linux. Manifiesto 0.59.0; preflight Node, revisión independiente y runtime Windows pendientes. Sin cambios de componentes.
+
+## 2026-11-26 — F06-R2.1 preflight
+- Evidencia: identidad de Node 26.12.1, firma válida OpenJS Foundation, huella y ausencia de variables reportadas. Manifiesto 0.60.0; revisión independiente pendiente, posible desvío de modo señalado. Solo documentación, sin ejecución ni instalación.
