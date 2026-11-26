@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.98.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.99.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -350,3 +350,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1b.1 lectura comparativa
 - Evidencia del operador: contenido esperado de fixture idéntico en ambas variantes; PASS_REPORTED_CONTENT_ONLY. Operaciones, tiempo e integridad posterior pendientes; sin atribuir mejora de rendimiento. Manifiesto 0.47.0; sin cambios de componentes.
+
+## 2026-11-26 — F06-R1b.1 ampliación de evidencia
+- Resúmenes visibles aportados: 1 search y Read en cada variante, 6s baseline y 8s candidate, sin Task/skill visibles; exactitud de formato no verificada y rendimiento no establecido. Manifiesto 0.48.0; solo documentación.

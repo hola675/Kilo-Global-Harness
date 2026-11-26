@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.47.0",
+    "version": "0.48.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -231,7 +231,7 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "READ_RESULT_EQUIVALENCE_REPORTED_DESIGN_PENDING"
+    "F06_LAB_R1": "READ_CONTROL_REPORTED_INTEGRITY_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -675,7 +675,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Verificar integridad local sin marcador antes de R1b.2. Si PASS, chats Code nuevos por variante, mismo modelo, misma petición de diseño de devolución de pedidos de tests/F06-SKILLS.md; no sugerir skills ni agentes, autorizar diseño/revisión de solo lectura y no ejecutar red, comandos o escrituras. Recoger resultado y operaciones visibles cuando disponibles; diferenciar revisión real de autoevaluación. No repetir lectura previa ni atribuir ahorro.",
+    "next": "Verificar 38 archivos sin marcador desde checkout b78e4b2; si íntegro, R1b.2 diseño comparativo definido en tests, chats nuevos, mismo modelo. No repetir lectura ni atribuir diferencia de tiempo a skills.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -687,7 +687,7 @@
         "candidate"
       ],
       "scope": "read-only-and-design",
-      "runtimeStatus": "PARTIAL_REPORTED_READ_EQUIVALENCE",
+      "runtimeStatus": "PARTIAL_REPORTED_DIRECT_READ_CONTROL",
       "windowsParserStatus": "PASS_REPORTED",
       "installable": false,
       "diagnosticEvidence": {
@@ -839,21 +839,34 @@
         "autonomousActivation": "NOT_RUN"
       },
       "readComparisonEvidence": {
-        "status": "PASS_REPORTED_CONTENT_ONLY",
+        "status": "PASS_REPORTED_ROUTING_WITH_FORMAT_UNVERIFIED",
         "date": "2026-11-26",
-        "provenance": "operator supplied common response and reported both variants identical",
+        "provenance": "operator supplied visible operation summaries and response for each variant; supplements prior content-only report",
         "scenario": "R1b.1",
-        "baseline": "PASS_REPORTED_CONTENT",
-        "candidate": "PASS_REPORTED_CONTENT",
+        "baseline": "PASS_REPORTED_DIRECT_READ",
+        "candidate": "PASS_REPORTED_DIRECT_READ",
         "expectedLines": 2,
         "visibleContentMatches": true,
-        "byteExactness": "NOT_VERIFIED",
-        "readToolTrace": "NOT_VERIFIED",
-        "taskCalls": "NOT_VERIFIED",
-        "skillCalls": "NOT_VERIFIED",
-        "elapsedTime": "NOT_MEASURED",
+        "byteExactness": "NOT_VERIFIED_DISPLAYED_AS_ONE_LINE",
+        "readToolTrace": "REPORTED_VISIBLE_READ_BOTH",
+        "taskCalls": "NONE_IN_REPORTED_OPERATIONS",
+        "skillCalls": "NONE_IN_REPORTED_OPERATIONS",
+        "elapsedTime": "REPORTED_SINGLE_SAMPLE",
         "postRoundIntegrity": "NOT_RUN",
-        "performanceBenefit": "NOT_ESTABLISHED"
+        "performanceBenefit": "NOT_ESTABLISHED",
+        "visibleOperations": {
+          "baseline": {
+            "search": 1,
+            "read": 1,
+            "elapsedSeconds": 6
+          },
+          "candidate": {
+            "search": 1,
+            "read": 1,
+            "elapsedSeconds": 8
+          }
+        },
+        "independentCompleteTrace": "NOT_VERIFIED"
       }
     }
   }

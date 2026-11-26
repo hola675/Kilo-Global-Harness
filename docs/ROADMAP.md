@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.98.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.99.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -369,3 +369,6 @@ Code declara carga satisfactoria de team-routing y responde N1 directo/N3 parale
 
 ## F06-R1b.1 — lectura comparativa reportada (2026-11-26)
 Ambas variantes devuelven el contenido visible esperado de fixture.txt según operador. Manifiesto 0.47.0; equivalencia de resultado reportada, operaciones y rendimiento no verificados. Siguiente Verificar sin marcador y R1b.2 diseño comparativo, sin repetir lectura. F06 IN_PROGRESS.
+
+## F06-R1b.1 — operaciones de lectura reportadas (2026-11-26)
+Baseline 6s y candidate 8s; ambos una búsqueda y lectura visible, sin Task ni skill visibles. Contenido correcto, saltos de línea no acreditados; no traza completa ni conclusión de rendimiento. Manifiesto 0.48.0. Verificar integridad y continuar R1b.2 sin repetir lectura. F06 IN_PROGRESS.
