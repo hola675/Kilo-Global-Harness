@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.106.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.107.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -375,3 +375,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1b.2-R control y transferencia
 - Control directo reportado 14/10s, sin activación redundante visible; nueva misión candidate con cinco skills y una revisión frente a dos encargos baseline. Manifiesto 0.55.0; prompts/retornos, integración, integridad posterior y revisión de política pendientes. Sin cambios de componentes.
+
+## 2026-11-26 — F06-R1b.2-R contraste y cierre focalizado
+- Evidencia: prompts/retornos de ambos baseline y único candidate; G1/G3 PASS_REPORTED en muestra, G2 parcial y delta NOT_RUN. Integridad posterior 38 MATCH y auxiliares reconocidos. Manifiesto 0.56.0; continuar escenarios pendientes sin modificar núcleo ni laboratorio.

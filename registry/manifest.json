@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.55.0",
+    "version": "0.56.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -232,7 +232,7 @@
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
-    "F06_R1B2_R": "REFINEMENT_ROUTING_REPORTED_CHILD_EVIDENCE_AND_INTEGRITY_PENDING"
+    "F06_R1B2_R": "FOCUSED_ROUTING_REGRESSION_PASS_REPORTED_DESIGN_PARTIAL"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -676,7 +676,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "No repetir misión ni generar nuevos Task. Recuperar historial existente: candidate prompt concreto inicial y retorno de team-security; baseline prompts/retornos primero y segundo, tiempo total si visible. Contrastar objeto, scope, estado, hallazgos incorporados y delta material; si no disponible NOT_VERIFIED. Cerrar ronda con Verificar sin marcador desde checkout fijado; preservar hallazgos históricos. Continuar R1b.3 recuperación incierta y R1b.4 evaluación de skill si evidencia suficiente; revisión independiente de política y runtime completo pendientes.",
+    "next": "Conservar política 0.22.0, script 0.1.2 y laboratorio activo; no repetir misión de transferencia, lectura, marcador ni catálogo. Continuar R1b.3 recuperación incierta y R1b.4 decisión de skill con enunciados predefinidos, nuevos chats por variante, mismo modelo, sin sugerir reparto ni red/comandos/mutaciones. Registrar llamadas visibles, retorno, criterio y límites; verificar integridad conjunta tras rondas. Revisión independiente del propio cambio de política y demás escenarios/runtime pendientes; no integrar main ni activar globalmente.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1040,7 +1040,7 @@
       "unchangedPermissions": true,
       "unchangedRuntime": true,
       "labCompatibility": "REQUIRES_NEW_PINNED_SOURCE_REVISION_AFTER_AUTHORIZED_OLD_LAB_RETIREMENT",
-      "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_HANDOFF_EVIDENCE_PENDING",
+      "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_AND_HANDOFF_PASS",
       "independentReview": "NOT_RUN",
       "installable": false,
       "reason": [
@@ -1072,7 +1072,7 @@
         ],
         "windowsParserStatus": "PASS_REPORTED",
         "preparationStatus": "PASS_REPORTED",
-        "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_HANDOFF_EVIDENCE_PENDING",
+        "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_AND_HANDOFF_PASS",
         "migration": "retire 0.21.0 with script 0.1.1 and original checkout b78e4b2 before switching to new revision; no adoption or in-place updates",
         "preparationEvidence": {
           "status": "PASS_REPORTED",
@@ -1186,14 +1186,24 @@
           "semanticContent": "PASS_REPORTED",
           "exactLineBreaks": "NOT_VERIFIED_DISPLAYED_AS_ONE_LINE",
           "independentCompleteTrace": "NOT_VERIFIED",
-          "postRoundIntegrity": "NOT_RUN",
-          "performanceBenefit": "NOT_ESTABLISHED"
+          "postRoundIntegrity": "PASS_REPORTED_LATER_CHECK",
+          "performanceBenefit": "NOT_ESTABLISHED",
+          "integrityEvidence": {
+            "status": "PASS_REPORTED",
+            "matched": 38,
+            "total": 38,
+            "baselineAuxiliary": "MATCH_TEMPLATE",
+            "candidateAuxiliary": "MATCH_TEMPLATE",
+            "timing": "after direct read and warehouse transfer rounds",
+            "provenance": "operator supplied local Verificar output",
+            "independentlyExecuted": false
+          }
         },
         "designComparisonEvidence": {
           "scenario": "warehouse inventory transfer analogous regression",
           "date": "2026-11-26",
-          "status": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_FIRST_HANDOFF_EVIDENCE_PENDING",
-          "provenance": "operator supplied parent visible operation summaries and final designs",
+          "status": "PASS_REPORTED_AUTONOMOUS_REVIEW_AND_HANDOFF_DESIGN_PARTIAL",
+          "provenance": "operator supplied parent visible operation summaries, final designs, both baseline child prompts/returns, candidate child prompt/return and local integrity output",
           "baseline": {
             "elapsedSeconds": null,
             "visibleSkillCalls": [],
@@ -1201,10 +1211,15 @@
               "team-security",
               "team-security"
             ],
-            "firstReviewGeneric": "REPORTED_IN_PARENT_SUMMARY",
-            "secondReviewConcrete": "REPORTED_IN_PARENT_SUMMARY",
-            "childPromptsAndReturns": "NOT_PROVIDED",
-            "integratedReview": "REPORTED_BY_PARENT"
+            "firstReviewGeneric": "CONFIRMED_REPORTED_GENERIC_DESIGN_AND_RISK_ANALYSIS_NOT_REVIEW_OF_PARENT_OBJECT",
+            "secondReviewConcrete": "PASS_REPORTED_CONCRETE_OBJECT",
+            "childPromptsAndReturns": "PROVIDED_BOTH",
+            "integratedReview": "PASS_REPORTED_SUBSTANTIVE_INTEGRATION_WITH_PENDING_BUSINESS_RULES",
+            "childElapsedSeconds": [
+              32,
+              36
+            ],
+            "secondReviewMaterialFindings": 7
           },
           "candidate": {
             "elapsedSeconds": 77,
@@ -1219,22 +1234,67 @@
               "team-security"
             ],
             "reviewSelection": "PASS_REPORTED_AUTONOMOUS",
-            "firstReviewConcrete": "REPORTED_BY_PARENT_NOT_VERIFIED_FROM_CHILD",
-            "childPromptsAndReturns": "NOT_PROVIDED",
-            "integratedReview": "REPORTED_BY_PARENT"
+            "firstReviewConcrete": "PASS_REPORTED_CONCRETE_OBJECT_ACCESSIBLE_IN_FIRST_PROMPT",
+            "childPromptsAndReturns": "PROVIDED",
+            "integratedReview": "PASS_REPORTED_SUBSTANTIVE_PARTIAL_INTEGRATION",
+            "childElapsedSeconds": 24,
+            "reviewMaterialFindings": 5,
+            "integrationDetail": [
+              {
+                "finding": "permission scope and revocation",
+                "status": "PARTIAL",
+                "integrated": "per-action checks, cancellation/read/replay authorization, negative no-effect test",
+                "pending": "tenant and exception authority explicit; semantics of revocation and decision/mutation ordering"
+              },
+              {
+                "finding": "concurrency and conservation",
+                "status": "PARTIAL",
+                "integrated": "bounded reservation, conditional cancel/dispatch, atomic balance/state/movement/result",
+                "pending": "aggregate duplicate lines, explicit full inventory-key serialization and conservation equation"
+              },
+              {
+                "finding": "partial receipt and discrepancy states",
+                "status": "INTEGRATED_AT_DESIGN_LEVEL",
+                "integrated": "partial receipt, quarantine, explicit exceptions, authorized adjustment and no automatic overdelivery",
+                "pending": "per-line adjusted quantity/accounting and exception ownership"
+              },
+              {
+                "finding": "idempotence and event order",
+                "status": "PARTIAL",
+                "integrated": "stable key, same result, atomic command effect/result, consumer deduplication/effect and sequence",
+                "pending": "explicit namespace/tenant, durable uniqueness, retention and atomic sequence cursor"
+              },
+              {
+                "finding": "ambiguous messages",
+                "status": "INTEGRATED_AT_DESIGN_LEVEL",
+                "integrated": "separate partial, total, uncertain and discrepancy messages with confirmed state/next action",
+                "pending": "no executed UI tests"
+              }
+            ],
+            "postIntegrationDeltaReview": "NOT_RUN"
           },
           "common": {
             "scope": "hypothetical design only",
             "independentCompleteTrace": "NOT_VERIFIED",
-            "postRoundIntegrity": "NOT_RUN",
+            "postRoundIntegrity": "PASS_REPORTED",
             "executionOrMutation": "NONE_REPORTED",
             "equivalentCoverage": "NOT_ESTABLISHED",
             "actualParallelism": "NOT_RUN",
-            "runtimeProductTests": "NOT_RUN"
+            "runtimeProductTests": "NOT_RUN",
+            "integrityEvidence": {
+              "status": "PASS_REPORTED",
+              "matched": 38,
+              "total": 38,
+              "baselineAuxiliary": "MATCH_TEMPLATE",
+              "candidateAuxiliary": "MATCH_TEMPLATE",
+              "timing": "after direct read and warehouse transfer rounds",
+              "provenance": "operator supplied local Verificar output",
+              "independentlyExecuted": false
+            }
           },
           "assessment": {
-            "G1": "AUTONOMOUS_REVIEW_DELEGATION_PASS_REPORTED_RETURN_INTEGRATION_PENDING_EVIDENCE",
-            "G3": "PROMISING_SINGLE_DISPATCH_REPORTED_FIRST_INPUT_AND_RETURN_PENDING_EVIDENCE",
+            "G1": "PASS_REPORTED_AUTONOMOUS_INDEPENDENT_DESIGN_REVIEW_RETURN_SUBSTANTIVELY_INTEGRATED_IN_THIS_SAMPLE",
+            "G3": "PASS_REPORTED_FIRST_DISPATCH_CONCRETE_ACCESSIBLE_OBJECT_IN_THIS_SAMPLE",
             "G2": "DESIGN_CONTRACT_PARTIAL_NOT_PRODUCT_ACCEPTANCE",
             "candidateStrengths": [
               "partial reception and explicit quarantine/exception states",
@@ -1254,7 +1314,7 @@
               "idempotency key namespace, stable receipt, retention and business uniqueness",
               "authority and lifecycle for discrepancies, revocation and delta review"
             ],
-            "conclusion": "different design coverage; one visible candidate delegation vs two baseline, no equivalent elapsed-time or quality comparison; no inference of causal policy effect"
+            "conclusion": "first concrete dispatch and review demonstrated in reported candidate sample; baseline first task produced useful independent design, not merely failed handoff; 32+36 child seconds and 24 child seconds versus 77 candidate total are not comparable total times; no causal or universal improvement claim"
           }
         }
       }
