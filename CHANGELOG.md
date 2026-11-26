@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.99.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.100.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -353,3 +353,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1b.1 ampliación de evidencia
 - Resúmenes visibles aportados: 1 search y Read en cada variante, 6s baseline y 8s candidate, sin Task/skill visibles; exactitud de formato no verificada y rendimiento no establecido. Manifiesto 0.48.0; solo documentación.
+
+## 2026-11-26 — F06-R1b.2 evaluación diferencial
+- Evidencia: 38 MATCH antes del diseño; baseline 110s con dos especialistas; candidate 34s y tres activaciones pertinentes visibles, sin contraste independiente acreditado. Hallazgos G1/G2, aceptación no concedida y rendimiento no comparable. Manifiesto 0.49.0; solo documentación, recuperación focalizada pendiente.
