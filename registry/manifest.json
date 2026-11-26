@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.53.0",
+    "version": "0.54.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -232,7 +232,7 @@
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
-    "F06_R1B2_R": "REFINEMENT_PREPARATION_PASS_REPORTED_LOAD_PENDING"
+    "F06_R1B2_R": "REFINEMENT_LOAD_AND_DISCOVERY_PASS_REPORTED_ROUTING_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -676,7 +676,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "No actualizar checkout ni preparar de nuevo. Abrir Code en baseline y candidate con modelo autorizado, confirmar marcador privado en ambos mediante Verificar -ComprobarMarcador; confirmar catálogo diferencial reportado (baseline 0/13 propias, candidate 13/13, 9 especialistas comunes), modelo UI si visible. Después control negativo directo y nueva misión análoga sin inducir skills o reparto, con contexto accesible en primera Task y revisión independiente integrada. Conservar evidencia previa. Revisión independiente de política 0.22.0 y evaluación runtime pendientes.",
+    "next": "R1 control negativo de política 0.22.0: chats nuevos Code en ambos workspaces, mismo modelo, petición literal de lectura de fixture.txt sin red ni cambios; registrar contenido y operaciones visibles. Si correcto, misión análoga nueva de transferencia entre almacenes en chats nuevos, mismo modelo, sin indicar roles ni skills; revisar objeto concreto, inputs de primera Task, resultados e integración. Verificar integridad al terminar rondas. No repetir carga ni catálogo; revisión independiente de política pendiente.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1040,7 +1040,7 @@
       "unchangedPermissions": true,
       "unchangedRuntime": true,
       "labCompatibility": "REQUIRES_NEW_PINNED_SOURCE_REVISION_AFTER_AUTHORIZED_OLD_LAB_RETIREMENT",
-      "runtimeStatus": "NOT_RUN",
+      "runtimeStatus": "PARTIAL_REPORTED_POLICY_LOAD_AND_DISCOVERY",
       "independentReview": "NOT_RUN",
       "installable": false,
       "reason": [
@@ -1072,7 +1072,7 @@
         ],
         "windowsParserStatus": "PASS_REPORTED",
         "preparationStatus": "PASS_REPORTED",
-        "runtimeStatus": "NOT_RUN",
+        "runtimeStatus": "PARTIAL_REPORTED_POLICY_LOAD_AND_DISCOVERY",
         "migration": "retire 0.21.0 with script 0.1.1 and original checkout b78e4b2 before switching to new revision; no adoption or in-place updates",
         "preparationEvidence": {
           "status": "PASS_REPORTED",
@@ -1094,9 +1094,77 @@
           "provenance": "operator supplied local PowerShell output",
           "independentlyExecuted": false
         },
-        "loadStatus": "NOT_RUN",
-        "discoveryStatus": "NOT_RUN",
-        "retirementStatus": "NOT_RUN"
+        "loadStatus": "PASS_LOAD_REPORTED_POLICY_ONLY",
+        "discoveryStatus": "PASS_REPORTED_CATALOG",
+        "retirementStatus": "NOT_RUN",
+        "policyLoadEvidence": {
+          "status": "PASS_LOAD_REPORTED",
+          "baseline": "PASS_LOAD_REPORTED",
+          "candidate": "PASS_LOAD_REPORTED",
+          "protectedWorkspaceFilesMatched": 38,
+          "protectedWorkspaceFilesTotal": 38,
+          "auxiliaryBaseline": "MATCH_TEMPLATE",
+          "auxiliaryCandidate": "MATCH_TEMPLATE",
+          "markerValuesStored": false,
+          "automaticInstructionInjectionTrace": "NOT_VERIFIED",
+          "provenance": "operator supplied local Verificar -ComprobarMarcador output",
+          "independentlyExecuted": false
+        },
+        "discoveryEvidence": {
+          "status": "PASS_REPORTED_CATALOG",
+          "date": "2026-11-26",
+          "provenance": "operator supplied Code responses from both variants",
+          "ownAgentIds": [
+            "team-architect",
+            "team-backend",
+            "team-data",
+            "team-editorial",
+            "team-frontend",
+            "team-platform",
+            "team-quality",
+            "team-research",
+            "team-security"
+          ],
+          "nativeAgentIds": [
+            "explore",
+            "general"
+          ],
+          "baseline": {
+            "ownSkillNames": [],
+            "builtinSkills": [
+              "kilo-config"
+            ],
+            "reportedModel": "kilo/openai/gpt-6-luna"
+          },
+          "candidate": {
+            "ownSkillNames": [
+              "architecture-decisions",
+              "focused-testing",
+              "git-workflow",
+              "implementation-discipline",
+              "requirements-acceptance",
+              "secure-development",
+              "skill-authoring",
+              "systematic-debugging",
+              "team-context-recovery",
+              "team-coordination",
+              "team-routing",
+              "team-task-contract",
+              "tool-mcp-discovery"
+            ],
+            "builtinSkills": [
+              "kilo-config"
+            ],
+            "ownSkillOrigin": "candidate/.kilo/skills",
+            "reportedModel": "openai/gpt-6-luna"
+          },
+          "builtinOrigin": "builtin",
+          "modelReferenceConsistentReported": true,
+          "uiModelConfirmation": "NOT_VERIFIED",
+          "independentCatalogTrace": "NOT_VERIFIED",
+          "effectiveRolePermissions": "NOT_RUN",
+          "autonomousBehavior": "NOT_RUN"
+        }
       }
     }
   }
