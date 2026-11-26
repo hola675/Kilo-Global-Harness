@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.51.0",
+    "version": "0.52.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -231,8 +231,8 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "POST_RECOVERY_INTEGRITY_PASS_REPORTED_RETIREMENT_PENDING",
-    "F06_R1B2_R": "PINNED_REFINEMENT_LAB_CANDIDATE"
+    "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
+    "F06_R1B2_R": "OLD_LAB_RETIRED_REFINEMENT_PREPARATION_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -676,7 +676,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Retirar laboratorio 0.21.0 con script 0.1.1 en checkout b78e4b2 y consentimiento explícito de cierre/retirada/auxiliares; confirmar F06_RETIRADO y F06_AUSENTE. Solo entonces cambiar worktree a 0.1.2 fijado, parser y diagnóstico de fuentes, preparar con modelo autorizado, confirmar nueva carga y recertificación focalizada. Revisión independiente de 0.22.0 pendiente; no integrar main ni activar globalmente.",
+    "next": "Actualizar worktree limpio al commit fa74708972d41f554b5d6e11bfe50b92900e50ae con script 0.1.2. Validar parser y diagnóstico 24 fuentes de 86e1163 y F06_AUSENTE; preparar con Kilo cerrado, consentimiento específico y modelo kilo/openai/gpt-6-luna; Verificar 38 archivos. Después validar carga y catálogo diferencial, control sencillo y misión análoga. Revisión independiente de 0.22.0 aún pendiente; no integrar main ni activar globalmente.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1006,7 +1006,26 @@
         }
       },
       "policyVersion": "0.21.0",
-      "retirementStatus": "NOT_RUN"
+      "retirementStatus": "PASS_REPORTED",
+      "retirementEvidence": {
+        "status": "PASS_REPORTED",
+        "scriptVersion": "0.1.1",
+        "policyVersion": "0.21.0",
+        "checkoutRevision": "b78e4b23f77cd4f26f21ab3beeab73d745be60c7",
+        "sourceRevision": "8fe21568fc8362b3f743d33b0c27c0f682110908",
+        "consentReported": true,
+        "protectedWorkspaceFilesMatched": 38,
+        "protectedWorkspaceFilesTotal": 38,
+        "integrityChecksReported": 2,
+        "auxiliaryBaseline": "MATCH_TEMPLATE",
+        "auxiliaryCandidate": "MATCH_TEMPLATE",
+        "retirementOutput": "F06_RETIRADO",
+        "postRetirementSourceMatches": 24,
+        "postRetirementSourceTotal": 24,
+        "postRetirementStatus": "F06_AUSENTE",
+        "provenance": "operator supplied local PowerShell output",
+        "independentlyExecuted": false
+      }
     },
     "recordScope": "Inventario y evidencia del núcleo 0.21.0 fijado en sourceRevision del laboratorio activo; propuesta posterior 0.22.0 registrada separadamente en refinementCandidate; no aplicar inventario histórico a archivos actuales sin reconciliar.",
     "refinementCandidate": {

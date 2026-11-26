@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.102.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.103.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -363,3 +363,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1b.2-R transición
 - Evidencia: integridad posterior a recuperación 38/38 MATCH y auxiliares MATCH_TEMPLATE reportados. Script 0.1.2 fija política 0.22.0, 23 pins y lógica intactos; manifiesto 0.51.0. Retirada antigua autorizada y evaluación nueva pendientes.
+
+## 2026-11-26 — F06-R1b.2-R retirada histórica
+- Evidencia reportada: retirada autorizada, 38/38 MATCH, ambos auxiliares reconocidos, F06_RETIRADO y diagnóstico 24 MATCH/F06_AUSENTE. Manifiesto 0.52.0; preparación nueva pendiente, sin cambios de componentes.
