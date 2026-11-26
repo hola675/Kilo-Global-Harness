@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.54.0",
+    "version": "0.55.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -232,7 +232,7 @@
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
-    "F06_R1B2_R": "REFINEMENT_LOAD_AND_DISCOVERY_PASS_REPORTED_ROUTING_PENDING"
+    "F06_R1B2_R": "REFINEMENT_ROUTING_REPORTED_CHILD_EVIDENCE_AND_INTEGRITY_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -676,7 +676,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "R1 control negativo de política 0.22.0: chats nuevos Code en ambos workspaces, mismo modelo, petición literal de lectura de fixture.txt sin red ni cambios; registrar contenido y operaciones visibles. Si correcto, misión análoga nueva de transferencia entre almacenes en chats nuevos, mismo modelo, sin indicar roles ni skills; revisar objeto concreto, inputs de primera Task, resultados e integración. Verificar integridad al terminar rondas. No repetir carga ni catálogo; revisión independiente de política pendiente.",
+    "next": "No repetir misión ni generar nuevos Task. Recuperar historial existente: candidate prompt concreto inicial y retorno de team-security; baseline prompts/retornos primero y segundo, tiempo total si visible. Contrastar objeto, scope, estado, hallazgos incorporados y delta material; si no disponible NOT_VERIFIED. Cerrar ronda con Verificar sin marcador desde checkout fijado; preservar hallazgos históricos. Continuar R1b.3 recuperación incierta y R1b.4 evaluación de skill si evidencia suficiente; revisión independiente de política y runtime completo pendientes.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1040,7 +1040,7 @@
       "unchangedPermissions": true,
       "unchangedRuntime": true,
       "labCompatibility": "REQUIRES_NEW_PINNED_SOURCE_REVISION_AFTER_AUTHORIZED_OLD_LAB_RETIREMENT",
-      "runtimeStatus": "PARTIAL_REPORTED_POLICY_LOAD_AND_DISCOVERY",
+      "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_HANDOFF_EVIDENCE_PENDING",
       "independentReview": "NOT_RUN",
       "installable": false,
       "reason": [
@@ -1072,7 +1072,7 @@
         ],
         "windowsParserStatus": "PASS_REPORTED",
         "preparationStatus": "PASS_REPORTED",
-        "runtimeStatus": "PARTIAL_REPORTED_POLICY_LOAD_AND_DISCOVERY",
+        "runtimeStatus": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_HANDOFF_EVIDENCE_PENDING",
         "migration": "retire 0.21.0 with script 0.1.1 and original checkout b78e4b2 before switching to new revision; no adoption or in-place updates",
         "preparationEvidence": {
           "status": "PASS_REPORTED",
@@ -1163,7 +1163,99 @@
           "uiModelConfirmation": "NOT_VERIFIED",
           "independentCatalogTrace": "NOT_VERIFIED",
           "effectiveRolePermissions": "NOT_RUN",
-          "autonomousBehavior": "NOT_RUN"
+          "autonomousBehavior": "PARTIAL_REPORTED_POSITIVE_AND_NEGATIVE"
+        },
+        "readComparisonEvidence": {
+          "status": "PASS_REPORTED_ROUTING_WITH_FORMAT_UNVERIFIED",
+          "date": "2026-11-26",
+          "provenance": "operator supplied visible operation summaries and answers for both variants",
+          "baseline": {
+            "elapsedSeconds": 14,
+            "searches": 1,
+            "reads": 1,
+            "visibleTaskCalls": 0,
+            "visibleSkillCalls": 0
+          },
+          "candidate": {
+            "elapsedSeconds": 10,
+            "searches": 1,
+            "reads": 1,
+            "visibleTaskCalls": 0,
+            "visibleSkillCalls": 0
+          },
+          "semanticContent": "PASS_REPORTED",
+          "exactLineBreaks": "NOT_VERIFIED_DISPLAYED_AS_ONE_LINE",
+          "independentCompleteTrace": "NOT_VERIFIED",
+          "postRoundIntegrity": "NOT_RUN",
+          "performanceBenefit": "NOT_ESTABLISHED"
+        },
+        "designComparisonEvidence": {
+          "scenario": "warehouse inventory transfer analogous regression",
+          "date": "2026-11-26",
+          "status": "PARTIAL_REPORTED_AUTONOMOUS_REVIEW_FIRST_HANDOFF_EVIDENCE_PENDING",
+          "provenance": "operator supplied parent visible operation summaries and final designs",
+          "baseline": {
+            "elapsedSeconds": null,
+            "visibleSkillCalls": [],
+            "visibleDelegations": [
+              "team-security",
+              "team-security"
+            ],
+            "firstReviewGeneric": "REPORTED_IN_PARENT_SUMMARY",
+            "secondReviewConcrete": "REPORTED_IN_PARENT_SUMMARY",
+            "childPromptsAndReturns": "NOT_PROVIDED",
+            "integratedReview": "REPORTED_BY_PARENT"
+          },
+          "candidate": {
+            "elapsedSeconds": 77,
+            "visibleSkillCalls": [
+              "requirements-acceptance",
+              "architecture-decisions",
+              "secure-development",
+              "team-routing",
+              "team-task-contract"
+            ],
+            "visibleDelegations": [
+              "team-security"
+            ],
+            "reviewSelection": "PASS_REPORTED_AUTONOMOUS",
+            "firstReviewConcrete": "REPORTED_BY_PARENT_NOT_VERIFIED_FROM_CHILD",
+            "childPromptsAndReturns": "NOT_PROVIDED",
+            "integratedReview": "REPORTED_BY_PARENT"
+          },
+          "common": {
+            "scope": "hypothetical design only",
+            "independentCompleteTrace": "NOT_VERIFIED",
+            "postRoundIntegrity": "NOT_RUN",
+            "executionOrMutation": "NONE_REPORTED",
+            "equivalentCoverage": "NOT_ESTABLISHED",
+            "actualParallelism": "NOT_RUN",
+            "runtimeProductTests": "NOT_RUN"
+          },
+          "assessment": {
+            "G1": "AUTONOMOUS_REVIEW_DELEGATION_PASS_REPORTED_RETURN_INTEGRATION_PENDING_EVIDENCE",
+            "G3": "PROMISING_SINGLE_DISPATCH_REPORTED_FIRST_INPUT_AND_RETURN_PENDING_EVIDENCE",
+            "G2": "DESIGN_CONTRACT_PARTIAL_NOT_PRODUCT_ACCEPTANCE",
+            "candidateStrengths": [
+              "partial reception and explicit quarantine/exception states",
+              "per-action reauthorization including replay read",
+              "conditional cancel/dispatch and idempotent retry",
+              "outbox deduplication and sequence gap handling"
+            ],
+            "baselineStrengths": [
+              "complete inventory key and conservation equation",
+              "authoritative reads after timeout; stale replica negative",
+              "explicit atomic boundary and distributed limitation",
+              "atomic inbox/effect/sequence and commit-publication recovery"
+            ],
+            "candidateOpenPoints": [
+              "full stock key and conservation equation including quarantine and authorized adjustments",
+              "authoritative status read and atomic distributed inbox/effect/sequence boundaries",
+              "idempotency key namespace, stable receipt, retention and business uniqueness",
+              "authority and lifecycle for discrepancies, revocation and delta review"
+            ],
+            "conclusion": "different design coverage; one visible candidate delegation vs two baseline, no equivalent elapsed-time or quality comparison; no inference of causal policy effect"
+          }
         }
       }
     }

@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.105.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.106.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -390,3 +390,6 @@ Parser 0.1.2, 24 fuentes de 86e1163, F06_AUSENTE, autorización, F04 vacío cons
 
 ## F06-R1b.2-R — carga y catálogo de 0.22.0 reportados (2026-11-26)
 Ambos PASS_LOAD_REPORTED, 38 MATCH y auxiliares MATCH_TEMPLATE; 9 especialistas comunes, baseline 0/13 y candidate 13/13 propias, builtin común y referencias de modelo consistentes. Manifiesto 0.54.0. Carga y descubrimiento reportados; comportamiento y revisión independiente pendientes. Siguiente control negativo y misión análoga nueva sin inducir reparto. F06 IN_PROGRESS.
+
+## F06-R1b.2-R — control y nueva misión análoga (2026-11-26)
+Lectura directa reportada 14/10s, una búsqueda/lectura por variante, sin skill/Task visibles. Transferencia candidate 77s, cinco skills pertinentes y una revisión Bastión visible; baseline dos encargos, primero genérico según padre, sin tiempo aportado. Selección autónoma reportada, entrada inicial y retorno/integración aún requieren evidencia existente de hijos. Manifiesto 0.55.0. No repetir misión; recuperar historial y verificar integridad. F06 IN_PROGRESS.
