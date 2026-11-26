@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.97.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.98.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -347,3 +347,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1a.3 invocación explícita
 - Evidencia del operador: invocación team-routing declarada satisfactoria y decisiones N1/N3 correctas. Traza y operaciones no verificadas, no prueba autónoma. Manifiesto 0.46.0; sin cambios de componentes ni script.
+
+## 2026-11-26 — F06-R1b.1 lectura comparativa
+- Evidencia del operador: contenido esperado de fixture idéntico en ambas variantes; PASS_REPORTED_CONTENT_ONLY. Operaciones, tiempo e integridad posterior pendientes; sin atribuir mejora de rendimiento. Manifiesto 0.47.0; sin cambios de componentes.

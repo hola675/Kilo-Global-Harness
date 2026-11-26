@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.46.0",
+    "version": "0.47.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -231,7 +231,7 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "EXPLICIT_INVOCATION_REPORTED_COMPARISON_PENDING"
+    "F06_LAB_R1": "READ_RESULT_EQUIVALENCE_REPORTED_DESIGN_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -675,7 +675,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "R1b.1 control lectura conocida: chat Code nuevo por variante, mismo modelo autorizado, misma petición exacta de fixture.txt, sin precarga ni sugerir routing. Comparar contenido y operaciones visibles, ausencia de Task y skill innecesarios, sin red ni escritura. Registrar tiempos solo observados. Verificar integridad al cierre; después diseño complejo R1b.2 en chats nuevos. No repetir invocación explícita por rutina.",
+    "next": "Verificar integridad local sin marcador antes de R1b.2. Si PASS, chats Code nuevos por variante, mismo modelo, misma petición de diseño de devolución de pedidos de tests/F06-SKILLS.md; no sugerir skills ni agentes, autorizar diseño/revisión de solo lectura y no ejecutar red, comandos o escrituras. Recoger resultado y operaciones visibles cuando disponibles; diferenciar revisión real de autoevaluación. No repetir lectura previa ni atribuir ahorro.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -687,7 +687,7 @@
         "candidate"
       ],
       "scope": "read-only-and-design",
-      "runtimeStatus": "PARTIAL_REPORTED_POLICY_DISCOVERY_INVOCATION",
+      "runtimeStatus": "PARTIAL_REPORTED_READ_EQUIVALENCE",
       "windowsParserStatus": "PASS_REPORTED",
       "installable": false,
       "diagnosticEvidence": {
@@ -837,6 +837,23 @@
         ],
         "actualDelegation": "NOT_RUN",
         "autonomousActivation": "NOT_RUN"
+      },
+      "readComparisonEvidence": {
+        "status": "PASS_REPORTED_CONTENT_ONLY",
+        "date": "2026-11-26",
+        "provenance": "operator supplied common response and reported both variants identical",
+        "scenario": "R1b.1",
+        "baseline": "PASS_REPORTED_CONTENT",
+        "candidate": "PASS_REPORTED_CONTENT",
+        "expectedLines": 2,
+        "visibleContentMatches": true,
+        "byteExactness": "NOT_VERIFIED",
+        "readToolTrace": "NOT_VERIFIED",
+        "taskCalls": "NOT_VERIFIED",
+        "skillCalls": "NOT_VERIFIED",
+        "elapsedTime": "NOT_MEASURED",
+        "postRoundIntegrity": "NOT_RUN",
+        "performanceBenefit": "NOT_ESTABLISHED"
       }
     }
   }
