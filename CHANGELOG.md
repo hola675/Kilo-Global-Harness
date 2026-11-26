@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.95.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.96.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -341,3 +341,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-25 — F06-LAB-R1a preparación y carga reportadas
 - Evidencia del operador: parser 0.1.1 PASS, F04_EMPTY_CONTAINER, F06_PREPARADO, 38/38 MATCH, auxiliares MATCH_TEMPLATE tras uso y ambos PASS_LOAD_REPORTED. Manifiesto 0.44.0; catálogo, modelo efectivo, invocación, comportamiento y revisión independiente pendientes. Sin cambios de script ni núcleo.
+
+## 2026-11-26 — F06-R1a.2 descubrimiento
+- Evidencia del operador: 9/9 agentes propios en ambas variantes, 0/13 skills propias baseline y 13/13 candidate, builtin común kilo-config. Manifiesto 0.45.0; catálogo reportado, no invocación ni permisos probados; sin cambios del núcleo o script.

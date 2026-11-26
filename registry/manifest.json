@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.44.0",
-    "last_modified": "2026-11-25"
+    "version": "0.45.0",
+    "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
   "targetHarnessVersion": "1.0.0",
@@ -231,7 +231,7 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "POLICY_LOAD_PASS_REPORTED_DISCOVERY_PENDING"
+    "F06_LAB_R1": "DISCOVERY_PASS_REPORTED_INVOCATION_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -675,7 +675,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "R1a descubrimiento: observar catálogo de Code en ambos workspaces y especialistas directos, sin leer SKILL.md para simular disponibilidad, sin cargar aún; comprobar modelo real por UI, ausencia de las 13 skills propias en baseline y presencia en candidate, procedencia si expuesta. Después invocación explícita de team-routing solo en candidate, en conversación separada de evaluación autónoma. Si catálogo no observable o contaminación, bloquear comparación. Conservar script y worktree; no repetir preparación ni marcador.",
+    "next": "R1a.3: en chat Code nuevo exclusivamente candidate, mismo modelo autorizado, invocar una vez team-routing mediante herramienta skill nativa, verificar retorno y aplicar a dos casos hipotéticos breves sin Task/shell/escritura. Registrar operación visible y respuesta, modelo UI si observable; no confundir carga explícita con selección autónoma. R1b en chats nuevos separados, control lectura conocida seguido de diseño comparativo si procede.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -687,7 +687,7 @@
         "candidate"
       ],
       "scope": "read-only-and-design",
-      "runtimeStatus": "PARTIAL_REPORTED_POLICY_LOAD",
+      "runtimeStatus": "PARTIAL_REPORTED_POLICY_AND_DISCOVERY",
       "windowsParserStatus": "PASS_REPORTED",
       "installable": false,
       "diagnosticEvidence": {
@@ -745,7 +745,69 @@
         "effectiveModel": "NOT_VERIFIED"
       },
       "loadStatus": "PASS_LOAD_REPORTED_POLICY_ONLY",
-      "discoveryStatus": "NOT_RUN"
+      "discoveryStatus": "PASS_REPORTED_CATALOG",
+      "discoveryEvidence": {
+        "status": "PASS_REPORTED_CATALOG",
+        "date": "2026-11-26",
+        "provenance": "operator-provided Code responses from both variants",
+        "nativeAgentIds": [
+          "explore",
+          "general"
+        ],
+        "ownAgentIds": [
+          "team-architect",
+          "team-backend",
+          "team-data",
+          "team-editorial",
+          "team-frontend",
+          "team-platform",
+          "team-quality",
+          "team-research",
+          "team-security"
+        ],
+        "baseline": {
+          "ownSkillNames": [],
+          "builtinSkills": [
+            "kilo-config"
+          ],
+          "ownAgents": 9,
+          "leader": "Code",
+          "reportedModel": "kilo/openai/gpt-6-luna"
+        },
+        "candidate": {
+          "ownSkillNames": [
+            "architecture-decisions",
+            "focused-testing",
+            "git-workflow",
+            "implementation-discipline",
+            "requirements-acceptance",
+            "secure-development",
+            "skill-authoring",
+            "systematic-debugging",
+            "team-context-recovery",
+            "team-coordination",
+            "team-routing",
+            "team-task-contract",
+            "tool-mcp-discovery"
+          ],
+          "builtinSkills": [
+            "kilo-config"
+          ],
+          "ownAgents": 9,
+          "leader": "Code",
+          "reportedModel": "openai/gpt-6-luna",
+          "ownSkillOrigin": "candidate/.kilo/skills",
+          "builtinOrigin": "builtin"
+        },
+        "modelReferenceConsistentReported": true,
+        "providerIdentityIndependentlyVerified": false,
+        "uiModelConfirmation": "NOT_VERIFIED",
+        "independentCatalogTrace": "NOT_VERIFIED",
+        "perRoleEffectivePermissions": "NOT_RUN",
+        "nativeSkillInvocation": "NOT_RUN",
+        "autonomousActivation": "NOT_RUN",
+        "postDiscoveryIntegrity": "NOT_RUN"
+      }
     }
   }
 }
