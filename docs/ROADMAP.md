@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.101.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.102.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -378,3 +378,6 @@ Integridad tras R1b.1 reportada 38 MATCH. Diseño baseline 110s, Atlas y Bastió
 
 ## F06-R1b.2-R — recuperación y refinamiento de Code (2026-11-26)
 Recuperación dirigida 88s reportada; Bastión/Prisma inicialmente BLOCKED por objeto no accesible, luego retornan revisiones concretas e integración de cuatro ajustes. G3 repite clase F05-B-R; G1 autonomía inicial no superada, G2 parcial. Política 0.22.0 candidata refuerza entradas accesibles y contraste independiente solicitado; skills, agentes, permisos y script 0.1.1 intactos. Manifiesto 0.50.0 separa inventario activo 0.21.0 de refinamiento. Verificar laboratorio antiguo; preparar revisión focalizada y nuevo pin solo tras retirada autorizada. Prueba análoga y control negativo; runtime y revisión independiente de 0.22.0 NOT_RUN. F06 IN_PROGRESS.
+
+## F06-R1b.2-R — transición preparada (2026-11-26)
+Integridad posterior a recuperación reportada 38 MATCH y auxiliares reconocidos. Script 0.1.2 candidato fija 0.22.0; único cambio de pin de núcleo, 23 intactos, funciones intactas. Manifiesto 0.51.0. Retirar 0.21.0 con script 0.1.1 original antes de cambiar worktree; consentimiento y ausencia obligatorios. Revisión independiente y runtime nuevos pendientes. F06 IN_PROGRESS.

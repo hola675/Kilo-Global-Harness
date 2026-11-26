@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.50.0",
+    "version": "0.51.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -231,8 +231,8 @@
     "F05_2_R": "IN_PROGRESS",
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
-    "F06_LAB_R1": "RECOVERY_REPORTED_TRANSFER_GAP",
-    "F06_R1B2_R": "POLICY_REFINEMENT_CANDIDATE_STATIC"
+    "F06_LAB_R1": "POST_RECOVERY_INTEGRITY_PASS_REPORTED_RETIREMENT_PENDING",
+    "F06_R1B2_R": "PINNED_REFINEMENT_LAB_CANDIDATE"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -676,7 +676,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Verificar 38 archivos tras recuperación desde worktree 0.21.0 existente, sin marcador. No actualizar fuentes ni registro activos. 0.22.0 es delta estático separado; revisar de forma independiente, preparar actualización focalizada del mismo script con nuevos pins tras cierre/retirada autorizada de 0.21.0, luego evaluar caso análogo nuevo en ambas variantes 0.22.0 sin sugerir reparto. Mantener R1b.2 inicial FAIL/PARTIAL y recuperación asistida. No repetir diseño de devolución ni ampliar política por rutina.",
+    "next": "Retirar laboratorio 0.21.0 con script 0.1.1 en checkout b78e4b2 y consentimiento explícito de cierre/retirada/auxiliares; confirmar F06_RETIRADO y F06_AUSENTE. Solo entonces cambiar worktree a 0.1.2 fijado, parser y diagnóstico de fuentes, preparar con modelo autorizado, confirmar nueva carga y recertificación focalizada. Revisión independiente de 0.22.0 pendiente; no integrar main ni activar globalmente.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -916,7 +916,7 @@
           "executionOrMutation": "NONE_REPORTED",
           "providerGuarantees": "UNVERIFIED",
           "content": "both address actor authorization, balance, local idempotence, uncertain effects, messages and acceptance criteria",
-          "postRoundIntegrity": "NOT_RUN_AFTER_DESIGN_AND_RECOVERY",
+          "postRoundIntegrity": "PASS_REPORTED_AFTER_DESIGN_AND_RECOVERY",
           "performanceBenefitAtEqualGuarantees": "NOT_ESTABLISHED",
           "independentCompleteTrace": "NOT_VERIFIED"
         },
@@ -991,13 +991,22 @@
           ],
           "actualNativeTaskIds": "NOT_VERIFIED",
           "childNesting": "NOT_VERIFIED_AMBIGUOUS_UI_LABELS",
-          "postRoundIntegrity": "NOT_RUN",
+          "postRoundIntegrity": "PASS_REPORTED",
           "autonomousRecovery": false,
           "deltaReview": "NOT_RUN",
-          "performanceBenefitAtEqualGuarantees": "NOT_ESTABLISHED"
+          "performanceBenefitAtEqualGuarantees": "NOT_ESTABLISHED",
+          "integrityEvidence": {
+            "status": "PASS_REPORTED",
+            "matched": 38,
+            "total": 38,
+            "baselineAuxiliary": "MATCH_TEMPLATE",
+            "candidateAuxiliary": "MATCH_TEMPLATE",
+            "provenance": "operator supplied Verificar output after recovery"
+          }
         }
       },
-      "policyVersion": "0.21.0"
+      "policyVersion": "0.21.0",
+      "retirementStatus": "NOT_RUN"
     },
     "recordScope": "Inventario y evidencia del núcleo 0.21.0 fijado en sourceRevision del laboratorio activo; propuesta posterior 0.22.0 registrada separadamente en refinementCandidate; no aplicar inventario histórico a archivos actuales sin reconciliar.",
     "refinementCandidate": {
@@ -1030,7 +1039,23 @@
         "T7",
         "S16"
       ],
-      "oldEvidenceRetained": true
+      "oldEvidenceRetained": true,
+      "laboratory": {
+        "path": "scripts/Probar-Skills-KiloTeam.ps1",
+        "version": "0.1.2",
+        "sourceRevision": "86e11637ace4cfa4794946af8b0af34c7173626b",
+        "policyVersion": "0.22.0",
+        "protectedSourceFiles": 24,
+        "protectedWorkspaceFiles": 38,
+        "variants": [
+          "baseline",
+          "candidate"
+        ],
+        "windowsParserStatus": "NOT_RUN",
+        "preparationStatus": "NOT_RUN",
+        "runtimeStatus": "NOT_RUN",
+        "migration": "retire 0.21.0 with script 0.1.1 and original checkout b78e4b2 before switching to new revision; no adoption or in-place updates"
+      }
     }
   }
 }

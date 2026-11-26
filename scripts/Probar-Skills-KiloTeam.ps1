@@ -1,6 +1,6 @@
 # KILO-GLOBAL-HARNESS-TEAM
-# Version: 0.1.1
-# Fecha: 2026-11-25
+# Version: 0.1.2
+# Fecha: 2026-11-26
 # F06-LAB-R1: comparación local de solo lectura/diseño; no instalador.
 # Exit 0: operación acotada completada; 1: error/bloqueo.
 [CmdletBinding()]
@@ -16,9 +16,9 @@ param(
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$Revision = '8fe21568fc8362b3f743d33b0c27c0f682110908'
+$Revision = '86e11637ace4cfa4794946af8b0af34c7173626b'
 $Pins = [ordered]@{
-    'team/policies/AGENTS.md' = 'd7cbb711fb268508a52b01cdf12baf0f74917fec'
+    'team/policies/AGENTS.md' = '4e22014ed876874bec688bb690f61ed74d83ecd0'
     'team/agents/team-architect.md' = '71d3cc2d43abd6d315ce76a28a71c92f3490c6dc'
     'team/agents/team-frontend.md' = '96814fa474f785132f8824b2457e80ff31876d9e'
     'team/agents/team-backend.md' = 'a96b40ae489d853e5b4733cd60c8583b296e985c'
