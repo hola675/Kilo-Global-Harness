@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.108.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.109.0 | Última modificación: 2026-11-26
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -381,3 +381,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R1b.3/R1b.4
 - Evidencia: cuatro respuestas conceptuales, prevención de reintentos inseguros y proliferación de skills, activación autónoma visible de skill-authoring. Manifiesto 0.57.0; integridad posterior, revisión independiente y pruebas reales pendientes. Sin cambios de componentes.
+
+## 2026-11-26 — F06-R2.1 reserva
+- R1 integridad final reportada 38 MATCH. Fixture de reserva con seis tests nativos, base roja 4/2 y referencia 6/0 en Node Linux; script 0.1.3 extiende propiedad sin modificar núcleo ni pins R1. Manifiesto 0.58.0; revisión independiente, parser Windows y ejecución local pendientes.

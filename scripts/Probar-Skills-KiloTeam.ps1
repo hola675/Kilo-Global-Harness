@@ -1,18 +1,20 @@
 # KILO-GLOBAL-HARNESS-TEAM
-# Version: 0.1.2
+# Version: 0.1.3
 # Fecha: 2026-11-26
-# F06-LAB-R1: comparación local de solo lectura/diseño; no instalador.
+# F06-LAB-R1/R2: comparación local y fixture descartable; no instalador.
 # Exit 0: operación acotada completada; 1: error/bloqueo.
 [CmdletBinding()]
 param(
-    [ValidateSet('Diagnostico','Preparar','Verificar','Retirar')]
+    [ValidateSet('Diagnostico','Preparar','Verificar','Retirar','PrepararR2','VerificarR2','RetirarR2')]
     [string]$Modo = 'Diagnostico',
     [string]$Modelo,
     [switch]$ConfirmarKiloCerrado,
     [switch]$ConfirmarPrueba,
     [switch]$ConfirmarRetirada,
     [switch]$ConfirmarRetiradaAuxiliar,
-    [switch]$ComprobarMarcador
+    [switch]$ComprobarMarcador,
+    [string]$BaselineDigest,
+    [string]$CandidateDigest
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -43,6 +45,11 @@ $Pins = [ordered]@{
     'team/skills/skill-authoring/SKILL.md' = '28e7b30eda8229fdc46ff7b0213dd14a82084207'
     'team/skills/focused-testing/references/quality-baseline.md' = '39ab4c81ea41b8f6d9331996727a5c67aeb38861'
 }
+$R2Pins = [ordered]@{
+    'tests/fixtures/f06-reservation/reservation.mjs' = '4e4ffde9656c6b9604961ce733d86f4910d28fcb'
+    'tests/fixtures/f06-reservation/reservation.test.mjs' = '9f87d6702902f07048fcc49e3ba21f1e4c30f1c6'
+    'tests/fixtures/f06-reservation/contract.md' = 'eb18a875089fc06ddc6b30d8c997bd445a3fbbff'
+}
 $Variants = @('baseline','candidate')
 $Utf8 = [Text.UTF8Encoding]::new($false,$true)
 
@@ -66,7 +73,7 @@ function Get-FileDigest([string]$Path) {
     Assert-File $Path
     (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash
 }
-function Get-PinnedBytes([string]$Relative) {
+function Get-PinnedBytes([string]$Relative, $ExpectedPins = $Pins) {
     $Path = Join-Path $Repo $Relative
     Assert-File $Path
     # Git blob SHA-1 identifica la revisión pública; SHA-256 protege los archivos locales.
@@ -76,7 +83,7 @@ function Get-PinnedBytes([string]$Relative) {
     $Bytes = $Utf8.GetBytes($Text)
     $Header = [Text.Encoding]::ASCII.GetBytes("blob $($Bytes.Length)" + [char]0)
     $Blob = [Convert]::ToHexString([Security.Cryptography.SHA1]::HashData([byte[]]($Header + $Bytes))).ToLowerInvariant()
-    if ($Blob -cne $Pins[$Relative]) { throw "Fuente distinta de revisión fijada: $Relative" }
+    if ($Blob -cne $ExpectedPins[$Relative]) { throw "Fuente distinta de revisión fijada: $Relative" }
     return ,$Bytes
 }
 function Write-New([string]$Path,[byte[]]$Bytes) {
@@ -168,13 +175,110 @@ function Get-State {
     }
     return [pscustomobject]@{ State=$State; Files=$Files }
 }
-function Confirm-Integrity($Record) {
-    Assert-Tree $Record.Files
+function Confirm-Integrity($Record, $Extension = $null) {
+    $TreeFiles = [ordered]@{}
+    foreach ($Rel in $Record.Files.Keys) { $TreeFiles[$Rel] = $Record.Files[$Rel] }
+    if ($null -ne $Extension) {
+        foreach ($Rel in $Extension.Keys) {
+            if ($TreeFiles.Contains($Rel)) { throw 'Solape de extensión.' }
+            $TreeFiles[$Rel] = $Extension[$Rel]
+        }
+    }
+    Assert-Tree $TreeFiles
     foreach ($Rel in $Record.Files.Keys) {
         if ((Get-FileDigest (Join-Path $Root $Rel)) -cne $Record.State.files[$Rel]) { throw "Deriva: $Rel; preservar." }
     }
     foreach ($Variant in $Variants) { Write-Host "$Variant auxiliar: $(Get-AuxiliaryStatus $Variant)" }
     Write-Host "MATCH: $($Record.Files.Count) archivos protegidos (integridad local, no runtime)."
+}
+function Get-R2Payload {
+    $Files = [ordered]@{}
+    foreach ($Variant in $Variants) {
+        foreach ($Source in $R2Pins.Keys) {
+            $Name = [IO.Path]::GetFileName($Source)
+            $Files["$Variant/r2/$Name"] = Get-PinnedBytes $Source $R2Pins
+        }
+    }
+    $Hashes = [ordered]@{}
+    foreach ($Rel in $Files.Keys) { $Hashes[$Rel] = Get-Sha256 $Files[$Rel] }
+    $State = [ordered]@{ id = 'kilo-team-f06-r2-reservation-v1'; revision = $Revision; files = $Hashes }
+    $Files['r2-ownership.json'] = $Utf8.GetBytes(($State | ConvertTo-Json -Depth 4 -Compress))
+    return $Files
+}
+function Confirm-R2($Record, $Extra) {
+    Confirm-Integrity $Record $Extra
+    $Digests = [ordered]@{}
+    foreach ($Rel in $Extra.Keys) {
+        $Digest = Get-FileDigest (Join-Path $Root $Rel)
+        $Expected = Get-Sha256 $Extra[$Rel]
+        if ($Rel -cin @('baseline/r2/reservation.mjs','candidate/r2/reservation.mjs')) {
+            $Digests[$Rel] = $Digest
+            $Status = if ($Digest -ceq $Expected) { 'BASELINE' } else { 'CHANGED_UNREVIEWED' }
+            Write-Host "$Rel : $Status $Digest"
+        } elseif ($Digest -cne $Expected) {
+            throw "Deriva protegida R2: $Rel; preservar."
+        }
+    }
+    Write-Host 'R2_PROTECTED_MATCH: 4 archivos y registro; no certifica código ni autor.'
+    return $Digests
+}
+function Invoke-R2($Record) {
+    if ($ComprobarMarcador -or $Modelo -or $ConfirmarRetiradaAuxiliar) { throw 'Parámetro incompatible con R2.' }
+    $Extra = Get-R2Payload
+    if ($Extra.Count -ne 7) { throw 'Inventario R2 inesperado.' }
+    $R2State = Join-Path $Root 'r2-ownership.json'
+    if ($Modo -eq 'PrepararR2') {
+        if (-not $ConfirmarKiloCerrado -or -not $ConfirmarPrueba) { throw 'Requiere autorización R2 y cierre de Kilo.' }
+        if ($ConfirmarRetirada -or $BaselineDigest -or $CandidateDigest) { throw 'Parámetro incompatible con preparación.' }
+        Confirm-Integrity $Record
+        Assert-Absent $Root 'r2-ownership.json'
+        foreach ($Variant in $Variants) { Assert-Absent (Join-Path $Root $Variant) 'r2' }
+        Write-New $R2State $Extra['r2-ownership.json']
+        foreach ($Variant in $Variants) {
+            $Path = Join-Path $Root "$Variant/r2"
+            New-Item -ItemType Directory -Path $Path -ErrorAction Stop | Out-Null
+            Assert-Directory $Path
+        }
+        foreach ($Rel in $Extra.Keys) {
+            if ($Rel -ceq 'r2-ownership.json') { continue }
+            Write-New (Join-Path $Root $Rel) $Extra[$Rel]
+        }
+        [void](Confirm-R2 $Record $Extra)
+        Write-Host 'F06_R2_PREPARADO'
+        return
+    }
+    $Digests = Confirm-R2 $Record $Extra
+    if ($Modo -eq 'VerificarR2') {
+        if ($ConfirmarPrueba -or $ConfirmarRetirada -or $BaselineDigest -or $CandidateDigest) { throw 'Parámetro incompatible con verificación.' }
+        Write-Host 'PASS_INTEGRIDAD_LOCAL_F06_R2 (código mutable no revisado)'
+        return
+    }
+    if ($Modo -cne 'RetirarR2' -or -not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada -or $ConfirmarPrueba) { throw 'Retirada R2 requiere autorización expresa y cierre.' }
+    $Approved = @{ baseline = $BaselineDigest; candidate = $CandidateDigest }
+    foreach ($Variant in $Variants) {
+        $Rel = "$Variant/r2/reservation.mjs"
+        $Expected = Get-Sha256 $Extra[$Rel]
+        if ($Digests[$Rel] -cne $Expected) {
+            if ($Approved[$Variant] -cnotmatch '^[A-F0-9]{64}$' -or $Approved[$Variant] -cne $Digests[$Rel]) { throw "Código R2 modificado sin huella revisada autorizada: $Variant." }
+        } elseif ($Approved[$Variant] -and $Approved[$Variant] -cne $Expected) { throw 'Huella autorizada no coincide.' }
+    }
+    foreach ($Rel in $Extra.Keys) {
+        if ($Rel -ceq 'r2-ownership.json') { continue }
+        $Path = Join-Path $Root $Rel
+        $Expected = if ($Digests.Contains($Rel)) { $Digests[$Rel] } else { Get-Sha256 $Extra[$Rel] }
+        if ((Get-FileDigest $Path) -cne $Expected) { throw "Deriva durante retirada R2: $Rel; preservar." }
+        Remove-Item -LiteralPath $Path -ErrorAction Stop
+    }
+    foreach ($Variant in $Variants) {
+        $Path = Join-Path $Root "$Variant/r2"
+        Assert-Directory $Path
+        if (@(Get-ChildItem -LiteralPath $Path -Force).Count -ne 0) { throw 'Directorio R2 no vacío; preservar.' }
+        [IO.Directory]::Delete($Path,$false)
+    }
+    if ((Get-FileDigest $R2State) -cne (Get-Sha256 $Extra['r2-ownership.json'])) { throw 'Registro R2 cambió; preservar.' }
+    Remove-Item -LiteralPath $R2State -ErrorAction Stop
+    Confirm-Integrity $Record
+    Write-Host 'F06_R2_RETIRADO'
 }
 function Assert-KnownCollisions {
     # F04 histórico retira ownership.json pero conserva su directorio contenedor.
@@ -228,6 +332,12 @@ try {
     $Root = [IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA 'KiloTeam-F06-Lab'))
     $Repo = Split-Path -Parent $PSScriptRoot
     $StateFile = Join-Path $Root 'ownership.json'
+    if ($Modo -cin @('PrepararR2','VerificarR2','RetirarR2')) {
+        $Record = Get-State
+        Invoke-R2 $Record
+        exit 0
+    }
+    if ($BaselineDigest -or $CandidateDigest) { throw 'Huellas R2 no válidas para modo R1.' }
     if ($Modo -eq 'Diagnostico') {
         foreach ($Source in $Pins.Keys) { [void](Get-PinnedBytes $Source) }
         Write-Host "Fuentes fijadas MATCH: $($Pins.Count) ($Revision)."

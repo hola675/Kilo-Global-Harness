@@ -1,5 +1,5 @@
 # Plan de scripts Windows
-Versión del archivo: 0.18.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.19.0 | Última modificación: 2026-11-26
 
 F02: Diagnosticar-KiloTeam.ps1 (solo lectura, versiones, paths, presencia de configuraciones sin secretos, procesos, herramientas y salida JSON sanitizada). F03: fixture de PoC aislado y verificación manual de sesión. F13: Administrar-KiloTeam.ps1 con modos Diagnostico, Simular, Instalar, Verificar, Actualizar, Desinstalar y Restaurar. F04: Probar-Nucleo-KiloTeam.ps1 es un procedimiento temporal de laboratorio, no el instalador F13. PowerShell 7, rutas con espacios y Unicode, códigos de salida documentados, sin admin por defecto, sin sobrescribir archivos no administrados, pruebas idempotentes y protección de junctions. No utilizar legacy como instalador.
 
@@ -47,3 +47,6 @@ Preparar 0.1.0 bloqueado por nombre F04 reportado. El script histórico retira r
 
 ## F06-R1b.2-R — nuevo pin (0.1.2)
 Revisión fuente 86e11637ace4cfa4794946af8b0af34c7173626b, política 0.22.0, otros 23 blobs intactos. Solo versión/fecha/revisión/pin de política cambian; funciones y guardas intactas. 0.1.1 retira exclusivamente su laboratorio original desde checkout b78e4b2 con autorización. No usar 0.1.2 sobre registro antiguo; cambiar checkout solo después de F06_RETIRADO/F06_AUSENTE. Parser/runtime de 0.1.2 NOT_RUN.
+
+## F06-R2.1 — extensión de reserva (0.1.3)
+Mismos pins R1; propiedad separada r2-ownership.json, dos fuentes editables, cuatro protegidos. PrepararR2 con cierre y consentimiento, VerificarR2 comprueba árbol exacto y huellas, RetirarR2 requiere consentimiento y huellas revisadas exactas si código cambió. No ejecuta código ni modifica 38 protegidos. Modos R1 bloquean extensión activa. Parser Windows y revisión independiente pendientes; ver tests/F06-SKILLS.md.

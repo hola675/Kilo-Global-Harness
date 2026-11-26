@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.57.0",
+    "version": "0.58.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -232,7 +232,8 @@
     "F06": "IN_PROGRESS",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
-    "F06_R1B2_R": "FOCUSED_R1B_REPORTED_FINAL_INTEGRITY_PENDING"
+    "F06_R1B2_R": "R1_DONE_REPORTED_LIMITED",
+    "F06_R2_1": "FIXTURE_CANDIDATE_PREPARED_STATIC"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -676,7 +677,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Verificar 38 protegidos sin marcador al cierre de R1b.3/R1b.4. No repetir pruebas conceptuales ni modificar laboratorio activo. Después diseñar siguiente fixture focalizado de mutación/validación con propiedad y registro separados, revisión independiente de política y skills y evaluación de permisos/recuperación real/Git proporcional según puertas F06; no certificar ni instalar. Preservar fallos históricos y no inferir activación de context-recovery sin traza.",
+    "next": "R1 cerrado con integridad reportada. R2.1 candidato estático: cerrar Kilo y validar checkout limpio; actualizar worktree a script 0.1.3 (mismos pins R1), parser y Verificar R1; diagnóstico Node de solo lectura/procedencia y aprobación separada. PrepararR2 con consentimiento, VerificarR2 exige 38+4 protegidos y 2 BASELINE. Revisar fixture y script independientemente antes de ejecutar; reproducir seis casos en cada variante con Node autorizado, esperar 4 PASS/2 FAIL y salida 1, no corregir ante otra salida. En chats nuevos misma misión y modelo, solo editar reservation.mjs, sin shell/red ni cambios de suite/registro. VerificarR2 y revisión de fuentes antes de autorizar ejecución final. No modificar global ni certificar F06.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1040,7 +1041,7 @@
       "unchangedPermissions": true,
       "unchangedRuntime": true,
       "labCompatibility": "REQUIRES_NEW_PINNED_SOURCE_REVISION_AFTER_AUTHORIZED_OLD_LAB_RETIREMENT",
-      "runtimeStatus": "PARTIAL_REPORTED_R1B_CONCEPTUAL_ROUNDS_INTEGRITY_PENDING",
+      "runtimeStatus": "PARTIAL_REPORTED_R1_COMPLETE_LIMITED",
       "independentReview": "NOT_RUN",
       "installable": false,
       "reason": [
@@ -1072,7 +1073,7 @@
         ],
         "windowsParserStatus": "PASS_REPORTED",
         "preparationStatus": "PASS_REPORTED",
-        "runtimeStatus": "PARTIAL_REPORTED_R1B_CONCEPTUAL_ROUNDS_INTEGRITY_PENDING",
+        "runtimeStatus": "PARTIAL_REPORTED_R1_COMPLETE_LIMITED",
         "migration": "retire 0.21.0 with script 0.1.1 and original checkout b78e4b2 before switching to new revision; no adoption or in-place updates",
         "preparationEvidence": {
           "status": "PASS_REPORTED",
@@ -1356,8 +1357,18 @@
             "actualTaskStateReconciliation": "NOT_RUN",
             "teamContextRecoveryInvocation": "NOT_VERIFIED",
             "noEffects": "REPORTED_RESPONSE_SCOPE_ONLY",
-            "postRoundIntegrity": "NOT_RUN",
-            "performanceBenefit": "NOT_ESTABLISHED"
+            "postRoundIntegrity": "PASS_REPORTED",
+            "performanceBenefit": "NOT_ESTABLISHED",
+            "integrityEvidence": {
+              "status": "PASS_REPORTED",
+              "matched": 38,
+              "total": 38,
+              "baselineAuxiliary": "MATCH_TEMPLATE",
+              "candidateAuxiliary": "MATCH_TEMPLATE",
+              "timing": "after R1b.3/R1b.4",
+              "provenance": "operator supplied local Verificar output",
+              "independentlyExecuted": false
+            }
           }
         },
         "skillAuthoringComparisonEvidence": {
@@ -1404,10 +1415,88 @@
             "actualPackVerification": "NOT_RUN",
             "actualSkillCreationOrInstallation": "NOT_RUN",
             "actualIsolatedComparison": "NOT_RUN",
-            "postRoundIntegrity": "NOT_RUN",
-            "performanceBenefit": "NOT_ESTABLISHED"
+            "postRoundIntegrity": "PASS_REPORTED",
+            "performanceBenefit": "NOT_ESTABLISHED",
+            "integrityEvidence": {
+              "status": "PASS_REPORTED",
+              "matched": 38,
+              "total": 38,
+              "baselineAuxiliary": "MATCH_TEMPLATE",
+              "candidateAuxiliary": "MATCH_TEMPLATE",
+              "timing": "after R1b.3/R1b.4",
+              "provenance": "operator supplied local Verificar output",
+              "independentlyExecuted": false
+            }
           }
+        },
+        "r1Closure": {
+          "status": "DONE_REPORTED_LIMITED",
+          "integrity": {
+            "status": "PASS_REPORTED",
+            "matched": 38,
+            "total": 38,
+            "baselineAuxiliary": "MATCH_TEMPLATE",
+            "candidateAuxiliary": "MATCH_TEMPLATE",
+            "timing": "after R1b.3/R1b.4",
+            "provenance": "operator supplied local Verificar output",
+            "independentlyExecuted": false
+          },
+          "scope": "conceptual/read-only; not full runtime certification"
         }
+      },
+      "r2Candidate": {
+        "status": "STATIC_CANDIDATE",
+        "script": {
+          "path": "scripts/Probar-Skills-KiloTeam.ps1",
+          "version": "0.1.3",
+          "previousVersion": "0.1.2",
+          "preservesR1SourceRevision": "86e11637ace4cfa4794946af8b0af34c7173626b"
+        },
+        "fixture": {
+          "path": "tests/fixtures/f06-reservation/",
+          "pins": {
+            "reservation.mjs": "4e4ffde9656c6b9604961ce733d86f4910d28fcb",
+            "reservation.test.mjs": "9f87d6702902f07048fcc49e3ba21f1e4c30f1c6",
+            "contract.md": "eb18a875089fc06ddc6b30d8c997bd445a3fbbff"
+          },
+          "variants": [
+            "baseline",
+            "candidate"
+          ],
+          "editable": "r2/reservation.mjs",
+          "protected": [
+            "r2/contract.md",
+            "r2/reservation.test.mjs"
+          ],
+          "registry": "r2-ownership.json",
+          "originalProtectedFiles": 38,
+          "additionalProtectedFiles": 4,
+          "mutableFiles": 2
+        },
+        "developerReferenceExecution": {
+          "runtime": "Node v22.16.0 Linux",
+          "baseline": {
+            "tests": 6,
+            "pass": 4,
+            "fail": 2,
+            "exitCode": 1
+          },
+          "referenceCorrection": {
+            "tests": 6,
+            "pass": 6,
+            "fail": 0,
+            "exitCode": 0
+          },
+          "provenance": "isolated developer container; reference solution not committed",
+          "windowsRuntime": "NOT_RUN"
+        },
+        "windowsParserStatus": "NOT_RUN",
+        "preparationStatus": "NOT_RUN",
+        "independentReview": "NOT_RUN",
+        "operatorExecutionAuthorization": "NOT_GRANTED",
+        "agentExecutionAuthorization": "NOT_GRANTED",
+        "retirementStatus": "NOT_RUN",
+        "installable": false
       }
     }
   }
