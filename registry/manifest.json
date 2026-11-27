@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.85.0",
+    "version": "0.86.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -268,7 +268,16 @@
     "F07_5": "IN_PROGRESS",
     "F07_5_1": "CONTRACT_CANDIDATE_PREPARED",
     "F07_5_2": "CONTRACT_APTO_REPORTED",
-    "F07_5_3": "PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
+    "F07_5_3": "PREPARATION_PASS_REPORTED",
+    "F07_5_4": "V1_STATIC_SOURCE_APTO_INTEGRITY_REPORTED",
+    "F07_5_5": "V1_SNAPSHOT_PASS_REPORTED",
+    "F07_5_6": "V1_INDEPENDENT_REVIEW_STATIC_PASS_OPERATOR_TRACE",
+    "F07_5_7": "V1_POST_REVIEW_INTEGRITY_PASS_REPORTED",
+    "F07_5_8": "V1_STATIC_ACCEPTED_DELTA_AUTHORIZED_REPORTED",
+    "F07_5_9": "V2_STATIC_SOURCE_APTO_INTEGRITY_REPORTED",
+    "F07_5_10": "V2_SNAPSHOT_PASS_REPORTED",
+    "F07_5_11": "V2_FOCUSED_REVIEW_PASS_SUMMARY_REPORTED",
+    "F07_5_12": "V2_OPERATOR_APTO_POST_REVIEW_EVIDENCE_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1891,7 +1900,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.5.3: operador valida parser y ejecuta preparador Revision 0.1.0; laboratorio nuevo, 26 protegidos, 1 mutable, delta ausente. Tras preparación PASS construir V1; verificar y fijar snapshot exacto antes de revisión independiente.",
+    "next": "F07.5.12: decision APTO V2 registrada; obtener salida existente de VerificarRevisionV2 y argumentos/retorno original de Task V2 si disponibles, sin repetir revisión. Cerrar T7 únicamente según evidencia; conservar objeto y snapshots.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2574,7 +2583,7 @@
     },
     "nextReviewProposal": {
       "phase": "F07.5.1",
-      "status": "CONTRACT_APTO_REPORTED_PREPARER_CANDIDATE",
+      "status": "V2_OPERATOR_APTO_POST_REVIEW_EVIDENCE_PENDING",
       "primaryCases": [
         "R3",
         "T3",
@@ -2587,8 +2596,8 @@
         "do not manufacture defect or unavailable reference solely for PASS",
         "if trace insufficient retain NOT_VERIFIED; no simulated independence"
       ],
-      "fixture": "NOT_CREATED",
-      "runtime": "NOT_RUN",
+      "fixture": "PREPARED_REPORTED",
+      "runtime": "NATIVE_REVIEW_TRAJECTORY_PARTIAL_REPORTED_SOFTWARE_NOT_RUN",
       "contractPath": "tests/F07-REVISION.md",
       "contractVersion": "0.1.0",
       "localEntryReadyReported": true,
@@ -2643,9 +2652,90 @@
         ],
         "scope": "prepare V1 only; inspect candidate; explicit consent to external exact-byte CreateNew snapshot bound to provided hash; verify saved and workspace hashes, inventory and protected objects; delta absent; no V1 acceptance or delta release",
         "staticValidation": "two embedded fixture literals extracted and hashes independently recomputed; adapted previously executed Swarm preparer; no PowerShell parser/runtime executed",
-        "powershellParser": "NOT_RUN",
-        "windowsExecution": "NOT_RUN",
-        "snapshot": "NOT_CREATED"
+        "powershellParser": "PASS_REPORTED",
+        "windowsExecution": "PREPARATION_V1_INSPECTION_SNAPSHOT_AND_POST_REVIEW_INTEGRITY_PASS_REPORTED",
+        "snapshot": "V1_MATCH_REPORTED"
+      },
+      "execution": {
+        "provenance": "operator supplied console outputs and Kilo UI transcripts; no direct remote access to local lab",
+        "inventorySha256": "E726142DAABD674A14D25607CEF6F53AFCC2C7F03D5305199B36BB589881C407",
+        "preparation": {
+          "sourceBlobsMatched": 24,
+          "fixtureHashesMatched": 2,
+          "protectedFiles": 26,
+          "mutableFiles": 1,
+          "decoderPassed": 4,
+          "status": "PASS_REPORTED"
+        },
+        "v1": {
+          "revision": "EXPORT-V1-D1",
+          "designVersion": "1.0.0",
+          "sha256": "9972A0B98DA7B6B9A365F40D9714C3436CA37782155B488172ED4EB4068FC1B9",
+          "author": "Code",
+          "constructionElapsedSeconds": 731,
+          "constructionSkills": 6,
+          "constructionSearches": 6,
+          "constructionDelegations": [
+            "team-architect",
+            "team-security"
+          ],
+          "reviewElapsedSeconds": 489,
+          "reviewerElapsedSeconds": 195,
+          "reviewer": "team-security",
+          "review": "PASS_6_OF_6_STATIC_OPERATOR_TRACE",
+          "evidence": "Task prompt, two child reads, original child return supplied; reviewer reports prior criteria-only involvement, no material contribution, distinct from author",
+          "snapshot": "MATCH_REPORTED",
+          "postReviewIntegrity": "PASS_REPORTED",
+          "acceptance": "ACCEPTED_STATIC_OPERATOR_RECORDED_REPORTED",
+          "acceptanceSha256": "734EE962BA667B0A191A9B4FD05AF6F896CA9F04A7C18CA94A877A9D7B45F89B",
+          "residuals": [
+            "full request schema unspecified",
+            "post-authorization data query failure behavior unspecified"
+          ]
+        },
+        "delta": {
+          "script": "F07.5.8-Autorizar-Delta-Revision-0.1.0.ps1",
+          "scriptSha256": "50123A6197E7016262801B47E83F85F646FF58674EA34C063B1FB81C012EA12D",
+          "sha256": "0D829D2150586DC5FFCCBFA79A764CD5096F57DEF58F5AD4F83F49617BCF099A",
+          "recordSha256": "CD37D4859097DE16CB9688658233FE63E79ACDA3C0432FD2EAEDCB86C93CDCE9",
+          "status": "AUTHORIZED_AFTER_V1_ACCEPTANCE_REPORTED",
+          "path": "spec/export-delta.md"
+        },
+        "v2": {
+          "revision": "EXPORT-V2-D1",
+          "designVersion": "2.0.0",
+          "sha256": "79A02D24F28F262651CDC67EA5703B7BC9943716208E82C49C2FB442E094DB7F",
+          "author": "Code",
+          "constructionElapsedSeconds": 146,
+          "constructionSkills": 2,
+          "constructionSearches": 4,
+          "constructionDelegations": 0,
+          "source": "APTO_STATIC",
+          "invalidation": "V1 accepted historical evidence explicitly not sufficient for V2",
+          "snapshot": "MATCH_REPORTED_BEFORE_REVIEW",
+          "reviewElapsedSeconds": 137,
+          "reviewer": "team-security",
+          "review": "PASS_FOCUSED_STATIC_LEADER_SUMMARY_REPORTED",
+          "reviewEvidence": "Task delegation visible, direct child reads and findings reported by Code; raw Task prompt, child reads and original return not yet supplied",
+          "postReviewIntegrity": "PENDING_OPERATOR_OUTPUT",
+          "operatorDecision": "APTO_EXPLICIT_STATIC_WITH_RESIDUAL",
+          "acceptanceStatus": "OPERATOR_DECISION_RECORDED_FINAL_EVIDENCE_PENDING",
+          "residuals": [
+            "full request schema unspecified",
+            "post-authorization data query failure behavior unspecified",
+            "error or timeout acquiring trusted context not explicitly defined"
+          ],
+          "documentStatus": "preserve exact reviewed bytes; historical pending-review label superseded by external decision only"
+        }
+      },
+      "cases": {
+        "R3positive": "PASS_REPORTED_V1_OBSERVED_TASK_TRACE_AND_INTEGRITY",
+        "T3positive": "PASS_REPORTED_V1_OBSERVED_TASK_TRACE_AND_READS",
+        "R3negative": "NOT_RUN",
+        "T3negative": "NOT_RUN",
+        "T7": "NOT_VERIFIED_PENDING_V2_POST_REVIEW_INTEGRITY_AND_CHILD_TRACE",
+        "softwareTests": "NOT_RUN_OUT_OF_SCOPE",
+        "fullRuntimeCertification": false
       }
     }
   }
