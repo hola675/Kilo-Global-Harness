@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.114.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.115.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -23,13 +23,14 @@ Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certific
 
 ## Estado operativo y siguientes puertas — 2026-11-27
 
-F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas). F06-R3: DONE_REMOTE_CONSOLIDATION; 42 commits integrados por fast-forward, 28 archivos, main 59c4742; 45 ramas retiradas de 46, historial preservado en etiqueta archive/f06-pre-consolidation-20261127 (62a8c11e59f060c48fc2e4d70e6eeb5fd54c049f) y bundle local verificado por operador. El archivo histórico no es una integración funcional de código divergente. La auditoría por rutas no demuestra equivalencia semántica. Queda limpiar el worktree/rama temporal local tras verificar su estado.
+F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas). F06-R3: DONE_REMOTE_CONSOLIDATION; 42 commits integrados por fast-forward, 28 archivos, main 59c4742; 45 ramas retiradas de 46, historial preservado en etiqueta archive/f06-pre-consolidation-20261127 (62a8c11e59f060c48fc2e4d70e6eeb5fd54c049f) y bundle local verificado por operador. El archivo histórico no es una integración funcional de código divergente. La auditoría por rutas no demuestra equivalencia semántica. Limpieza local completada por operador: un worktree y una rama main.
 
 | Puerta | Estado | Salida exigida |
 |---|---|---|
-| F06-R4.1 | SIGUIENTE | Inventario de solo lectura del laboratorio activo, registros, respaldos y escritores; revisión de script 0.1.4 y puntos de fallo. No retirar ni repetir preparación/pruebas superadas. |
-| F06-R4.2 | PENDING | Diseñar recuperación específica, propiedad comprobable y retirada segura ante fallo parcial; probar en copia descartable, incluidos fallos y reintentos controlados. |
-| F06-R4.3 | PENDING | Tras revisión y autorización, retirar laboratorio activo, verificar ausencia y conservación de evidencias; cerrar brechas de F06 o registrar límites aceptados explícitamente. |
+| F06-R4.1 | PASS_REPORTED | Inventario y respaldo confirmados; rama/worktree local temporal retirados. |
+| F06-R4.2/R4.3 | PASS_REPORTED_LIMITED | Candidato de cuarentena separado 0.1.0, parser y 8/8 casos sintéticos; revisión estática propia condicionada. No acredita recuperación de borrado parcial del 0.1.4. |
+| F06-R4.4 | PASS_REPORTED_LIMITED | Traslado autorizado a cuarentena; ruta activa ausente, 48 archivos y huella de inventario conservados, registro externo presente. No borrar ni restaurar por rutina. |
+| F06-R4.5 / R5.1 | SIGUIENTE | Evaluación de brechas: revisión independiente de política 0.22.0 y 13 skills, resolver contradicciones materiales, seleccionar solo escenarios faltantes de las 175 filas existentes. F06 sigue IN_PROGRESS. |
 | F07 | PENDING | Coordinación avanzada con especialistas reales: dependencias, trabajo simultáneo no conflictivo, transferencia, revisión e integración, conflictos/cancelación y recuperación observable. Reutilizar evidencia válida de F03/F05; no equiparar diseño con runtime. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
@@ -436,3 +437,7 @@ Siguiente: F06-R3, consolidación de evidencias, revisión acumulada e integraci
 
 ## F06-R3 — consolidación remota completada (2026-11-27)
 Integración fast-forward y archivo histórico comprobados; solo main permanece como rama remota. Evidencia funcional y fixture intactos. Manifiesto 0.63.0; siguiente F06-R4.1, inventario de solo lectura y revisión de recuperación. Limpieza local pendiente. Sin nuevas pruebas, instalación ni retirada.
+
+## F06-R4 — cierre operativo del laboratorio (2026-11-27)
+PASS_REPORTED_LIMITED de retirada por cuarentena, no destrucción: parser Windows y 8/8 pruebas sintéticas del candidato local separado 0.1.0; antes/después coinciden las 48 entradas de archivo del inventario y se conserva el registro externo. Rama y worktree local únicos, main sincronizado antes de este cambio. El script 0.1.4 permanece intacto; no se certifica su borrado ni recuperación de estados parciales preexistentes. No se acredita resistencia a corte eléctrico, exclusión de escritores, ACL/ADS ni restauración real del laboratorio. No publicar candidato local con huellas y rutas particulares.
+Siguiente R5.1: revisión independiente focalizada de política/skills y evidencia existente; ocho skills con invocaciones reportadas, cinco sin invocación individual acreditada (team-coordination, team-context-recovery, focused-testing, git-workflow, tool-mcp-discovery). No reabrir cuarentena ni repetir pruebas superadas. Definir cierre limitado de F06 por evidencia y riesgos antes de F07, sin autorización de activación global. Manifiesto 0.64.0.
