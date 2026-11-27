@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.69.0",
+    "version": "0.70.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -1869,7 +1869,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.2.1: revisión independiente del contrato de misión ejecutable; retirar solo rama integrada con autorización y conservar laboratorios. No preparar fixture hasta revisión.",
+    "next": "F07.2.1: revisión independiente del contrato de misión ejecutable; rama integrada retirada y main única. Conservar laboratorios. No preparar fixture hasta revisión.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -1948,7 +1948,10 @@
       "prDraftFlagObserved": true,
       "ciEvidence": "NOT_AVAILABLE",
       "G9": "NOT_CERTIFIED",
-      "temporaryBranchRetirement": "PENDING_AUTHORIZATION"
+      "temporaryBranchRetirement": "DONE_AUTHORIZED_REPORTED_REMOTE_VERIFIED",
+      "remoteBranchesVerified": ["main"],
+      "localBranchRetirementReported": true,
+      "retirementVerifiedAtRevision": "a4755fdab9efd447c4f9cc0206820e0d2e15c598"
     },
     "coordinationCandidate": {
       "path": "tests/F07-COORDINACION.md",
