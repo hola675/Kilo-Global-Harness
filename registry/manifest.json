@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.72.0",
+    "version": "0.73.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -246,7 +246,8 @@
     "F07_1_5": "DONE_POC_LIMITED_ASSISTED_RECOVERY_REPORTED",
     "F07_1_6": "DONE_FAST_FORWARD_REPORTED_REMOTE_VERIFIED",
     "F07_2": "IN_PROGRESS",
-    "F07_2_1": "EVIDENCE_STATUS_CORRECTED_PENDING_FINAL_DELTA_REVIEW"
+    "F07_2_1": "DONE_CONTRACT_APTO_REPORTED",
+    "F07_2_2": "PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1869,7 +1870,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.2.1-R2: contrastar únicamente clasificación de evidencia de revisión independiente en fila R3/T3/T7 del contrato 0.2.1; preparar fixture solo tras APTO. Conservar condiciones ya resueltas y laboratorios.",
+    "next": "F07.2.2: preparar laboratorio nuevo con script 0.1.0, validar parser y ejecución Windows; después misión autónoma. No repetir revisión ni tocar laboratorios anteriores.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -1958,7 +1959,7 @@
     "coordinationCandidate": {
       "path": "tests/F07-COORDINACION.md",
       "version": "0.2.1",
-      "status": "EVIDENCE_STATUS_CORRECTED",
+      "status": "CONTRACT_ACCEPTED_PREPARER_CANDIDATE",
       "independentReview": "APTO_CON_CONDICIONES_REPORTED_V0.1.0",
       "fixture": "NOT_CREATED",
       "runtime": "NOT_RUN",
@@ -1978,7 +1979,7 @@
         "reviewer identity competence version and non-edit evidence"
       ],
       "reviewedBlob": "340033a8c846625ae63e13981235d410e53a151d",
-      "finalDeltaReview": "PENDING",
+      "finalDeltaReview": "APTO_REPORTED_V0.2.1",
       "deltaReviewedBlob": "912338e871f5fdae99bc8e10526f8aa9cdf15f3b",
       "resolvedConditions": [
         "proportional routing rubric",
@@ -1986,7 +1987,42 @@
         "discriminating cross-project fixture",
         "reviewer identity competence version and non-edit evidence content"
       ],
-      "remainingCondition": "evidence classification: incomplete report NOT_VERIFIED, not PASS; observable conditions required"
+      "remainingCondition": null,
+      "finalReviewedBlob": "154f74228a54647c929dd6df01b3d25788d0e63a",
+      "preparer": {
+        "name": "F07.2.2-Laboratorio-Coordinacion-0.1.0.ps1",
+        "version": "0.1.0",
+        "sha256": "D3CAB6AF757FE056A27C7B3E2E8848776422CF7E3782B840C468576EF550AC95",
+        "delivery": "operator attachment, not repository source",
+        "sourceRevision": "057a133b829f50d8a5f8b5384ebaa4fba8a831fc",
+        "protectedFiles": 29,
+        "mutableFiles": 3,
+        "windowsExecution": "NOT_RUN",
+        "powershellParser": "NOT_RUN",
+        "fixtureTests": {
+          "nodeVersion": "v22.16.0",
+          "environment": "coordinator Linux temporary directory, not operator Windows",
+          "count": 33,
+          "perModule": {
+            "A": 18,
+            "B": 2,
+            "D": 13
+          },
+          "stubs": {
+            "pass": 0,
+            "fail": 33,
+            "exit": 1
+          },
+          "reference": {
+            "pass": 33,
+            "fail": 0,
+            "exit": 0
+          },
+          "mutantsRejected": 6,
+          "mutantsTotal": 6,
+          "scope": "test design validation only; reference and mutants not distributed; candidate implementation NOT_RUN"
+        }
+      }
     }
   }
 }
