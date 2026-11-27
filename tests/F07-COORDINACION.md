@@ -1,0 +1,43 @@
+# F07 — Coordinación avanzada: misión de implementación
+Versión del archivo: 0.1.0 | Última modificación: 2026-11-27
+
+Estado: contrato candidato F07.2.1, revisión independiente pendiente, fixture NOT_CREATED, ejecución NOT_RUN. Política 0.23.0 consolidada como PoC limitada; F07 continúa IN_PROGRESS. No autoriza instalación global ni release.
+
+## Evidencia reutilizable y objetivo
+F03 acredita muestras reportadas de Task, permisos granulares, Swarm, bloqueo lógico, cancelación/reanudación propia, compactación manual y continuidad textual; no acredita persistencia operativa ni exclusión técnica universal. F05 acredita construcción separada y pruebas funcionales reportadas, con reparto dirigido por operador y brechas de revisión concreta/permiso ask. F06 acredita criterios y recuperación parcial. F07.1 acredita routing/revisión documental y recuperación asistida, no C1 ni mejora global de rendimiento. No repetir positivos aislados: esta misión evalúa reparto autónomo de construcción, trabajo propio de Code y aceptación por dependencia con objetos reales.
+
+## F07.2.1 — Contrato de misión propuesto
+Producto ficticio: módulo local de órdenes de trabajo por proyecto, sin infraestructura, red, dependencias npm, persistencia, reloj ni dispositivos reales. JavaScript ESM, Node de identidad verificada por operador. Entradas JSON planas y válidas salvo casos negativos explícitos; identidad del actor procede del contexto confiable simulado, no del cliente. No se afirma autenticación real. Cada orden tiene exactamente id (string), projectId (string), status (open|in_progress|closed); IDs únicos dentro del proyecto, pueden repetirse entre proyectos. Actor tiene projectId y role (operator|viewer). Solo operator puede cambiar estado en su proyecto. Acciones start y close; open→in_progress con start, in_progress→closed con close; cualquier otra combinación o acción desconocida devuelve INVALID_TRANSITION si el actor ya está autorizado. Orden ausente, ajena o actor no autorizado devuelven idéntico {ok:false,code:'NOT_FOUND'}, antes de evaluar transición. Sin mutación de entradas ni efectos externos. No extender dominio por iniciativa propia.
+
+Archivos de implementación permitidos (tres stubs iniciales, únicos mutables):
+| Unidad | Ruta / export | Criterio y fronteras |
+|---|---|---|
+| A dominio | src/transition.mjs, changeStatus(order, actor, action) | Resultado {ok:true,order:{id,projectId,status}} o {ok:false,code}; autorización y transición, no imports, I/O ni mutación. order null representa ausente. |
+| B resumen | src/summary.mjs, summarize(projectOrders) | Recibe exclusivamente órdenes del proyecto ya autorizadas por consumidor; devuelve {open,in_progress,closed,total} enteros, incluso lista vacía. No consulta, mutación, autorización, IDs ni detalles de otras órdenes. |
+| D integración | src/service.mjs, applyAction(orders,actor,id,action) | Selecciona por (actor.projectId,id); usa changeStatus; propaga rechazo sin resumen. En éxito, actualiza copia de esa fila en conjunto del proyecto y llama summarize; devuelve {ok:true,order,summary}; no devuelve lista global ni persiste. Imports solo A y B relativos. |
+
+C = contraste independiente del objeto A estable, autorización, negativos, frontera de confianza y efectos. Entrada: versión concreta del código de A ya retornada y admitida para revisión (no aceptada definitivamente); no necesita B. No escribir A ni sus pruebas. Revisión material de D sobre selección/proyección entre proyectos cuando quede estable; integrar evidencia de C y revisar solo cambios posteriores de A si existen. La verificación de C no implica certificación final de A ni D. 
+
+A y B son independientes. D puede construirse contra interfaces fijas mientras A/B avanzan, pero su aceptación integrada exige A y B estables, contraste independiente pertinente y suite integrada. Si A retorna candidato estable mientras B continúa y capacidad/recursos son compatibles, iniciar C sin esperar B (C1). Si B termina antes o no hay intervalos verificables, C1 NOT_VERIFIED; no introducir sleeps ni trabajo ficticio. El orden, los especialistas, propietarios y número de Tasks los decide Code; no entregar el DAG evaluador como orden de despacho. Enunciado del operador expresa producto, archivos exactos, restricciones, resultado y revisión independiente, no roles ni cantidades. Code debe reservar una contribución de construcción/integración útil propia si el reparto lo justifica; documentar qué trabajo realizó durante hijos activos. Si no existen capacidades, declarar degradación o bloqueo sin simular equipo.
+
+## Fixture, pruebas y controles (preparación pendiente)
+Nuevo workspace descartable, sin usar los laboratorios F06/F07.1 ni el repositorio de desarrollo como workspace ejecutable. Copiar exactamente política 0.23.0 (blob 1a30ecb4253a0d87bd4fb278985afa051f97fc32), 9 roles, 13 skills, referencia y configuración mínima de modelo común autorizado. Fijar blobs y verificar bytes, directorios, hash del inventario y los tres stubs. No crear Git, modificar perfiles globales, instalar paquetes, usar MCP/red ni introducir mecanismos de seguimiento propios. No considerar workspace o prompt sandbox; propiedad es contractual. Identificar fuentes del fixture y versiones antes de crear; mantener un único runner canónico Node --test con tres archivos de tests protegidos.
+- A: positivo start/close; actor viewer, proyecto distinto y ausencia equivalentes; rechazos antes de transición, transiciones inválidas/acción desconocida; no mutación.
+- B: vacío y lista mixta; conteos y total exactos; no mutación.
+- D: dos proyectos con ID repetido, actor autorizado cambia solo fila propia, resumen posterior correcto solo del proyecto; ajeno/ausente/viewer equivalentes; transición inválida; no mutación. No usar test que ejecute cero casos ni cambiar suite para pasar.
+Pruebas por módulo aisladas (A no importa B/D; B no importa A/D); D importa ambos. Los criterios de pruebas y objetos protegidos no se editan por agentes. No generar scripts ni logs dentro del fixture. Fase de construcción/revisión con lectura y edición únicamente de rutas asignadas, sin shell de agentes; operador verifica integridad, examina el código y efectos antes de ejecutar la suite con Node autorizado y entorno sin precargas; si después hay una corrección, revalidar solo alcance afectado y el integrado pertinente. Esta separación preserva control local de ejecución; no afirma pruebas paralelas ni permisos de shell efectivos. El retorno de constructor puede ser candidato revisado estáticamente, no PASS funcional hasta suite. Probar shell/ask y fallos reales de forma focalizada posterior si se justifica, no cambiar permisos para lograr éxito.
+
+## Puerta de aceptación por evidencia (reutiliza IDs de F06)
+| Garantía | Evidencia mínima y estado si falta |
+|---|---|
+| T2/T5 | Contratos y propietarios reales, alcances exactos disjuntos, operaciones visibles y hash posterior de protegidos; si escritor no observable, NOT_VERIFIED de autoría/enforcement, no inferir por hash. |
+| C1 | Intervalos nativos observables de A/B y C iniciado tras admisión de A y mientras B sigue activo; sin oportunidad o tiempos, NOT_VERIFIED. |
+| N3/N4 | Reparto autónomo, trabajo propio útil de Code durante hijo activo y resultado integrado; etiquetas background no bastan. |
+| R3/T3/T7 | Revisión sobre código concreto estable y accesible, versión/criterio, contraste de delta material; falta argumentos o versión: reportado/limitado, no plena certificación. |
+| C2/C5/T6 | Solo si ocurre bloqueo real: conservar lo válido, no aceptar dependiente por completed. Sin bloqueo real, NOT_RUN; no fabricar error o retorno. |
+| Calidad | Suite protegida con resultados/casos/exit observados, integridad final y revisión de seguridad independiente; no aceptar por reporte de constructor. |
+
+C3 (recurso compartido no archivo), C6–C11 (Swarm material, incertidumbre, efectos, cancelación), K3–K12 (recuperación) y G2/G4/G9/G12 se evaluarán por delta útil en fases posteriores, sin repetir capacidades ya demostradas. Conservar evidencia parcial; ningún nuevo cron, Goal, servidor, scheduler, polling o nesting. Registrar duración, llamadas, versiones y orden de eventos solo si observables; sin prometer mejora porcentual ni usar coste estimado. Si falta traza temporal, conservar resultado funcional y abrir brecha específica, no repetir automáticamente la misión.
+
+## Próxima puerta
+Revisión independiente del contrato y de suficiencia de sus casos, sin ejecutar ni crear fixture. Solo tras APTO/APTO CON CONDICIONES resueltas se preparan stubs/pruebas e inventario. F07.2 no certificada; fases F07.3–F07.8 pendientes. Mantener laboratorios anteriores y rama integrada hasta retirada autorizada.
