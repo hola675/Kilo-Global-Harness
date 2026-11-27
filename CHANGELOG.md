@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.135.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.136.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -487,3 +487,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.5.1 contrato candidato
 - Diseño estático de exportación multiproyecto, revisión independiente V1 y delta material V2 de autorización/proyección, snapshots externos y aceptación por versión. Un mutable, 26 protegidos iniciales; sin runner nuevo. R3/T3 positivos, T7 revisión focalizada; trazas insuficientes mantienen puerta pendiente.
 - Contrato 0.1.0, manifiesto 0.84.0, roadmap/changelog 0.135.0. Revisión pendiente; fixture NOT_CREATED, runtime NOT_RUN. Sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.5 revisión APTO y preparador candidato
+- Contrato 0.1.0 APTO reportado; preservado. Preparador V1 externo 0.1.0, 26 protegidos, 1 mutable, snapshot exacto por consentimiento y verificación vinculada a hash; sin aceptar V1 ni liberar V2. Dos literales y hashes contrastados; parser/Windows NOT_RUN, fixture NOT_CREATED.
+- Manifiesto 0.85.0, roadmap/changelog 0.136.0; sin cambios normativos, instalación ni release.
