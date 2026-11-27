@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.136.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.137.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -491,3 +491,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.5 revisión APTO y preparador candidato
 - Contrato 0.1.0 APTO reportado; preservado. Preparador V1 externo 0.1.0, 26 protegidos, 1 mutable, snapshot exacto por consentimiento y verificación vinculada a hash; sin aceptar V1 ni liberar V2. Dos literales y hashes contrastados; parser/Windows NOT_RUN, fixture NOT_CREATED.
 - Manifiesto 0.85.0, roadmap/changelog 0.136.0; sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.5 aceptación V2 autorizada, cierre pendiente
+- V1 6/6 estático, evidencia original Task y lecturas, integridad PASS reportada, aceptación y delta autorizados. V2 APTO estático, snapshot previo MATCH, invalidación de revisión anterior explícita, revisión favorable reportada por Code. Operador APTO con riesgos residuales; registrar decisión sin cambiar objeto.
+- R3/T3 positivos PASS reportados V1, negativos NOT_RUN; T7 NOT_VERIFIED hasta salida de integridad posterior y trazas originales V2. F07.5 IN_PROGRESS. Manifiesto 0.86.0, roadmap/changelog 0.137.0; contrato intacto, sin cambios normativos.
