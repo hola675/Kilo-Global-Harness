@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.125.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.126.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -36,7 +36,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F07.1.5 | DONE_POC_LIMITED | Revisión independiente APTO reportada, comparación documental, defecto inicial candidate corregido con ayuda y revisión focalizada, 58/58 MATCH. No superioridad causal ni C1 certificado. |
 | F07.1.6 | DONE_REPORTED_REMOTE_VERIFIED | Integración fast-forward autorizada; PR #176 fusionado y rama integrada retirada con autorización; main única local reportada y remota verificada. Conservar laboratorios. |
 | F07.2 | DONE_POC_LIMITED | [Contrato y evidencia](../tests/F07-COORDINACION.md): 33/33 casos PASS con TAP, 29/29 integridad, tres módulos 3/3 MATCH; solapamiento e independencia completa NOT_VERIFIED. |
-| F07.3 | SIGUIENTE | Conflicto de propiedad y unión con bloqueo real, trabajo independiente y recuperación selectiva; diseño focalizado pendiente, sin repetir F07.2. |
+| F07.3 | IN_PROGRESS | Contrato candidato 0.4.0: catálogo de extensiones, propietario único, fuente ausente y recuperación en dos etapas; revisión focalizada pendiente; fixture NOT_CREATED. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -476,3 +476,6 @@ Dictamen final APTO reportado sobre blob 154f74228a54647c929dd6df01b3d25788d0e63
 
 ## F07.2.2–F07.2.5 — cierre funcional y coordinación limitada (2026-11-27)
 Preparación Windows parser/decoder/blobs correcta. Code delegó dominio y editó resumen/servicio; Security y Quality retornos reportados, este último posterior al primer informe parcial. TAP 33/33, exit 0, sin skips ni fallos; integridad previa/posterior 29/29 y 3/3 código inspeccionado, inventario intacto. Runner 251.8645 ms, externo 361.9641 ms, UI misión 230 s reportados; no causalidad de rendimiento. F07.2 DONE_POC_LIMITED, F07 IN_PROGRESS; revisión plenamente trazable, propiedad/solapamiento y C1 NOT_VERIFIED; bloqueo real y T7 NOT_RUN. Manifiesto 0.74.0, evaluación 0.3.0. F07.3 siguiente: contrato de misión focalizada T5/C2/C5/T6, catálogo compartido con entrada autorizada ausente, preservar rama independiente; no afirmar C3 ni ejecutar todavía. No tocar laboratorios, roles, skills, política, permisos ni modelo. Sin instalación o release.
+
+## F07.3.1 — contrato candidato de propiedad y bloqueo (2026-11-27)
+Entrada local F07_3_DESIGN_READY reportada. Contrato en tests/F07-COORDINACION.md 0.4.0: dos extensiones con registro común, A independiente, fuente de acciones B ausente y D sin despacho hasta B admitida. Preflight correcto puede evitar Task; C5/T6 no se fuerzan. Dos etapas, fuente retenida por operador, delta externo y A preservada con evidencia reutilizable. T5/C2/C5/T6 y recuperación, C3 fuera de alcance. Revisión focalizada pendiente; fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.75.0; sin cambios de agentes, skills, política ni permisos, sin instalación ni release.
