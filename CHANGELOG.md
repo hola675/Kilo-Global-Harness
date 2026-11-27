@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.143.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.144.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -519,3 +519,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.7.1 contrato candidato
 - Diseño focalizado de continuidad R/S: misma política y demás componentes, catálogo efectivo por comprobar, pausa y delta de límite real; conservar A/B, revalidar C y condicionar D. Transiciones nativas solo si útiles y autorizadas, decisiones hipotéticas separadas de runtime; K8 fuera de alcance. Reutiliza F03/F06/F07 sin repetir positivos ni introducir persistencia.
 - Contrato 0.1.0, manifiesto 0.92.0, roadmap/changelog 0.143.0; revisión independiente pendiente, fixture NOT_CREATED, runtime NOT_RUN. Sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.7.1-R1 revisión condicionada
+- APTO CON CONDICIONES reportado sobre 0.1.0; delta 0.1.1 separa K3/K5 por variante y explicita APTO final como puerta. No forzar transiciones, no transferir cobertura. Revisión focalizada pendiente, fixture NOT_CREATED, runtime NOT_RUN.
+- Manifiesto 0.93.0, roadmap/changelog 0.144.0; referencias, agentes, skills, política y alcance intactos; sin instalación ni release.

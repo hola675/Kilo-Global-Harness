@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.143.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.144.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -40,7 +40,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F07.4 | DONE_POC_LIMITED | Propuesta estática APTO, dos especialistas, RESULT reportado y tres lecturas de tablero visibles; 30/30 protegidos. C6 material favorable NOT_VERIFIED; sin trazas completas. |
 | F07.5 | DONE_POC_LIMITED | V1 y V2 aceptadas estáticamente por operador, 26/26 protegidos, snapshots y registros MATCH. R3/T3 positivos PASS reportados V1; T7 favorable NOT_VERIFIED por falta de traza original V2. |
 | F07.6 | DONE_POC_LIMITED | [Contrato](../tests/F07-RECUPERACION.md) 0.1.1 intacto; preparación y controles Windows reportados, A/B/D APTO documental, recuperación directa e integración autorizada. C5/T6/C8/C10 NOT_RUN, C9/K8 fuera de alcance; cese técnico NOT_VERIFIED. |
-| F07.7 | IN_PROGRESS | [Contrato candidato](../tests/F07-CONTEXTO.md) 0.1.0; contraste R/S con delta real, continuidad nativa condicional y decisiones conceptuales separadas. Revisión pendiente, fixture NOT_CREATED, runtime NOT_RUN. |
+| F07.7 | IN_PROGRESS | [Contrato candidato](../tests/F07-CONTEXTO.md) 0.1.1; APTO CON CONDICIONES reportado sobre 0.1.0, delta focal K3/K5 y puerta APTO final; revisión final pendiente, fixture NOT_CREATED, runtime NOT_RUN. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -543,3 +543,6 @@ Preparación Windows y parser PASS reportados; 24/24 blobs, 28/28 protegidos, in
 
 ## F07.7.1 — contrato candidato de continuidad selectiva (2026-11-27)
 Entrada local F07_7_DESIGN_READY reportada; base ed5c56a confirmada. Contrato 0.1.0: dos workspaces equivalentes, política y demás componentes iguales, skill de contexto ausente localmente en R y disponible bajo demanda en S; exposición efectiva por verificar. Misión documental de incidencias con tres criterios aceptados de fixture; delta operador de límite 50→25 invalida únicamente C, A/B preservados y D condicionado. K1/K2/K7/K9/K10/K12 focales; K3/K5 y cambio de raíz si transición real útil y autorizada, K4/K6/K9/K10/K11 decisión hipotética si no hay oportunidad real, sin atribuir cobertura nativa; K8 fuera de alcance. Reutiliza F03.5E/F y F06 R1b.3, no repetir marcadores, rechazo de parentesco ni forzar compactación. Comparación exploratoria, sin atribución causal, sin nueva persistencia. Manifiesto 0.92.0; revisión pendiente, fixture NOT_CREATED, runtime NOT_RUN, sin cambios normativos, instalación ni release.
+
+## F07.7.1-R1 — revisión condicionada y delta focalizado (2026-11-27)
+Integridad local de 0.1.0 reportada. Dictamen APTO CON CONDICIONES: MEDIA K3/K5 agrupados, BAJA puerta ambigua. Delta 0.1.1 separa evidencia y estado por criterio y variante, sin transferir cobertura ni forzar transición; solo APTO final explícito sobre contrato vigente habilita F07.7.2. Mantener revisión independiente focalizada pendiente; identidad criptográfica del revisor no verificada, sin revalidación Git por el especialista ni traza nativa original aportada. Referencias y alcance R/S intactos; exposición efectiva, invocación, fixture y runtime no acreditados. Manifiesto 0.93.0; sin cambios normativos, instalación ni release.

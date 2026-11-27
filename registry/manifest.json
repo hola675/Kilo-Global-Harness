@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.92.0",
+    "version": "0.93.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -286,7 +286,7 @@
     "F07_6_5": "A_STATIC_APTO_DIRECT_RECOVERY_PASS_REPORTED",
     "F07_6_6": "D_STATIC_APTO_FINAL_INTEGRITY_PASS_REPORTED",
     "F07_7": "IN_PROGRESS",
-    "F07_7_1": "CONTRACT_CANDIDATE_PREPARED"
+    "F07_7_1": "DELTA_CANDIDATE_PREPARED_REVIEW_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1925,7 +1925,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.7.1: verificar integridad del contrato 0.1.0 y revisión independiente antes de preparar variantes R/S.",
+    "next": "F07.7.1-R1: verificar integridad del delta 0.1.1 y obtener APTO final independiente focalizado antes de F07.7.2.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -3001,7 +3001,7 @@
     },
     "nextContextProposal": {
       "phase": "F07.7.1",
-      "status": "CONTRACT_CANDIDATE_PREPARED",
+      "status": "DELTA_CANDIDATE_PREPARED_REVIEW_PENDING",
       "baseline": "team-context-recovery 0.1.0 and policy 0.23.0 unchanged",
       "reuse": "F03.5E/F operator-confirmed compact/reopen and textual recovery, unknown operational status and no action; F07 accepted artifacts as historical evidence only",
       "focus": "material context loss, identity and authorization, selective evidence validity, normal continuation without redundant load; native compact or reopen only if useful and separately observable",
@@ -3009,10 +3009,10 @@
       "runtime": "NOT_RUN",
       "fullRuntimeCertification": false,
       "contractPath": "tests/F07-CONTEXTO.md",
-      "contractVersion": "0.1.0",
-      "contractBlob": "2ab4feefd4e77947d189c41cc8810dd115310c1f",
+      "contractVersion": "0.1.1",
+      "contractBlob": "e10202329da39662e666b894a6992ff0aac82e5c",
       "baselineRevision": "ed5c56a9c31064853cdd73f879579ecb8df63739",
-      "independentReview": "PENDING",
+      "independentReview": "APTO_CON_CONDICIONES_REPORTED_V0.1.0_DELTA_FINAL_PENDING",
       "variants": {
         "R": "same policy and other agents/skills, context skill absent locally; effective catalog must be checked",
         "S": "same configuration plus pinned team-context-recovery 0.1.0"
@@ -3055,6 +3055,32 @@
         "K10": "NOT_RUN",
         "K11": "NOT_RUN",
         "K12": "NOT_RUN"
+      },
+      "reviewedRevision": "949d527f2162532f00faf424c77bec6550a90d8a",
+      "reviewedBlob": "2ab4feefd4e77947d189c41cc8810dd115310c1f",
+      "reviewEvidence": {
+        "operatorLocalIntegrity": "PASS_REPORTED",
+        "reviewerIdentityCryptographic": "NOT_VERIFIED",
+        "reviewerLocalGitRevalidation": "NOT_RUN_BY_INSTRUCTION",
+        "dictamen": "APTO_CON_CONDICIONES_REPORTED",
+        "scope": "read-only; references read reported; no commands/tests/mutations reported",
+        "findings": [
+          {
+            "severity": "MEDIUM",
+            "criterion": "K3/K5",
+            "condition": "separate per-variant evidence and states, no transfer of coverage",
+            "delta": "separate rows and stage III classification; no forced second transition"
+          },
+          {
+            "severity": "LOW",
+            "criterion": "F07.7.2",
+            "condition": "conditioned verdict does not unblock preparer",
+            "delta": "explicit final APTO on current contract required; focused independent confirmation"
+          }
+        ],
+        "originalNativeTaskTrace": "NOT_PROVIDED",
+        "residual": "effective catalog/origin, provider/model variant, invocation traces, runtime, exclusion and operational persistence unverified",
+        "finalDeltaReview": "PENDING"
       }
     }
   }
