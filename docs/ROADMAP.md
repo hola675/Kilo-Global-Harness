@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.139.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.140.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -39,7 +39,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F07.3 | DONE_POC_LIMITED | A/B/D 6/6 PASS en tres puertas, 29/29 protegidos, recuperación selectiva y unión lógica observadas, sin repetición de pruebas; T5 NOT_VERIFIED, C5/T6 NOT_RUN. |
 | F07.4 | DONE_POC_LIMITED | Propuesta estática APTO, dos especialistas, RESULT reportado y tres lecturas de tablero visibles; 30/30 protegidos. C6 material favorable NOT_VERIFIED; sin trazas completas. |
 | F07.5 | DONE_POC_LIMITED | V1 y V2 aceptadas estáticamente por operador, 26/26 protegidos, snapshots y registros MATCH. R3/T3 positivos PASS reportados V1; T7 favorable NOT_VERIFIED por falta de traza original V2. |
-| F07.6 | IN_PROGRESS | [Contrato candidato](../tests/F07-RECUPERACION.md) 0.1.0: C5/T6, C8/C10; C9/K8 fuera del alcance inicial. Revisión pendiente; fixture NOT_CREATED, runtime NOT_RUN. |
+| F07.6 | IN_PROGRESS | [Contrato candidato](../tests/F07-RECUPERACION.md) 0.1.1: C5/T6, C8/C10; C9/K8 fuera del alcance inicial. APTO CON CONDICIONES reportado sobre 0.1.0; delta pendiente de contraste; fixture NOT_CREATED, runtime NOT_RUN. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -530,3 +530,6 @@ Foco C5/T6 (retorno nativo completed con bloqueo lógico), C8 (escritor incierto
 
 ## F07.6.1 — contrato candidato de recuperación selectiva (2026-11-27)
 Entrada local F07_6_DESIGN_READY reportada; main remoto 671e90b confirmado. Contrato tests/F07-RECUPERACION.md 0.1.0: diseño documental de importación local ficticia, fuente autorizada ausente, informe independiente y consumidor condicionado. C5/T6 solo con Task real de descubrimiento/validación; preflight correcto no se penaliza. C8/C10 solo ante escritor background real, cancelación por operador y condiciones observables; exclusión hasta cese acreditado, sin reanudación/recreación automática. Recuperación solo con autorización específica y evidencia suficiente; C9/K8 NOT_RUN fuera de alcance inicial, sin efectos externos. Reutilizar F03/F07.3; no repetir por ausencia de trazas. Revisión independiente pendiente, fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.88.0; sin cambios normativos, agentes, skills, permisos, instalación ni release.
+
+## F07.6.1-R1 — revisión condicionada y delta candidato (2026-11-27)
+Integridad local de 0.1.0 PASS reportada, commit 92a1e27 y blob 4cc75de6ddfc24cc6d2aa677901931ab6a7592fd. Dictamen APTO CON CONDICIONES aportado por operador: explore y general (retorno original de general y hallazgo de explore aportados); perfil team-quality no expuesto, identidad Git no comprobada por los revisores. Tres correcciones focalizadas en 0.1.1: umbral positivo de cese de ejecución y operaciones pendientes, procedencia de F07.3 registrada como evidencia histórica reportada, NOT_RUN admisible sin oportunidad pero no cobertura. Contraste estático fuente Kilo 03a6f07d, background-job.ts blob 285e65bf815c6dd49443c259fb778153d8164f1e: publicación cancelled y resolución Deferred preceden Scope.close; observabilidad de cierre efectivo en Desktop NOT_VERIFIED. Sin observación suficiente, exclusión conservada; no instrumentar ni ampliar permisos. Delta pendiente de revisión independiente, fixture NOT_CREATED, runtime NOT_RUN; C5/T6/C8/C10 NOT_RUN, C9/K8 fuera del alcance inicial. Manifiesto 0.89.0, sin cambios normativos ni activación/release.

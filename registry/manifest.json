@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.88.0",
+    "version": "0.89.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -279,7 +279,7 @@
     "F07_5_11": "V2_FOCUSED_REVIEW_PASS_SUMMARY_REPORTED",
     "F07_5_12": "V2_STATIC_APTO_POST_REVIEW_INTEGRITY_PASS_REPORTED",
     "F07_6": "IN_PROGRESS",
-    "F07_6_1": "CONTRACT_CANDIDATE_PREPARED"
+    "F07_6_1": "CONTRACT_DELTA_PREPARED_REVIEW_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1918,7 +1918,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.6.1: revisión independiente del contrato candidato de recuperación selectiva; no preparar fixture hasta APTO explícito.",
+    "next": "F07.6.1-R1: verificar integridad del contrato 0.1.1 y contrastar exclusivamente delta del dictamen; fixture solo tras APTO explícito.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2786,7 +2786,7 @@
     },
     "nextFailureProposal": {
       "phase": "F07.6.1",
-      "status": "CONTRACT_CANDIDATE_PREPARED",
+      "status": "CONTRACT_DELTA_PREPARED_REVIEW_PENDING",
       "primaryCases": [
         "C5",
         "T6",
@@ -2808,10 +2808,10 @@
       "fixture": "NOT_CREATED",
       "runtime": "NOT_RUN",
       "contractPath": "tests/F07-RECUPERACION.md",
-      "contractVersion": "0.1.0",
-      "contractBlob": "4cc75de6ddfc24cc6d2aa677901931ab6a7592fd",
+      "contractVersion": "0.1.1",
+      "contractBlob": "a45274f5fd9e2cfaed1f22fad5de9094cae6939b",
       "baselineRevision": "671e90b27e9f1a3dc50ccebb4bbce88aea432667",
-      "independentReview": "PENDING",
+      "independentReview": "APTO_CON_CONDICIONES_REPORTED_V0.1.0_DELTA_PENDING",
       "conditionalCasesDisposition": "NOT_RUN_OUT_OF_SCOPE_INITIAL_CONTRACT",
       "caseStatus": {
         "C5": "NOT_RUN",
@@ -2834,7 +2834,32 @@
       "missingSource": "sources/normalization-policy.md",
       "agentShellAuthorized": false,
       "softwareExecutionAuthorized": false,
-      "fullRuntimeCertification": false
+      "fullRuntimeCertification": false,
+      "reviewedBlob": "4cc75de6ddfc24cc6d2aa677901931ab6a7592fd",
+      "reviewedRevision": "92a1e270c2f6788c526cc914a9baa5eeb37bf711",
+      "reviewIdentity": {
+        "localPreflight": "PASS_REPORTED",
+        "reviewerCryptographicIdentity": "NOT_VERIFIED",
+        "delegatesReported": [
+          "explore",
+          "general"
+        ],
+        "teamQualityNative": "NOT_AVAILABLE_REPORTED",
+        "originalGeneralReturn": "PROVIDED_BY_OPERATOR",
+        "exploreFinding": "PROVIDED_BY_OPERATOR"
+      },
+      "reviewConditions": [
+        "positive writer cessation threshold",
+        "F07.3 historical evidence provenance",
+        "NOT_RUN is admissible without opportunity, not coverage"
+      ],
+      "deltaReview": "PENDING",
+      "cessationSource": {
+        "revision": "03a6f07d053cd7e6aa88fa1e258e93510335259f",
+        "path": "packages/core/src/background-job.ts",
+        "blob": "285e65bf815c6dd49443c259fb778153d8164f1e",
+        "finding": "cancelled and Deferred resolution precede Scope.close; effective Desktop observability NOT_VERIFIED"
+      }
     }
   }
 }

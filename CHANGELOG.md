@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.139.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.140.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -503,3 +503,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.6.1 contrato candidato
 - Diseño de recuperación selectiva documental, C5/T6 retorno bloqueado real, C8 exclusión con cese incierto y C10 cancelación background sin reanudación automática. Recuperación condicionada a autorización y cese; C9/K8 fuera del alcance inicial. Reutiliza evidencia F03/F07.3; no crea mecanismos runtime ni pruebas redundantes.
 - Contrato 0.1.0, manifiesto 0.88.0, roadmap/changelog 0.139.0. Revisión independiente pendiente, fixture NOT_CREATED, runtime NOT_RUN. Sin cambios normativos, agentes, skills, permisos, instalación ni release.
+
+## 2026-11-27 — F07.6.1-R1 revisión condicionada y delta
+- Integridad local reportada; APTO CON CONDICIONES sobre contrato 0.1.0, explore/general reportados, identidad local no verificada por revisores, perfil Veritas no expuesto. Delta 0.1.1: umbral positivo de cese respaldado por lectura de fuente fijada (cancelled/Deferred antes de Scope.close), procedencia histórica F07.3 y puerta NOT_RUN sin cobertura. Observabilidad efectiva de cese pendiente; mantener bloqueo si no se acredita.
+- Contrato 0.1.1, manifiesto 0.89.0, roadmap/changelog 0.140.0. Contraste focalizado pendiente, fixture NOT_CREATED, runtime NOT_RUN; sin cambios normativos, instalación ni release.
