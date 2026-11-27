@@ -1,7 +1,7 @@
 # Programa de skills propias
-Versión del archivo: 0.17.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.18.0 | Última modificación: 2026-11-27
 
-Estado: núcleo común candidato completo (13/13), revisión transversal estática F06-AUD-R; descubrimiento e invocaciones parciales reportadas, certificación funcional R2 limitada y laboratorio retirado a cuarentena. Revisión independiente del conjunto y brechas individuales pendientes; F06 IN_PROGRESS. Especialización y aprendizaje pendientes. No instalar ni declarar release. La versión normativa de cada componente está en su cabecera/metadata; [inventario de candidato actual](../../registry/manifest.json) permite comprobar correspondencia, no es instalador.
+Estado: núcleo común candidato completo (13/13), revisión transversal estática F06-AUD-R; descubrimiento e invocaciones parciales reportadas, certificación funcional R2 limitada y laboratorio retirado a cuarentena. Revisión independiente estática reportada R5.1 sin contradicciones normativas materiales; puerta focalizada Q7/Q13 y brechas de runtime pendientes; F06 IN_PROGRESS. Especialización y aprendizaje pendientes. No instalar ni declarar release. La versión normativa de cada componente está en su cabecera/metadata; [inventario de candidato actual](../../registry/manifest.json) permite comprobar correspondencia, no es instalador.
 
 ## F06 — núcleo común (13)
 
