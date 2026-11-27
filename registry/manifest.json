@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.74.0",
+    "version": "0.75.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -251,7 +251,8 @@
     "F07_2_3": "DONE_CONSTRUCTION_REPORTED_LIMITED",
     "F07_2_4": "DONE_INTEGRITY_AND_SOURCE_INSPECTION",
     "F07_2_5": "FUNCTIONAL_PASS_TAP_PROVIDED",
-    "F07_3": "PENDING_DESIGN"
+    "F07_3": "IN_PROGRESS",
+    "F07_3_1": "CONTRACT_CANDIDATE_PENDING_REVIEW"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1874,7 +1875,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.3.1: concretar contrato focalizado de propiedad T5 y unión bloqueada C2/C5/T6; entrada autorizada ausente y catálogo compartido, mantener trabajo independiente. No repetir F07.2 ni preparar fixture sin revisión.",
+    "next": "F07.3.1: revisión focalizada del contrato de catálogo y bloqueo 0.4.0; si APTO, fijar pruebas y preparar fixture nuevo. No repetir F07.2.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2126,7 +2127,7 @@
     },
     "nextCoordinationProposal": {
       "phase": "F07.3.1",
-      "status": "PENDING_DESIGN",
+      "status": "CONTRACT_CANDIDATE_PENDING_REVIEW",
       "cases": [
         "T5",
         "C2",
@@ -2136,7 +2137,23 @@
       "scope": "shared catalog with one writer, real missing authorized input, independent useful work and dependency join",
       "fixture": "NOT_CREATED",
       "runtime": "NOT_RUN",
-      "C3": "NOT_IN_SCOPE"
+      "C3": "NOT_IN_SCOPE",
+      "contractPath": "tests/F07-COORDINACION.md",
+      "contractVersion": "0.4.0",
+      "localEntryReadyReported": true,
+      "independentReview": "PENDING",
+      "mutablePaths": [
+        "src/stock.mjs",
+        "src/dispatch.mjs",
+        "src/catalog.mjs"
+      ],
+      "missingSource": "spec/dispatch-actions.json",
+      "sourceValues": "OPERATOR_HELD_NOT_SELECTED_IN_CONTRACT",
+      "stages": [
+        "A functional acceptance and B/D blocked",
+        "operator-authorized source delta, B and D integration"
+      ],
+      "preflightWithoutTask": "VALID_C5_T6_NOT_RUN"
     }
   }
 }
