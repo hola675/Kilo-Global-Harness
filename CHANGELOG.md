@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.121.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.122.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -431,3 +431,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-27 — F07.1 cierre de rama integrada
 - Retirada local reportada y remota verificada, main única, historial integrado conservado. Manifiesto 0.70.0 y roadmap/changelog 0.121.0; contrato F07.2 0.1.0 intacto, revisión independiente pendiente. Sin cambios normativos, fixture, instalación ni release.
+
+## 2026-11-27 — F07.2.1-R1 ajuste del contrato
+- Revisión independiente 0.1.0 APTO CON CONDICIONES reportada; contrato 0.2.0 incorpora cuatro precisiones de evaluación: routing proporcional, negativos combinados A, fixture discriminante D y trazabilidad de independencia. Sin ampliar misión ni modificar código normativo. Contraste del delta pendiente; fixture NOT_CREATED, runtime NOT_RUN.
+- Manifiesto 0.71.0, roadmap/changelog 0.122.0. Sin instalación, release ni retirada de laboratorios.
