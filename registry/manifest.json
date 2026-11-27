@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.64.0",
+    "version": "0.65.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -238,7 +238,7 @@
     "F06_R2_8": "FUNCTIONAL_COMPARISON_PASS_REPORTED_LIMITED",
     "F06_R3": "DONE_REMOTE_AND_LOCAL_CONSOLIDATION_REPORTED",
     "F06_R4": "DONE_QUARANTINE_REPORTED_LIMITED",
-    "F06_R5": "PENDING_INDEPENDENT_REVIEW_AND_GAP_CLOSURE"
+    "F06_R5": "INDEPENDENT_STATIC_REVIEW_REPORTED_PLAN_RETARGETED_Q7_Q13_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -682,7 +682,49 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "F06-R5.1: revisar independientemente política 0.22.0, las 13 skills y evidencia existente; seleccionar solo escenarios pendientes materiales de la matriz original. Laboratorio retirado a cuarentena, no reabrir ni borrar; F06 IN_PROGRESS, F07 tras puerta explícita. No repetir pruebas superadas ni activar globalmente.",
+    "next": "F06-R5.3: preparar comparación Q7/Q13 en dos workspaces descartables nuevos, política 0.22.0 y modelo común autorizado, única diferencia focused-testing 0.2.0 con referencia. Evidencia previa real de ámbitos independientes, cambio runner y nuevo archivo en uno; evaluar reutilización, invalidación y selección real sin imponer carga. No reabrir cuarentena. F06 IN_PROGRESS, F07 tras decisión explícita.",
+    "r5ReviewEvidence": {
+      "date": "2026-11-27",
+      "reviewedRevision": "ccb5e7cc3d36fde28054e75bbee87a8d65fc4316",
+      "provenance": "operator supplied separate Kilo Code read-only audit report",
+      "status": "REPORTED_INDEPENDENT_STATIC_REVIEW",
+      "policyVersion": "0.22.0",
+      "skills": 13,
+      "roles": 9,
+      "materialNormativeContradictionsReported": 0,
+      "dictamen": "NO_APTO_TEMPORARY_F07",
+      "evaluationReferenceDefect": "RETARGETED_HISTORICAL_0.21.0_CURRENT_0.22.0",
+      "runtimeCertification": false,
+      "transferDesignStatus": "PARTIAL_POST_INTEGRATION_DELTA_NOT_RUN",
+      "focusedEvaluation": {
+        "cases": [
+          "Q7",
+          "Q13"
+        ],
+        "skill": "focused-testing",
+        "version": "0.2.0",
+        "status": "NOT_RUN",
+        "samePolicyAndModel": true,
+        "onlySkillDifference": true,
+        "newDisposableWorkspaces": true
+      },
+      "deferredChecks": {
+        "F07": [
+          "C/T/K",
+          "G2/G4/G9/G12",
+          "effectiveRoleCapabilities"
+        ],
+        "F09": [
+          "MCP discovery/exposure/invocation"
+        ],
+        "F12": [
+          "end-to-end",
+          "performance",
+          "model comparison"
+        ]
+      },
+      "globalActivationAuthorized": false
+    },
     "retirementEvidence": {
       "date": "2026-11-27",
       "status": "PASS_REPORTED_LIMITED_QUARANTINE",
@@ -742,7 +784,7 @@
         "git-workflow",
         "tool-mcp-discovery"
       ],
-      "independentPolicyAndSkillsReview": "PENDING",
+      "independentPolicyAndSkillsReview": "STATIC_REVIEW_REPORTED_NO_MATERIAL_NORMATIVE_CONTRADICTIONS",
       "full175ScenarioMatrix": "NOT_RUN_AS_COMPLETE_MATRIX"
     },
     "consolidationEvidence": {
@@ -1126,7 +1168,7 @@
       "unchangedRuntime": true,
       "labCompatibility": "REQUIRES_NEW_PINNED_SOURCE_REVISION_AFTER_AUTHORIZED_OLD_LAB_RETIREMENT",
       "runtimeStatus": "PARTIAL_REPORTED_R1_COMPLETE_LIMITED",
-      "independentReview": "NOT_RUN",
+      "independentReview": "STATIC_REVIEW_REPORTED_R5_1",
       "installable": false,
       "reason": [
         "review required for material risk requested in design mission",
