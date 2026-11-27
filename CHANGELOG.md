@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.133.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.134.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -479,3 +479,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.4 revisión APTO y preparador candidato
 - Contrato 0.1.0 APTO reportado, sin defectos materiales; blob preservado. Preparador externo 0.1.0, cinco objetos con hashes fijados, 30 protegidos, 0 mutables; contraste estático, parser/Windows NOT_RUN, fixture NOT_CREATED.
 - Manifiesto 0.82.0, roadmap/changelog 0.133.0; sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.4 cierre limitado
+- Preparación y verificación Windows PASS reportados, 30/30 protegidos. Propuesta estática APTO, dos delegaciones, RESULT reportado y tres lecturas del tablero visibles; C6 material favorable NOT_VERIFIED por falta de trazas; HOLD/corrección y replay NOT_RUN; C1/C7/C11 NOT_RUN. Registrar relecturas del líder y necesidad de lecturas Swarm no acreditada.
+- F07.4 DONE_POC_LIMITED; F07.5 propuesta R3/T3/T7, diseño pendiente. Manifiesto 0.83.0, roadmap/changelog 0.134.0, contrato Swarm 0.1.0 intacto. Sin cambios normativos, instalación ni release.
