@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.120.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.121.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -34,7 +34,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F06-R5.3/R5.4 | DONE_POC_LIMITED | Q7/Q13 PASS_REPORTED en ambas variantes; focused-testing invocada en candidate; 78/78 archivos MATCH. Dictamen APTO CON CONDICIONES; archivo físico del fixture Q pendiente. |
 | F07.1.1–F07.1.4 | CANDIDATE_PREPARED_STATIC | Inventario CLI reportado, investigación y refinamiento del líder Code nativo: política 0.23.0 candidata; 0.22.0 baseline histórica. |
 | F07.1.5 | DONE_POC_LIMITED | Revisión independiente APTO reportada, comparación documental, defecto inicial candidate corregido con ayuda y revisión focalizada, 58/58 MATCH. No superioridad causal ni C1 certificado. |
-| F07.1.6 | DONE_REPORTED_REMOTE_VERIFIED | Integración fast-forward autorizada; PR #176 fusionado, rama temporal integrada pendiente de retirada autorizada; conservar laboratorios. |
+| F07.1.6 | DONE_REPORTED_REMOTE_VERIFIED | Integración fast-forward autorizada; PR #176 fusionado y rama integrada retirada con autorización; main única local reportada y remota verificada. Conservar laboratorios. |
 | F07.2 | IN_PROGRESS | [Contrato de misión de implementación](../tests/F07-COORDINACION.md): revisión independiente pendiente, fixture NOT_CREATED; dependencias reales, propiedad única, integración y solapamiento observable. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
@@ -460,3 +460,6 @@ Política 0.23.0 intacta. Revisión estática independiente APTO reportada, misi
 
 ## F07.1.6 / F07.2.1 — consolidación y contrato (2026-11-27)
 Integración fast-forward autorizada por operador, main y rama temporal coincidieron en f982a1f56c09d226e33dca387c9991c59dbabe4e; PR #176 cerrado/fusionado verificado. El PR conservó etiqueta draft; no acredita G9 ni CI PASS (sin resultados observados). Rama temporal pendiente de retirada autorizada. F07.1 DONE_POC_LIMITED; F07.2 IN_PROGRESS solo diseño: contrato de módulo de órdenes de trabajo con tres archivos mutables, revisión independiente sobre dominio estable y pruebas protegidas. Revisar contrato antes de crear fixture; no imponer reparto, introducir esperas, repetir positivos ni usar laboratorios anteriores. Manifiesto 0.69.0. Sin activación global ni release.
+
+## F07.1.6-R2 — retirada autorizada (2026-11-27)
+Operador reporta ONLY_MAIN_REMAINS y F07_2_ENTRY_READY, rama integrada eliminada local/remota, main limpia en a4755fd. GitHub confirma main única y revisión exacta. Historial integrado conservado; no se certifica G9 ni CI por esta operación. Manifiesto 0.70.0. F07.2.1: revisión independiente del contrato 0.1.0, fixture NOT_CREATED, runtime NOT_RUN. No retirar laboratorios ni activar globalmente.
