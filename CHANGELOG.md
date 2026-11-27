@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.144.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.145.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -523,3 +523,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.7.1-R1 revisión condicionada
 - APTO CON CONDICIONES reportado sobre 0.1.0; delta 0.1.1 separa K3/K5 por variante y explicita APTO final como puerta. No forzar transiciones, no transferir cobertura. Revisión focalizada pendiente, fixture NOT_CREATED, runtime NOT_RUN.
 - Manifiesto 0.93.0, roadmap/changelog 0.144.0; referencias, agentes, skills, política y alcance intactos; sin instalación ni release.
+
+## 2026-11-27 — F07.7.1-R1–F07.7.2 aceptación y preparador candidato
+- Integridad local del delta y APTO final focalizado reportados; condiciones K3/K5 y puerta resueltas; sin regresiones materiales reportadas, sin revalidación Git del revisor ni traza nativa de reanudación. Contrato 0.1.1 intacto.
+- Preparador externo 0.1.0: R/S con 23/24 blobs y 32/33 archivos, inventarios y snapshots, delta 50→25 y puertas C/D; parser/Windows NOT_RUN, catálogo efectivo NOT_VERIFIED, fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.94.0, roadmap/changelog 0.145.0; sin cambios normativos, instalación ni release.

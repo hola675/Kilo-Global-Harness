@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.93.0",
+    "version": "0.94.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -286,7 +286,8 @@
     "F07_6_5": "A_STATIC_APTO_DIRECT_RECOVERY_PASS_REPORTED",
     "F07_6_6": "D_STATIC_APTO_FINAL_INTEGRITY_PASS_REPORTED",
     "F07_7": "IN_PROGRESS",
-    "F07_7_1": "DELTA_CANDIDATE_PREPARED_REVIEW_PENDING"
+    "F07_7_1": "DONE_CONTRACT_APTO_REPORTED",
+    "F07_7_2": "PREPARER_CANDIDATE_PREPARED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1925,7 +1926,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.7.1-R1: verificar integridad del delta 0.1.1 y obtener APTO final independiente focalizado antes de F07.7.2.",
+    "next": "F07.7.2: validar hash y parser del preparador externo, crear dos workspaces nuevos y verificar inventarios; comprobar catálogo efectivo antes de evaluar R/S.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -3000,8 +3001,8 @@
       }
     },
     "nextContextProposal": {
-      "phase": "F07.7.1",
-      "status": "DELTA_CANDIDATE_PREPARED_REVIEW_PENDING",
+      "phase": "F07.7.2",
+      "status": "PREPARER_CANDIDATE_PREPARED",
       "baseline": "team-context-recovery 0.1.0 and policy 0.23.0 unchanged",
       "reuse": "F03.5E/F operator-confirmed compact/reopen and textual recovery, unknown operational status and no action; F07 accepted artifacts as historical evidence only",
       "focus": "material context loss, identity and authorization, selective evidence validity, normal continuation without redundant load; native compact or reopen only if useful and separately observable",
@@ -3012,7 +3013,7 @@
       "contractVersion": "0.1.1",
       "contractBlob": "e10202329da39662e666b894a6992ff0aac82e5c",
       "baselineRevision": "ed5c56a9c31064853cdd73f879579ecb8df63739",
-      "independentReview": "APTO_CON_CONDICIONES_REPORTED_V0.1.0_DELTA_FINAL_PENDING",
+      "independentReview": "APTO_FINAL_DELTA_REPORTED",
       "variants": {
         "R": "same policy and other agents/skills, context skill absent locally; effective catalog must be checked",
         "S": "same configuration plus pinned team-context-recovery 0.1.0"
@@ -3080,7 +3081,57 @@
         ],
         "originalNativeTaskTrace": "NOT_PROVIDED",
         "residual": "effective catalog/origin, provider/model variant, invocation traces, runtime, exclusion and operational persistence unverified",
-        "finalDeltaReview": "PENDING"
+        "finalDeltaReview": "APTO_REPORTED",
+        "deltaReviewedRevision": "556b69e01653578628de400c7ac71320d01accd2",
+        "deltaReviewedBlob": "e10202329da39662e666b894a6992ff0aac82e5c",
+        "deltaLocalIntegrity": "PASS_REPORTED",
+        "deltaConditions": {
+          "K3K5": "RESOLVED_REPORTED",
+          "gate": "RESOLVED_REPORTED"
+        },
+        "deltaRegression": "NONE_REPORTED_IN_FOCUSED_SCOPE",
+        "deltaReviewerLocalGitRevalidation": "NOT_RUN_BY_INSTRUCTION",
+        "sameChildReactivation": "INTENT_REPORTED; NATIVE_TASK_TRACE_NOT_PROVIDED",
+        "deltaRuntime": "NOT_RUN"
+      },
+      "preparer": {
+        "name": "F07.7.2-Laboratorio-Contexto-0.1.0.ps1",
+        "version": "0.1.0",
+        "sha256": "F053B4C7763C5129E8BE46745F7F53274A2BAFBAAEF47A64415D0BAFDF33978A",
+        "delivery": "operator attachment, not repository source",
+        "sourceRevision": "556b69e01653578628de400c7ac71320d01accd2",
+        "sourceBlobs": 24,
+        "variants": {
+          "R": {
+            "sourceBlobs": 23,
+            "workspaceFiles": 32,
+            "contextSkillLocal": "ABSENT"
+          },
+          "S": {
+            "sourceBlobs": 24,
+            "workspaceFiles": 33,
+            "contextSkillLocal": "PRESENT"
+          }
+        },
+        "commonFiles": "32 byte-identical by construction, verify externally; effective exposure NOT_VERIFIED",
+        "model": "kilo/openai/gpt-6-luna subject to explicit confirmation",
+        "modes": [
+          "Preparar",
+          "VerificarInicial",
+          "AplicarDelta",
+          "VerificarLectura",
+          "AutorizarC",
+          "VerificarC",
+          "AutorizarD",
+          "VerificarD"
+        ],
+        "scope": "external initial inventories and snapshots, explicit source delta 50 to 25, read-only gate and scoped C/D authorization, original inventory and gate pins; static integrity not technical cessation or acceptance",
+        "staticInspection": "PIN_LIST_AND_FIXTURE_COUNT_CHECKED; WINDOWS_PARSER_PENDING",
+        "powershellParser": "NOT_RUN",
+        "windowsExecution": "NOT_RUN",
+        "effectivePermissions": "NOT_VERIFIED",
+        "effectiveCatalog": "NOT_VERIFIED",
+        "fixture": "NOT_CREATED"
       }
     }
   }
