@@ -1,7 +1,7 @@
 # F06 — Evaluación de skills base
-Versión del archivo: 0.37.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.38.0 | Última modificación: 2026-11-27
 
-Estado: diseño de evaluación, runtime NOT_RUN. Conservar la política 0.17.0 y los nueve agentes 0.2.0 como referencia histórica inicial; cada sección fija su comparación histórica. Para candidato conjunto F06-AUD-R usar inventario actual del manifiesto y política 0.21.0; no activar globalmente. Usar laboratorio registrado y descartable, modelo explícitamente autorizado, sin secretos ni cambios en proyectos reales. Verificar colisiones y disponibilidad por sesión y rol antes de probar. Una descripción visible no demuestra carga; carga no demuestra mejora.
+Estado actual: evidencia runtime parcial reportada (R1/R2) y cierre operativo R4; la matriz original de 175 escenarios no está ejecutada íntegramente. Estado histórico inicial: diseño de evaluación, runtime NOT_RUN. Conservar la política 0.17.0 y los nueve agentes 0.2.0 como referencia histórica inicial; cada sección fija su comparación histórica. Para candidato conjunto F06-AUD-R usar inventario actual del manifiesto y política 0.21.0; no activar globalmente. Usar laboratorio registrado y descartable, modelo explícitamente autorizado, sin secretos ni cambios en proyectos reales. Verificar colisiones y disponibilidad por sesión y rol antes de probar. Una descripción visible no demuestra carga; carga no demuestra mejora.
 
 ## F06.1 — team-routing (candidato 0.2.0)
 Fuentes: especificación Agent Skills y documentación Kilo consultadas el 2026-11-25; cargador CLI fijado en la investigación, MIT, inspección selectiva, no auditoría completa de descubrimiento. Sin material externo copiado. El enfoque nativo bajo demanda evita sumar instrucciones a cada interacción; alternativa es ampliar AGENTS.md, descartada inicialmente por costo de contexto y solapamiento. No scripts ni comandos embebidos.
@@ -430,3 +430,25 @@ Integridad posterior: 38 archivos R1, cuatro protegidos R2, registro y auxiliare
 Conclusión: autonomía funcional demostrada en esta muestra y activación contextual observada en Candidate. No se establece beneficio causal, superioridad general, rendimiento reproducible ni tiempo de resolución de agentes. Arrays dispersos y objetos hostiles quedan fuera del contrato original.
 
 Pendientes: recuperación específica de mutaciones parciales, carreras de retirada, cierre seguro del laboratorio y consolidación Git. No repetir pruebas superadas sin cambios que justifiquen recertificación. Instalación global no autorizada.
+
+### F06-R4 — recuperación y retirada por cuarentena (2026-11-27)
+Estado: PASS_REPORTED_LIMITED. Operador aporta parser y 8/8 pruebas sintéticas del candidato local 0.1.0 (SHA256 3E7DE5D4E54ACBC8FA1F3F8C8E79128614712051528CF62BA931C148A456957D): roundtrip, before, after, collision, drift, missing-journal, bad-journal, both-absent. Revisión estática propia, no independiente. Inventario real: 48 archivos, identidad de ambos registros y soluciones respaldadas, integridad R1/R2 verificada. Tras autorización: QUARANTINED, ruta activa ausente, cuarentena y registro presentes; diagnóstico posterior coincide con huella de inventario previa. No publicar datos locales ni el candidato específico. No se ejecutó el borrado 0.1.4 ni restauración del laboratorio real. Interrupciones simuladas, no corte eléctrico; exclusión de escritores, ACL/ADS y recuperación de restos de borrado no certificadas. No repetir ni modificar cuarentena.
+
+### F06-R4.5 / R5.1 — brechas restantes
+| Skill | Evidencia reportada | Brecha |
+|---|---|---|
+| team-routing | invocación explícita y selección contextual R1 | cobertura individual y causalidad |
+| team-task-contract | invocación R1 y entrada concreta a Bastión | límites y revisión del delta |
+| requirements-acceptance | invocación y diseño R1 | aceptación ejecutada y contrato parcial |
+| architecture-decisions | invocación y diseño R1 | criterios materiales pendientes |
+| secure-development | invocación y revisión R1 | controles de producto y delta material |
+| skill-authoring | invocación y decisión conceptual | investigación, evaluación y autoría reales |
+| implementation-discipline | invocación R2 y corrección funcional | cobertura más allá del fixture |
+| systematic-debugging | invocación R2 y corrección funcional | cobertura más allá del fixture |
+| team-coordination | catálogo; reparto/revisión de R1 | invocación individual y concurrencia real |
+| team-context-recovery | catálogo; recuperación conceptual R1 | invocación individual y recuperación real |
+| focused-testing | catálogo; suite ejecutada por operador | invocación y selección de pruebas por agente |
+| git-workflow | catálogo; Git ejecutado por operador | invocación y conducta Git del agente |
+| tool-mcp-discovery | catálogo | invocación y exposición/alternativas por rol |
+
+Ocho invocaciones reportadas no equivalen a ocho certificaciones independientes; cinco sin invocación acreditada, no necesariamente ausentes. Revisar política 0.22.0 y fuentes de las 13 skills en sesión separada, solo lectura. Distinguir hallazgos materiales, evidencia reutilizable y límites; seleccionar escenarios existentes mínimos, no duplicar suite ni activar skills por cuota. F06 IN_PROGRESS, F07 pendiente de puerta; sin instalación global.
