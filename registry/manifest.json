@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.84.0",
+    "version": "0.85.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -266,7 +266,9 @@
     "F07_4_4": "STATIC_RESULT_APTO_NATIVE_COMMUNICATION_PARTIAL",
     "F07_4_5": "INTEGRITY_PASS_REPORTED",
     "F07_5": "IN_PROGRESS",
-    "F07_5_1": "CONTRACT_CANDIDATE_PENDING_REVIEW"
+    "F07_5_1": "CONTRACT_CANDIDATE_PREPARED",
+    "F07_5_2": "CONTRACT_APTO_REPORTED",
+    "F07_5_3": "PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1889,7 +1891,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.5.2: revisión focalizada del contrato de revisión independiente 0.1.0; si APTO, preparar laboratorio V1 con objeto mutable único y snapshot externo por etapas; delta reservado.",
+    "next": "F07.5.3: operador valida parser y ejecuta preparador Revision 0.1.0; laboratorio nuevo, 26 protegidos, 1 mutable, delta ausente. Tras preparación PASS construir V1; verificar y fijar snapshot exacto antes de revisión independiente.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2572,7 +2574,7 @@
     },
     "nextReviewProposal": {
       "phase": "F07.5.1",
-      "status": "CONTRACT_CANDIDATE_PENDING_REVIEW",
+      "status": "CONTRACT_APTO_REPORTED_PREPARER_CANDIDATE",
       "primaryCases": [
         "R3",
         "T3",
@@ -2590,7 +2592,7 @@
       "contractPath": "tests/F07-REVISION.md",
       "contractVersion": "0.1.0",
       "localEntryReadyReported": true,
-      "independentReview": "PENDING",
+      "independentReview": "APTO_REPORTED_V0.1.0",
       "productFiles": [
         "spec/export.md",
         "design/export.md"
@@ -2610,7 +2612,41 @@
         "independent delta review V2 and operator acceptance"
       ],
       "negativeR3T3": "NOT_RUN_UNLESS_NATURAL",
-      "validation": "static matrix and exact version-linked independent review, no software tests"
+      "validation": "static matrix and exact version-linked independent review, no software tests",
+      "reviewedBlob": "545b6080ac61f79f46ede256505d9800996c3cac",
+      "reviewProvenance": "operator supplied review report; no material defects; not runtime certification",
+      "reviewResiduals": [
+        "R3/T3 positive need observable exact object and access/return",
+        "T7 requires real post-acceptance authorized delta",
+        "design static and hashes do not demonstrate enforcement"
+      ],
+      "optionalImprovement": "bind reviewer hash to exact workspace file bytes; implemented in operator preparer without changing contract",
+      "preparer": {
+        "name": "F07.5.3-Laboratorio-Revision-0.1.0.ps1",
+        "version": "0.1.0",
+        "sha256": "BA21CDE85610942DF7DEE255641E8C2E15438E87433ED6D3BCC6BBFE99FA7142",
+        "delivery": "operator attachment, not repository source",
+        "sourceRevision": "6439fdcaf44f0977ed29b30e50448c7cd036b205",
+        "protectedFiles": 26,
+        "mutableFiles": 1,
+        "productFiles": 2,
+        "sourceBlobs": 24,
+        "fixtureSha256": {
+          "spec/export.md": "8CB946EBD3060EF632AC6925A71B7C662A8757237DCD3278CBAE5D165BE4B631",
+          "design/export.md": "8DC1326EAC2A71F5BEAC4D6B0BA7EA0A96E7F1132DDD3DB4EDD486161578B529"
+        },
+        "modes": [
+          "Preparar",
+          "VerificarV1",
+          "FijarV1",
+          "VerificarRevisionV1"
+        ],
+        "scope": "prepare V1 only; inspect candidate; explicit consent to external exact-byte CreateNew snapshot bound to provided hash; verify saved and workspace hashes, inventory and protected objects; delta absent; no V1 acceptance or delta release",
+        "staticValidation": "two embedded fixture literals extracted and hashes independently recomputed; adapted previously executed Swarm preparer; no PowerShell parser/runtime executed",
+        "powershellParser": "NOT_RUN",
+        "windowsExecution": "NOT_RUN",
+        "snapshot": "NOT_CREATED"
+      }
     }
   }
 }
