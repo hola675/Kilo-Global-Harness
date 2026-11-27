@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.86.0",
+    "version": "0.87.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -265,7 +265,7 @@
     "F07_4_3": "PREPARATION_PASS_REPORTED",
     "F07_4_4": "STATIC_RESULT_APTO_NATIVE_COMMUNICATION_PARTIAL",
     "F07_4_5": "INTEGRITY_PASS_REPORTED",
-    "F07_5": "IN_PROGRESS",
+    "F07_5": "DONE_POC_LIMITED",
     "F07_5_1": "CONTRACT_CANDIDATE_PREPARED",
     "F07_5_2": "CONTRACT_APTO_REPORTED",
     "F07_5_3": "PREPARATION_PASS_REPORTED",
@@ -277,7 +277,8 @@
     "F07_5_9": "V2_STATIC_SOURCE_APTO_INTEGRITY_REPORTED",
     "F07_5_10": "V2_SNAPSHOT_PASS_REPORTED",
     "F07_5_11": "V2_FOCUSED_REVIEW_PASS_SUMMARY_REPORTED",
-    "F07_5_12": "V2_OPERATOR_APTO_POST_REVIEW_EVIDENCE_PENDING"
+    "F07_5_12": "V2_STATIC_APTO_POST_REVIEW_INTEGRITY_PASS_REPORTED",
+    "F07_6": "PENDING_DESIGN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1900,7 +1901,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.5.12: decision APTO V2 registrada; obtener salida existente de VerificarRevisionV2 y argumentos/retorno original de Task V2 si disponibles, sin repetir revisión. Cerrar T7 únicamente según evidencia; conservar objeto y snapshots.",
+    "next": "F07.6.1: diseñar recuperación selectiva ante fallos, bloqueo y cancelación, reutilizando F03 y F07.3; distinguir estado nativo, resultado lógico y cese de escritores; C5/T6, C8/C10 y efectos inciertos C9/K8 únicamente con escenario inocuo y evidencia suficiente.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2583,7 +2584,7 @@
     },
     "nextReviewProposal": {
       "phase": "F07.5.1",
-      "status": "V2_OPERATOR_APTO_POST_REVIEW_EVIDENCE_PENDING",
+      "status": "DONE_POC_LIMITED",
       "primaryCases": [
         "R3",
         "T3",
@@ -2717,15 +2718,33 @@
           "reviewer": "team-security",
           "review": "PASS_FOCUSED_STATIC_LEADER_SUMMARY_REPORTED",
           "reviewEvidence": "Task delegation visible, direct child reads and findings reported by Code; raw Task prompt, child reads and original return not yet supplied",
-          "postReviewIntegrity": "PENDING_OPERATOR_OUTPUT",
+          "postReviewIntegrity": "PASS_REPORTED",
           "operatorDecision": "APTO_EXPLICIT_STATIC_WITH_RESIDUAL",
-          "acceptanceStatus": "OPERATOR_DECISION_RECORDED_FINAL_EVIDENCE_PENDING",
+          "acceptanceStatus": "ACCEPTED_STATIC_OPERATOR_DECISION_RECORDED_REMOTE_INTEGRITY_PASS_REPORTED",
           "residuals": [
             "full request schema unspecified",
             "post-authorization data query failure behavior unspecified",
             "error or timeout acquiring trusted context not explicitly defined"
           ],
-          "documentStatus": "preserve exact reviewed bytes; historical pending-review label superseded by external decision only"
+          "documentStatus": "preserve exact reviewed bytes; historical pending-review label superseded by external operator decision and manifest; no local V2 acceptance record separately created",
+          "reconstructedDesign": {
+            "encoding": "UTF-8",
+            "lineEndings": "LF",
+            "bytes": 12664,
+            "sha256": "79A02D24F28F262651CDC67EA5703B7BC9943716208E82C49C2FB442E094DB7F",
+            "method": "SHA256 independently computed from exact design text extracted from operator supplied final console transcript; not direct access to local file"
+          },
+          "finalIntegrity": {
+            "protectedMatched": 26,
+            "recognizedAuxiliaries": 1,
+            "inventoryUnchanged": true,
+            "v1SnapshotMatch": true,
+            "v1AcceptanceMatch": true,
+            "deltaMatch": true,
+            "deltaRecordMatch": true,
+            "v2SnapshotMatch": true,
+            "status": "PASS_REPORTED"
+          }
         }
       },
       "cases": {
@@ -2733,10 +2752,44 @@
         "T3positive": "PASS_REPORTED_V1_OBSERVED_TASK_TRACE_AND_READS",
         "R3negative": "NOT_RUN",
         "T3negative": "NOT_RUN",
-        "T7": "NOT_VERIFIED_PENDING_V2_POST_REVIEW_INTEGRITY_AND_CHILD_TRACE",
+        "T7": "NOT_VERIFIED_FAVORABLE_DELTA_INVALIDATION_AND_POST_REVIEW_INTEGRITY_CHILD_TRACE_MISSING",
         "softwareTests": "NOT_RUN_OUT_OF_SCOPE",
         "fullRuntimeCertification": false
+      },
+      "closure": {
+        "status": "DONE_POC_LIMITED",
+        "decision": "APTO_CON_CONDICIONES_DEVELOPMENT_ONLY",
+        "v1": "ACCEPTED_STATIC",
+        "v2": "ACCEPTED_STATIC_OPERATOR_DECISION",
+        "nativeReviewEvidence": "V1 positive R3/T3 reported with original Task prompt, child reads and return; V2 focal review favorable leader summary only",
+        "remainingEvidence": "V2 raw Task arguments, child read operations and original return not provided; retain T7 NOT_VERIFIED, no repeat solely to obtain traces",
+        "physicalArchive": "PENDING",
+        "fullRuntimeCertification": false
       }
+    },
+    "nextFailureProposal": {
+      "phase": "F07.6.1",
+      "status": "PENDING_DESIGN",
+      "primaryCases": [
+        "C5",
+        "T6",
+        "C8",
+        "C10"
+      ],
+      "conditionalCases": [
+        "C9",
+        "K8"
+      ],
+      "scope": "selective recovery from actual logical blockage or native failure/cancellation, preserve independent accepted work, no second writer before confirmed cessation; uncertain effects only harmless authorized simulation if justified",
+      "constraints": [
+        "reuse F03 and F07.3 evidence; no redundant reruns",
+        "do not manufacture Task errors, sleeps, polling or unsafe side effects",
+        "completed is not verified; cancellation requested is not cessation or rollback",
+        "preserve owner and evidence until safe authorized recovery",
+        "no automatic resume after cancellation; no new capability or permission"
+      ],
+      "fixture": "NOT_CREATED",
+      "runtime": "NOT_RUN"
     }
   }
 }
