@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.60.0",
+    "version": "0.61.0",
     "last_modified": "2026-11-26"
   },
   "id": "kilo-global-harness-team",
@@ -233,7 +233,8 @@
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
     "F06_R1B2_R": "R1_DONE_REPORTED_LIMITED",
-    "F06_R2_1": "PREPARATION_AND_NODE_PREFLIGHT_PASS_REPORTED_INDEPENDENT_REVIEW_PENDING"
+    "F06_R2_1": "PREPARATION_AND_NODE_PREFLIGHT_PASS_REPORTED_INDEPENDENT_REVIEW_WITH_FINDINGS",
+    "F06_R2_2": "HARDENING_CANDIDATE_WINDOWS_VALIDATION_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -677,7 +678,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "No actualizar checkout fb55c238 ni repetir preparación/preflight. Revisión independiente de script 0.1.3 y fixture exactos en sesión separada del experimento, exclusivamente lectura de fuentes públicas en worktree; no inspeccionar laboratorios activos ni ejecutar comandos ni editar. Contrastar despacho de modos (ValidateSet no distingue mayúsculas por defecto; selección R2 usa -cin; posible caída a retirada R1 con modo R2 mal capitalizado y confirmaciones de retirada cuando no existe extensión), guardas, propiedad, integridad, límites de aislamiento y cobertura de suite. Resolver hallazgos antes de autorizar pruebas Windows, preservar extensión activa. Ejecución Node y edición aún no autorizadas.",
+    "next": "Validar candidato 0.1.4 con parser, revisión estática del delta y guardas negativas aisladas, sin operar sobre el laboratorio activo. Verificar integridad R2 de solo lectura y conservar registros y fixtures. No repetir preparación. Node, edición y retirada todavía no autorizados.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1445,12 +1446,24 @@
         }
       },
       "r2Candidate": {
-        "status": "STATIC_CANDIDATE",
+        "status": "STATIC_HARDENING_CANDIDATE",
         "script": {
           "path": "scripts/Probar-Skills-KiloTeam.ps1",
-          "version": "0.1.3",
-          "previousVersion": "0.1.2",
+          "version": "0.1.4",
+          "previousVersion": "0.1.3",
           "preservesR1SourceRevision": "86e11637ace4cfa4794946af8b0af34c7173626b"
+        },
+        "hardening": {
+          "baseRevision": "096d231ee9526ac4f2e9a9e4522aff29db5c44ec",
+          "reviewedRevision": "fb55c2386692d0f088392a2f1c26258561d5c3cf",
+          "status": "CANDIDATE_NOT_CERTIFIED",
+          "changes": ["canonical modes", "parameter allowlist before filesystem access", "explicit R1/R2 dispatch", "R1 registry byte digest recheck", "partial mutation warning"],
+          "fixtureChanged": false,
+          "parser014": "NOT_RUN",
+          "negativeGuards": "NOT_RUN",
+          "independentDeltaReview": "NOT_RUN",
+          "activeLabVerification014": "NOT_RUN",
+          "atomicRetirement": false
         },
         "fixture": {
           "path": "tests/fixtures/f06-reservation/",
@@ -1492,9 +1505,9 @@
           "blobVerification": "MATCH_BOTH_PUBLISHED_CODE_AND_TEST",
           "recheck": "PASS_REPRODUCED_4_2_AND_6_0"
         },
-        "windowsParserStatus": "PASS_REPORTED",
+        "windowsParserStatus": "PASS_REPORTED_0.1.3_ONLY",
         "preparationStatus": "PASS_REPORTED",
-        "independentReview": "NOT_RUN",
+        "independentReview": "REPORTED_WITH_FINDINGS_CONTRASTED_STATICALLY",
         "operatorExecutionAuthorization": "NOT_GRANTED",
         "agentExecutionAuthorization": "NOT_GRANTED",
         "retirementStatus": "NOT_RUN",

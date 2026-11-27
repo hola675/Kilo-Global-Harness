@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.111.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.112.0 | Última modificación: 2026-11-26
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -408,3 +408,6 @@ Parser 0.1.3 PASS, 38+4 protegidos y registro MATCH, dos fuentes BASELINE con hu
 
 ## F06-R2.1 — preflight Node reportado (2026-11-26)
 Resolución única, 26.12.1, Authenticode Valid OpenJS Foundation, SHA256 obtenida y variables de precarga ausentes reportados. Manifiesto 0.60.0. Revisión independiente de script/fixture pendiente, incluido posible desvío de modos por capitalización. No ejecutar Node ni retirar; conservar checkout y extensión. F06 IN_PROGRESS.
+
+## F06-R2.2 — endurecimiento candidato (2026-11-26)
+Revisión independiente recibida y contrastada; suite original sí detecta acumulación y enteros grandes. Script 0.1.4 y manifiesto 0.61.0 candidatos. Validar parser, guardas aisladas y revisión de delta antes de verificar R2 sin escrituras. No ejecutar Node, editar ni retirar aún. F06 IN_PROGRESS.

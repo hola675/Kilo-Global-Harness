@@ -1,11 +1,11 @@
 # KILO-GLOBAL-HARNESS-TEAM
-# Version: 0.1.3
+# Version: 0.1.4
 # Fecha: 2026-11-26
 # F06-LAB-R1/R2: comparación local y fixture descartable; no instalador.
 # Exit 0: operación acotada completada; 1: error/bloqueo.
 [CmdletBinding()]
 param(
-    [ValidateSet('Diagnostico','Preparar','Verificar','Retirar','PrepararR2','VerificarR2','RetirarR2')]
+    [ValidateSet('Diagnostico','Preparar','Verificar','Retirar','PrepararR2','VerificarR2','RetirarR2', IgnoreCase = $false)]
     [string]$Modo = 'Diagnostico',
     [string]$Modelo,
     [switch]$ConfirmarKiloCerrado,
@@ -52,6 +52,37 @@ $R2Pins = [ordered]@{
 }
 $Variants = @('baseline','candidate')
 $Utf8 = [Text.UTF8Encoding]::new($false,$true)
+$MutationStarted = $false
+
+function Assert-ModeParameters([Collections.IDictionary]$Bound) {
+    # Validar nombres y presencia, incluso switches explícitamente falsos, antes de E/S.
+    $Allowed = @{
+        Diagnostico = @()
+        Preparar = @('Modelo','ConfirmarKiloCerrado','ConfirmarPrueba')
+        Verificar = @('ComprobarMarcador')
+        Retirar = @('ConfirmarKiloCerrado','ConfirmarRetirada','ConfirmarRetiradaAuxiliar')
+        PrepararR2 = @('ConfirmarKiloCerrado','ConfirmarPrueba')
+        VerificarR2 = @()
+        RetirarR2 = @('ConfirmarKiloCerrado','ConfirmarRetirada','BaselineDigest','CandidateDigest')
+    }
+    if ($Modo -cnotin @('Diagnostico','Preparar','Verificar','Retirar','PrepararR2','VerificarR2','RetirarR2')) {
+        throw 'Modo no canónico.'
+    }
+    $Names = @('Modo') + @($Allowed[$Modo])
+    foreach ($Name in $Bound.Keys) {
+        if ($Name -cnotin $Names) { throw "Parámetro incompatible con ${Modo}: $Name" }
+    }
+    if ($Modo -cin @('Preparar','PrepararR2')) {
+        if (-not $ConfirmarKiloCerrado -or -not $ConfirmarPrueba) { throw 'Preparación requiere autorización y cierre de Kilo.' }
+        if ($Modo -ceq 'Preparar' -and $Modelo -cnotmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.:/+-]+$') { throw 'Modelo inválido.' }
+    }
+    if ($Modo -cin @('Retirar','RetirarR2')) {
+        if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada) { throw 'Retirada requiere autorización y cierre de Kilo.' }
+        foreach ($Name in @('BaselineDigest','CandidateDigest')) {
+            if ($Bound.Keys -ccontains $Name -and $Bound[$Name] -cnotmatch '^[A-F0-9]{64}$') { throw "Huella inválida: $Name" }
+        }
+    }
+}
 
 function Assert-Directory([string]$Path) {
     $Dir = [IO.DirectoryInfo]::new([IO.Path]::GetFullPath($Path))
@@ -164,7 +195,8 @@ function Assert-Tree($Files) {
 }
 function Get-State {
     Assert-File $StateFile
-    $State = [IO.File]::ReadAllText($StateFile) | ConvertFrom-Json -AsHashtable
+    $RegistryBytes = [IO.File]::ReadAllBytes($StateFile)
+    $State = $Utf8.GetString($RegistryBytes) | ConvertFrom-Json -AsHashtable
     if ($State -isnot [Collections.IDictionary] -or $State.Count -ne 6 -or
         $State.id -cne 'kilo-team-f06-lab-v1' -or $State.root -cne $Root -or $State.revision -cne $Revision -or
         $State.files -isnot [Collections.IDictionary]) { throw 'Registro incompatible; preservar.' }
@@ -173,9 +205,10 @@ function Get-State {
     foreach ($Rel in $Files.Keys) {
         if (-not $State.files.Contains($Rel) -or $State.files[$Rel] -cne (Get-Sha256 $Files[$Rel])) { throw "Registro/fuente no coincide: $Rel" }
     }
-    return [pscustomobject]@{ State=$State; Files=$Files }
+    return [pscustomobject]@{ State=$State; Files=$Files; RegistryDigest=(Get-Sha256 $RegistryBytes) }
 }
 function Confirm-Integrity($Record, $Extension = $null) {
+    if ((Get-FileDigest $StateFile) -cne $Record.RegistryDigest) { throw 'Registro R1 cambió; preservar.' }
     $TreeFiles = [ordered]@{}
     foreach ($Rel in $Record.Files.Keys) { $TreeFiles[$Rel] = $Record.Files[$Rel] }
     if ($null -ne $Extension) {
@@ -223,16 +256,18 @@ function Confirm-R2($Record, $Extra) {
     return $Digests
 }
 function Invoke-R2($Record) {
+    if ($Modo -cnotin @('PrepararR2','VerificarR2','RetirarR2')) { throw 'Despacho R2 inválido.' }
     if ($ComprobarMarcador -or $Modelo -or $ConfirmarRetiradaAuxiliar) { throw 'Parámetro incompatible con R2.' }
     $Extra = Get-R2Payload
     if ($Extra.Count -ne 7) { throw 'Inventario R2 inesperado.' }
     $R2State = Join-Path $Root 'r2-ownership.json'
-    if ($Modo -eq 'PrepararR2') {
+    if ($Modo -ceq 'PrepararR2') {
         if (-not $ConfirmarKiloCerrado -or -not $ConfirmarPrueba) { throw 'Requiere autorización R2 y cierre de Kilo.' }
         if ($ConfirmarRetirada -or $BaselineDigest -or $CandidateDigest) { throw 'Parámetro incompatible con preparación.' }
         Confirm-Integrity $Record
         Assert-Absent $Root 'r2-ownership.json'
         foreach ($Variant in $Variants) { Assert-Absent (Join-Path $Root $Variant) 'r2' }
+        $script:MutationStarted = $true
         Write-New $R2State $Extra['r2-ownership.json']
         foreach ($Variant in $Variants) {
             $Path = Join-Path $Root "$Variant/r2"
@@ -248,7 +283,7 @@ function Invoke-R2($Record) {
         return
     }
     $Digests = Confirm-R2 $Record $Extra
-    if ($Modo -eq 'VerificarR2') {
+    if ($Modo -ceq 'VerificarR2') {
         if ($ConfirmarPrueba -or $ConfirmarRetirada -or $BaselineDigest -or $CandidateDigest) { throw 'Parámetro incompatible con verificación.' }
         Write-Host 'PASS_INTEGRIDAD_LOCAL_F06_R2 (código mutable no revisado)'
         return
@@ -262,6 +297,7 @@ function Invoke-R2($Record) {
             if ($Approved[$Variant] -cnotmatch '^[A-F0-9]{64}$' -or $Approved[$Variant] -cne $Digests[$Rel]) { throw "Código R2 modificado sin huella revisada autorizada: $Variant." }
         } elseif ($Approved[$Variant] -and $Approved[$Variant] -cne $Expected) { throw 'Huella autorizada no coincide.' }
     }
+    $script:MutationStarted = $true
     foreach ($Rel in $Extra.Keys) {
         if ($Rel -ceq 'r2-ownership.json') { continue }
         $Path = Join-Path $Root $Rel
@@ -326,6 +362,7 @@ function Assert-KnownCollisions {
     }
 }
 try {
+    Assert-ModeParameters $PSBoundParameters
     if (-not $IsWindows -or $PSVersionTable.PSVersion.Major -lt 7) { throw 'Requiere Windows y PowerShell 7.' }
     if (-not $env:LOCALAPPDATA -or -not $env:APPDATA) { throw 'Rutas de usuario ausentes.' }
     Assert-Directory $env:LOCALAPPDATA
@@ -337,8 +374,9 @@ try {
         Invoke-R2 $Record
         exit 0
     }
+    if ($Modo -cnotin @('Diagnostico','Preparar','Verificar','Retirar')) { throw 'Despacho R1 inválido.' }
     if ($BaselineDigest -or $CandidateDigest) { throw 'Huellas R2 no válidas para modo R1.' }
-    if ($Modo -eq 'Diagnostico') {
+    if ($Modo -ceq 'Diagnostico') {
         foreach ($Source in $Pins.Keys) { [void](Get-PinnedBytes $Source) }
         Write-Host "Fuentes fijadas MATCH: $($Pins.Count) ($Revision)."
         if (-not (Test-Path -LiteralPath $Root)) {
@@ -351,7 +389,7 @@ try {
         }
         exit 0
     }
-    if ($Modo -eq 'Preparar') {
+    if ($Modo -ceq 'Preparar') {
         if (-not $ConfirmarKiloCerrado -or -not $ConfirmarPrueba) { throw 'Requiere autorización de prueba y cierre ordenado de Kilo.' }
         if ($env:XDG_CONFIG_HOME -or $env:KILO_CONFIG_DIR -or $env:KILO_CONFIG -or $env:KILO_CONFIG_CONTENT) { throw 'Overrides presentes; revisar antes de preparar.' }
         Assert-Absent $env:LOCALAPPDATA 'KiloTeam-F06-Lab'
@@ -363,6 +401,7 @@ try {
         foreach ($Rel in $Files.Keys) { $Hashes[$Rel] = Get-Sha256 $Files[$Rel] }
         $State = [ordered]@{ id='kilo-team-f06-lab-v1'; root=$Root; revision=$Revision; model=$Modelo; marker=$Marker; files=$Hashes }
         # Creación exclusiva del directorio con guardas; registro antes de escribir los workspaces.
+        $MutationStarted = $true
         New-Item -ItemType Directory -Path $Root -ErrorAction Stop | Out-Null
         Assert-Directory $Root
         Write-New $StateFile ($Utf8.GetBytes(($State | ConvertTo-Json -Depth 5 -Compress)))
@@ -376,9 +415,10 @@ try {
         Write-Host 'F06_PREPARADO (sin certificación de carga).'
         exit 0
     }
+    if ($Modo -cnotin @('Verificar','Retirar')) { throw 'Operación R1 no reconocida.' }
     $Record = Get-State
     Confirm-Integrity $Record
-    if ($Modo -eq 'Verificar') {
+    if ($Modo -ceq 'Verificar') {
         if ($ComprobarMarcador) {
             foreach ($Variant in $Variants) {
                 $Reported = Read-Host "Marcador de $Variant (no compartir en informes)" -MaskInput
@@ -389,11 +429,13 @@ try {
         Write-Host 'PASS_INTEGRIDAD_LOCAL_F06'
         exit 0
     }
+    if ($Modo -cne 'Retirar') { throw 'Retirada R1 requiere modo Retirar explícito.' }
     if (-not $ConfirmarKiloCerrado -or -not $ConfirmarRetirada) { throw 'Retirada requiere confirmación expresa y Kilo cerrado.' }
     $Aux = @($Variants | Where-Object { (Get-AuxiliaryStatus $_) -ceq 'MATCH_TEMPLATE' })
     if ($Aux.Count -gt 0 -and -not $ConfirmarRetiradaAuxiliar) { throw 'Se requiere confirmación de retirada de auxiliares reconocidos.' }
     # Revalidar todo antes de mutar. No adoptar hashes nuevos ni borrar recursivamente.
     Confirm-Integrity $Record
+    $MutationStarted = $true
     foreach ($Rel in $Record.Files.Keys) {
         $Path = Join-Path $Root $Rel
         if ((Get-FileDigest $Path) -cne $Record.State.files[$Rel]) { throw "Deriva durante retirada: $Rel" }
@@ -411,7 +453,7 @@ try {
     }
     Assert-Directory $Root
     if (@(Get-ChildItem -LiteralPath $Root -Force).Count -ne 1) { throw 'Raíz contiene entradas inesperadas; preservar registro.' }
-    Assert-File $StateFile
+    if ((Get-FileDigest $StateFile) -cne $Record.RegistryDigest) { throw 'Registro R1 cambió; preservar.' }
     Remove-Item -LiteralPath $StateFile -ErrorAction Stop
     [IO.Directory]::Delete($Root,$false)
     Assert-Absent $env:LOCALAPPDATA 'KiloTeam-F06-Lab'
@@ -419,6 +461,9 @@ try {
     exit 0
 } catch {
     Write-Error -Message $_.Exception.Message -ErrorAction Continue
+    if ($MutationStarted) {
+        Write-Host 'F06_PARTIAL_POSSIBLE: conservar restos y evidencia; no repetir preparación o retirada. Recuperación específica requiere revisión y autorización.'
+    }
     Write-Host 'F06_BLOCKED: conservar registro y archivos; no limpiar manualmente ni repetir preparación.'
     exit 1
 }
