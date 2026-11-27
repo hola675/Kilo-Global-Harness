@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.117.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.118.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -415,3 +415,8 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F06-R5.3/R5.4 cierre limitado
 - Q7/Q13: ambas variantes conservan evidencia A, revalidan B (2/2 PASS reportado), mantienen PARTIAL; focused-testing visible en candidate. 78/78 archivos protegidos MATCH, dos auxiliares reconocidos, inventario intacto. Sin beneficio causal/rendimiento establecido; desviaciones observadas registradas.
 - F06 DONE_POC_LIMITED, APTO CON CONDICIONES para F07.1. Manifiesto 0.66.0, roadmap/changelog 0.117.0, evaluación 0.40.0, catálogo 0.19.0. Archivo físico Q pendiente; sin cambios de agentes, política, skills normativas ni scripts, sin instalación ni release.
+
+## 2026-11-27 — F07.1 candidato de liderazgo
+- Investigación del líder: inventario CLI 7.8.27 reportado y fuentes nativas fijadas, contraste de patrones externos; sin importación de código ni prompts. Code nativo intacto.
+- Política 0.23.0 candidata: objetivo hasta resultado/bloqueo, contexto focalizado, liberación por evento y aceptación, límites Goal/wakeup/cron/proceso persistente. Sin cambio de agentes, skills, permisos ni modelo. Baseline 0.22.0 y evidencia F06 preservadas.
+- Manifiesto 0.67.0, roadmap/changelog 0.118.0, README 0.5.0, investigación 0.1.0. Rama temporal; revisión independiente y evaluación diferencial pendientes, no instalar ni publicar release.
