@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.63.0",
+    "version": "0.64.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -236,8 +236,9 @@
     "F06_R2_1": "PREPARATION_AND_NODE_PREFLIGHT_PASS_REPORTED_INDEPENDENT_REVIEW_WITH_FINDINGS",
     "F06_R2_2": "HARDENING_VALIDATION_PASS_REPORTED_WITH_RESIDUAL_RISKS",
     "F06_R2_8": "FUNCTIONAL_COMPARISON_PASS_REPORTED_LIMITED",
-    "F06_R3": "DONE_REMOTE_CONSOLIDATION_LOCAL_CLEANUP_PENDING",
-    "F06_R4": "PENDING_RECOVERY_AND_RETIREMENT"
+    "F06_R3": "DONE_REMOTE_AND_LOCAL_CONSOLIDATION_REPORTED",
+    "F06_R4": "DONE_QUARANTINE_REPORTED_LIMITED",
+    "F06_R5": "PENDING_INDEPENDENT_REVIEW_AND_GAP_CLOSURE"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -681,7 +682,69 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "F06-R4.1: inventario de solo lectura del laboratorio activo, registros, respaldos y escritores; revisión de puntos de fallo de 0.1.4. Diseñar y probar recuperación/retirada en copia descartable antes de autorizar retirada real. Limpiar worktree local tras comprobar estado. Cerrar brechas F06 antes de F07; no repetir pruebas superadas ni activar globalmente.",
+    "next": "F06-R5.1: revisar independientemente política 0.22.0, las 13 skills y evidencia existente; seleccionar solo escenarios pendientes materiales de la matriz original. Laboratorio retirado a cuarentena, no reabrir ni borrar; F06 IN_PROGRESS, F07 tras puerta explícita. No repetir pruebas superadas ni activar globalmente.",
+    "retirementEvidence": {
+      "date": "2026-11-27",
+      "status": "PASS_REPORTED_LIMITED_QUARANTINE",
+      "provenance": "operator supplied Windows PowerShell output and candidate source static review by author",
+      "candidate": {
+        "version": "0.1.0",
+        "sha256": "3E7DE5D4E54ACBC8FA1F3F8C8E79128614712051528CF62BA931C148A456957D",
+        "repositoryComponent": false,
+        "parser": "PASS_REPORTED",
+        "syntheticTests": {
+          "pass": 8,
+          "total": 8,
+          "cases": [
+            "roundtrip",
+            "before",
+            "after",
+            "collision",
+            "drift",
+            "missing-journal",
+            "bad-journal",
+            "both-absent"
+          ]
+        }
+      },
+      "activePathAbsent": true,
+      "quarantinePresent": true,
+      "recoveryJournalPresent": true,
+      "inventoryFiles": 48,
+      "inventoryDigestMatch": true,
+      "independentlyExecuted": false,
+      "independentReview": false,
+      "destructiveRetirement014": "NOT_RUN",
+      "actualLabRestoration": "NOT_RUN",
+      "powerLoss": "NOT_TESTED",
+      "concurrentWriterExclusion": "NOT_CERTIFIED",
+      "aclAndAlternateStreams": "NOT_CERTIFIED",
+      "preexistingPartialDeletionRecovery": "NOT_CERTIFIED",
+      "purgeAuthorized": false
+    },
+    "coverageAssessment": {
+      "status": "PARTIAL_REPORTED_NOT_INDIVIDUALLY_CERTIFIED",
+      "catalogReported": 13,
+      "invocationReported": [
+        "team-routing",
+        "team-task-contract",
+        "requirements-acceptance",
+        "architecture-decisions",
+        "secure-development",
+        "skill-authoring",
+        "implementation-discipline",
+        "systematic-debugging"
+      ],
+      "invocationNotEstablished": [
+        "team-coordination",
+        "team-context-recovery",
+        "focused-testing",
+        "git-workflow",
+        "tool-mcp-discovery"
+      ],
+      "independentPolicyAndSkillsReview": "PENDING",
+      "full175ScenarioMatrix": "NOT_RUN_AS_COMPLETE_MATRIX"
+    },
     "consolidationEvidence": {
       "date": "2026-11-27",
       "status": "DONE_REMOTE_CONSOLIDATION",
@@ -697,7 +760,7 @@
       "archiveHistoryReachability": "PASS_REPORTED",
       "divergentCodeMerged": false,
       "semanticEquivalence": "NOT_ESTABLISHED",
-      "localWorktreeCleanup": "PENDING"
+      "localWorktreeCleanup": "PASS_REPORTED_ONE_BRANCH_ONE_WORKTREE"
     },
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
@@ -1601,7 +1664,7 @@
         "independentReview": "REPORTED_WITH_FINDINGS_CONTRASTED_STATICALLY",
         "operatorExecutionAuthorization": "GRANTED_REPORTED_FOR_R2_SUITES_COMPLETED",
         "agentExecutionAuthorization": "NOT_GRANTED",
-        "retirementStatus": "NOT_RUN",
+        "retirementStatus": "QUARANTINED_PASS_REPORTED_BY_SEPARATE_CANDIDATE",
         "installable": false,
         "preparationEvidence": {
           "status": "PASS_REPORTED",
