@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.82.0",
+    "version": "0.83.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -259,10 +259,13 @@
     "F07_3_5": "STAGE_I_A_FUNCTIONAL_PASS_TAP_PROVIDED",
     "F07_3_6": "STAGE_IIA_B_FUNCTIONAL_PASS_TAP_PROVIDED",
     "F07_3_7": "STAGE_IIB_FUNCTIONAL_PASS_TAP_PROVIDED",
-    "F07_4": "IN_PROGRESS",
+    "F07_4": "DONE_POC_LIMITED",
     "F07_4_1": "CONTRACT_CANDIDATE_PREPARED",
     "F07_4_2": "CONTRACT_APTO_REPORTED",
-    "F07_4_3": "PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
+    "F07_4_3": "PREPARATION_PASS_REPORTED",
+    "F07_4_4": "STATIC_RESULT_APTO_NATIVE_COMMUNICATION_PARTIAL",
+    "F07_4_5": "INTEGRITY_PASS_REPORTED",
+    "F07_5": "PENDING_DESIGN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1885,7 +1888,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.4.3: operador valida parser y ejecuta preparador Swarm 0.1.0; laboratorio nuevo, 30 protegidos, 0 mutables. Solo tras preparación PASS, iniciar misión neutral Code.",
+    "next": "F07.5.1: diseñar contraste independiente de objeto concreto y revisión focalizada de delta material autorizado (R3/T3/T7), reutilizar evidencias previas; sin repetir suites ni imponer revisión por rutina.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2424,7 +2427,7 @@
     },
     "nextSwarmProposal": {
       "phase": "F07.4.1",
-      "status": "CONTRACT_APTO_REPORTED_PREPARER_CANDIDATE",
+      "status": "DONE_POC_LIMITED",
       "primaryCases": [
         "C6"
       ],
@@ -2434,8 +2437,8 @@
         "C11"
       ],
       "scope": "read-only inventory schema compatibility audit: v1 boxes versus v2 units, legacy consumer and transition decision",
-      "fixture": "NOT_CREATED",
-      "runtime": "NOT_RUN",
+      "fixture": "PREPARED_AND_FINAL_INTEGRITY_REPORTED",
+      "runtime": "NATIVE_COORDINATION_PARTIAL_REPORTED_STATIC_RESULT_APTO",
       "constraints": [
         "reuse F03 marker and cursor evidence; no artificial progress markers, polling, sleeps, forced overlap, duplicate writers or external scheduler",
         "verify real board schema and availability; stored message is not delivery or acceptance",
@@ -2490,9 +2493,99 @@
           "spec/rollout.md": "95ED35817B837640A8CECE391595ED575C4C50E5B099BE3195706889EF17433A"
         },
         "staticValidation": "five embedded literals extracted and matched; JSON fields and example arithmetic checked without JS execution",
-        "powershellParser": "NOT_RUN",
-        "windowsExecution": "NOT_RUN"
+        "powershellParser": "PASS_REPORTED",
+        "windowsExecution": "PREPARATION_AND_VERIFICATION_PASS_REPORTED",
+        "decoderPassed": 4,
+        "sourceBlobsMatched": 24,
+        "productHashesMatched": 5
+      },
+      "execution": {
+        "date": "2026-11-27",
+        "provenance": "operator supplied UI transcript and preparation/final integrity console outputs",
+        "uiElapsedSeconds": 185,
+        "visibleLeaderSkills": [
+          "team-routing",
+          "team-task-contract",
+          "team-coordination"
+        ],
+        "visibleSearches": 3,
+        "visibleFileReads": 6,
+        "visibleBoardReads": 3,
+        "delegatedRoles": [
+          "team-data",
+          "team-backend"
+        ],
+        "delegations": "two native delegations visible in UI; raw arguments and returns not supplied",
+        "technical": {
+          "status": "APTO_STATIC",
+          "scope": "9/9 grouped static criteria satisfied in coordinator assessment; not executed tests",
+          "findings": [
+            "version-specific units and conversion correct",
+            "legacy v2 overcount identified",
+            "strict fields/ranges/zero and negative cases addressed",
+            "transition stop and compatible fallback stated"
+          ],
+          "softwareTests": "NOT_RUN_OUT_OF_SCOPE"
+        },
+        "communication": {
+          "backendResult": "REPORTED_TO_ROOT",
+          "dataReturn": "REPORTED_VIA_TASK",
+          "boardReads": "THREE_VISIBLE_UI_ROWS",
+          "postArguments": "NOT_AVAILABLE",
+          "readPayloads": "NOT_AVAILABLE",
+          "cursorChain": "NOT_VERIFIED",
+          "decisionCausality": "NOT_VERIFIED",
+          "overlap": "NOT_VERIFIED"
+        },
+        "integrity": {
+          "protectedMatched": 30,
+          "mutableFiles": 0,
+          "recognizedAuxiliaries": 1,
+          "operatorInventoryUnchanged": true,
+          "status": "PASS_REPORTED"
+        },
+        "observations": [
+          "rollout read twice visibly; no material reason visible for second read",
+          "leader reread both schemas and legacy consumer after delegation; proportionality/timing relative to terminal returns not established",
+          "three board reads visible; necessity and cursor not established",
+          "no causal speed or token-cost conclusion"
+        ]
+      },
+      "closure": {
+        "status": "DONE_POC_LIMITED",
+        "decision": "APTO_CON_CONDICIONES_DEVELOPMENT_ONLY",
+        "cases": {
+          "C6material": "NOT_VERIFIED_FAVORABLE_REPORTED_RESULT_AND_VISIBLE_READS",
+          "C6holdCorrection": "NOT_RUN",
+          "C6incrementalCursor": "NOT_VERIFIED",
+          "C6replay": "NOT_RUN",
+          "C6full": "NOT_VERIFIED",
+          "C1": "NOT_RUN_NO_OBSERVED_READY_CONSUMER",
+          "C7": "NOT_RUN",
+          "C11": "NOT_RUN"
+        },
+        "routing": "FAVORABLE_OBSERVED_ROLE_SELECTION_INTEGRAL_NOT_VERIFIED",
+        "physicalArchive": "PENDING",
+        "fullRuntimeCertification": false
       }
+    },
+    "nextReviewProposal": {
+      "phase": "F07.5.1",
+      "status": "PENDING_DESIGN",
+      "primaryCases": [
+        "R3",
+        "T3",
+        "T7"
+      ],
+      "scope": "independent review of actual stable object and material authorized delta; distinguish old review from current acceptance; revalidate affected guarantees only",
+      "constraints": [
+        "different author and reviewer; exact accessible object version and acceptance criteria",
+        "reuse historical evidence; no new tests without distinct guarantee",
+        "do not manufacture defect or unavailable reference solely for PASS",
+        "if trace insufficient retain NOT_VERIFIED; no simulated independence"
+      ],
+      "fixture": "NOT_CREATED",
+      "runtime": "NOT_RUN"
     }
   }
 }
