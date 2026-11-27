@@ -1,7 +1,7 @@
 # KILO-GLOBAL-HARNESS-TEAM
-Versión del archivo: 0.4.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.5.0 | Última modificación: 2026-11-27
 
-Estado: F02 inventario completado; F03 PoC limitada con evidencia reportada; F04 y F05 PoC limitadas completadas; F06 skills base en desarrollo, sin activación global ni certificación integral. Consultar límites y puertas en roadmap. Objetivo de release: 1.0.0 del Harness (independiente de Kilo).
+Estado: F02 inventario completado; F03 PoC limitada con evidencia reportada; F04 y F05 PoC limitadas completadas; F06 skills base PoC limitada completada; F07 en desarrollo (candidato de refinamiento del líder), sin activación global ni certificación integral. Consultar límites y puertas en roadmap. Objetivo de release: 1.0.0 del Harness (independiente de Kilo).
 Code nativo es el único líder. El equipo amplía Kilo Desktop mediante subagentes, políticas, skills y capacidades nativas; no instala un motor paralelo.
 
 ## Entrada
@@ -21,7 +21,7 @@ Code nativo es el único líder. El equipo amplía Kilo Desktop mediante subagen
 - [Historial resumido](CHANGELOG.md)
 
 ## Investigación
-[Motor Kilo](docs/INVESTIGACION-KILO-NATIVO.md) · [Harness públicos](docs/INVESTIGACION-HARNESS-PUBLICOS.md) · [Task Observer](docs/INVESTIGACION-TASK-OBSERVER.md) · [Auditoría del código Desktop y CLI](docs/AUDITORIA-CODIGO-KILO-DESKTOP.md).
+[Motor Kilo](docs/INVESTIGACION-KILO-NATIVO.md) · [Harness públicos](docs/INVESTIGACION-HARNESS-PUBLICOS.md) · [Task Observer](docs/INVESTIGACION-TASK-OBSERVER.md) · [Auditoría del código Desktop y CLI](docs/AUDITORIA-CODIGO-KILO-DESKTOP.md) · [Refinamiento del líder Code](docs/INVESTIGACION-LIDER-CODE.md).
 
 ## Archivo histórico
 legacy/ conserva el árbol exacto del commit 79879427a9799a53bafce5f4fd466ccf417da484. No usar como paquete activo ni copiar su arquitectura. Todavía no hay instalador nuevo certificado ni componentes instalables.
