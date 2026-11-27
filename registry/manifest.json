@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.87.0",
+    "version": "0.88.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -278,7 +278,8 @@
     "F07_5_10": "V2_SNAPSHOT_PASS_REPORTED",
     "F07_5_11": "V2_FOCUSED_REVIEW_PASS_SUMMARY_REPORTED",
     "F07_5_12": "V2_STATIC_APTO_POST_REVIEW_INTEGRITY_PASS_REPORTED",
-    "F07_6": "PENDING_DESIGN"
+    "F07_6": "IN_PROGRESS",
+    "F07_6_1": "CONTRACT_CANDIDATE_PREPARED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1700,7 +1701,13 @@
           "baseRevision": "096d231ee9526ac4f2e9a9e4522aff29db5c44ec",
           "reviewedRevision": "fb55c2386692d0f088392a2f1c26258561d5c3cf",
           "status": "VALIDATION_PASS_REPORTED_WITH_RESIDUAL_RISKS",
-          "changes": ["canonical modes", "parameter allowlist before filesystem access", "explicit R1/R2 dispatch", "R1 registry byte digest recheck", "partial mutation warning"],
+          "changes": [
+            "canonical modes",
+            "parameter allowlist before filesystem access",
+            "explicit R1/R2 dispatch",
+            "R1 registry byte digest recheck",
+            "partial mutation warning"
+          ],
           "fixtureChanged": false,
           "parser014": "PASS_REPORTED",
           "negativeGuards": "PASS_REPORTED_12_OF_12",
@@ -1719,8 +1726,18 @@
           "agentEditAuthorization": "GRANTED_REPORTED_MUTABLE_FILE_ONLY",
           "agentCommandExecution": "NONE_REPORTED",
           "initial": {
-            "baseline": {"tests": 6, "pass": 4, "fail": 2, "exitCode": 1},
-            "candidate": {"tests": 6, "pass": 4, "fail": 2, "exitCode": 1}
+            "baseline": {
+              "tests": 6,
+              "pass": 4,
+              "fail": 2,
+              "exitCode": 1
+            },
+            "candidate": {
+              "tests": 6,
+              "pass": 4,
+              "fail": 2,
+              "exitCode": 1
+            }
           },
           "final": {
             "baseline": {
@@ -1901,7 +1918,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.6.1: diseñar recuperación selectiva ante fallos, bloqueo y cancelación, reutilizando F03 y F07.3; distinguir estado nativo, resultado lógico y cese de escritores; C5/T6, C8/C10 y efectos inciertos C9/K8 únicamente con escenario inocuo y evidencia suficiente.",
+    "next": "F07.6.1: revisión independiente del contrato candidato de recuperación selectiva; no preparar fixture hasta APTO explícito.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2769,7 +2786,7 @@
     },
     "nextFailureProposal": {
       "phase": "F07.6.1",
-      "status": "PENDING_DESIGN",
+      "status": "CONTRACT_CANDIDATE_PREPARED",
       "primaryCases": [
         "C5",
         "T6",
@@ -2789,7 +2806,35 @@
         "no automatic resume after cancellation; no new capability or permission"
       ],
       "fixture": "NOT_CREATED",
-      "runtime": "NOT_RUN"
+      "runtime": "NOT_RUN",
+      "contractPath": "tests/F07-RECUPERACION.md",
+      "contractVersion": "0.1.0",
+      "contractBlob": "4cc75de6ddfc24cc6d2aa677901931ab6a7592fd",
+      "baselineRevision": "671e90b27e9f1a3dc50ccebb4bbce88aea432667",
+      "independentReview": "PENDING",
+      "conditionalCasesDisposition": "NOT_RUN_OUT_OF_SCOPE_INITIAL_CONTRACT",
+      "caseStatus": {
+        "C5": "NOT_RUN",
+        "T6": "NOT_RUN",
+        "C8": "NOT_RUN",
+        "C10": "NOT_RUN",
+        "C9": "NOT_RUN",
+        "K8": "NOT_RUN"
+      },
+      "stages": [
+        "logical blockage on useful discovery if real Task occurs",
+        "background writer cancellation if useful and actually active; no automatic recovery",
+        "conditional authorized recovery only after cessation and reconciliation"
+      ],
+      "mutablePaths": [
+        "design/normalization.md",
+        "design/report.md",
+        "design/integration.md"
+      ],
+      "missingSource": "sources/normalization-policy.md",
+      "agentShellAuthorized": false,
+      "softwareExecutionAuthorized": false,
+      "fullRuntimeCertification": false
     }
   }
 }

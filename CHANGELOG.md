@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.138.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.139.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -499,3 +499,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.5 cierre limitado
 - V2 integridad posterior PASS reportada, 26/26 protegidos, snapshots y registros MATCH. SHA256 V2 recomputado desde texto de consola (12664 bytes). APTO del operador registrado; conservar bytes revisados y riesgos residuales. R3/T3 positivos V1 PASS reportados; T7 favorable NOT_VERIFIED por ausencia de traza original V2. No repetir misión.
 - F07.5 DONE_POC_LIMITED; siguiente F07.6 diseño de fallos/bloqueos/cancelaciones y recuperación selectiva, pendiente. Manifiesto 0.87.0, roadmap/changelog 0.138.0. Contrato intacto, sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.6.1 contrato candidato
+- Diseño de recuperación selectiva documental, C5/T6 retorno bloqueado real, C8 exclusión con cese incierto y C10 cancelación background sin reanudación automática. Recuperación condicionada a autorización y cese; C9/K8 fuera del alcance inicial. Reutiliza evidencia F03/F07.3; no crea mecanismos runtime ni pruebas redundantes.
+- Contrato 0.1.0, manifiesto 0.88.0, roadmap/changelog 0.139.0. Revisión independiente pendiente, fixture NOT_CREATED, runtime NOT_RUN. Sin cambios normativos, agentes, skills, permisos, instalación ni release.
