@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.89.0",
+    "version": "0.90.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -279,7 +279,8 @@
     "F07_5_11": "V2_FOCUSED_REVIEW_PASS_SUMMARY_REPORTED",
     "F07_5_12": "V2_STATIC_APTO_POST_REVIEW_INTEGRITY_PASS_REPORTED",
     "F07_6": "IN_PROGRESS",
-    "F07_6_1": "CONTRACT_DELTA_PREPARED_REVIEW_PENDING"
+    "F07_6_1": "DONE_CONTRACT_APTO_REPORTED",
+    "F07_6_2": "PREPARER_CANDIDATE_PREPARED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1918,7 +1919,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.6.1-R1: verificar integridad del contrato 0.1.1 y contrastar exclusivamente delta del dictamen; fixture solo tras APTO explícito.",
+    "next": "F07.6.2: validar hash y parser del preparador externo, preparar laboratorio nuevo y aportar salida de integridad; no iniciar runtime antes de PASS.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2786,7 +2787,7 @@
     },
     "nextFailureProposal": {
       "phase": "F07.6.1",
-      "status": "CONTRACT_DELTA_PREPARED_REVIEW_PENDING",
+      "status": "PREPARER_CANDIDATE_PREPARED",
       "primaryCases": [
         "C5",
         "T6",
@@ -2811,7 +2812,7 @@
       "contractVersion": "0.1.1",
       "contractBlob": "a45274f5fd9e2cfaed1f22fad5de9094cae6939b",
       "baselineRevision": "671e90b27e9f1a3dc50ccebb4bbce88aea432667",
-      "independentReview": "APTO_CON_CONDICIONES_REPORTED_V0.1.0_DELTA_PENDING",
+      "independentReview": "APTO_CON_CONDICIONES_REPORTED_V0.1.0_DELTA_FINAL_CODE_APTO_REPORTED",
       "conditionalCasesDisposition": "NOT_RUN_OUT_OF_SCOPE_INITIAL_CONTRACT",
       "caseStatus": {
         "C5": "NOT_RUN",
@@ -2853,12 +2854,48 @@
         "F07.3 historical evidence provenance",
         "NOT_RUN is admissible without opportunity, not coverage"
       ],
-      "deltaReview": "PENDING",
+      "deltaReview": "APTO_FINAL_CODE_REPORTED",
       "cessationSource": {
         "revision": "03a6f07d053cd7e6aa88fa1e258e93510335259f",
         "path": "packages/core/src/background-job.ts",
         "blob": "285e65bf815c6dd49443c259fb778153d8164f1e",
         "finding": "cancelled and Deferred resolution precede Scope.close; effective Desktop observability NOT_VERIFIED"
+      },
+      "deltaReviewedBlob": "a45274f5fd9e2cfaed1f22fad5de9094cae6939b",
+      "deltaReviewedRevision": "bb0bcf24e061389003ff1dc49ac919007c97667e",
+      "deltaReviewEvidence": {
+        "localIntegrityBeforeReview": "PASS_REPORTED",
+        "specialistDictamen": "APTO_CON_CONDICIONES_REPORTED",
+        "leaderDictamen": "APTO_REPORTED_STATIC_DELTA_ONLY",
+        "originalSpecialistReturn": "PROVIDED_BY_OPERATOR",
+        "conditions": {
+          "cessation": "RESOLVED_REPORTED",
+          "provenance": "DOCUMENTARY_DISTINCTION_RESOLVED; SPECIALIST_DID_NOT_REOPEN_RECORDS",
+          "coverage": "RESOLVED_REPORTED"
+        },
+        "historicalF073Records": "REMOTE_MANIFEST_CLOSURE_CONSISTENT_WITH_REPORTED_6_OF_6_IN_THREE_RUNS; NOT_NEW_RUNTIME_CORROBORATION",
+        "reviewerCryptographicIdentity": "NOT_VERIFIED",
+        "noFurtherTextChangeRequested": true,
+        "regressions": "NONE_REPORTED_IN_DELTA",
+        "desktopCessationObservability": "NOT_VERIFIED"
+      },
+      "preparer": {
+        "name": "F07.6.2-Laboratorio-Recuperacion-0.1.0.ps1",
+        "version": "0.1.0",
+        "sha256": "2BFCD1FCA2EACE8E16C75C552F027C0FAA3E8EF8004BD3C5D7022622E44DC367",
+        "delivery": "operator attachment, not repository source",
+        "sourceRevision": "bb0bcf24e061389003ff1dc49ac919007c97667e",
+        "sourceBlobs": 24,
+        "protectedFiles": 28,
+        "mutableFiles": 3,
+        "missingSource": "sources/normalization-policy.md",
+        "scope": "prepare and verify initial or observation before source delta; no acceptance or proof of cessation",
+        "model": "kilo/openai/gpt-6-luna subject to explicit operator confirmation",
+        "staticInspection": "PIN_COUNT_AND_LITERAL_OBJECT_COUNT_CHECKED",
+        "powershellParser": "NOT_RUN",
+        "windowsExecution": "NOT_RUN",
+        "effectivePermissions": "NOT_VERIFIED",
+        "fixture": "NOT_CREATED"
       }
     }
   }

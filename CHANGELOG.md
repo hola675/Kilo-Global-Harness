@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.140.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.141.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -507,3 +507,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.6.1-R1 revisión condicionada y delta
 - Integridad local reportada; APTO CON CONDICIONES sobre contrato 0.1.0, explore/general reportados, identidad local no verificada por revisores, perfil Veritas no expuesto. Delta 0.1.1: umbral positivo de cese respaldado por lectura de fuente fijada (cancelled/Deferred antes de Scope.close), procedencia histórica F07.3 y puerta NOT_RUN sin cobertura. Observabilidad efectiva de cese pendiente; mantener bloqueo si no se acredita.
 - Contrato 0.1.1, manifiesto 0.89.0, roadmap/changelog 0.140.0. Contraste focalizado pendiente, fixture NOT_CREATED, runtime NOT_RUN; sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.6 delta aceptado y preparador candidato
+- Integridad delta PASS reportada; especialista condicionado por no reabrir registros F07.3, Code APTO estático final, sin otro cambio de texto; conservar límites de identidad y runtime. Contrato 0.1.1 intacto.
+- Preparador externo 0.1.0, 24 pins, 28 protegidos, 3 stubs, fuente ausente e inventario externo; verificación de observación no acredita cese ni aceptación. Parser/Windows NOT_RUN, fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.90.0, roadmap/changelog 0.141.0; sin cambios normativos, instalación ni release.
