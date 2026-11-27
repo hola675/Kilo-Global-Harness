@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.135.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.136.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -38,7 +38,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F07.2 | DONE_POC_LIMITED | [Contrato y evidencia](../tests/F07-COORDINACION.md): 33/33 casos PASS con TAP, 29/29 integridad, tres módulos 3/3 MATCH; solapamiento e independencia completa NOT_VERIFIED. |
 | F07.3 | DONE_POC_LIMITED | A/B/D 6/6 PASS en tres puertas, 29/29 protegidos, recuperación selectiva y unión lógica observadas, sin repetición de pruebas; T5 NOT_VERIFIED, C5/T6 NOT_RUN. |
 | F07.4 | DONE_POC_LIMITED | Propuesta estática APTO, dos especialistas, RESULT reportado y tres lecturas de tablero visibles; 30/30 protegidos. C6 material favorable NOT_VERIFIED; sin trazas completas. |
-| F07.5 | IN_PROGRESS | [Contrato de revisión independiente](../tests/F07-REVISION.md) 0.1.0: diseño exportación multiproyecto, delta de autorización y proyección, revisión focalizada pendiente. |
+| F07.5 | IN_PROGRESS | [Contrato de revisión independiente](../tests/F07-REVISION.md) 0.1.0 APTO reportado; preparador V1 candidato, 26 protegidos, 1 mutable, snapshot externo, Windows NOT_RUN. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -514,3 +514,6 @@ Foco R3/T3/T7: revisión independiente pertinente de objeto concreto estable y a
 
 ## F07.5.1 — contrato candidato de revisión independiente (2026-11-27)
 Entrada local F07_5_DESIGN_READY reportada. Contrato tests/F07-REVISION.md 0.1.0: diseño estático de exportación de inventario multiproyecto, V1 resumen con autorización confiable y proyección mínima; V2 añade modalidad detalle con permiso adicional y proyección específica. Un objeto mutable, 26 protegidos iniciales; snapshot V1 externo, revisión independiente de objeto concreto, aceptación explícita antes de autorizar delta, snapshot V2 y revisión focalizada sobre garantías afectadas. Sin software ejecutado ni datos reales. R3/T3 positivos, negativos solo si naturales; T7 exige secuencia y evidencia vinculada a versiones, no informe por sí solo. Si no se acredita independencia/acceso de V1, puerta delta bloqueada. Revisión focalizada del contrato pendiente; fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.84.0. No modificar contratos anteriores, agentes, skills, política, permisos ni laboratorios; sin instalación/release.
+
+## F07.5.2–F07.5.3 — revisión y preparador candidato (2026-11-27)
+Dictamen APTO aportado por operador, sin defectos materiales; contrato 0.1.0 blob 545b6080ac61f79f46ede256505d9800996c3cac preservado. Recomendación opcional: hash del contenido exacto del objeto revisado. Preparador externo F07.5.3-Laboratorio-Revision-0.1.0.ps1, SHA256 BA21CDE85610942DF7DEE255641E8C2E15438E87433ED6D3BCC6BBFE99FA7142; 24 blobs normativos, configuración común, spec protegido y stub mutable, 26 protegidos y 1 mutable. Modos Preparar, VerificarV1, FijarV1 y VerificarRevisionV1; snapshot exacto externo mediante CreateNew y consentimiento, hash de workspace y snapshot coincidentes, integridad de inventario y protegidos, delta ausente. Fijar no acepta diseño ni acredita revisión. Dos literales y hashes contrastados estáticamente; parser/Windows NOT_RUN. Fixture y snapshot NOT_CREATED, runtime NOT_RUN. V2 no autorizada; controles de delta posteriores a aceptación V1 acreditada. Manifiesto 0.85.0; sin cambios normativos, instalación ni release.
