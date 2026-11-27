@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.113.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.114.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -21,8 +21,24 @@ Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certific
 | F13 Distribución Windows | F12 | PENDING | manifiesto con par Desktop/CLI certificado, destinos y propiedad verificados, dependencias fijadas, paquete sin legacy, scripts Diagnostico/Simular/Instalar/Verificar/Actualizar/Desinstalar/Restaurar, CI y prueba limpia |
 | F14 Pilotos y release | F13 | PENDING | web, ERP/local-first y desktop cuando aplique; aceptación del usuario, matriz real, documentación, release y hash verificable |
 
+## Estado operativo y siguientes puertas — 2026-11-27
+
+F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas). F06-R3: DONE_REMOTE_CONSOLIDATION; 42 commits integrados por fast-forward, 28 archivos, main 59c4742; 45 ramas retiradas de 46, historial preservado en etiqueta archive/f06-pre-consolidation-20261127 (62a8c11e59f060c48fc2e4d70e6eeb5fd54c049f) y bundle local verificado por operador. El archivo histórico no es una integración funcional de código divergente. La auditoría por rutas no demuestra equivalencia semántica. Queda limpiar el worktree/rama temporal local tras verificar su estado.
+
+| Puerta | Estado | Salida exigida |
+|---|---|---|
+| F06-R4.1 | SIGUIENTE | Inventario de solo lectura del laboratorio activo, registros, respaldos y escritores; revisión de script 0.1.4 y puntos de fallo. No retirar ni repetir preparación/pruebas superadas. |
+| F06-R4.2 | PENDING | Diseñar recuperación específica, propiedad comprobable y retirada segura ante fallo parcial; probar en copia descartable, incluidos fallos y reintentos controlados. |
+| F06-R4.3 | PENDING | Tras revisión y autorización, retirar laboratorio activo, verificar ausencia y conservación de evidencias; cerrar brechas de F06 o registrar límites aceptados explícitamente. |
+| F07 | PENDING | Coordinación avanzada con especialistas reales: dependencias, trabajo simultáneo no conflictivo, transferencia, revisión e integración, conflictos/cancelación y recuperación observable. Reutilizar evidencia válida de F03/F05; no equiparar diseño con runtime. |
+| F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
+| F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
+| F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
+
+F05 conserva su alcance PoC limitado; verificar brechas de permisos efectivos, cobertura y revisión pendientes al desbloquear F07. F06 sigue IN_PROGRESS: descubrimiento de 13 skills y evidencia funcional parcial no equivalen a certificación individual. No habilitar instalación, activación global ni release. Versiones de componentes intactas.
+
 ## Prioridades y paralelismo
-Ruta crítica: F02→F03→F04→F05/F06→F07→F11→F12→F13→F14. F08, F09 y F11 pueden avanzar en paralelo tras sus dependencias; F10 se decide después de los resultados F07, F09 y F11, evitando construir almacenamiento o MCP antes de probar la metaskill. F12 espera F10 (implementación certificada o NO_NECESARIO), F08, F09 y F11. La secuencia de IDs no obliga a ejecutar serialmente. Cada fase arranca con criterios y alcance explícitos; revisión de evidencia antes de desbloquear dependientes. F03 está en ejecución en laboratorio, no instalación global.
+Ruta crítica: F02→F03→F04→F05/F06→F07→F11→F12→F13→F14. F08, F09 y F11 pueden avanzar en paralelo tras sus dependencias; F10 se decide después de los resultados F07, F09 y F11, evitando construir almacenamiento o MCP antes de probar la metaskill. F12 espera F10 (implementación certificada o NO_NECESARIO), F08, F09 y F11. La secuencia de IDs no obliga a ejecutar serialmente. Cada fase arranca con criterios y alcance explícitos; revisión de evidencia antes de desbloquear dependientes. F03 está cerrado como PoC de alcance limitado; las brechas de runtime conservan sus estados y no se autoriza instalación global.
 ## Hitos de versión del Harness
 0.1.x: diseño y prueba nativa; 0.2.x: núcleo y equipo; 0.3.x: skills y coordinación; 0.4.x: integraciones y aprendizaje; 0.5.x: integración y empaquetado; 1.0.0-rc: piloto; 1.0.0: release certificada. Versiones objetivo, no releases publicadas ni promesas de fechas.
 
@@ -417,3 +433,6 @@ Revisión independiente recibida y contrastada; suite original sí detecta acumu
 PASS_REPORTED_LIMITED: parser 0.1.4, guardas 12/12, revisión independiente condicionada, verificación de registros existentes y reproducción del defecto en ambas variantes. Resolución autónoma seguida de revisión estática y ejecución de la suite original: 6/6 PASS por variante, cero fallos y salida 0. Integridad 38+4 y registro conservados.
 
 Siguiente: F06-R3, consolidación de evidencias, revisión acumulada e integración fast-forward en main. F06-R4 propuesto para recuperación y retirada segura. No certificar aún instalación global, paralelismo, exclusión de escritores, recuperación real ni todas las skills individualmente. F06 permanece IN_PROGRESS.
+
+## F06-R3 — consolidación remota completada (2026-11-27)
+Integración fast-forward y archivo histórico comprobados; solo main permanece como rama remota. Evidencia funcional y fixture intactos. Manifiesto 0.63.0; siguiente F06-R4.1, inventario de solo lectura y revisión de recuperación. Limpieza local pendiente. Sin nuevas pruebas, instalación ni retirada.
