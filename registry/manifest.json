@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.73.0",
+    "version": "0.74.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -245,9 +245,13 @@
     "F07_1_3_4": "STATIC_POLICY_CANDIDATE_PREPARED",
     "F07_1_5": "DONE_POC_LIMITED_ASSISTED_RECOVERY_REPORTED",
     "F07_1_6": "DONE_FAST_FORWARD_REPORTED_REMOTE_VERIFIED",
-    "F07_2": "IN_PROGRESS",
+    "F07_2": "DONE_POC_LIMITED",
     "F07_2_1": "DONE_CONTRACT_APTO_REPORTED",
-    "F07_2_2": "PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
+    "F07_2_2": "DONE_PREPARATION_REPORTED",
+    "F07_2_3": "DONE_CONSTRUCTION_REPORTED_LIMITED",
+    "F07_2_4": "DONE_INTEGRITY_AND_SOURCE_INSPECTION",
+    "F07_2_5": "FUNCTIONAL_PASS_TAP_PROVIDED",
+    "F07_3": "PENDING_DESIGN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1870,7 +1874,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.2.2: preparar laboratorio nuevo con script 0.1.0, validar parser y ejecución Windows; después misión autónoma. No repetir revisión ni tocar laboratorios anteriores.",
+    "next": "F07.3.1: concretar contrato focalizado de propiedad T5 y unión bloqueada C2/C5/T6; entrada autorizada ausente y catálogo compartido, mantener trabajo independiente. No repetir F07.2 ni preparar fixture sin revisión.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -1958,11 +1962,11 @@
     },
     "coordinationCandidate": {
       "path": "tests/F07-COORDINACION.md",
-      "version": "0.2.1",
-      "status": "CONTRACT_ACCEPTED_PREPARER_CANDIDATE",
+      "version": "0.3.0",
+      "status": "DONE_POC_LIMITED",
       "independentReview": "APTO_CON_CONDICIONES_REPORTED_V0.1.0",
-      "fixture": "NOT_CREATED",
-      "runtime": "NOT_RUN",
+      "fixture": "PREPARED_REPORTED_INTACT",
+      "runtime": "FUNCTIONAL_PASS_TAP_PROVIDED_COORDINATION_NOT_VERIFIED",
       "mutablePaths": [
         "src/transition.mjs",
         "src/summary.mjs",
@@ -1997,8 +2001,8 @@
         "sourceRevision": "057a133b829f50d8a5f8b5384ebaa4fba8a831fc",
         "protectedFiles": 29,
         "mutableFiles": 3,
-        "windowsExecution": "NOT_RUN",
-        "powershellParser": "NOT_RUN",
+        "windowsExecution": "PREPARATION_PASS_REPORTED",
+        "powershellParser": "PASS_REPORTED",
         "fixtureTests": {
           "nodeVersion": "v22.16.0",
           "environment": "coordinator Linux temporary directory, not operator Windows",
@@ -2021,8 +2025,118 @@
           "mutantsRejected": 6,
           "mutantsTotal": 6,
           "scope": "test design validation only; reference and mutants not distributed; candidate implementation NOT_RUN"
-        }
+        },
+        "decoderPassed": 4,
+        "sourceBlobsMatched": 24
+      },
+      "evaluatedContractVersion": "0.2.1",
+      "execution": {
+        "date": "2026-11-27",
+        "provenance": "operator UI transcript, inspected source text, full TAP and external integrity output",
+        "uiElapsedSeconds": 230,
+        "visibleLeaderSkills": [
+          "team-routing",
+          "team-task-contract",
+          "team-coordination",
+          "implementation-discipline",
+          "requirements-acceptance",
+          "focused-testing"
+        ],
+        "visibleSearches": 3,
+        "assignments": [
+          {
+            "role": "team-backend",
+            "object": "src/transition.mjs",
+            "authorReported": true
+          },
+          {
+            "role": "team-security",
+            "object": "integrated source",
+            "finding": "NO_FINDINGS_REPORTED",
+            "independence": "NOT_VERIFIED"
+          },
+          {
+            "role": "team-quality",
+            "object": "static test audit",
+            "result": "PARTIAL_REPORTED_AFTER_INITIAL_OUTPUT"
+          }
+        ],
+        "leaderEdited": [
+          "src/summary.mjs",
+          "src/service.mjs"
+        ],
+        "sourceInspection": "NO_MATERIAL_DEFECTS_FOUND_WITHIN_CONTRACT",
+        "nativeIntervals": "NOT_AVAILABLE",
+        "observations": [
+          "repetitive reasoning awaiting quality return; no tool polling visible in that segment",
+          "quality marker searches",
+          "inconsistent read path; effective access unknown"
+        ],
+        "sourceSha256": {
+          "src/transition.mjs": "4212B42C00051B439CBE302AB506E24346C2761D97A3540FB6DA40747E7EB197",
+          "src/summary.mjs": "CABD3FF99A4C9E63A7BEEA4ECB7814172CFD0CFDF0736BA5A30AAF309C24E36F",
+          "src/service.mjs": "019706F528573DD83BFB105BFF4144C1ECC994F54E4B5413153FCA9D6EADB4B3"
+        },
+        "functional": {
+          "status": "PASS",
+          "evidence": "full TAP and operator external verification",
+          "nodeVersion": "26.12.1",
+          "nodeSha256": "1C63F1417E2E26D83CA9A9EC1D548524AB1305BC7209D90EBCA56257FF0D84ED",
+          "signature": "Valid reported",
+          "nodeOptionsPresent": false,
+          "nodePathPresent": false,
+          "tests": 33,
+          "pass": 33,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "exit": 0,
+          "perModule": {
+            "A": 18,
+            "B": 2,
+            "D": 13
+          },
+          "runnerMs": 251.8645,
+          "externalMs": 361.9641
+        },
+        "integrity": {
+          "status": "PASS",
+          "protectedMatched": 29,
+          "mutableChanged": 3,
+          "sourceSnapshotMatchedBeforeAfter": 3,
+          "recognizedAuxiliaries": 1,
+          "operatorInventoryUnchanged": true,
+          "persistentDriftDetected": false
+        },
+        "cases": {
+          "routing": "NOT_VERIFIED",
+          "T2_T5": "NOT_VERIFIED",
+          "N3_N4": "NOT_VERIFIED",
+          "C1": "NOT_VERIFIED",
+          "R3_T3": "NOT_VERIFIED",
+          "T7": "NOT_RUN",
+          "C2_C5_T6": "NOT_RUN"
+        },
+        "decision": "APTO_CON_CONDICIONES_DEVELOPMENT_ONLY",
+        "integralCoordinationAcceptance": "NOT_VERIFIED",
+        "physicalArchive": "PENDING",
+        "fullRuntimeCertification": false
       }
+    },
+    "nextCoordinationProposal": {
+      "phase": "F07.3.1",
+      "status": "PENDING_DESIGN",
+      "cases": [
+        "T5",
+        "C2",
+        "C5",
+        "T6"
+      ],
+      "scope": "shared catalog with one writer, real missing authorized input, independent useful work and dependency join",
+      "fixture": "NOT_CREATED",
+      "runtime": "NOT_RUN",
+      "C3": "NOT_IN_SCOPE"
     }
   }
 }
