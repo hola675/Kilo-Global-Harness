@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.81.0",
+    "version": "0.82.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -260,7 +260,9 @@
     "F07_3_6": "STAGE_IIA_B_FUNCTIONAL_PASS_TAP_PROVIDED",
     "F07_3_7": "STAGE_IIB_FUNCTIONAL_PASS_TAP_PROVIDED",
     "F07_4": "IN_PROGRESS",
-    "F07_4_1": "CONTRACT_CANDIDATE_PENDING_REVIEW"
+    "F07_4_1": "CONTRACT_CANDIDATE_PREPARED",
+    "F07_4_2": "CONTRACT_APTO_REPORTED",
+    "F07_4_3": "PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1883,7 +1885,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.4.1: revisión focalizada del contrato Swarm material 0.1.0; si APTO, preparar fixture estático de solo lectura con cinco objetos y evidencia nativa. No repetir F03 ni F07.2/F07.3.",
+    "next": "F07.4.3: operador valida parser y ejecuta preparador Swarm 0.1.0; laboratorio nuevo, 30 protegidos, 0 mutables. Solo tras preparación PASS, iniciar misión neutral Code.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2422,7 +2424,7 @@
     },
     "nextSwarmProposal": {
       "phase": "F07.4.1",
-      "status": "CONTRACT_CANDIDATE_PENDING_REVIEW",
+      "status": "CONTRACT_APTO_REPORTED_PREPARER_CANDIDATE",
       "primaryCases": [
         "C6"
       ],
@@ -2443,7 +2445,7 @@
       "contractPath": "tests/F07-SWARM.md",
       "contractVersion": "0.1.0",
       "localEntryReadyReported": true,
-      "independentReview": "PENDING",
+      "independentReview": "APTO_REPORTED_V0.1.0",
       "productFiles": [
         "spec/mission.md",
         "sources/schema-v1.json",
@@ -2461,7 +2463,36 @@
         "taskBlob": "4378099b78532127e43998accf3a625a51195ba2",
         "installedRuntimeEquivalence": "NOT_VERIFIED"
       },
-      "fullC6": "NOT_VERIFIED_UNTIL_ALL_ORIGINAL_CASE_CONDITIONS_OBSERVED"
+      "fullC6": "NOT_VERIFIED_UNTIL_ALL_ORIGINAL_CASE_CONDITIONS_OBSERVED",
+      "reviewedBlob": "ee1ed4cd1b42f4e4f48aa4de061895055fd293c6",
+      "reviewProvenance": "operator supplied review report; no material defects; not runtime certification",
+      "reviewResiduals": [
+        "C6 integral remains NOT_VERIFIED if HOLD/correction/replay absent",
+        "C1/C7/C11 conditional",
+        "effective Swarm and permissions not established by review",
+        "hashes and contract are not technical enforcement"
+      ],
+      "preparer": {
+        "name": "F07.4.3-Laboratorio-Swarm-0.1.0.ps1",
+        "version": "0.1.0",
+        "sha256": "4DB025DD36A9942D90F829B4484B9AE2AA705759C751F059F570BF64FF1C05BC",
+        "delivery": "operator attachment, not repository source",
+        "sourceRevision": "25582ff8e5c28422c70768e936b75c6efa431895",
+        "protectedFiles": 30,
+        "mutableFiles": 0,
+        "productFiles": 5,
+        "sourceBlobs": 24,
+        "fixtureSha256": {
+          "spec/mission.md": "D89A41C97EBB86CD0D9E8B925083F1DDE50CE9F3C1254482E3D6E79272AC8009",
+          "sources/schema-v1.json": "6128D527D99EF448D24573C70D4DFF6C18AA0EC43ABA8BA9F1711B7BDAE27145",
+          "sources/schema-v2.json": "F1310D162F60B073D5F78C74EA1C97F47719A39C71D4E621C4F4DCC9AD9A897A",
+          "src/legacy-consumer.mjs": "113F42EFA56890DC4F77F704CB8C0159DF4E6386DC98E95FFD36B5C3A5204FC3",
+          "spec/rollout.md": "95ED35817B837640A8CECE391595ED575C4C50E5B099BE3195706889EF17433A"
+        },
+        "staticValidation": "five embedded literals extracted and matched; JSON fields and example arithmetic checked without JS execution",
+        "powershellParser": "NOT_RUN",
+        "windowsExecution": "NOT_RUN"
+      }
     }
   }
 }
