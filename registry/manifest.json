@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.79.0",
+    "version": "0.80.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -251,14 +251,15 @@
     "F07_2_3": "DONE_CONSTRUCTION_REPORTED_LIMITED",
     "F07_2_4": "DONE_INTEGRITY_AND_SOURCE_INSPECTION",
     "F07_2_5": "FUNCTIONAL_PASS_TAP_PROVIDED",
-    "F07_3": "IN_PROGRESS",
+    "F07_3": "DONE_POC_LIMITED",
     "F07_3_1": "DONE_CONTRACT_APTO_REPORTED",
     "F07_3_2": "DONE_DELTA_APTO_REPORTED",
     "F07_3_3": "STAGE_I_PREPARATION_PASS_REPORTED",
     "F07_3_4": "STAGE_I_BLOCKED_DEPENDENCIES_PRESERVED",
     "F07_3_5": "STAGE_I_A_FUNCTIONAL_PASS_TAP_PROVIDED",
     "F07_3_6": "STAGE_IIA_B_FUNCTIONAL_PASS_TAP_PROVIDED",
-    "F07_3_7": "STAGE_IIB_AUTHORIZER_CANDIDATE_WINDOWS_NOT_RUN"
+    "F07_3_7": "STAGE_IIB_FUNCTIONAL_PASS_TAP_PROVIDED",
+    "F07_4": "PENDING_DESIGN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1881,7 +1882,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.3.7: operador registra aceptación B y autoriza exclusivamente D con script 0.1.0; validar parser y ejecución Windows. Inspeccionar D, ejecutar solo sus pruebas e integridad final; preservar A/B vigentes.",
+    "next": "F07.4.1: diseñar misión focalizada de Swarm material (C6), decisión dependiente y comunicación de corrección; aprovechar evidencia F03 y F07.2/F07.3. No repetir marcadores ni pruebas funcionales superadas; C1/C7/C11 solo si evidencia natural pertinente.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2133,7 +2134,7 @@
     },
     "nextCoordinationProposal": {
       "phase": "F07.3.1",
-      "status": "STAGE_I_AND_IIA_ACCEPTED_STAGE_IIB_AUTHORIZER_CANDIDATE",
+      "status": "DONE_POC_LIMITED",
       "cases": [
         "T5",
         "C2",
@@ -2141,8 +2142,8 @@
         "T6"
       ],
       "scope": "shared catalog with one writer, real missing authorized input, independent useful work and dependency join",
-      "fixture": "STAGE_IIA_SOURCE_CREATED_AND_INTEGRITY_REPORTED",
-      "runtime": "A_B_FUNCTIONAL_PASS_TAP_PROVIDED_D_NOT_RUN",
+      "fixture": "PREPARED_AND_FINAL_INTEGRITY_REPORTED",
+      "runtime": "A_B_D_FUNCTIONAL_PASS_TAP_PROVIDED_COORDINATION_LIMITED",
       "C3": "NOT_IN_SCOPE",
       "contractPath": "tests/F07-COORDINACION.md",
       "contractVersion": "0.4.1",
@@ -2339,11 +2340,105 @@
         "sha256": "193E21D1F79A841C330A59A2BC5FE92B9443EC259AA30C49A3432FADEDEAAF74",
         "delivery": "operator attachment, not repository source",
         "scope": "explicit operator acceptance record linked to original inventory and delta; verify A/B/source/protected entries, D stub before authorization and D snapshot after construction; no JavaScript execution or workspace writes",
-        "powershellParser": "NOT_RUN",
-        "windowsExecution": "NOT_RUN",
-        "recordCreation": "NOT_RUN",
-        "D": "NOT_RUN"
+        "powershellParser": "PASS_REPORTED",
+        "windowsExecution": "AUTHORIZATION_AND_VERIFICATION_PASS_REPORTED",
+        "recordCreation": "PASS_REPORTED",
+        "D": "FUNCTIONAL_PASS_TAP_PROVIDED"
+      },
+      "stageIIb": {
+        "date": "2026-11-27",
+        "provenance": "operator authorization console, UI transcript, inspected source and TAP/integrity console output",
+        "uiElapsedSeconds": 367,
+        "visibleSearches": 0,
+        "visibleNewSkillLoads": 0,
+        "visibleFileReads": 2,
+        "delegationsObserved": 0,
+        "owner": "Code declared exclusive owner before direct edit",
+        "catalogSha256": "B3154524B0F73061BDACAC54EB63C11B4BD53EA7A7EB151F78ACCBC2C6C7CD10",
+        "sourceInspection": "APTO_WITHIN_CONTRACT",
+        "functional": {
+          "status": "PASS",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "exit": 0,
+          "runnerMs": 91.5838,
+          "externalMs": 158.3267,
+          "nodeSha256": "1C63F1417E2E26D83CA9A9EC1D548524AB1305BC7209D90EBCA56257FF0D84ED",
+          "nodeIdentity": "PASS_REPORTED",
+          "A": "EVIDENCE_REUSED",
+          "B": "EVIDENCE_REUSED"
+        },
+        "integrity": {
+          "protectedMatchedBeforeAfter": 29,
+          "stockMatched": true,
+          "dispatchMatched": true,
+          "catalogSnapshotMatchedBeforeAfter": true,
+          "authorizedSourceMatched": true,
+          "operatorRecordsUnchanged": true,
+          "recognizedAuxiliaries": 1
+        },
+        "observations": [
+          "367 s UI duration for one visible edit and two reads; cause unknown; no model/network/harness causal attribution",
+          "no additional visible searches or skill loads in IIa/IIb; distinct workloads, no comparative performance conclusion"
+        ]
+      },
+      "closure": {
+        "status": "DONE_POC_LIMITED",
+        "decision": "APTO_CON_CONDICIONES_DEVELOPMENT_ONLY",
+        "functional": {
+          "status": "PASS",
+          "tests": 6,
+          "pass": 6,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "perModule": {
+            "A": 2,
+            "B": 2,
+            "D": 2
+          },
+          "executions": "three separate gated TAP runs; no repeated A or B tests observed"
+        },
+        "integrity": "PASS_REPORTED_BEFORE_AFTER_ALL_STAGES",
+        "cases": {
+          "C2": "PASS_LOGICAL_JOIN_AND_INDEPENDENT_PROGRESS_IN_DIRECT_CODE_SCENARIO",
+          "T5": "NOT_VERIFIED_CONCURRENT_OWNERSHIP_CONFLICT_NOT_EXERCISED",
+          "C5": "NOT_RUN_NO_NATIVE_TASK",
+          "T6": "NOT_RUN_NO_NATIVE_TASK",
+          "C1": "NOT_RUN_NO_CONCURRENT_TASKS",
+          "C3": "NOT_IN_SCOPE",
+          "selectiveRecovery": "PASS_IN_OPERATOR_GATED_DIRECT_CODE_SCENARIO"
+        },
+        "nativeDelegatedCoordination": "NOT_VERIFIED",
+        "physicalArchive": "PENDING",
+        "fullRuntimeCertification": false
       }
+    },
+    "nextSwarmProposal": {
+      "phase": "F07.4.1",
+      "status": "PENDING_DESIGN",
+      "primaryCases": [
+        "C6"
+      ],
+      "conditionalCases": [
+        "C1",
+        "C7",
+        "C11"
+      ],
+      "scope": "real material finding and dependency decision using native board where authorized, with correction only when supported by real evidence",
+      "fixture": "NOT_CREATED",
+      "runtime": "NOT_RUN",
+      "constraints": [
+        "reuse F03 marker and cursor evidence; no artificial progress markers, polling, sleeps, forced overlap, duplicate writers or external scheduler",
+        "verify real board schema and availability; stored message is not delivery or acceptance",
+        "no deliberate invalid cursor or duplicate result solely to obtain PASS; evaluate only meaningful cases",
+        "separate native return from logical acceptance; absent event NOT_RUN or NOT_VERIFIED"
+      ]
     }
   }
 }
