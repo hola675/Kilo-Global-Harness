@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.129.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.130.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -36,7 +36,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F07.1.5 | DONE_POC_LIMITED | Revisión independiente APTO reportada, comparación documental, defecto inicial candidate corregido con ayuda y revisión focalizada, 58/58 MATCH. No superioridad causal ni C1 certificado. |
 | F07.1.6 | DONE_REPORTED_REMOTE_VERIFIED | Integración fast-forward autorizada; PR #176 fusionado y rama integrada retirada con autorización; main única local reportada y remota verificada. Conservar laboratorios. |
 | F07.2 | DONE_POC_LIMITED | [Contrato y evidencia](../tests/F07-COORDINACION.md): 33/33 casos PASS con TAP, 29/29 integridad, tres módulos 3/3 MATCH; solapamiento e independencia completa NOT_VERIFIED. |
-| F07.3 | IN_PROGRESS | Etapa I: A 2/2 PASS, 29/29 protegidos, B/D intactos y fuente ausente. Recuperador IIa candidato 0.1.0; parser/Windows NOT_RUN; B y D pendientes. |
+| F07.3 | IN_PROGRESS | A y B 2/2 PASS cada una, evidencia A reutilizada, fuente/delta autorizados, 29/29 protegidos y D intacto. Autorizador IIb candidato 0.1.0, Windows NOT_RUN; D pendiente. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -488,3 +488,6 @@ Dictamen APTO reportado sobre blob b2050db10914086f4107984cadf5677f3da60f90; con
 
 ## F07.3.3–F07.3.6 — aceptación de A y recuperación candidata (2026-11-27)
 Preparación Windows y parser correctos, 24/24 blobs, 29 protegidos, fuente inicialmente ausente. Code (88 s reportados) descubrió la ausencia antes de editar y construyó solo A, sin delegaciones visibles; seis búsquedas, seis skills, ocho lecturas; marcador de calidad buscado otra vez. TAP A: 2/2, exit 0, runner 91.749 ms y externo 168.9111 ms, identidad Node PASS reportada, 29/29 protegidos antes/después, hash A intacto, B/D stubs, fuente ausente, inventario intacto. A aceptada; C2 unión final pendiente, T5 NOT_VERIFIED, C5/T6 NOT_RUN por preflight correcto. Recuperador IIa externo 0.1.0, operador elige valores sintéticos, autorización expresa, fuente y delta externos al inventario original, sin sobrescribir; verifica A, fuente, B y D bloqueada antes de inspección de B, sin ejecutar JavaScript. Pins contrastados estáticamente, parser y ejecución Windows NOT_RUN. Fuente/delta todavía no creados; B/D NOT_RUN. Manifiesto 0.78.0. Contrato 0.4.1 intacto; no tocar laboratorios anteriores, roles, skills, política ni permisos, sin instalación ni release.
+
+## F07.3.6-IIa / F07.3.7 — B aceptada, puerta IIb candidata (2026-11-27)
+Fuente autorizada y delta externo creados con parser/ejecución Windows reportados correctos. Code recuperó B en continuación (62 s UI reportados, 3 lecturas, sin nuevas búsquedas, skills ni delegaciones visibles); solo B editada. Inspección favorable, TAP 2/2 PASS, exit 0, runner 91.6749 ms y externo 166.0326 ms; 29/29 protegidos, A preservada, B y fuente coinciden antes/después, D stub intacto, registros externos intactos. Evidencia A reutilizada. C2 unión final pendiente; T5 NOT_VERIFIED, C5/T6 NOT_RUN. Autorizador IIb externo 0.1.0 comprueba evidencias y crea solo registro de aceptación vinculado a inventario/delta tras consentimiento, sin alterar workspace, verifica D posteriormente; parser/Windows y registro IIb NOT_RUN. No publicar valores, rutas privadas ni registros del operador. Manifiesto 0.79.0. Contrato 0.4.1 intacto, sin cambios de agentes, skills, política, permisos, instalación ni release.
