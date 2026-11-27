@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.68.0",
+    "version": "0.69.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -244,8 +244,9 @@
     "F07_1_2": "DOCUMENTARY_RESEARCH_COMPLETE_LIMITED",
     "F07_1_3_4": "STATIC_POLICY_CANDIDATE_PREPARED",
     "F07_1_5": "DONE_POC_LIMITED_ASSISTED_RECOVERY_REPORTED",
-    "F07_1_6": "PENDING_GIT_CONSOLIDATION",
-    "F07_2": "PENDING"
+    "F07_1_6": "DONE_FAST_FORWARD_REPORTED_REMOTE_VERIFIED",
+    "F07_2": "IN_PROGRESS",
+    "F07_2_1": "CONTRACT_CANDIDATE_PENDING_INDEPENDENT_REVIEW"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1868,7 +1869,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.1.6: consolidación Git del candidato con revisión/checks vigentes y autorización; después F07.2 contrato de misión ejecutable, propiedad única, dependencias reales y solapamiento observable. No repetir diseño ni retirar laboratorios por rutina.",
+    "next": "F07.2.1: revisión independiente del contrato de misión ejecutable; retirar solo rama integrada con autorización y conservar laboratorios. No preparar fixture hasta revisión.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -1936,6 +1937,34 @@
       "independentFinalDecision": false,
       "physicalArchive": "PENDING",
       "fullRuntimeCertification": false
+    },
+    "consolidation": {
+      "revision": "f982a1f56c09d226e33dca387c9991c59dbabe4e",
+      "method": "fast-forward",
+      "operatorAuthorized": true,
+      "remoteMainVerified": true,
+      "prNumber": 176,
+      "prMergedVerified": true,
+      "prDraftFlagObserved": true,
+      "ciEvidence": "NOT_AVAILABLE",
+      "G9": "NOT_CERTIFIED",
+      "temporaryBranchRetirement": "PENDING_AUTHORIZATION"
+    },
+    "coordinationCandidate": {
+      "path": "tests/F07-COORDINACION.md",
+      "version": "0.1.0",
+      "status": "CONTRACT_CANDIDATE",
+      "independentReview": "PENDING",
+      "fixture": "NOT_CREATED",
+      "runtime": "NOT_RUN",
+      "mutablePaths": [
+        "src/transition.mjs",
+        "src/summary.mjs",
+        "src/service.mjs"
+      ],
+      "scope": "synthetic local work-order domain; independent review and protected canonical tests",
+      "agentShellAuthorized": false,
+      "policyBlob": "1a30ecb4253a0d87bd4fb278985afa051f97fc32"
     }
   }
 }
