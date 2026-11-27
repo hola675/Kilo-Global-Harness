@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.66.0",
+    "version": "0.67.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -239,7 +239,11 @@
     "F06_R3": "DONE_REMOTE_AND_LOCAL_CONSOLIDATION_REPORTED",
     "F06_R4": "DONE_QUARANTINE_REPORTED_LIMITED",
     "F06_R5": "DONE_Q7_Q13_PASS_REPORTED_LIMITED",
-    "F07": "PENDING"
+    "F07": "IN_PROGRESS",
+    "F07_1_1": "NATIVE_CODE_CLI_INVENTORY_PASS_REPORTED_LIMITED",
+    "F07_1_2": "DOCUMENTARY_RESEARCH_COMPLETE_LIMITED",
+    "F07_1_3_4": "STATIC_POLICY_CANDIDATE_PREPARED",
+    "F07_1_5": "PENDING_INDEPENDENT_REVIEW_AND_DIFFERENTIAL_EVALUATION"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1824,5 +1828,44 @@
         }
       }
     }
+  },
+  "f07Candidate": {
+    "status": "STATIC_CANDIDATE",
+    "phase": "F07.1",
+    "baseline": {
+      "revision": "8546c6171dc2422b6c05f8b72c57757b03c60cdd",
+      "policyVersion": "0.22.0",
+      "policyBlob": "4e22014ed876874bec688bb690f61ed74d83ecd0"
+    },
+    "policy": {
+      "path": "team/policies/AGENTS.md",
+      "version": "0.23.0",
+      "blob": "1a30ecb4253a0d87bd4fb278985afa051f97fc32"
+    },
+    "research": "docs/INVESTIGACION-LIDER-CODE.md",
+    "nativeInventory": {
+      "status": "PASS_REPORTED_LIMITED_CLI_PURE",
+      "cliVersion": "7.8.27",
+      "sha256": "5D80BA2EC024EE7DB7C2803037B0B85855FB0F9CFC26079D04DE2CE9718AFF3B",
+      "code": {
+        "name": "code",
+        "mode": "primary",
+        "native": true,
+        "customPromptPresent": false,
+        "fixedModelPresent": false
+      },
+      "desktopEffectiveToolsAndPermissions": "NOT_VERIFIED",
+      "sourceSnapshot": "03a6f07d053cd7e6aa88fa1e258e93510335259f"
+    },
+    "unchangedRoles": true,
+    "unchangedSkills": true,
+    "unchangedRuntime": true,
+    "unchangedPermissions": true,
+    "unchangedModelPolicy": true,
+    "independentReview": "PENDING",
+    "runtimeStatus": "NOT_RUN",
+    "fixturePreparation": "PENDING_REVIEW",
+    "qLaboratoryPhysicalArchive": "PENDING",
+    "next": "F07.1.5: revisar diff 0.22.0→0.23.0 y diseñar misión diferencial mínima con casos existentes; no activar globalmente, no reabrir cuarentena ni repetir positivos."
   }
 }
