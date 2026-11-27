@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.90.0",
+    "version": "0.91.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -278,9 +278,14 @@
     "F07_5_10": "V2_SNAPSHOT_PASS_REPORTED",
     "F07_5_11": "V2_FOCUSED_REVIEW_PASS_SUMMARY_REPORTED",
     "F07_5_12": "V2_STATIC_APTO_POST_REVIEW_INTEGRITY_PASS_REPORTED",
-    "F07_6": "IN_PROGRESS",
+    "F07_6": "DONE_POC_LIMITED",
     "F07_6_1": "DONE_CONTRACT_APTO_REPORTED",
-    "F07_6_2": "PREPARER_CANDIDATE_PREPARED"
+    "F07_6_2": "PREPARATION_PASS_REPORTED",
+    "F07_6_3": "DIRECT_BLOCKAGE_AND_INDEPENDENT_PROGRESS_PASS_REPORTED",
+    "F07_6_4": "B_STATIC_APTO_DELTA_INTEGRITY_PASS_REPORTED",
+    "F07_6_5": "A_STATIC_APTO_DIRECT_RECOVERY_PASS_REPORTED",
+    "F07_6_6": "D_STATIC_APTO_FINAL_INTEGRITY_PASS_REPORTED",
+    "F07_7": "PENDING_DESIGN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1919,7 +1924,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.6.2: validar hash y parser del preparador externo, preparar laboratorio nuevo y aportar salida de integridad; no iniciar runtime antes de PASS.",
+    "next": "F07.7: diseño focalizado de recuperación de contexto y continuidad de sesiones; reutilizar F03.5E/F y evidencia vigente de F07, evaluar skill bajo demanda y discrepancias reales sin repetir positivos ni inducir fallos; contrato y fixture pendientes.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2787,7 +2792,7 @@
     },
     "nextFailureProposal": {
       "phase": "F07.6.1",
-      "status": "PREPARER_CANDIDATE_PREPARED",
+      "status": "DONE_POC_LIMITED",
       "primaryCases": [
         "C5",
         "T6",
@@ -2806,8 +2811,8 @@
         "preserve owner and evidence until safe authorized recovery",
         "no automatic resume after cancellation; no new capability or permission"
       ],
-      "fixture": "NOT_CREATED",
-      "runtime": "NOT_RUN",
+      "fixture": "CREATED_OPERATOR_REPORTED",
+      "runtime": "DIRECT_CODE_DOCUMENTARY_SCENARIO_EXECUTED_REPORTED_LIMITED",
       "contractPath": "tests/F07-RECUPERACION.md",
       "contractVersion": "0.1.1",
       "contractBlob": "a45274f5fd9e2cfaed1f22fad5de9094cae6939b",
@@ -2892,11 +2897,116 @@
         "scope": "prepare and verify initial or observation before source delta; no acceptance or proof of cessation",
         "model": "kilo/openai/gpt-6-luna subject to explicit operator confirmation",
         "staticInspection": "PIN_COUNT_AND_LITERAL_OBJECT_COUNT_CHECKED",
-        "powershellParser": "NOT_RUN",
-        "windowsExecution": "NOT_RUN",
+        "powershellParser": "PASS_REPORTED",
+        "windowsExecution": "PREPARATION_AND_OBSERVATION_PASS_REPORTED",
         "effectivePermissions": "NOT_VERIFIED",
-        "fixture": "NOT_CREATED"
+        "fixture": "CREATED_OPERATOR_REPORTED"
+      },
+      "stageI": {
+        "status": "PASS_REPORTED_LIMITED",
+        "directPreflight": "MISSING_AUTHORIZED_SOURCE_DETECTED",
+        "A": "VALID_PARTIAL_NOT_FINAL_ACCEPTED",
+        "B": "DRAFT_AVAILABLE_INDEPENDENT_PROGRESS",
+        "D": "STUB_MATCH",
+        "securityReview": "FAVORABLE_REPORTED_WITH_GLOBAL_ERROR_ROW_AMBIGUITY",
+        "integrity": "PASS_REPORTED_24_SOURCE_BLOBS_28_PROTECTED",
+        "visibleDurationSeconds": 162,
+        "visibleDelegations": 1,
+        "delegationPurpose": "READ_ONLY_REVIEW_NOT_BLOCKED_IMPLEMENTATION",
+        "C5": "NOT_RUN",
+        "T6": "NOT_RUN"
+      },
+      "stageII": {
+        "status": "PASS_REPORTED_DIRECT_B_DELTA",
+        "authorization": "operator supplied clarification per actual valid affected row, no fabricated row, no publish for absent policy and zero rows",
+        "A": "MATCH",
+        "D": "MATCH_STUB",
+        "B": "ACCEPTED_STATIC",
+        "C8": "NOT_RUN_NO_BACKGROUND_WRITER_UNCERTAINTY",
+        "C10": "NOT_RUN_NO_CANCELLATION",
+        "integrity": "PASS_REPORTED"
+      },
+      "stageIII": {
+        "status": "PASS_REPORTED_DIRECT_RECOVERY",
+        "source": "operator authorized ASCII case-insensitive policy 1.0.0; source and deterministic delta MATCH reported",
+        "deltaHistoricalHash": "NOT_AVAILABLE_INDEPENDENTLY; RECOVERED_FROM_CURRENT_RECORD_AND_DETERMINISTIC_RECONSTRUCTION_MATCH_REPORTED",
+        "A": "ACCEPTED_STATIC",
+        "B": "ACCEPTED_AND_SNAPSHOT_MATCH",
+        "D": "STUB_MATCH",
+        "review": "FAVORABLE_LEADER_SUMMARY_ONLY",
+        "recoveryScript": {
+          "version": "0.1.0",
+          "sha256": "F7A6E2B3E06B6906E8A208B70A4A20973A2B61723A7A1D95C2F472F5F4040073",
+          "verificationWindows": "PASS_REPORTED",
+          "originalApplicationOutput": "NOT_PROVIDED"
+        }
+      },
+      "stageIV": {
+        "status": "PASS_REPORTED_STATIC_INTEGRATION",
+        "operatorGate": "ACCEPTANCE_AB_CESSATION_CONFIRMATION_AND_D_AUTHORIZATION_REPORTED_BEFORE_D",
+        "technicalCessation": "NOT_VERIFIED",
+        "gateOriginalHash": "MATCH_REPORTED",
+        "A": "ACCEPTED_AND_SNAPSHOT_MATCH",
+        "B": "ACCEPTED_AND_SNAPSHOT_MATCH",
+        "D": "ACCEPTED_STATIC_AFTER_CONTENT_INSPECTION",
+        "review": "FAVORABLE_LEADER_SUMMARY_ONLY",
+        "integrationScript": {
+          "version": "0.1.0",
+          "sha256": "538C4F06E8873BA54216E6A5FDD8B48E3C27549A50175B8D8A320D607269F143",
+          "parser": "PASS_REPORTED",
+          "windows": "AUTHORIZATION_AND_FINAL_VERIFICATION_PASS_REPORTED"
+        }
+      },
+      "closure": {
+        "status": "DONE_POC_LIMITED",
+        "decision": "APTO_CON_CONDICIONES_DEVELOPMENT_ONLY",
+        "integrity": "24/24 normative blobs and 28/28 protected MATCH reported; original inventory, source and delta, accepted A/B snapshots and original gate MATCH",
+        "acceptedArtifactSHA256": {
+          "source": "20C0FA4ED9E04144A526C9391425F1C33E751A342F76AA5831141F5904B95AC7",
+          "A": "EF928DD036266D0F6B45425C8C94A009658471C3764DE45B6DCBAF1135422B71",
+          "B": "9A770DC048A1E3694AFFC3438416F9CBFE5492B230A384621C1724728BDEDACD",
+          "D": "F439D68A4EEA4FC80342D7EAE1240769C3E525DFFC960F4506059CBB0DCFB60B"
+        },
+        "observedBehavior": [
+          "logical blockage on direct preflight",
+          "preserved valid partial work",
+          "independent progress",
+          "operator-gated selective direct recovery",
+          "accepted artifacts preserved",
+          "operator-gated static integration"
+        ],
+        "caseStatus": {
+          "C5": "NOT_RUN",
+          "T6": "NOT_RUN",
+          "C8": "NOT_RUN",
+          "C10": "NOT_RUN",
+          "C9": "NOT_RUN_OUT_OF_SCOPE",
+          "K8": "NOT_RUN_OUT_OF_SCOPE"
+        },
+        "nativeReviewEvidence": "stage I visible Security delegation and leader summary; stage III and IV favorable review reported without original returns",
+        "technicalCessation": "NOT_VERIFIED",
+        "softwareExecution": "NOT_RUN",
+        "fullRuntimeCertification": false,
+        "physicalArchive": "PENDING",
+        "remainingProductDecisions": [
+          "communication of global policy block with zero rows",
+          "empty input eligibility when policy available",
+          "error ordering and aggregation and duplicate group row selection",
+          "report format persistence and retention",
+          "technical publication destination and mechanism"
+        ],
+        "noRepeat": "no reruns to force native tasks or cancellation; preserve accepted evidence and limitations"
       }
+    },
+    "nextContextProposal": {
+      "phase": "F07.7",
+      "status": "PENDING_DESIGN",
+      "baseline": "team-context-recovery 0.1.0 and policy 0.23.0 unchanged",
+      "reuse": "F03.5E/F operator-confirmed compact/reopen and textual recovery, unknown operational status and no action; F07 accepted artifacts as historical evidence only",
+      "focus": "material context loss, identity and authorization, selective evidence validity, normal continuation without redundant load; native compact or reopen only if useful and separately observable",
+      "fixture": "NOT_CREATED",
+      "runtime": "NOT_RUN",
+      "fullRuntimeCertification": false
     }
   }
 }

@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.141.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.142.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -511,3 +511,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.6 delta aceptado y preparador candidato
 - Integridad delta PASS reportada; especialista condicionado por no reabrir registros F07.3, Code APTO estático final, sin otro cambio de texto; conservar límites de identidad y runtime. Contrato 0.1.1 intacto.
 - Preparador externo 0.1.0, 24 pins, 28 protegidos, 3 stubs, fuente ausente e inventario externo; verificación de observación no acredita cese ni aceptación. Parser/Windows NOT_RUN, fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.90.0, roadmap/changelog 0.141.0; sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.6 cierre funcional limitado
+- Windows: preparación, parser y controles de integridad reportados. Code detectó dependencia ausente, conservó A parcial y avanzó B; corrección de B autorizada y directa. Fuente 1.0.0 insensible ASCII aportada, A recuperada, B reutilizada; hash histórico del delta no conservado independientemente, registro actual y reconstrucción MATCH reportados. A/B/D APTO documental; autorización D previa, 24/24 blobs y 28/28 protegidos, inventario, fuente/delta, snapshots A/B y puerta original MATCH. Cese técnico NOT_VERIFIED; revisiones de A/D favorables reportadas sin retornos originales.
+- F07.6 DONE_POC_LIMITED; C5/T6/C8/C10 NOT_RUN, C9/K8 fuera del alcance inicial; no repetir para obtener trazas. F07.7 PENDING_DESIGN, continuidad y contexto con reutilización de F03.5E/F; contrato 0.1.1 intacto. Manifiesto 0.91.0, roadmap/changelog 0.142.0; sin cambios normativos, instalación ni release.
