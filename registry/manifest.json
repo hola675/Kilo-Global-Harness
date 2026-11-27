@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.62.0",
+    "version": "0.63.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -235,7 +235,9 @@
     "F06_R1B2_R": "R1_DONE_REPORTED_LIMITED",
     "F06_R2_1": "PREPARATION_AND_NODE_PREFLIGHT_PASS_REPORTED_INDEPENDENT_REVIEW_WITH_FINDINGS",
     "F06_R2_2": "HARDENING_VALIDATION_PASS_REPORTED_WITH_RESIDUAL_RISKS",
-    "F06_R2_8": "FUNCTIONAL_COMPARISON_PASS_REPORTED_LIMITED"
+    "F06_R2_8": "FUNCTIONAL_COMPARISON_PASS_REPORTED_LIMITED",
+    "F06_R3": "DONE_REMOTE_CONSOLIDATION_LOCAL_CLEANUP_PENDING",
+    "F06_R4": "PENDING_RECOVERY_AND_RETIREMENT"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -679,7 +681,24 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Consolidar evidencia funcional R2 y revisar cambios acumulados antes de integrar main mediante fast-forward. Preservar laboratorio y respaldos; no repetir preparación ni pruebas superadas. Retirada, recuperación de mutaciones parciales, instalación global y evaluación de paralelismo pendientes de autorización y certificación.",
+    "next": "F06-R4.1: inventario de solo lectura del laboratorio activo, registros, respaldos y escritores; revisión de puntos de fallo de 0.1.4. Diseñar y probar recuperación/retirada en copia descartable antes de autorizar retirada real. Limpiar worktree local tras comprobar estado. Cerrar brechas F06 antes de F07; no repetir pruebas superadas ni activar globalmente.",
+    "consolidationEvidence": {
+      "date": "2026-11-27",
+      "status": "DONE_REMOTE_CONSOLIDATION",
+      "provenance": "operator Git output and GitHub connector readback",
+      "integratedRevision": "59c4742a47c7a62e94836a7d9fba8a0002e010ef",
+      "integratedCommits": 42,
+      "changedFiles": 28,
+      "remoteBranchesBefore": 46,
+      "remoteBranchesAfter": 1,
+      "archiveTag": "archive/f06-pre-consolidation-20261127",
+      "archiveCommit": "62a8c11e59f060c48fc2e4d70e6eeb5fd54c049f",
+      "localBundle": "PASS_REPORTED",
+      "archiveHistoryReachability": "PASS_REPORTED",
+      "divergentCodeMerged": false,
+      "semanticEquivalence": "NOT_ESTABLISHED",
+      "localWorktreeCleanup": "PENDING"
+    },
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
