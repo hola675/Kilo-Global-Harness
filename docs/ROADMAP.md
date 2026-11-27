@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.123.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.124.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -35,7 +35,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F07.1.1–F07.1.4 | CANDIDATE_PREPARED_STATIC | Inventario CLI reportado, investigación y refinamiento del líder Code nativo: política 0.23.0 candidata; 0.22.0 baseline histórica. |
 | F07.1.5 | DONE_POC_LIMITED | Revisión independiente APTO reportada, comparación documental, defecto inicial candidate corregido con ayuda y revisión focalizada, 58/58 MATCH. No superioridad causal ni C1 certificado. |
 | F07.1.6 | DONE_REPORTED_REMOTE_VERIFIED | Integración fast-forward autorizada; PR #176 fusionado y rama integrada retirada con autorización; main única local reportada y remota verificada. Conservar laboratorios. |
-| F07.2 | IN_PROGRESS | [Contrato de misión de implementación](../tests/F07-COORDINACION.md) 0.2.1: revalidación 0.2.0 NO APTO por clasificación de evidencia incompleta; corrección focalizada realizada, contraste final pendiente; fixture NOT_CREATED. |
+| F07.2 | IN_PROGRESS | [Contrato de misión de implementación](../tests/F07-COORDINACION.md) 0.2.1 APTO reportado; preparador 0.1.0 candidato, Windows NOT_RUN; fixture NOT_CREATED. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -469,3 +469,6 @@ APTO CON CONDICIONES reportado para contrato 0.1.0. Contrato 0.2.0 incorpora rú
 
 ## F07.2.1-R2 — clasificación de evidencia (2026-11-27)
 Revalidación 0.2.0 NO APTO reportada: tres condiciones resueltas, cuarta resuelta en contenido pero no en estado de evidencia. Contrato 0.2.1 elimina etiqueta PASS_REPORTED_LIMITED de R3/T3/T7; informe incompleto NOT_VERIFIED con evidencia parcial separada, PASS solo con condiciones observables vinculadas a versión evaluada. No cambiar misión ni pruebas propuestas, no repetir condiciones resueltas. Contraste final de esa fila pendiente; fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.72.0.
+
+## F07.2.1-R2 / F07.2.2 — contrato aceptado y preparación (2026-11-27)
+Dictamen final APTO reportado sobre blob 154f74228a54647c929dd6df01b3d25788d0e63a: PASS solo con condiciones observables vinculadas a versión; informes incompletos sin aceptación. Contrato 0.2.1 intacto. Preparador 0.1.0 entregado como archivo externo, reutiliza copia de blobs F07.1; 29 protegidos y tres stubs mutables previstos, inventario externo al workspace. Suite canónica 33 pruebas (A18/B2/D13): comprobación del diseño de pruebas en Node v22.16.0 Linux temporal, stubs 0/33, referencia 33/33, seis mutantes rechazados (autorización tardía, falta de proyecto, ID global, resumen global, resumen de fila única, mutación). Referencia/mutantes no distribuidos. No es evidencia de implementación del equipo ni de Windows. Parser/ejecución PowerShell y preparación local NOT_RUN; fixture NOT_CREATED. Manifiesto 0.73.0. No instalar ni activar, conservar laboratorios anteriores.
