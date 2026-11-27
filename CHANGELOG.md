@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.113.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.114.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -399,3 +399,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 - Comparación Windows: ambas variantes reproducen 4 PASS y 2 fallos esperados; tras corrección autónoma, ambas obtienen 6/6 PASS, salida 0 e integridad posterior conservada.
 - Candidate activa implementation-discipline y systematic-debugging; no se demuestra superioridad causal ni de rendimiento.
 - Manifiesto 0.62.0. Evidencias respaldadas fuera del repositorio. Fixture, agentes, skills y política intactos. Recuperación parcial y retirada pendientes.
+
+## 2026-11-27 — F06-R3 consolidación y siguientes puertas
+- Git: 42 commits integrados sin reescritura; una sola rama main, 45 retiradas y archivo histórico remoto más bundle local. No se fusiona código divergente histórico.
+- Roadmap 0.114.0 y manifiesto 0.63.0: F06-R4.1 siguiente; recuperación parcial, retirada y cierre de brechas antes de F07. Limpieza local pendiente; sin cambios de agentes, skills, política, fixture ni script; instalación/release no autorizadas.
