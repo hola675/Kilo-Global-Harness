@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.77.0",
+    "version": "0.78.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -254,7 +254,10 @@
     "F07_3": "IN_PROGRESS",
     "F07_3_1": "DONE_CONTRACT_APTO_REPORTED",
     "F07_3_2": "DONE_DELTA_APTO_REPORTED",
-    "F07_3_3": "STAGE_I_PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
+    "F07_3_3": "STAGE_I_PREPARATION_PASS_REPORTED",
+    "F07_3_4": "STAGE_I_BLOCKED_DEPENDENCIES_PRESERVED",
+    "F07_3_5": "STAGE_I_A_FUNCTIONAL_PASS_TAP_PROVIDED",
+    "F07_3_6": "STAGE_IIA_DELTA_PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1877,7 +1880,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.3.3: preparar fixture I con script 0.1.0, validar parser y ejecución Windows. Mantener fuente ausente y stubs B/D; después misión I y aceptación A. Implementar control de delta II solo tras A aceptada.",
+    "next": "F07.3.6: operador autoriza fuente IIa con recuperador 0.1.0, preservar A aceptada, D stub e inventario original; validar parser y ejecución Windows. Inspeccionar B y probar B antes de autorizar D.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2129,7 +2132,7 @@
     },
     "nextCoordinationProposal": {
       "phase": "F07.3.1",
-      "status": "CONTRACT_ACCEPTED_STAGE_I_PREPARER_CANDIDATE",
+      "status": "STAGE_I_A_ACCEPTED_STAGE_IIA_PREPARER_CANDIDATE",
       "cases": [
         "T5",
         "C2",
@@ -2137,8 +2140,8 @@
         "T6"
       ],
       "scope": "shared catalog with one writer, real missing authorized input, independent useful work and dependency join",
-      "fixture": "NOT_CREATED",
-      "runtime": "NOT_RUN",
+      "fixture": "STAGE_I_PREPARED_REPORTED",
+      "runtime": "STAGE_I_A_FUNCTIONAL_PASS_TAP_PROVIDED",
       "C3": "NOT_IN_SCOPE",
       "contractPath": "tests/F07-COORDINACION.md",
       "contractVersion": "0.4.1",
@@ -2150,7 +2153,7 @@
         "src/catalog.mjs"
       ],
       "missingSource": "spec/dispatch-actions.json",
-      "sourceValues": "OPERATOR_HELD_NOT_SELECTED_IN_CONTRACT",
+      "sourceValues": "OPERATOR_SELECTION_AT_IIA_NOT_YET_AUTHORIZED",
       "stages": [
         "I: A functional acceptance, B and D blocked",
         "IIa: operator-authorized source delta, B functional acceptance, D unchanged",
@@ -2173,8 +2176,8 @@
         "protectedFiles": 29,
         "mutableFiles": 3,
         "scope": "prepare and verify stage I only; verifier requires A changed, B/D unchanged, source absent; stage II delta controls not yet created",
-        "windowsExecution": "NOT_RUN",
-        "powershellParser": "NOT_RUN",
+        "windowsExecution": "PREPARATION_AND_VERIFICATION_PASS_REPORTED",
+        "powershellParser": "PASS_REPORTED",
         "fixtureTests": {
           "nodeVersion": "v22.16.0",
           "environment": "coordinator Linux temporary directory",
@@ -2207,7 +2210,80 @@
             "exit": 1
           },
           "scope": "test design validation only; source values used for test validation are not distributed or approved for operator fixture; candidate implementation NOT_RUN"
-        }
+        },
+        "decoderPassed": 4,
+        "sourceBlobsMatched": 24
+      },
+      "stageI": {
+        "date": "2026-11-27",
+        "provenance": "operator UI transcript and TAP/integrity console output",
+        "uiElapsedSeconds": 88,
+        "visibleLeaderSkills": [
+          "requirements-acceptance",
+          "team-routing",
+          "team-task-contract",
+          "team-coordination",
+          "implementation-discipline",
+          "focused-testing"
+        ],
+        "visibleSearches": 6,
+        "visibleFileReads": 8,
+        "delegationsObserved": 0,
+        "owner": "Code reported and direct edit visible",
+        "blockedSource": "spec/dispatch-actions.json",
+        "sourceAbsent": true,
+        "stockSha256": "A2C94CBE0E05B6321E2E1B483CF1A2717C6E070C1906A5276779E7CB95904A51",
+        "dispatchStubSha256": "8127AA3025CF8B6A2777697DF50D26CFE42DE1D99DC85D6D58AFAEDBD2BC5E04",
+        "catalogStubSha256": "FF817A1F55609D6CB2F9D681BFE05AE9191DEEF855BA0276455ABF2121B3955E",
+        "functional": {
+          "status": "PASS",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "exit": 0,
+          "runnerMs": 91.749,
+          "externalMs": 168.9111,
+          "nodeSha256": "1C63F1417E2E26D83CA9A9EC1D548524AB1305BC7209D90EBCA56257FF0D84ED",
+          "nodeIdentity": "PASS_REPORTED",
+          "B": "NOT_RUN",
+          "D": "NOT_RUN"
+        },
+        "integrity": {
+          "protectedMatchedBeforeAfter": 29,
+          "stockSnapshotMatchedBeforeAfter": true,
+          "blockedStubsMatched": 2,
+          "inventoryUnchanged": true,
+          "recognizedAuxiliaries": 1
+        },
+        "cases": {
+          "C2": "BLOCK_AND_INDEPENDENT_PROGRESS_OBSERVED_FINAL_JOIN_PENDING",
+          "T5": "NOT_VERIFIED",
+          "C5": "NOT_RUN",
+          "T6": "NOT_RUN"
+        },
+        "observations": [
+          "preflight avoided unnecessary delegation",
+          "repeated quality marker search in small mission; no causal performance claim"
+        ]
+      },
+      "stageIIaPreparer": {
+        "name": "F07.3.6-Recuperar-Despacho-0.1.0.ps1",
+        "version": "0.1.0",
+        "sha256": "805610F79EA475C9410C9C713FF50AF9D4B3F5D2366CA3FE8D195E6EE1DAF22B",
+        "delivery": "operator attachment, not repository source",
+        "scope": "explicit operator source creation and external delta; verify B snapshot before tests; no execution of JavaScript",
+        "powershellParser": "NOT_RUN",
+        "windowsExecution": "NOT_RUN",
+        "pinCheck": "original preparer and reconstructed A/B/D pins checked",
+        "operatorSourceSelection": "two distinct synthetic ASCII action identifiers, subset of approved contract",
+        "sourceCreation": "NOT_RUN",
+        "deltaCreation": "NOT_RUN",
+        "B": "NOT_RUN",
+        "D": "NOT_RUN",
+        "partialWriteRecovery": "preserve and inspect; no overwrite or auto rollback"
       }
     }
   }
