@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.91.0",
+    "version": "0.92.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -285,7 +285,8 @@
     "F07_6_4": "B_STATIC_APTO_DELTA_INTEGRITY_PASS_REPORTED",
     "F07_6_5": "A_STATIC_APTO_DIRECT_RECOVERY_PASS_REPORTED",
     "F07_6_6": "D_STATIC_APTO_FINAL_INTEGRITY_PASS_REPORTED",
-    "F07_7": "PENDING_DESIGN"
+    "F07_7": "IN_PROGRESS",
+    "F07_7_1": "CONTRACT_CANDIDATE_PREPARED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1924,7 +1925,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.7: diseño focalizado de recuperación de contexto y continuidad de sesiones; reutilizar F03.5E/F y evidencia vigente de F07, evaluar skill bajo demanda y discrepancias reales sin repetir positivos ni inducir fallos; contrato y fixture pendientes.",
+    "next": "F07.7.1: verificar integridad del contrato 0.1.0 y revisión independiente antes de preparar variantes R/S.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2999,14 +3000,62 @@
       }
     },
     "nextContextProposal": {
-      "phase": "F07.7",
-      "status": "PENDING_DESIGN",
+      "phase": "F07.7.1",
+      "status": "CONTRACT_CANDIDATE_PREPARED",
       "baseline": "team-context-recovery 0.1.0 and policy 0.23.0 unchanged",
       "reuse": "F03.5E/F operator-confirmed compact/reopen and textual recovery, unknown operational status and no action; F07 accepted artifacts as historical evidence only",
       "focus": "material context loss, identity and authorization, selective evidence validity, normal continuation without redundant load; native compact or reopen only if useful and separately observable",
       "fixture": "NOT_CREATED",
       "runtime": "NOT_RUN",
-      "fullRuntimeCertification": false
+      "fullRuntimeCertification": false,
+      "contractPath": "tests/F07-CONTEXTO.md",
+      "contractVersion": "0.1.0",
+      "contractBlob": "2ab4feefd4e77947d189c41cc8810dd115310c1f",
+      "baselineRevision": "ed5c56a9c31064853cdd73f879579ecb8df63739",
+      "independentReview": "PENDING",
+      "variants": {
+        "R": "same policy and other agents/skills, context skill absent locally; effective catalog must be checked",
+        "S": "same configuration plus pinned team-context-recovery 0.1.0"
+      },
+      "primaryCases": [
+        "K1",
+        "K2",
+        "K7",
+        "K9",
+        "K10",
+        "K12"
+      ],
+      "conditionalNativeCases": [
+        "K3",
+        "K4",
+        "K5",
+        "K6",
+        "K11"
+      ],
+      "conceptualFallbackCases": [
+        "K4",
+        "K6",
+        "K9",
+        "K10",
+        "K11"
+      ],
+      "outOfScopeInitial": [
+        "K8"
+      ],
+      "caseStatus": {
+        "K1": "NOT_RUN",
+        "K2": "NOT_RUN",
+        "K3": "NOT_RUN",
+        "K4": "NOT_RUN",
+        "K5": "NOT_RUN",
+        "K6": "NOT_RUN",
+        "K7": "NOT_RUN",
+        "K8": "NOT_RUN",
+        "K9": "NOT_RUN",
+        "K10": "NOT_RUN",
+        "K11": "NOT_RUN",
+        "K12": "NOT_RUN"
+      }
     }
   }
 }
