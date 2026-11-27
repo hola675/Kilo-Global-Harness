@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.120.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.121.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -428,3 +428,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.1 consolidado, F07.2 contrato
 - Git: fast-forward autorizado y verificado, PR #176 fusionado; main y rama integrada coincidieron en f982a1f. PR conservó draft, sin CI reportada; G9 no certificado. Retirada de rama pendiente de autorización, laboratorios intactos.
 - F07.2: contrato candidato de construcción en tests/F07-COORDINACION.md 0.1.0, reutiliza T/C/R de F06, misión local ESM de órdenes de trabajo, tres archivos propios, revisión independiente antes de ejecutar. Fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.69.0, roadmap/changelog 0.120.0; política, roles y skills sin cambios. No instalación ni release.
+
+## 2026-11-27 — F07.1 cierre de rama integrada
+- Retirada local reportada y remota verificada, main única, historial integrado conservado. Manifiesto 0.70.0 y roadmap/changelog 0.121.0; contrato F07.2 0.1.0 intacto, revisión independiente pendiente. Sin cambios normativos, fixture, instalación ni release.
