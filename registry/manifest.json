@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.67.0",
+    "version": "0.68.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -243,7 +243,9 @@
     "F07_1_1": "NATIVE_CODE_CLI_INVENTORY_PASS_REPORTED_LIMITED",
     "F07_1_2": "DOCUMENTARY_RESEARCH_COMPLETE_LIMITED",
     "F07_1_3_4": "STATIC_POLICY_CANDIDATE_PREPARED",
-    "F07_1_5": "PENDING_INDEPENDENT_REVIEW_AND_DIFFERENTIAL_EVALUATION"
+    "F07_1_5": "DONE_POC_LIMITED_ASSISTED_RECOVERY_REPORTED",
+    "F07_1_6": "PENDING_GIT_CONSOLIDATION",
+    "F07_2": "PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1830,7 +1832,7 @@
     }
   },
   "f07Candidate": {
-    "status": "STATIC_CANDIDATE",
+    "status": "DONE_POC_LIMITED",
     "phase": "F07.1",
     "baseline": {
       "revision": "8546c6171dc2422b6c05f8b72c57757b03c60cdd",
@@ -1862,10 +1864,78 @@
     "unchangedRuntime": true,
     "unchangedPermissions": true,
     "unchangedModelPolicy": true,
-    "independentReview": "PENDING",
-    "runtimeStatus": "NOT_RUN",
-    "fixturePreparation": "PENDING_REVIEW",
+    "independentReview": "STATIC_REVIEW_APTO_REPORTED",
+    "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
+    "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.1.5: revisar diff 0.22.0→0.23.0 y diseñar misión diferencial mínima con casos existentes; no activar globalmente, no reabrir cuarentena ni repetir positivos."
+    "next": "F07.1.6: consolidación Git del candidato con revisión/checks vigentes y autorización; después F07.2 contrato de misión ejecutable, propiedad única, dependencias reales y solapamiento observable. No repetir diseño ni retirar laboratorios por rutina.",
+    "evaluation": {
+      "date": "2026-11-27",
+      "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
+      "provenance": "operator-reported transcripts and external inventory verification",
+      "preparation": {
+        "scriptVersion": "0.1.2",
+        "scriptSha256": "179FB4484EBB3CA912FDF6C06CD3B7DDD7A4EA8BD4865D344D3ECCE43E206C6D",
+        "decoderPassed": 4,
+        "sharedComponentsMatched": 23,
+        "sourceBlobsMatched": 48,
+        "onlyContentDifference": "AGENTS.md",
+        "status": "PASS_REPORTED"
+      },
+      "baseline": {
+        "elapsedSeconds": 269,
+        "visibleLeaderSkillLoads": 5,
+        "visibleSearches": 4,
+        "visibleFileReads": 4,
+        "identifiableAssignments": 4
+      },
+      "candidateInitial": {
+        "elapsedSeconds": 216,
+        "visibleLeaderSkillLoads": 1,
+        "visibleSearches": 2,
+        "visibleFileReads": 4,
+        "identifiableAssignments": 4,
+        "materialFinding": "missing authoritative provider observation link to authorized project receipt"
+      },
+      "assistedRecovery": {
+        "elapsedSeconds": 130,
+        "visibleLeaderSkillLoads": 2,
+        "visibleSearches": 0,
+        "visibleFileReads": 4,
+        "identifiableAssignments": 1,
+        "securityDeltaReview": "ACCEPTED_REPORTED",
+        "finding": "CORRECTED_DOCUMENTARY_REPORTED",
+        "independentDetection": false
+      },
+      "candidateTotalSeconds": 346,
+      "performanceBenefit": "NOT_ESTABLISHED",
+      "effectiveSessionEquivalence": "NOT_INDEPENDENTLY_VERIFIED",
+      "cases": {
+        "R3_T3": "PASS_REPORTED_WITHOUT_TASK_ARGUMENTS",
+        "T7": "DELTA_REVIEW_REPORTED",
+        "C1": "NOT_VERIFIED",
+        "C2_C5_T6": "CONCEPTUAL_PARTIAL_ACCEPTANCE_NATIVE_BLOCKED_NOT_VERIFIED"
+      },
+      "skillInvocationObserved": [
+        "team-coordination"
+      ],
+      "integrity": {
+        "status": "PASS_REPORTED",
+        "matched": 58,
+        "recognizedAuxiliaries": 2,
+        "operatorInventoryUnchanged": true,
+        "persistentDriftDetected": false,
+        "transientWritesAndExternalReads": "NOT_CERTIFIED"
+      },
+      "remainingDesignLimits": [
+        "receipt finality not established",
+        "ordering and unknown status of multiple observations not equally specified",
+        "no implementation/runtime tests"
+      ],
+      "dictamen": "APTO_CON_CONDICIONES_FOR_DEVELOPMENT_ONLY",
+      "independentFinalDecision": false,
+      "physicalArchive": "PENDING",
+      "fullRuntimeCertification": false
+    }
   }
 }
