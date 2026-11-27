@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.124.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.125.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -443,3 +443,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.2 contrato aceptado y preparador
 - Dictamen APTO final reportado para contrato 0.2.1, sin otro cambio de contrato. Preparador externo 0.1.0, 29 protegidos/3 mutables; suite 33 casos comprobada con stubs, referencia y seis mutantes en Linux temporal; no se distribuye solución. Windows/parser/fixture local y runtime del equipo NOT_RUN.
 - Manifiesto 0.73.0, roadmap/changelog 0.124.0; política, roles y skills intactos. Sin activación global, release ni retirada de laboratorios.
+
+## 2026-11-27 — F07.2 cierre funcional limitado
+- Windows: preparación e integridad correctas, Code constructor y delegación Backend, revisiones Security/Quality reportadas. TAP 33/33 PASS, exit 0, 29/29 protegidos y 3/3 código inspeccionado intactos antes/después. Observaciones de espera y alcance registradas; sin PASS de concurrencia temporal ni revisión plenamente trazable.
+- F07.2 DONE_POC_LIMITED, F07 IN_PROGRESS; evaluación 0.3.0, manifiesto 0.74.0, roadmap/changelog 0.125.0. F07.3 propuesta de conflicto y unión con bloqueo real, diseño pendiente; no repetir suite superada, no alterar laboratorios o componentes normativos, sin instalación ni release.
