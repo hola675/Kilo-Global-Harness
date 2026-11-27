@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.80.0",
+    "version": "0.81.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -259,7 +259,8 @@
     "F07_3_5": "STAGE_I_A_FUNCTIONAL_PASS_TAP_PROVIDED",
     "F07_3_6": "STAGE_IIA_B_FUNCTIONAL_PASS_TAP_PROVIDED",
     "F07_3_7": "STAGE_IIB_FUNCTIONAL_PASS_TAP_PROVIDED",
-    "F07_4": "PENDING_DESIGN"
+    "F07_4": "IN_PROGRESS",
+    "F07_4_1": "CONTRACT_CANDIDATE_PENDING_REVIEW"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1882,7 +1883,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.4.1: diseñar misión focalizada de Swarm material (C6), decisión dependiente y comunicación de corrección; aprovechar evidencia F03 y F07.2/F07.3. No repetir marcadores ni pruebas funcionales superadas; C1/C7/C11 solo si evidencia natural pertinente.",
+    "next": "F07.4.1: revisión focalizada del contrato Swarm material 0.1.0; si APTO, preparar fixture estático de solo lectura con cinco objetos y evidencia nativa. No repetir F03 ni F07.2/F07.3.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2421,7 +2422,7 @@
     },
     "nextSwarmProposal": {
       "phase": "F07.4.1",
-      "status": "PENDING_DESIGN",
+      "status": "CONTRACT_CANDIDATE_PENDING_REVIEW",
       "primaryCases": [
         "C6"
       ],
@@ -2430,7 +2431,7 @@
         "C7",
         "C11"
       ],
-      "scope": "real material finding and dependency decision using native board where authorized, with correction only when supported by real evidence",
+      "scope": "read-only inventory schema compatibility audit: v1 boxes versus v2 units, legacy consumer and transition decision",
       "fixture": "NOT_CREATED",
       "runtime": "NOT_RUN",
       "constraints": [
@@ -2438,7 +2439,29 @@
         "verify real board schema and availability; stored message is not delivery or acceptance",
         "no deliberate invalid cursor or duplicate result solely to obtain PASS; evaluate only meaningful cases",
         "separate native return from logical acceptance; absent event NOT_RUN or NOT_VERIFIED"
-      ]
+      ],
+      "contractPath": "tests/F07-SWARM.md",
+      "contractVersion": "0.1.0",
+      "localEntryReadyReported": true,
+      "independentReview": "PENDING",
+      "productFiles": [
+        "spec/mission.md",
+        "sources/schema-v1.json",
+        "sources/schema-v2.json",
+        "src/legacy-consumer.mjs",
+        "spec/rollout.md"
+      ],
+      "mutablePaths": [],
+      "validation": "static evidence matrix and integrity, no new software execution",
+      "primarySource": {
+        "repository": "Kilo-Org/kilocode",
+        "revision": "03a6f07d053cd7e6aa88fa1e258e93510335259f",
+        "boardPath": "packages/opencode/src/kilocode/tool/board.ts",
+        "boardBlob": "ee5cac8d1cc33b846cae832535fc9bfaca5ce4da",
+        "taskBlob": "4378099b78532127e43998accf3a625a51195ba2",
+        "installedRuntimeEquivalence": "NOT_VERIFIED"
+      },
+      "fullC6": "NOT_VERIFIED_UNTIL_ALL_ORIGINAL_CASE_CONDITIONS_OBSERVED"
     }
   }
 }
