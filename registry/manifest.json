@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.76.0",
+    "version": "0.77.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -252,7 +252,9 @@
     "F07_2_4": "DONE_INTEGRITY_AND_SOURCE_INSPECTION",
     "F07_2_5": "FUNCTIONAL_PASS_TAP_PROVIDED",
     "F07_3": "IN_PROGRESS",
-    "F07_3_1": "DEPENDENCY_GATE_CORRECTED_PENDING_DELTA_REVIEW"
+    "F07_3_1": "DONE_CONTRACT_APTO_REPORTED",
+    "F07_3_2": "DONE_DELTA_APTO_REPORTED",
+    "F07_3_3": "STAGE_I_PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1875,7 +1877,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.3.1-R1: contrastar únicamente puerta D del contrato 0.4.1; si APTO, fijar pruebas y preparar fixture. No repetir auditoría general ni F07.2.",
+    "next": "F07.3.3: preparar fixture I con script 0.1.0, validar parser y ejecución Windows. Mantener fuente ausente y stubs B/D; después misión I y aceptación A. Implementar control de delta II solo tras A aceptada.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2127,7 +2129,7 @@
     },
     "nextCoordinationProposal": {
       "phase": "F07.3.1",
-      "status": "DEPENDENCY_GATE_CORRECTED_PENDING_DELTA_REVIEW",
+      "status": "CONTRACT_ACCEPTED_STAGE_I_PREPARER_CANDIDATE",
       "cases": [
         "T5",
         "C2",
@@ -2157,9 +2159,56 @@
       "preflightWithoutTask": "VALID_C5_T6_NOT_RUN",
       "reviewedBlob": "ccf5e12137a247edef9d8ba7fe45386a2863ac9f",
       "reviewCondition": "D dispatch gate ambiguous between functional acceptance and static admission of B",
-      "deltaReview": "PENDING",
+      "deltaReview": "APTO_REPORTED_V0.4.1",
       "dependencyGate": "A_AND_B_FUNCTIONALLY_ACCEPTED_BEFORE_D_WRITE",
-      "finalGate": "D_CANONICAL_TESTS_PASS_AND_A_B_EVIDENCE_CURRENT"
+      "finalGate": "D_CANONICAL_TESTS_PASS_AND_A_B_EVIDENCE_CURRENT",
+      "finalReviewedBlob": "b2050db10914086f4107984cadf5677f3da60f90",
+      "remainingCondition": null,
+      "preparer": {
+        "name": "F07.3.3-Laboratorio-Propiedad-0.1.0.ps1",
+        "version": "0.1.0",
+        "sha256": "86A92054CFC57D956387451D84704A92DC0F2921894E11759633A5A1807AE2AF",
+        "delivery": "operator attachment, not repository source",
+        "sourceRevision": "2d9a4c085e36a5419274abd54d2a4417aaef2bb1",
+        "protectedFiles": 29,
+        "mutableFiles": 3,
+        "scope": "prepare and verify stage I only; verifier requires A changed, B/D unchanged, source absent; stage II delta controls not yet created",
+        "windowsExecution": "NOT_RUN",
+        "powershellParser": "NOT_RUN",
+        "fixtureTests": {
+          "nodeVersion": "v22.16.0",
+          "environment": "coordinator Linux temporary directory",
+          "count": 6,
+          "perModule": {
+            "A": 2,
+            "B": 2,
+            "D": 2
+          },
+          "aStubWithoutSource": {
+            "pass": 0,
+            "fail": 2,
+            "exit": 1
+          },
+          "allStubsWithSyntheticSource": {
+            "pass": 0,
+            "fail": 6,
+            "exit": 1
+          },
+          "reference": {
+            "pass": 6,
+            "fail": 0,
+            "exit": 0
+          },
+          "mutantsRejected": 6,
+          "mutantsTotal": 6,
+          "invalidSource": {
+            "pass": 0,
+            "fail": 4,
+            "exit": 1
+          },
+          "scope": "test design validation only; source values used for test validation are not distributed or approved for operator fixture; candidate implementation NOT_RUN"
+        }
+      }
     }
   }
 }
