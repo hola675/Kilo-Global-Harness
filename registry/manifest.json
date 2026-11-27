@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.70.0",
+    "version": "0.71.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -246,7 +246,7 @@
     "F07_1_5": "DONE_POC_LIMITED_ASSISTED_RECOVERY_REPORTED",
     "F07_1_6": "DONE_FAST_FORWARD_REPORTED_REMOTE_VERIFIED",
     "F07_2": "IN_PROGRESS",
-    "F07_2_1": "CONTRACT_CANDIDATE_PENDING_INDEPENDENT_REVIEW"
+    "F07_2_1": "CONTRACT_REFINED_PENDING_DELTA_REVIEW"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1869,7 +1869,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.2.1: revisión independiente del contrato de misión ejecutable; rama integrada retirada y main única. Conservar laboratorios. No preparar fixture hasta revisión.",
+    "next": "F07.2.1-R1: contrastar solo las cuatro condiciones incorporadas en contrato 0.2.0; después preparar fixture si APTO. No repetir auditoría ni tocar laboratorios anteriores.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -1949,15 +1949,17 @@
       "ciEvidence": "NOT_AVAILABLE",
       "G9": "NOT_CERTIFIED",
       "temporaryBranchRetirement": "DONE_AUTHORIZED_REPORTED_REMOTE_VERIFIED",
-      "remoteBranchesVerified": ["main"],
+      "remoteBranchesVerified": [
+        "main"
+      ],
       "localBranchRetirementReported": true,
       "retirementVerifiedAtRevision": "a4755fdab9efd447c4f9cc0206820e0d2e15c598"
     },
     "coordinationCandidate": {
       "path": "tests/F07-COORDINACION.md",
-      "version": "0.1.0",
-      "status": "CONTRACT_CANDIDATE",
-      "independentReview": "PENDING",
+      "version": "0.2.0",
+      "status": "CONTRACT_REFINED",
+      "independentReview": "APTO_CON_CONDICIONES_REPORTED_V0.1.0",
       "fixture": "NOT_CREATED",
       "runtime": "NOT_RUN",
       "mutablePaths": [
@@ -1967,7 +1969,15 @@
       ],
       "scope": "synthetic local work-order domain; independent review and protected canonical tests",
       "agentShellAuthorized": false,
-      "policyBlob": "1a30ecb4253a0d87bd4fb278985afa051f97fc32"
+      "policyBlob": "1a30ecb4253a0d87bd4fb278985afa051f97fc32",
+      "deltaReview": "PENDING",
+      "reviewConditions": [
+        "proportional routing rubric",
+        "combined authorization and invalid action negatives",
+        "discriminating cross-project fixture",
+        "reviewer identity competence version and non-edit evidence"
+      ],
+      "reviewedBlob": "340033a8c846625ae63e13981235d410e53a151d"
     }
   }
 }
