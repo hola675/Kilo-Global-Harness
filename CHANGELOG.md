@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.122.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.123.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -435,3 +435,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.2.1-R1 ajuste del contrato
 - Revisión independiente 0.1.0 APTO CON CONDICIONES reportada; contrato 0.2.0 incorpora cuatro precisiones de evaluación: routing proporcional, negativos combinados A, fixture discriminante D y trazabilidad de independencia. Sin ampliar misión ni modificar código normativo. Contraste del delta pendiente; fixture NOT_CREATED, runtime NOT_RUN.
 - Manifiesto 0.71.0, roadmap/changelog 0.122.0. Sin instalación, release ni retirada de laboratorios.
+
+## 2026-11-27 — F07.2.1-R2 clasificación de evidencia
+- Contrato 0.2.1: revalidación 0.2.0 NO APTO reportada exclusivamente por etiqueta de evidencia incompleta; sustituida por NOT_VERIFIED con informe parcial separado. Se conservan las condiciones resueltas, misión y pruebas. Contraste final focalizado pendiente, fixture NOT_CREATED, runtime NOT_RUN.
+- Manifiesto 0.72.0, roadmap/changelog 0.123.0; sin cambios normativos de equipo ni instalación/release.
