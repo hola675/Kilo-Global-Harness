@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.118.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.119.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -420,3 +420,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 - Investigación del líder: inventario CLI 7.8.27 reportado y fuentes nativas fijadas, contraste de patrones externos; sin importación de código ni prompts. Code nativo intacto.
 - Política 0.23.0 candidata: objetivo hasta resultado/bloqueo, contexto focalizado, liberación por evento y aceptación, límites Goal/wakeup/cron/proceso persistente. Sin cambio de agentes, skills, permisos ni modelo. Baseline 0.22.0 y evidencia F06 preservadas.
 - Manifiesto 0.67.0, roadmap/changelog 0.118.0, README 0.5.0, investigación 0.1.0. Rama temporal; revisión independiente y evaluación diferencial pendientes, no instalar ni publicar release.
+
+## 2026-11-27 — F07.1 evaluación y recuperación limitada
+- Auditoría independiente reportada APTO, preparador 0.1.2 verificado por operador, 58/58 MATCH, dos auxiliares reconocidos. Misión documental comparativa: candidate inicialmente más rápido, omisión material de atribución corregida con ayuda y revisión focalizada reportada. Total con recuperación no acredita mejora; C1 y bloqueo real no certificados.
+- F07.1 DONE_POC_LIMITED para desarrollo; F07 sigue IN_PROGRESS. Manifiesto 0.68.0, investigación 0.2.0, roadmap/changelog 0.119.0. Política 0.23.0, especialistas y skills intactos; consolidación pendiente, después F07.2. Sin instalación, release ni retirada de laboratorios.
