@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.121.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.122.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -35,7 +35,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F07.1.1–F07.1.4 | CANDIDATE_PREPARED_STATIC | Inventario CLI reportado, investigación y refinamiento del líder Code nativo: política 0.23.0 candidata; 0.22.0 baseline histórica. |
 | F07.1.5 | DONE_POC_LIMITED | Revisión independiente APTO reportada, comparación documental, defecto inicial candidate corregido con ayuda y revisión focalizada, 58/58 MATCH. No superioridad causal ni C1 certificado. |
 | F07.1.6 | DONE_REPORTED_REMOTE_VERIFIED | Integración fast-forward autorizada; PR #176 fusionado y rama integrada retirada con autorización; main única local reportada y remota verificada. Conservar laboratorios. |
-| F07.2 | IN_PROGRESS | [Contrato de misión de implementación](../tests/F07-COORDINACION.md): revisión independiente pendiente, fixture NOT_CREATED; dependencias reales, propiedad única, integración y solapamiento observable. |
+| F07.2 | IN_PROGRESS | [Contrato de misión de implementación](../tests/F07-COORDINACION.md) 0.2.0: revisión de 0.1.0 APTO CON CONDICIONES reportada; delta de cuatro condiciones preparado, contraste focalizado pendiente; fixture NOT_CREATED. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -463,3 +463,6 @@ Integración fast-forward autorizada por operador, main y rama temporal coincidi
 
 ## F07.1.6-R2 — retirada autorizada (2026-11-27)
 Operador reporta ONLY_MAIN_REMAINS y F07_2_ENTRY_READY, rama integrada eliminada local/remota, main limpia en a4755fd. GitHub confirma main única y revisión exacta. Historial integrado conservado; no se certifica G9 ni CI por esta operación. Manifiesto 0.70.0. F07.2.1: revisión independiente del contrato 0.1.0, fixture NOT_CREATED, runtime NOT_RUN. No retirar laboratorios ni activar globalmente.
+
+## F07.2.1-R1 — respuesta a revisión independiente (2026-11-27)
+APTO CON CONDICIONES reportado para contrato 0.1.0. Contrato 0.2.0 incorpora rúbrica de routing proporcional separada de simultaneidad, negativos combinados de autorización/transición, fixture con duplicado ajeno primero y conteos distintos, y evidencia de identidad, competencia, versión y no edición del revisor. No ampliar misión ni cambiar política/roles/skills. Verificar solo delta antes de preparar fixture; runtime NOT_RUN. Manifiesto 0.71.0.
