@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.83.0",
+    "version": "0.84.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -265,7 +265,8 @@
     "F07_4_3": "PREPARATION_PASS_REPORTED",
     "F07_4_4": "STATIC_RESULT_APTO_NATIVE_COMMUNICATION_PARTIAL",
     "F07_4_5": "INTEGRITY_PASS_REPORTED",
-    "F07_5": "PENDING_DESIGN"
+    "F07_5": "IN_PROGRESS",
+    "F07_5_1": "CONTRACT_CANDIDATE_PENDING_REVIEW"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1888,7 +1889,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.5.1: diseñar contraste independiente de objeto concreto y revisión focalizada de delta material autorizado (R3/T3/T7), reutilizar evidencias previas; sin repetir suites ni imponer revisión por rutina.",
+    "next": "F07.5.2: revisión focalizada del contrato de revisión independiente 0.1.0; si APTO, preparar laboratorio V1 con objeto mutable único y snapshot externo por etapas; delta reservado.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2571,13 +2572,13 @@
     },
     "nextReviewProposal": {
       "phase": "F07.5.1",
-      "status": "PENDING_DESIGN",
+      "status": "CONTRACT_CANDIDATE_PENDING_REVIEW",
       "primaryCases": [
         "R3",
         "T3",
         "T7"
       ],
-      "scope": "independent review of actual stable object and material authorized delta; distinguish old review from current acceptance; revalidate affected guarantees only",
+      "scope": "static multi-project inventory export design with trusted authorization and minimal projection; material authorized extension adds detail mode and permission",
       "constraints": [
         "different author and reviewer; exact accessible object version and acceptance criteria",
         "reuse historical evidence; no new tests without distinct guarantee",
@@ -2585,7 +2586,31 @@
         "if trace insufficient retain NOT_VERIFIED; no simulated independence"
       ],
       "fixture": "NOT_CREATED",
-      "runtime": "NOT_RUN"
+      "runtime": "NOT_RUN",
+      "contractPath": "tests/F07-REVISION.md",
+      "contractVersion": "0.1.0",
+      "localEntryReadyReported": true,
+      "independentReview": "PENDING",
+      "productFiles": [
+        "spec/export.md",
+        "design/export.md"
+      ],
+      "mutablePaths": [
+        "design/export.md"
+      ],
+      "reservedDeltaPath": "spec/export-delta.md",
+      "initialProtectedFiles": 26,
+      "initialMutableFiles": 1,
+      "stages": [
+        "prepare",
+        "construct V1 and external snapshot",
+        "independent review V1 and operator acceptance",
+        "authorized source delta",
+        "construct V2 and external snapshot",
+        "independent delta review V2 and operator acceptance"
+      ],
+      "negativeR3T3": "NOT_RUN_UNLESS_NATURAL",
+      "validation": "static matrix and exact version-linked independent review, no software tests"
     }
   }
 }
