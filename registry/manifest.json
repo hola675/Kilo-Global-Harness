@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.61.0",
-    "last_modified": "2026-11-26"
+    "version": "0.62.0",
+    "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
   "targetHarnessVersion": "1.0.0",
@@ -234,7 +234,8 @@
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
     "F06_R1B2_R": "R1_DONE_REPORTED_LIMITED",
     "F06_R2_1": "PREPARATION_AND_NODE_PREFLIGHT_PASS_REPORTED_INDEPENDENT_REVIEW_WITH_FINDINGS",
-    "F06_R2_2": "HARDENING_CANDIDATE_WINDOWS_VALIDATION_PENDING"
+    "F06_R2_2": "HARDENING_VALIDATION_PASS_REPORTED_WITH_RESIDUAL_RISKS",
+    "F06_R2_8": "FUNCTIONAL_COMPARISON_PASS_REPORTED_LIMITED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -678,7 +679,7 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "Validar candidato 0.1.4 con parser, revisión estática del delta y guardas negativas aisladas, sin operar sobre el laboratorio activo. Verificar integridad R2 de solo lectura y conservar registros y fixtures. No repetir preparación. Node, edición y retirada todavía no autorizados.",
+    "next": "Consolidar evidencia funcional R2 y revisar cambios acumulados antes de integrar main mediante fast-forward. Preservar laboratorio y respaldos; no repetir preparación ni pruebas superadas. Retirada, recuperación de mutaciones parciales, instalación global y evaluación de paralelismo pendientes de autorización y certificación.",
     "laboratory": {
       "path": "scripts/Probar-Skills-KiloTeam.ps1",
       "version": "0.1.1",
@@ -1446,7 +1447,7 @@
         }
       },
       "r2Candidate": {
-        "status": "STATIC_HARDENING_CANDIDATE",
+        "status": "FUNCTIONAL_PASS_REPORTED_LIMITED",
         "script": {
           "path": "scripts/Probar-Skills-KiloTeam.ps1",
           "version": "0.1.4",
@@ -1456,14 +1457,85 @@
         "hardening": {
           "baseRevision": "096d231ee9526ac4f2e9a9e4522aff29db5c44ec",
           "reviewedRevision": "fb55c2386692d0f088392a2f1c26258561d5c3cf",
-          "status": "CANDIDATE_NOT_CERTIFIED",
+          "status": "VALIDATION_PASS_REPORTED_WITH_RESIDUAL_RISKS",
           "changes": ["canonical modes", "parameter allowlist before filesystem access", "explicit R1/R2 dispatch", "R1 registry byte digest recheck", "partial mutation warning"],
           "fixtureChanged": false,
-          "parser014": "NOT_RUN",
-          "negativeGuards": "NOT_RUN",
-          "independentDeltaReview": "NOT_RUN",
-          "activeLabVerification014": "NOT_RUN",
+          "parser014": "PASS_REPORTED",
+          "negativeGuards": "PASS_REPORTED_12_OF_12",
+          "independentDeltaReview": "APT_WITH_CONDITIONS_REPORTED",
+          "activeLabVerification014": "PASS_REPORTED",
           "atomicRetirement": false
+        },
+        "functionalEvidence": {
+          "date": "2026-11-27",
+          "status": "PASS_REPORTED_LIMITED",
+          "provenance": "operator supplied Windows PowerShell, TAP output, agent reports and reviewed source text",
+          "independentlyExecuted": false,
+          "runtime": "Node.js 26.12.1 Windows",
+          "laboratoryVersion": "0.1.4",
+          "hardeningRevision": "aefb0276bbb375b53d033e6926559a2dfb52f6d1",
+          "agentEditAuthorization": "GRANTED_REPORTED_MUTABLE_FILE_ONLY",
+          "agentCommandExecution": "NONE_REPORTED",
+          "initial": {
+            "baseline": {"tests": 6, "pass": 4, "fail": 2, "exitCode": 1},
+            "candidate": {"tests": 6, "pass": 4, "fail": 2, "exitCode": 1}
+          },
+          "final": {
+            "baseline": {
+              "tests": 6,
+              "pass": 6,
+              "fail": 0,
+              "skipped": 0,
+              "exitCode": 0,
+              "suiteDurationMs": 99.5104,
+              "implementation": "bounded accumulation",
+              "sourceSha256": "AB6E25AF34B1F77C7EA685FF3F5EB3D263482C5670E9CF164C2ADAC4B724B7DE",
+              "visibleSkillCalls": [],
+              "visibleDelegations": [],
+              "agentElapsedSeconds": null
+            },
+            "candidate": {
+              "tests": 6,
+              "pass": 6,
+              "fail": 0,
+              "skipped": 0,
+              "exitCode": 0,
+              "suiteDurationMs": 97.2517,
+              "implementation": "bounded remaining balance",
+              "sourceSha256": "DB7DEE148FFAF7659188AF31A28FA45A6CE8B3A8AF3557B9754F97FE576BA7D2",
+              "visibleSkillCalls": [
+                "implementation-discipline",
+                "systematic-debugging"
+              ],
+              "visibleDelegations": [],
+              "agentElapsedSeconds": null
+            }
+          },
+          "integrity": {
+            "status": "PASS_REPORTED",
+            "originalProtectedFilesMatched": 38,
+            "additionalProtectedFilesMatched": 4,
+            "registryMatch": true,
+            "reviewedSourceDigestsMatch": true,
+            "baselineAuxiliary": "MATCH_TEMPLATE",
+            "candidateAuxiliary": "MATCH_TEMPLATE"
+          },
+          "assessment": {
+            "negativeGuards": "12_OF_12_PASS_REPORTED",
+            "independentReview": "APT_WITH_CONDITIONS_REPORTED",
+            "oldRegistryReadCompatibility": "PASS_REPORTED",
+            "sourceReview": "PASS_STATIC_BOTH",
+            "functionalComparison": "PASS_REPORTED",
+            "contextualSkillActivation": "OBSERVED_CANDIDATE",
+            "performanceBenefit": "NOT_ESTABLISHED",
+            "causalSkillBenefit": "NOT_ESTABLISHED",
+            "parallelExecution": "NOT_EVALUATED_IN_R2",
+            "atomicRetirement": "NOT_CERTIFIED",
+            "partialMutationRecovery": "PENDING"
+          },
+          "fixtureChanged": false,
+          "solutionsCommitted": false,
+          "evidenceBackup": "PASS_REPORTED_LOCAL_OUTSIDE_REPOSITORY"
         },
         "fixture": {
           "path": "tests/fixtures/f06-reservation/",
@@ -1501,14 +1573,14 @@
             "exitCode": 0
           },
           "provenance": "isolated developer container; reference solution not committed",
-          "windowsRuntime": "NOT_RUN",
+          "windowsRuntime": "SEE_OPERATOR_FUNCTIONAL_EVIDENCE",
           "blobVerification": "MATCH_BOTH_PUBLISHED_CODE_AND_TEST",
           "recheck": "PASS_REPRODUCED_4_2_AND_6_0"
         },
-        "windowsParserStatus": "PASS_REPORTED_0.1.3_ONLY",
+        "windowsParserStatus": "PASS_REPORTED_0.1.3_AND_0.1.4",
         "preparationStatus": "PASS_REPORTED",
         "independentReview": "REPORTED_WITH_FINDINGS_CONTRASTED_STATICALLY",
-        "operatorExecutionAuthorization": "NOT_GRANTED",
+        "operatorExecutionAuthorization": "GRANTED_REPORTED_FOR_R2_SUITES_COMPLETED",
         "agentExecutionAuthorization": "NOT_GRANTED",
         "retirementStatus": "NOT_RUN",
         "installable": false,

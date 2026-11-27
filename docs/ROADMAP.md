@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.112.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.113.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -411,3 +411,9 @@ Resolución única, 26.12.1, Authenticode Valid OpenJS Foundation, SHA256 obteni
 
 ## F06-R2.2 — endurecimiento candidato (2026-11-26)
 Revisión independiente recibida y contrastada; suite original sí detecta acumulación y enteros grandes. Script 0.1.4 y manifiesto 0.61.0 candidatos. Validar parser, guardas aisladas y revisión de delta antes de verificar R2 sin escrituras. No ejecutar Node, editar ni retirar aún. F06 IN_PROGRESS.
+
+## F06-R2 — certificación funcional completada (2026-11-27)
+
+PASS_REPORTED_LIMITED: parser 0.1.4, guardas 12/12, revisión independiente condicionada, verificación de registros existentes y reproducción del defecto en ambas variantes. Resolución autónoma seguida de revisión estática y ejecución de la suite original: 6/6 PASS por variante, cero fallos y salida 0. Integridad 38+4 y registro conservados.
+
+Siguiente: F06-R3, consolidación de evidencias, revisión acumulada e integración fast-forward en main. F06-R4 propuesto para recuperación y retirada segura. No certificar aún instalación global, paralelismo, exclusión de escritores, recuperación real ni todas las skills individualmente. F06 permanece IN_PROGRESS.

@@ -1,5 +1,5 @@
 # F06 — Evaluación de skills base
-Versión del archivo: 0.36.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.37.0 | Última modificación: 2026-11-27
 
 Estado: diseño de evaluación, runtime NOT_RUN. Conservar la política 0.17.0 y los nueve agentes 0.2.0 como referencia histórica inicial; cada sección fija su comparación histórica. Para candidato conjunto F06-AUD-R usar inventario actual del manifiesto y política 0.21.0; no activar globalmente. Usar laboratorio registrado y descartable, modelo explícitamente autorizado, sin secretos ni cambios en proyectos reales. Verificar colisiones y disponibilidad por sesión y rol antes de probar. Una descripción visible no demuestra carga; carga no demuestra mejora.
 
@@ -403,3 +403,30 @@ Operador aporta resolución única de node.exe, versiones de archivo/producto 26
 Revisión independiente de 0.1.3 reportada por operador; contraste estático de los cuatro blobs públicos confirma el despacho inconsistente y parámetros ignorados. La afirmación de suite verde inicial es incorrecta: reserve(5, [3, 3]) y el caso de MAX_SAFE_INTEGER ya detectan el defecto; conservar contrato, fuente defectuosa y seis pruebas. No repetir R1 ni preparar R2 otra vez.
 Script 0.1.4 candidato: nombres canónicos, allowlist de parámetros explícitos (incluidos switches falsos y parámetros comunes no admitidos), confirmaciones antes de E/S, guardas explícitas de despacho, revalidación del digest del registro R1 y aviso de posible mutación parcial. No cambia formato de registro, pins o rutas. No garantiza atomicidad ni exclusión frente a carreras, enlaces duros o escritores concurrentes. Si una operación mutante falla, cerrar escritores, preservar archivos/restos y salida sanitizada; no repetir preparación/retirada ni borrar manualmente. Revisar inventario y registros disponibles en modo solo lectura; diseñar recuperación específica y autorizarla antes de tocar nada. El registro podría ya faltar si el fallo ocurre tras su eliminación; no reconstruir propiedad por inferencia.
 Puerta: parser de PowerShell 7 Windows, pruebas negativas de capitalización, parámetros ajenos (también falsos/vacíos), falta de confirmaciones y huellas inválidas en proceso aislado con rutas temporales, sin retirada real; revisar delta de forma independiente. Solo después, VerificarR2 de lectura en laboratorio existente y cotejar 38+4, registro y ambas fuentes BASELINE. Node, edición y retirada no autorizados. No promover ni instalar globalmente. F06 IN_PROGRESS.
+
+### F06-R2.3 a R2.8 — certificación funcional (2026-11-27)
+
+Estado: PASS_REPORTED_LIMITED. Evidencia aportada por el operador en Windows, no ejecución independiente del revisor.
+
+| Control | Baseline | Candidate |
+|---|---|---|
+| Estado inicial | 4 PASS, 2 FAIL esperados | 4 PASS, 2 FAIL esperados |
+| Estado corregido | 6/6 PASS | 6/6 PASS |
+| Código de salida final | 0 | 0 |
+| Omitidos y cancelados | 0 | 0 |
+| Solución | Acumulación acotada | Descuento de saldo |
+| Skills visibles | Ninguna | implementation-discipline, systematic-debugging |
+| Delegaciones visibles | Ninguna | Ninguna |
+| Duración final de suite | 99.5104 ms | 97.2517 ms |
+
+Parser 0.1.4 PASS_REPORTED; doce guardas negativas superadas en procesos aislados. Revisión independiente APTO CON CONDICIONES. Compatibilidad de lectura de registros 0.1.3 confirmada mediante VerificarR2 con 0.1.4. No implica compatibilidad de retirada.
+
+Reproducción de Baseline aceptada mediante inspección del informe original: el ejecutor auxiliar no reconoció los símbolos Unicode. Candidate y las pruebas finales utilizaron reporter TAP sin cambiar la suite. El ejecutor de guardas también requirió corregir la propagación del código de salida; se conservaron casos previos válidos.
+
+Ambas fuentes revisadas mantienen API, validación contractual, aritmética segura y ausencia de efectos externos dentro del alcance del fixture. Las soluciones no sustituyen el fixture defectuoso. Respaldos locales externos al repositorio, vinculados por SHA256 en manifiesto.
+
+Integridad posterior: 38 archivos R1, cuatro protegidos R2, registro y auxiliares MATCH; ambas huellas revisadas coinciden. No acredita aislamiento completo, identidad del autor ni trazabilidad exhaustiva.
+
+Conclusión: autonomía funcional demostrada en esta muestra y activación contextual observada en Candidate. No se establece beneficio causal, superioridad general, rendimiento reproducible ni tiempo de resolución de agentes. Arrays dispersos y objetos hostiles quedan fuera del contrato original.
+
+Pendientes: recuperación específica de mutaciones parciales, carreras de retirada, cierre seguro del laboratorio y consolidación Git. No repetir pruebas superadas sin cambios que justifiquen recertificación. Instalación global no autorizada.

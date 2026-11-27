@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.112.0 | Última modificación: 2026-11-26
+Versión del archivo: 0.113.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -393,3 +393,9 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-26 — F06-R2.2 endurecimiento
 - Laboratorio: candidato 0.1.4, modos canónicos, guardas de parámetros/despacho, revalidación de registro R1 y señal de operación parcial. Manifiesto 0.61.0; fixture y pins intactos. Parser, guardas Windows, revisión del delta e integridad local 0.1.4 pendientes.
+
+## 2026-11-27 — F06-R2.3 a R2.8, certificación funcional
+- Laboratorio 0.1.4: parser, 12/12 guardas negativas e integridad R1/R2 PASS_REPORTED; revisión independiente APTO CON CONDICIONES.
+- Comparación Windows: ambas variantes reproducen 4 PASS y 2 fallos esperados; tras corrección autónoma, ambas obtienen 6/6 PASS, salida 0 e integridad posterior conservada.
+- Candidate activa implementation-discipline y systematic-debugging; no se demuestra superioridad causal ni de rendimiento.
+- Manifiesto 0.62.0. Evidencias respaldadas fuera del repositorio. Fixture, agentes, skills y política intactos. Recuperación parcial y retirada pendientes.
