@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.118.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.119.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -33,7 +33,9 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F06-R5.1/R5.2 | DONE_REPORTED_STATIC | Revisión independiente reportada; sin contradicciones normativas materiales; referencia histórica 0.21.0 reconciliada con evaluación vigente 0.22.0. |
 | F06-R5.3/R5.4 | DONE_POC_LIMITED | Q7/Q13 PASS_REPORTED en ambas variantes; focused-testing invocada en candidate; 78/78 archivos MATCH. Dictamen APTO CON CONDICIONES; archivo físico del fixture Q pendiente. |
 | F07.1.1–F07.1.4 | CANDIDATE_PREPARED_STATIC | Inventario CLI reportado, investigación y refinamiento del líder Code nativo: política 0.23.0 candidata; 0.22.0 baseline histórica. |
-| F07.1.5 | SIGUIENTE | Revisión independiente del delta del líder y diseño de misión diferencial a partir de C/T/K/G. Preparar fixture solo tras revisión; no repetir PoC ni acceder a laboratorios archivados. |
+| F07.1.5 | DONE_POC_LIMITED | Revisión independiente APTO reportada, comparación documental, defecto inicial candidate corregido con ayuda y revisión focalizada, 58/58 MATCH. No superioridad causal ni C1 certificado. |
+| F07.1.6 | SIGUIENTE | Consolidación Git del candidato 0.23.0 previa verificación de PR/checks y autorización; conservar laboratorios. |
+| F07.2 | PENDING | Misión de implementación con tareas disjuntas, dependencias reales, propietario único, aceptación y solapamiento observable; contrato y revisión antes de fixture. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -452,3 +454,6 @@ Q7/Q13 PASS_REPORTED en ambas variantes, una invocación contextual focused-test
 
 ## F07.1 — refinamiento del líder (2026-11-27)
 [Investigación y evaluación propuesta](INVESTIGACION-LIDER-CODE.md): inventario nativo CLI 7.8.27 reportado, Code primary/native sin prompt/modelo fijo; no extrapolar a Desktop. Política 0.23.0 candidata sobre 0.22.0, refuerzo acotado de dirección, economía de contexto, aceptación y coordinación por retorno, autorización de continuidad programada. Sin nuevo agente, skill, plugin ni permiso. F07 IN_PROGRESS en rama de candidato; siguiente revisión independiente y evaluación diferencial NOT_RUN. F06 histórico limitado; no instalar ni activar. Archivo fixture Q pendiente.
+
+## F07.1.5 — evaluación limitada y recuperación (2026-11-27)
+Política 0.23.0 intacta. Revisión estática independiente APTO reportada, misión documental ejecutada con defecto inicial de atribución candidate, recuperación asistida y revalidación Security reportada; integridad 58/58, dos auxiliares e inventario intacto. Tiempo inicial 216 vs 269 s; con recuperación 346 vs 269 s, no mejora global demostrada. C1 NOT_VERIFIED, bloqueo operativo no acreditado, revisión de delta reportada. team-coordination invocada en ambas. F07.1 DONE_POC_LIMITED, F07 IN_PROGRESS, manifiesto 0.68.0. Consolidación pendiente, después F07.2 misión ejecutable con propiedad y dependencias; no repetir diseño, no instalar ni activar. Archivo físico de laboratorios pendiente.
