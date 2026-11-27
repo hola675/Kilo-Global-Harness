@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.126.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.127.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -451,3 +451,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.3.1 contrato candidato
 - Diseño focalizado de catálogo compartido y fuente B ausente, dos etapas autorizadas, dueño exclusivo, unión bloqueada, preservación de A y pruebas por impacto. Preflight sin Task es válido; no simular retorno ni conflicto. C3 no incluido.
 - Evaluación 0.4.0, manifiesto 0.75.0, roadmap/changelog 0.126.0. Revisión pendiente, fixture NOT_CREATED, runtime NOT_RUN; F07.2 intacta como evidencia histórica, sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.3.1-R1 puerta D
+- Auditoría 0.4.0 APTO CON CONDICIONES reportada. Contrato 0.4.1 corrige únicamente la contradicción de aceptación: A y B funcionalmente aceptadas antes de construir D; D aceptada tras su propia prueba e integridad con A/B vigentes. IIa/IIb separan ejecución y autorización, sin repetir pruebas válidas.
+- Manifiesto 0.76.0, roadmap/changelog 0.127.0. Contraste focalizado pendiente; fixture NOT_CREATED, runtime NOT_RUN. Sin cambios de política, roles, skills o permisos; sin instalación ni release.
