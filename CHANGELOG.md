@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.115.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.116.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -407,3 +407,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F06-R4 cierre operativo y brechas
 - Git: rama y worktree local únicos, consolidados. Laboratorio: candidato local separado 0.1.0, parser y 8/8 sintéticos reportados; retirada autorizada a cuarentena, 48 archivos e inventario intactos, registro externo presente. Sin borrado ni restauración real.
 - Gobierno: manifiesto 0.64.0, roadmap 0.115.0, evaluación F06 0.38.0 y catálogo 0.17.0. Ocho invocaciones reportadas y cinco sin evidencia individual; revisión independiente y cierre focalizado pendientes. Agentes, skills normativas, política y script 0.1.4 intactos; instalación y release no autorizadas.
+
+## 2026-11-27 — F06-R5.1/R5.2 revisión y reconciliación
+- Revisión independiente estática reportada: sin contradicciones normativas materiales; NO APTO temporal para F07 por trazabilidad y brecha Q7/Q13. Referencia 0.21.0 histórica, evaluación vigente 0.22.0, diseño de transferencia parcial conservado.
+- Manifiesto 0.65.0, roadmap/changelog 0.116.0, evaluación 0.39.0, catálogo 0.18.0. Próximo R5.3: comparación focalizada; sin cambios de agentes, política, skills normativas ni scripts, sin nuevas filas ni activación global.
