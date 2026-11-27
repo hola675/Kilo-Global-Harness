@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.127.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.128.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -455,3 +455,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.3.1-R1 puerta D
 - Auditoría 0.4.0 APTO CON CONDICIONES reportada. Contrato 0.4.1 corrige únicamente la contradicción de aceptación: A y B funcionalmente aceptadas antes de construir D; D aceptada tras su propia prueba e integridad con A/B vigentes. IIa/IIb separan ejecución y autorización, sin repetir pruebas válidas.
 - Manifiesto 0.76.0, roadmap/changelog 0.127.0. Contraste focalizado pendiente; fixture NOT_CREATED, runtime NOT_RUN. Sin cambios de política, roles, skills o permisos; sin instalación ni release.
+
+## 2026-11-27 — F07.3 contrato aceptado y preparador I
+- APTO final reportado sobre 0.4.1; contrato intacto. Preparador externo 0.1.0 para preparar/verificar I, 29 protegidos y 3 stubs, fuente B ausente. Seis casos validados con stubs, referencia y seis mutantes, más fuente inválida, en Linux temporal. Windows/parser/fixture local y runtime NOT_RUN. Control de delta II pendiente hasta aceptación de A.
+- Manifiesto 0.77.0, roadmap/changelog 0.128.0; sin cambios normativos, instalación ni release.
