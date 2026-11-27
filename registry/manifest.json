@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.78.0",
+    "version": "0.79.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -257,7 +257,8 @@
     "F07_3_3": "STAGE_I_PREPARATION_PASS_REPORTED",
     "F07_3_4": "STAGE_I_BLOCKED_DEPENDENCIES_PRESERVED",
     "F07_3_5": "STAGE_I_A_FUNCTIONAL_PASS_TAP_PROVIDED",
-    "F07_3_6": "STAGE_IIA_DELTA_PREPARER_CANDIDATE_WINDOWS_NOT_RUN"
+    "F07_3_6": "STAGE_IIA_B_FUNCTIONAL_PASS_TAP_PROVIDED",
+    "F07_3_7": "STAGE_IIB_AUTHORIZER_CANDIDATE_WINDOWS_NOT_RUN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1880,7 +1881,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.3.6: operador autoriza fuente IIa con recuperador 0.1.0, preservar A aceptada, D stub e inventario original; validar parser y ejecución Windows. Inspeccionar B y probar B antes de autorizar D.",
+    "next": "F07.3.7: operador registra aceptación B y autoriza exclusivamente D con script 0.1.0; validar parser y ejecución Windows. Inspeccionar D, ejecutar solo sus pruebas e integridad final; preservar A/B vigentes.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -2132,7 +2133,7 @@
     },
     "nextCoordinationProposal": {
       "phase": "F07.3.1",
-      "status": "STAGE_I_A_ACCEPTED_STAGE_IIA_PREPARER_CANDIDATE",
+      "status": "STAGE_I_AND_IIA_ACCEPTED_STAGE_IIB_AUTHORIZER_CANDIDATE",
       "cases": [
         "T5",
         "C2",
@@ -2140,8 +2141,8 @@
         "T6"
       ],
       "scope": "shared catalog with one writer, real missing authorized input, independent useful work and dependency join",
-      "fixture": "STAGE_I_PREPARED_REPORTED",
-      "runtime": "STAGE_I_A_FUNCTIONAL_PASS_TAP_PROVIDED",
+      "fixture": "STAGE_IIA_SOURCE_CREATED_AND_INTEGRITY_REPORTED",
+      "runtime": "A_B_FUNCTIONAL_PASS_TAP_PROVIDED_D_NOT_RUN",
       "C3": "NOT_IN_SCOPE",
       "contractPath": "tests/F07-COORDINACION.md",
       "contractVersion": "0.4.1",
@@ -2153,7 +2154,7 @@
         "src/catalog.mjs"
       ],
       "missingSource": "spec/dispatch-actions.json",
-      "sourceValues": "OPERATOR_SELECTION_AT_IIA_NOT_YET_AUTHORIZED",
+      "sourceValues": "OPERATOR_AUTHORIZED_IIA",
       "stages": [
         "I: A functional acceptance, B and D blocked",
         "IIa: operator-authorized source delta, B functional acceptance, D unchanged",
@@ -2275,15 +2276,73 @@
         "sha256": "805610F79EA475C9410C9C713FF50AF9D4B3F5D2366CA3FE8D195E6EE1DAF22B",
         "delivery": "operator attachment, not repository source",
         "scope": "explicit operator source creation and external delta; verify B snapshot before tests; no execution of JavaScript",
-        "powershellParser": "NOT_RUN",
-        "windowsExecution": "NOT_RUN",
+        "powershellParser": "PASS_REPORTED",
+        "windowsExecution": "SOURCE_CREATION_AND_VERIFICATION_PASS_REPORTED",
         "pinCheck": "original preparer and reconstructed A/B/D pins checked",
         "operatorSourceSelection": "two distinct synthetic ASCII action identifiers, subset of approved contract",
-        "sourceCreation": "NOT_RUN",
-        "deltaCreation": "NOT_RUN",
-        "B": "NOT_RUN",
+        "sourceCreation": "PASS_REPORTED",
+        "deltaCreation": "PASS_REPORTED",
+        "B": "FUNCTIONAL_PASS_TAP_PROVIDED",
         "D": "NOT_RUN",
         "partialWriteRecovery": "preserve and inspect; no overwrite or auto rollback"
+      },
+      "stageIIa": {
+        "date": "2026-11-27",
+        "provenance": "operator UI transcript and TAP/integrity console output",
+        "uiElapsedSeconds": 62,
+        "visibleSearches": 0,
+        "visibleNewSkillLoads": 0,
+        "visibleFileReads": 3,
+        "delegationsObserved": 0,
+        "owner": "Code reported and direct edit visible",
+        "sourceSha256": "6A1498C986F732461F51ED9F8AD326C2D6D1DAF2ECC8400332D266708330FC49",
+        "dispatchSha256": "514F8FB5D074353720D1B0A195F9CDF13DA59065C3000F3B6FC1B283A646F792",
+        "functional": {
+          "status": "PASS",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "exit": 0,
+          "runnerMs": 91.6749,
+          "externalMs": 166.0326,
+          "nodeSha256": "1C63F1417E2E26D83CA9A9EC1D548524AB1305BC7209D90EBCA56257FF0D84ED",
+          "nodeIdentity": "PASS_REPORTED",
+          "A": "EVIDENCE_REUSED",
+          "D": "NOT_RUN"
+        },
+        "integrity": {
+          "protectedMatchedBeforeAfter": 29,
+          "stockMatched": true,
+          "dispatchSnapshotMatchedBeforeAfter": true,
+          "catalogStubMatched": true,
+          "authorizedSourceMatched": true,
+          "operatorRecordsUnchanged": true,
+          "recognizedAuxiliaries": 1
+        },
+        "observations": [
+          "selective recovery with prior context, no repeated A tests observed",
+          "duration not comparable causally to stage I"
+        ],
+        "cases": {
+          "C2": "BLOCK_AND_RECOVERY_OBSERVED_FINAL_JOIN_PENDING",
+          "T5": "NOT_VERIFIED",
+          "C5": "NOT_RUN",
+          "T6": "NOT_RUN"
+        }
+      },
+      "stageIIbAuthorizer": {
+        "name": "F07.3.7-Autorizar-Catalogo-0.1.0.ps1",
+        "version": "0.1.0",
+        "sha256": "193E21D1F79A841C330A59A2BC5FE92B9443EC259AA30C49A3432FADEDEAAF74",
+        "delivery": "operator attachment, not repository source",
+        "scope": "explicit operator acceptance record linked to original inventory and delta; verify A/B/source/protected entries, D stub before authorization and D snapshot after construction; no JavaScript execution or workspace writes",
+        "powershellParser": "NOT_RUN",
+        "windowsExecution": "NOT_RUN",
+        "recordCreation": "NOT_RUN",
+        "D": "NOT_RUN"
       }
     }
   }
