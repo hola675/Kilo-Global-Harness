@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.119.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.120.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -424,3 +424,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.1 evaluación y recuperación limitada
 - Auditoría independiente reportada APTO, preparador 0.1.2 verificado por operador, 58/58 MATCH, dos auxiliares reconocidos. Misión documental comparativa: candidate inicialmente más rápido, omisión material de atribución corregida con ayuda y revisión focalizada reportada. Total con recuperación no acredita mejora; C1 y bloqueo real no certificados.
 - F07.1 DONE_POC_LIMITED para desarrollo; F07 sigue IN_PROGRESS. Manifiesto 0.68.0, investigación 0.2.0, roadmap/changelog 0.119.0. Política 0.23.0, especialistas y skills intactos; consolidación pendiente, después F07.2. Sin instalación, release ni retirada de laboratorios.
+
+## 2026-11-27 — F07.1 consolidado, F07.2 contrato
+- Git: fast-forward autorizado y verificado, PR #176 fusionado; main y rama integrada coincidieron en f982a1f. PR conservó draft, sin CI reportada; G9 no certificado. Retirada de rama pendiente de autorización, laboratorios intactos.
+- F07.2: contrato candidato de construcción en tests/F07-COORDINACION.md 0.1.0, reutiliza T/C/R de F06, misión local ESM de órdenes de trabajo, tres archivos propios, revisión independiente antes de ejecutar. Fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.69.0, roadmap/changelog 0.120.0; política, roles y skills sin cambios. No instalación ni release.
