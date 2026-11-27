@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.134.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.135.0 | Última modificación: 2026-11-27
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -38,7 +38,7 @@ F06-R2: PASS_REPORTED_LIMITED (ambas variantes 6/6 PASS; 12/12 guardas negativas
 | F07.2 | DONE_POC_LIMITED | [Contrato y evidencia](../tests/F07-COORDINACION.md): 33/33 casos PASS con TAP, 29/29 integridad, tres módulos 3/3 MATCH; solapamiento e independencia completa NOT_VERIFIED. |
 | F07.3 | DONE_POC_LIMITED | A/B/D 6/6 PASS en tres puertas, 29/29 protegidos, recuperación selectiva y unión lógica observadas, sin repetición de pruebas; T5 NOT_VERIFIED, C5/T6 NOT_RUN. |
 | F07.4 | DONE_POC_LIMITED | Propuesta estática APTO, dos especialistas, RESULT reportado y tres lecturas de tablero visibles; 30/30 protegidos. C6 material favorable NOT_VERIFIED; sin trazas completas. |
-| F07.5 | SIGUIENTE | Revisión independiente de objeto estable y delta material autorizado, diseño pendiente. |
+| F07.5 | IN_PROGRESS | [Contrato de revisión independiente](../tests/F07-REVISION.md) 0.1.0: diseño exportación multiproyecto, delta de autorización y proyección, revisión focalizada pendiente. |
 | F08 / F09 | PENDING | Skills especializadas por proyectos y verificación MCP/plugins por rol; en paralelo cuando se cumplan sus dependencias. |
 | F11 / F10 | PENDING | Metaskill de aprendizaje evaluada; decidir MCP propio solo si F07/F09/F11 prueban necesidad. |
 | F12 / F13 / F14 | PENDING | Integración y rendimiento comparativo, distribución Windows con instalación/actualización/restauración verificadas, pilotos y release. |
@@ -511,3 +511,6 @@ Preparador 0.1.0 parser/Windows PASS reportados, 24/24 blobs, 5/5 objetos y 30 p
 Observaciones: rollout leído dos veces; Code releyó esquemas y consumidor después de delegar; sin orden terminal detallado ni justificación completa no certificar duplicación de análisis, revisar proporcionalidad. Necesidad/cursor de tres lecturas Swarm no verificables. No atribuir coste o latencia causal. No modificar política ni skills por esta muestra.
 ## F07.5.1 — siguiente diseño (propuesta)
 Foco R3/T3/T7: revisión independiente pertinente de objeto concreto estable y accesible, identidad y versión, criterio y retorno; delta material posterior autorizado que invalide únicamente evidencia afectada. Diseñar caso útil con frontera real, sin fabricar fallo ni entrada inaccesible, revisión por autor o aprobación por retorno; distinguir revisión de v1 de aceptación v2 y conservar evidencia no afectada. Reutilizar F07.2/F06 y no repetir suites. Si faltan trazas, NOT_VERIFIED; sin evento pertinente NOT_RUN. F07.5 PENDING_DESIGN, fixture NOT_CREATED, runtime NOT_RUN. F07 IN_PROGRESS, instalación y release no autorizados. Manifiesto 0.83.0.
+
+## F07.5.1 — contrato candidato de revisión independiente (2026-11-27)
+Entrada local F07_5_DESIGN_READY reportada. Contrato tests/F07-REVISION.md 0.1.0: diseño estático de exportación de inventario multiproyecto, V1 resumen con autorización confiable y proyección mínima; V2 añade modalidad detalle con permiso adicional y proyección específica. Un objeto mutable, 26 protegidos iniciales; snapshot V1 externo, revisión independiente de objeto concreto, aceptación explícita antes de autorizar delta, snapshot V2 y revisión focalizada sobre garantías afectadas. Sin software ejecutado ni datos reales. R3/T3 positivos, negativos solo si naturales; T7 exige secuencia y evidencia vinculada a versiones, no informe por sí solo. Si no se acredita independencia/acceso de V1, puerta delta bloqueada. Revisión focalizada del contrato pendiente; fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.84.0. No modificar contratos anteriores, agentes, skills, política, permisos ni laboratorios; sin instalación/release.
