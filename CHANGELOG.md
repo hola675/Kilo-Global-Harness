@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.131.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.132.0 | Última modificación: 2026-11-27
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -471,3 +471,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.3 cierre funcional limitado
 - Autorizador IIb Windows PASS reportado; D integrado y TAP 2/2 PASS, A/B reutilizadas, 6/6 casos acumulados y 29/29 protegidos; fuente, hashes y registros intactos. Unión lógica y recuperación selectiva PASS en escenario directo; T5 NOT_VERIFIED, C5/T6 NOT_RUN. UI IIb 367 s, causa sin demostrar.
 - F07.3 DONE_POC_LIMITED, F07 IN_PROGRESS; manifiesto 0.80.0, roadmap/changelog 0.131.0. Contrato 0.4.1 preservado. F07.4 propuesta C6 Swarm material, diseño pendiente; sin cambios normativos, instalación ni release.
+
+## 2026-11-27 — F07.4.1 contrato candidato
+- Comunicación material Swarm, auditoría estática de compatibilidad v1/v2 y consumidor existente; cinco objetos protegidos, ningún mutable, evidencia de lectura y decisión separada del post; HOLD/corrección y cursor/replay no forzados. Fuente primaria board.ts contrastada en revisión fijada; equivalencia de runtime no verificada.
+- Contrato 0.1.0, manifiesto 0.81.0, roadmap/changelog 0.132.0. Revisión pendiente; fixture NOT_CREATED, runtime NOT_RUN. F07.2/F07.3 intactas, sin cambios normativos, instalación ni release.
