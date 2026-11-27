@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.65.0",
+    "version": "0.66.0",
     "last_modified": "2026-11-27"
   },
   "id": "kilo-global-harness-team",
@@ -189,7 +189,7 @@
     "credentials",
     "uncertified artifacts"
   ],
-  "nextPhase": "F06",
+  "nextPhase": "F07",
   "modelPolicy": {
     "mode": "operator-configurable-model-independent",
     "provisionalLabReference": "kilo/openai/gpt-6-luna",
@@ -229,7 +229,7 @@
     "F05": "DONE_POC_LIMITED",
     "F05_1_2": "CANDIDATES_PREPARED_STATIC",
     "F05_2_R": "IN_PROGRESS",
-    "F06": "IN_PROGRESS",
+    "F06": "DONE_POC_LIMITED",
     "F06_AUD_R": "STATIC_REVIEW_CANDIDATE",
     "F06_LAB_R1": "RETIRED_PASS_REPORTED_WITH_UNRESOLVED_BEHAVIOR_FINDINGS",
     "F06_R1B2_R": "R1_DONE_REPORTED_LIMITED",
@@ -238,7 +238,8 @@
     "F06_R2_8": "FUNCTIONAL_COMPARISON_PASS_REPORTED_LIMITED",
     "F06_R3": "DONE_REMOTE_AND_LOCAL_CONSOLIDATION_REPORTED",
     "F06_R4": "DONE_QUARANTINE_REPORTED_LIMITED",
-    "F06_R5": "INDEPENDENT_STATIC_REVIEW_REPORTED_PLAN_RETARGETED_Q7_Q13_PENDING"
+    "F06_R5": "DONE_Q7_Q13_PASS_REPORTED_LIMITED",
+    "F07": "PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -682,7 +683,85 @@
       "designedScenarios": 175,
       "runtimeStatus": "NOT_RUN"
     },
-    "next": "F06-R5.3: preparar comparación Q7/Q13 en dos workspaces descartables nuevos, política 0.22.0 y modelo común autorizado, única diferencia focused-testing 0.2.0 con referencia. Evidencia previa real de ámbitos independientes, cambio runner y nuevo archivo en uno; evaluar reutilización, invalidación y selección real sin imponer carga. No reabrir cuarentena. F06 IN_PROGRESS, F07 tras decisión explícita.",
+    "next": "F07.1: reconciliar evidencias F03/F05/F06 y diseñar contrato de misión de coordinación nativa, dependencias, solapamiento observable, propiedad única, integración y revisión; conservar brechas C/T/K/G y permisos efectivos. Archivar fixture Q7/Q13 mediante procedimiento separado autorizado; no tocar cuarentena previa. F06 DONE_POC_LIMITED; sin instalación global ni release.",
+    "r5ClosureEvidence": {
+      "date": "2026-11-27",
+      "status": "DONE_POC_LIMITED",
+      "dictamen": "APTO_CON_CONDICIONES_FOR_F07_CANDIDATE_DEVELOPMENT",
+      "decisionBy": "coordinator based on operator-reported independent static audit and focused evaluation",
+      "independentFinalDecision": false,
+      "preparation": {
+        "scriptVersion": "0.1.0",
+        "scriptSha256": "F378731AB55B3677A0B22FFF8072EE062B599D604BBCAEC523DC9D6FAD8CE043",
+        "parser": "PASS_REPORTED",
+        "priorEvidenceRuns": 4,
+        "priorEvidencePass": 4,
+        "delta": "PASS_REPORTED"
+      },
+      "catalog": {
+        "baselineOwnSkills": 12,
+        "candidateOwnSkills": 13,
+        "ownSpecialistsPerVariant": 9,
+        "reportedModel": "kilo/openai/gpt-6-luna",
+        "differential": "focused-testing",
+        "providerAndEffectivePermissions": "NOT_VERIFIED"
+      },
+      "focusedEvaluation": {
+        "cases": [
+          "Q7",
+          "Q13"
+        ],
+        "status": "PASS_REPORTED_LIMITED",
+        "baseline": {
+          "guaranteesSupported": 3,
+          "bTests": 2,
+          "bPass": 2,
+          "bExitCodeReported": 0,
+          "aRepeated": false,
+          "qualityState": "PARTIAL",
+          "elapsedSeconds": 142,
+          "visibleSearches": 8,
+          "visibleReads": 24,
+          "visibleCommands": 5,
+          "visibleSkillCalls": []
+        },
+        "candidate": {
+          "guaranteesSupported": 3,
+          "bTests": 2,
+          "bPass": 2,
+          "bExitCodeReported": 0,
+          "aRepeated": false,
+          "qualityState": "PARTIAL",
+          "elapsedSeconds": 163,
+          "visibleSearches": 8,
+          "visibleReads": 24,
+          "visibleCommands": 3,
+          "visibleSkillCalls": [
+            "focused-testing"
+          ]
+        },
+        "rawFinalTapProvided": false,
+        "performanceAndCausalBenefit": "NOT_ESTABLISHED"
+      },
+      "integrity": {
+        "status": "PASS_REPORTED",
+        "baselineMatched": 38,
+        "candidateMatched": 40,
+        "totalMatched": 78,
+        "recognizedAuxiliaries": 2,
+        "operatorInventoryUnchanged": true,
+        "persistentDriftDetected": false,
+        "transientWritesAndExternalReads": "NOT_CERTIFIED"
+      },
+      "observations": [
+        "baseline git status failed outside Git repository",
+        "candidate attempted parent-path reference read; content retrieval not established"
+      ],
+      "qLaboratoryPhysicalArchive": "PENDING",
+      "fullRuntimeCertification": false,
+      "globalActivationAuthorized": false,
+      "releaseAuthorized": false
+    },
     "r5ReviewEvidence": {
       "date": "2026-11-27",
       "reviewedRevision": "ccb5e7cc3d36fde28054e75bbee87a8d65fc4316",
@@ -775,12 +854,12 @@
         "secure-development",
         "skill-authoring",
         "implementation-discipline",
-        "systematic-debugging"
+        "systematic-debugging",
+        "focused-testing"
       ],
       "invocationNotEstablished": [
         "team-coordination",
         "team-context-recovery",
-        "focused-testing",
         "git-workflow",
         "tool-mcp-discovery"
       ],
