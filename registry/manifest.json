@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.96.0",
+    "version": "0.97.0",
     "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
@@ -189,7 +189,7 @@
     "credentials",
     "uncertified artifacts"
   ],
-  "nextPhase": "F07",
+  "nextPhase": "F08",
   "modelPolicy": {
     "mode": "operator-configurable-model-independent",
     "provisionalLabReference": "kilo/openai/gpt-6-luna",
@@ -239,7 +239,7 @@
     "F06_R3": "DONE_REMOTE_AND_LOCAL_CONSOLIDATION_REPORTED",
     "F06_R4": "DONE_QUARANTINE_REPORTED_LIMITED",
     "F06_R5": "DONE_Q7_Q13_PASS_REPORTED_LIMITED",
-    "F07": "IN_PROGRESS",
+    "F07": "DONE_POC_LIMITED",
     "F07_1_1": "NATIVE_CODE_CLI_INVENTORY_PASS_REPORTED_LIMITED",
     "F07_1_2": "DOCUMENTARY_RESEARCH_COMPLETE_LIMITED",
     "F07_1_3_4": "STATIC_POLICY_CANDIDATE_PREPARED",
@@ -294,8 +294,13 @@
     "F07_7_6": "C_STATIC_APTO_OPERATOR_ACCEPTED_REPORTED",
     "F07_7_7": "D_STATIC_APTO_OPERATOR_ACCEPTED_REPORTED",
     "F07_7_8": "CONCEPTUAL_PASS_BOTH_VARIANTS",
-    "F07_8": "CONSOLIDATION_CANDIDATE_PREPARED_REVIEW_PENDING",
-    "F07_8_1": "DOCUMENTARY_RECONCILIATION_PREPARED"
+    "F07_8": "DONE_POC_LIMITED",
+    "F07_8_1": "DOCUMENTARY_RECONCILIATION_PREPARED",
+    "F07_8_2": "INDEPENDENT_DOCUMENTARY_APTO_REPORTED",
+    "F07_8_3": "DONE_DOCUMENTARY_CLOSURE_LIMITED",
+    "F08": "PENDING_DESIGN",
+    "F09": "PENDING_DESIGN",
+    "F11": "PENDING_DESIGN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1934,7 +1939,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.8: revisar de forma independiente la consolidación documental y la asignación de brechas; solo cerrar F07 como PoC limitada tras decisión explícita, sin habilitar instalación ni release.",
+    "next": "F08: diseño de especialización de skills según proyectos y competencias; F09 y F11 pueden avanzar con sus dependencias satisfechas. F10 condicionado a necesidad probada tras F07/F09/F11. Conservar B01–B10 y puertas de certificación.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -3413,6 +3418,50 @@
         "fullRuntimeCertification": false,
         "releaseAuthorized": false
       }
+    },
+    "finalConsolidationClosure": {
+      "version": "0.1.0",
+      "last_modified": "2026-11-28",
+      "phase": "F07.8.2–F07.8.3",
+      "status": "DONE_POC_LIMITED",
+      "reviewedRevision": "8c55383afbcdf3b5852d4f80bbe4560aa457f026",
+      "reviewedManifestBlob": "8e91eb2dfd7ca284c8bd7a7fcaf1f4530144fccf",
+      "reviewedCandidateVersion": "0.1.0",
+      "sourceRevision": "1d59824fef6c2173c9662be6dfa1055f77b18d8b",
+      "provenance": "operator supplied original specialist return reproduced by Code and Code consolidated verdict; local preflight PASS reported; remote commit/blob verified; native Task raw arguments and reviewer cryptographic identity not provided",
+      "independentReview": "APTO_REPORTED",
+      "leaderVerdict": "APTO_REPORTED",
+      "reviewerLocalGitRevalidation": "NOT_RUN_BY_INSTRUCTION",
+      "reviewScope": "documentary read-only; no commands, software tests, Git, network or file mutations reported",
+      "criteriaSatisfied": 10,
+      "criteriaTotal": 10,
+      "materialFindings": 0,
+      "requiredCorrections": 0,
+      "decision": "APTO_FOR_LIMITED_DEVELOPMENT_CLOSURE_ONLY",
+      "historicalCandidateStatus": "preserve exact reviewed candidate object; historical REVIEW_PENDING and exitGate.F07 IN_PROGRESS superseded by this closure and current phaseGate",
+      "retainedPriorityRegister": "B01–B10 preserved unchanged; B01/B02 applicable release blockers; all other case states and provenance unchanged",
+      "optimization": "no normative change justified; evaluate proportionality on useful future missions; no reruns solely for trace coverage",
+      "residuals": [
+        "effective permissions, isolation and technical cessation NOT_VERIFIED",
+        "uncertain external effects NOT_RUN where excluded",
+        "native coordination/Swarm/review delta and negative cases retain original NOT_RUN/NOT_VERIFIED",
+        "native continuity and operational persistence NOT_VERIFIED",
+        "effective model equivalence and target context skill invocation NOT_VERIFIED",
+        "historical trace gaps and physical laboratory archive pending"
+      ],
+      "next": {
+        "F08": "PENDING_DESIGN",
+        "F09": "PENDING_DESIGN",
+        "F11": "PENDING_DESIGN",
+        "F10": "CONDITIONAL_AFTER_F07_F09_F11",
+        "F12": "INTEGRATION_AND_RUNTIME_CERTIFICATION_GATES_RETAINED",
+        "F13": "DISTRIBUTION_GATES_RETAINED",
+        "F14": "PILOT_AND_RELEASE_GATES_RETAINED"
+      },
+      "installable": false,
+      "globalActivationAuthorized": false,
+      "fullRuntimeCertification": false,
+      "releaseAuthorized": false
     }
   }
 }
