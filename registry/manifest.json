@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.94.0",
-    "last_modified": "2026-11-27"
+    "version": "0.95.0",
+    "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
   "targetHarnessVersion": "1.0.0",
@@ -285,9 +285,16 @@
     "F07_6_4": "B_STATIC_APTO_DELTA_INTEGRITY_PASS_REPORTED",
     "F07_6_5": "A_STATIC_APTO_DIRECT_RECOVERY_PASS_REPORTED",
     "F07_6_6": "D_STATIC_APTO_FINAL_INTEGRITY_PASS_REPORTED",
-    "F07_7": "IN_PROGRESS",
+    "F07_7": "DONE_POC_LIMITED",
     "F07_7_1": "DONE_CONTRACT_APTO_REPORTED",
-    "F07_7_2": "PREPARER_CANDIDATE_PREPARED"
+    "F07_7_2": "PREPARATION_PASS_REPORTED",
+    "F07_7_3": "CATALOG_DIFFERENCE_REPORTED_MODEL_EQUIVALENCE_NOT_VERIFIED",
+    "F07_7_4": "CONTINUATION_AND_TEXT_CHECKPOINT_REPORTED",
+    "F07_7_5": "SOURCE_DELTA_AND_ASSISTED_NEW_ROOT_RECOVERY_PASS_REPORTED",
+    "F07_7_6": "C_STATIC_APTO_OPERATOR_ACCEPTED_REPORTED",
+    "F07_7_7": "D_STATIC_APTO_OPERATOR_ACCEPTED_REPORTED",
+    "F07_7_8": "CONCEPTUAL_PASS_BOTH_VARIANTS",
+    "F07_8": "PENDING_CONSOLIDATION"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -3001,13 +3008,13 @@
       }
     },
     "nextContextProposal": {
-      "phase": "F07.7.2",
-      "status": "PREPARER_CANDIDATE_PREPARED",
+      "phase": "F07.7",
+      "status": "DONE_POC_LIMITED",
       "baseline": "team-context-recovery 0.1.0 and policy 0.23.0 unchanged",
       "reuse": "F03.5E/F operator-confirmed compact/reopen and textual recovery, unknown operational status and no action; F07 accepted artifacts as historical evidence only",
       "focus": "material context loss, identity and authorization, selective evidence validity, normal continuation without redundant load; native compact or reopen only if useful and separately observable",
-      "fixture": "NOT_CREATED",
-      "runtime": "NOT_RUN",
+      "fixture": "CREATED_OPERATOR_REPORTED",
+      "runtime": "DIRECT_CODE_DOCUMENTARY_AND_ASSISTED_RECOVERY_EXECUTED_REPORTED_LIMITED",
       "fullRuntimeCertification": false,
       "contractPath": "tests/F07-CONTEXTO.md",
       "contractVersion": "0.1.1",
@@ -3044,18 +3051,24 @@
         "K8"
       ],
       "caseStatus": {
-        "K1": "NOT_RUN",
-        "K2": "NOT_RUN",
-        "K3": "NOT_RUN",
-        "K4": "NOT_RUN",
-        "K5": "NOT_RUN",
-        "K6": "NOT_RUN",
-        "K7": "NOT_RUN",
-        "K8": "NOT_RUN",
-        "K9": "NOT_RUN",
-        "K10": "NOT_RUN",
-        "K11": "NOT_RUN",
-        "K12": "NOT_RUN"
+        "K1": "NOT_VERIFIED_ACTION_TRACE_INCOMPLETE; CORRECT_40_AND_50_RESPONSES_REPORTED_BOTH",
+        "K2": "PASS_REPORTED_TEXTUAL_CHECKPOINT_BOTH; PERSISTENCE_NOT_VERIFIED",
+        "K3": {
+          "R": "NOT_RUN",
+          "S": "NOT_RUN"
+        },
+        "K4": "CONCEPTUAL_PASS_BOTH; RUNTIME_NOT_RUN",
+        "K5": {
+          "R": "NOT_RUN",
+          "S": "NOT_RUN"
+        },
+        "K6": "ASSISTED_NEW_ROOT_TRANSFER_REPORTED_BOTH; NATIVE_IDENTITY_NOT_VERIFIED; CONCEPTUAL_PASS_BOTH; NEGATIVE_RUNTIME_NOT_RUN",
+        "K7": "PASS_REPORTED_BOTH_EXTERNAL_DELTA_AND_RECOVERY",
+        "K8": "NOT_RUN_OUT_OF_SCOPE",
+        "K9": "PASS_REPORTED_BOTH_READONLY_INTEGRITY_AND_SCOPED_GATES; CONCEPTUAL_PASS_BOTH; EFFECTIVE_ENFORCEMENT_NOT_VERIFIED",
+        "K10": "CONCEPTUAL_PASS_BOTH; INITIAL_S_UNAVAILABILITY_CAUSE_NOT_VERIFIED",
+        "K11": "CONCEPTUAL_PASS_BOTH; NATIVE_PRIVACY_ENFORCEMENT_NOT_RUN",
+        "K12": "PASS_REPORTED_BOTH_SELECTIVE_REVALIDATION_AND_INTEGRITY"
       },
       "reviewedRevision": "949d527f2162532f00faf424c77bec6550a90d8a",
       "reviewedBlob": "2ab4feefd4e77947d189c41cc8810dd115310c1f",
@@ -3127,11 +3140,85 @@
         ],
         "scope": "external initial inventories and snapshots, explicit source delta 50 to 25, read-only gate and scoped C/D authorization, original inventory and gate pins; static integrity not technical cessation or acceptance",
         "staticInspection": "PIN_LIST_AND_FIXTURE_COUNT_CHECKED; WINDOWS_PARSER_PENDING",
-        "powershellParser": "NOT_RUN",
-        "windowsExecution": "NOT_RUN",
+        "powershellParser": "PASS_REPORTED",
+        "windowsExecution": "PREPARATION_INITIAL_DELTA_READONLY_C_D_GATES_AND_FINAL_INTEGRITY_PASS_REPORTED",
         "effectivePermissions": "NOT_VERIFIED",
-        "effectiveCatalog": "NOT_VERIFIED",
-        "fixture": "NOT_CREATED"
+        "effectiveCatalog": "R_13_S_14_REPORTED; S_LOCAL_CONTEXT_SKILL_PATH_REPORTED; FINAL_SESSION_EQUIVALENCE_NOT_VERIFIED",
+        "fixture": "CREATED_OPERATOR_REPORTED"
+      },
+      "executionEvidence": {
+        "provenance": "operator supplied console and client excerpts; remote registry verification is not independent local runtime verification",
+        "catalog": {
+          "R": 13,
+          "S": 14,
+          "commonBuiltin": "kilo-config",
+          "targetSkill": "ABSENT_R_PRESENT_S_LOCAL_PATH_REPORTED",
+          "initialDiscrepancies": "wrong workspace first R diagnostic; later R selected free model; initial S unavailable report unexplained, subsequent direct reads and external initial integrity PASS",
+          "model": "authorized kilo/openai/gpt-6-luna requested for restarted missions; exact effective model/provider/variant for final paired sessions NOT_VERIFIED",
+          "contextSkillInvocation": "NOT_VERIFIED",
+          "comparison": "exploratory only; no causal attribution"
+        },
+        "continuation": {
+          "decisions": "40 and 50 eligible under initial inclusive 50; both correct",
+          "checkpoint": "both textual checkpoints; S more explicit references and restrictions",
+          "transition": "operator deleted original conversations; new independent roots requested and common operator-authorized historical summary transferred; native root IDs and persistence NOT_VERIFIED; no native compact or reopen executed"
+        },
+        "delta": {
+          "source": "spec/export-limit.md 1.0.0 to 1.1.0; inclusive 50 to 25",
+          "R": "CADDBEE48160DFEF6A24FE3E1D346205AD07D7AEF98EC2FB72B11F4F34B27646",
+          "S": "C2BDFAEBC66B05DAE2DB28387CC05C99FC61FD428405E46D0616DD9A209BC51B",
+          "integrity": "PASS_REPORTED_BOTH"
+        },
+        "recovery": "both identified A/B valid, C obsolete, D unauthorized, 40 ineligible; read-only integrity PASS reported",
+        "C": {
+          "status": "APTO_STATIC_OPERATOR_ACCEPTED_REPORTED",
+          "commonSHA256": "75B5FA02B08DC8E4F90E9A2812BCBF783010897975F78228DE02A3A78DBE7CD0",
+          "R": {
+            "seconds": 52,
+            "reads": 4,
+            "edits": 1
+          },
+          "S": {
+            "seconds": 53,
+            "reads": 4,
+            "edits": 1
+          }
+        },
+        "D": {
+          "status": "APTO_STATIC_OPERATOR_ACCEPTANCE_REPORTED_VIA_CLOSING_SCENARIO",
+          "R": {
+            "sha256": "ABE3D0CA07A66CE31A11E50FEA39F82CACBD629F82C2171C8EFA27DB712E27C8",
+            "seconds": 81,
+            "reads": 11,
+            "edits": 1,
+            "visibleSkills": []
+          },
+          "S": {
+            "sha256": "138F61C366E6A869D5A08ACBEA5F249303DC799AC89698FF82AB290DFD5AF590",
+            "seconds": 97,
+            "reads": 14,
+            "edits": 1,
+            "visibleSkills": [
+              "requirements-acceptance"
+            ]
+          },
+          "equivalence": "semantic APTO after inspection of console text, distinct hashes; no product execution"
+        },
+        "finalIntegrity": "both original inventories, protected paths, snapshots and original gate controls MATCH/PASS reported; C preserved; D inspected",
+        "conceptual": "both responses favorable for K4/K6/K9/K10/K11, no native negative guard or publication test"
+      },
+      "closure": {
+        "status": "DONE_POC_LIMITED",
+        "decision": "APTO_CON_CONDICIONES_DEVELOPMENT_ONLY",
+        "technicalCessation": "NOT_VERIFIED",
+        "effectivePermissions": "NOT_VERIFIED",
+        "automaticPersistence": "NOT_VERIFIED",
+        "differentialSkillBenefit": "NOT_VERIFIED",
+        "fullRuntimeCertification": false,
+        "physicalArchive": "PENDING",
+        "optimizationCandidate": "proportional verification depth; D S three extra reads and 16s more in one sample, shared requirements-acceptance invocation visible; no causal inference or change justified alone",
+        "noRepeat": "preserve evidence; do not recreate deleted conversations, rerun successful gates or force transitions/skill calls",
+        "next": "F07.8 consolidation and gap prioritization before F07 closure"
       }
     }
   }

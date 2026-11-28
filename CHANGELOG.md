@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.145.0 | Última modificación: 2026-11-27
+Versión del archivo: 0.146.0 | Última modificación: 2026-11-28
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -527,3 +527,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-27 — F07.7.1-R1–F07.7.2 aceptación y preparador candidato
 - Integridad local del delta y APTO final focalizado reportados; condiciones K3/K5 y puerta resueltas; sin regresiones materiales reportadas, sin revalidación Git del revisor ni traza nativa de reanudación. Contrato 0.1.1 intacto.
 - Preparador externo 0.1.0: R/S con 23/24 blobs y 32/33 archivos, inventarios y snapshots, delta 50→25 y puertas C/D; parser/Windows NOT_RUN, catálogo efectivo NOT_VERIFIED, fixture NOT_CREATED, runtime NOT_RUN. Manifiesto 0.94.0, roadmap/changelog 0.145.0; sin cambios normativos, instalación ni release.
+
+## 2026-11-28 — F07.7 cierre limitado R/S
+- Preparación Windows y controles estáticos PASS reportados; catálogos diferenciados 13/14; discrepancias iniciales de workspace/modelo, equivalencia efectiva final NOT_VERIFIED. Continuidad y checkpoints textuales favorables; delta 50→25 y recuperación asistida tras eliminación de conversaciones, sin afirmar persistencia. C idéntico y aceptado, D equivalente y APTO, inventarios y snapshots MATCH; K4/K6/K9/K10/K11 CONCEPTUAL_PASS en ambas; K3/K5 NOT_RUN por variante, K8 fuera de alcance. K1 trazas incompletas, activación específica, permisos efectivos y cese NOT_VERIFIED. Una muestra de métricas, no superioridad causal.
+- F07.7 DONE_POC_LIMITED; F07.8 pendiente de consolidación y priorización focalizada, sin reruns innecesarios. Manifiesto 0.95.0, roadmap/changelog 0.146.0; contrato 0.1.1 y componentes normativos intactos; sin instalación ni release.
