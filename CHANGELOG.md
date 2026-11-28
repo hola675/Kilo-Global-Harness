@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.146.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.147.0 | Última modificación: 2026-11-28
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -531,3 +531,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-28 — F07.7 cierre limitado R/S
 - Preparación Windows y controles estáticos PASS reportados; catálogos diferenciados 13/14; discrepancias iniciales de workspace/modelo, equivalencia efectiva final NOT_VERIFIED. Continuidad y checkpoints textuales favorables; delta 50→25 y recuperación asistida tras eliminación de conversaciones, sin afirmar persistencia. C idéntico y aceptado, D equivalente y APTO, inventarios y snapshots MATCH; K4/K6/K9/K10/K11 CONCEPTUAL_PASS en ambas; K3/K5 NOT_RUN por variante, K8 fuera de alcance. K1 trazas incompletas, activación específica, permisos efectivos y cese NOT_VERIFIED. Una muestra de métricas, no superioridad causal.
 - F07.7 DONE_POC_LIMITED; F07.8 pendiente de consolidación y priorización focalizada, sin reruns innecesarios. Manifiesto 0.95.0, roadmap/changelog 0.146.0; contrato 0.1.1 y componentes normativos intactos; sin instalación ni release.
+
+## 2026-11-28 — F07.8.1 consolidación candidata
+- Reconciliación documental de F07.1–F07.7 y evidencia histórica F03/F05/F06; registro B01–B10 de prioridades, destino y criterios de salida en manifiesto. No elevar cobertura conceptual o histórica a certificación de runtime. Permisos, cese, efectos inciertos y demás garantías críticas conservan bloqueo de release aplicable.
+- Optimización: no hay justificación para duplicar normas ni modificar skills por una muestra; verificar impacto y proporcionalidad en trabajos útiles posteriores. F07.8 revisión independiente pendiente, F07 IN_PROGRESS. Manifiesto 0.96.0, roadmap/changelog 0.147.0; sin nuevo fixture, pruebas, cambios normativos, instalación ni release.

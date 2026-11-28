@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.95.0",
+    "version": "0.96.0",
     "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
@@ -294,7 +294,8 @@
     "F07_7_6": "C_STATIC_APTO_OPERATOR_ACCEPTED_REPORTED",
     "F07_7_7": "D_STATIC_APTO_OPERATOR_ACCEPTED_REPORTED",
     "F07_7_8": "CONCEPTUAL_PASS_BOTH_VARIANTS",
-    "F07_8": "PENDING_CONSOLIDATION"
+    "F07_8": "CONSOLIDATION_CANDIDATE_PREPARED_REVIEW_PENDING",
+    "F07_8_1": "DOCUMENTARY_RECONCILIATION_PREPARED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -1933,7 +1934,7 @@
     "runtimeStatus": "DOCUMENTARY_MISSION_PASS_REPORTED_WITH_ASSISTED_RECOVERY",
     "fixturePreparation": "PASS_REPORTED",
     "qLaboratoryPhysicalArchive": "PENDING",
-    "next": "F07.7.2: validar hash y parser del preparador externo, crear dos workspaces nuevos y verificar inventarios; comprobar catálogo efectivo antes de evaluar R/S.",
+    "next": "F07.8: revisar de forma independiente la consolidación documental y la asignación de brechas; solo cerrar F07 como PoC limitada tras decisión explícita, sin habilitar instalación ni release.",
     "evaluation": {
       "date": "2026-11-27",
       "evaluatedRevision": "b9dba7ff34e7c689a9b806653e04429c76380903",
@@ -3219,6 +3220,198 @@
         "optimizationCandidate": "proportional verification depth; D S three extra reads and 16s more in one sample, shared requirements-acceptance invocation visible; no causal inference or change justified alone",
         "noRepeat": "preserve evidence; do not recreate deleted conversations, rerun successful gates or force transitions/skill calls",
         "next": "F07.8 consolidation and gap prioritization before F07 closure"
+      }
+    },
+    "finalConsolidationCandidate": {
+      "version": "0.1.0",
+      "last_modified": "2026-11-28",
+      "phase": "F07.8",
+      "status": "REVIEW_PENDING",
+      "sourceRevision": "1d59824fef6c2173c9662be6dfa1055f77b18d8b",
+      "provenance": "reconciliation of remote historical registry, roadmap, policy and existing test contracts; no new local runtime observation, no transfer of evidence across revisions",
+      "references": [
+        "docs/PLAN-MAESTRO.md",
+        "docs/ROADMAP.md",
+        "tests/README.md",
+        "tests/F03-LABORATORIO.md",
+        "tests/F05-EQUIPO.md",
+        "tests/F06-SKILLS.md",
+        "tests/F07-COORDINACION.md",
+        "tests/F07-SWARM.md",
+        "tests/F07-REVISION.md",
+        "tests/F07-RECUPERACION.md",
+        "tests/F07-CONTEXTO.md",
+        "team/policies/AGENTS.md",
+        "team/skills/team-coordination/SKILL.md",
+        "team/skills/team-context-recovery/SKILL.md",
+        "team/skills/requirements-acceptance/SKILL.md"
+      ],
+      "evidence": [
+        {
+          "phase": "F07.1",
+          "scope": "direction and routing",
+          "status": "DONE_POC_LIMITED",
+          "result": "policy 0.23.0, comparison and assisted correction reported, 58/58 MATCH",
+          "limits": "C1 and effective session equivalence NOT_VERIFIED; performance benefit not established; final independent decision not recorded in evaluation"
+        },
+        {
+          "phase": "F07.2",
+          "scope": "coordination and integration",
+          "status": "DONE_POC_LIMITED",
+          "result": "33/33 TAP PASS, 29/29 protected and 3/3 mutable snapshots; roles and calls observed/reported",
+          "limits": "C1, N3/N4, T2/T5, R3/T3 and integral native coordination NOT_VERIFIED in this sample"
+        },
+        {
+          "phase": "F07.3",
+          "scope": "dependencies and selective recovery",
+          "status": "DONE_POC_LIMITED",
+          "result": "6/6 in three separate TAP runs, C2 logical join/direct independent progress, preserved work",
+          "limits": "T5 NOT_VERIFIED; C1/C5/T6 NOT_RUN; C3 out of scope, no native delegated coordination claim"
+        },
+        {
+          "phase": "F07.4",
+          "scope": "Swarm",
+          "status": "DONE_POC_LIMITED",
+          "result": "material RESULT reported and three board reads visible; 30/30 protected",
+          "limits": "C6 material and incremental cursor NOT_VERIFIED; HOLD/correction/replay and C1/C7/C11 NOT_RUN"
+        },
+        {
+          "phase": "F07.5",
+          "scope": "independent review and delta",
+          "status": "DONE_POC_LIMITED",
+          "result": "V1 positive R3/T3 PASS reported with Task trace; V2 static APTO, integrity 26/26 and snapshots",
+          "limits": "T7 favorable NOT_VERIFIED; negative R3/T3 NOT_RUN"
+        },
+        {
+          "phase": "F07.6",
+          "scope": "recovery and cancellation",
+          "status": "DONE_POC_LIMITED",
+          "result": "direct logical blockage, independent progress, A/B/D static APTO and gated recovery",
+          "limits": "C5/T6/C8/C10 NOT_RUN; C9/K8 excluded; technical cessation NOT_VERIFIED"
+        },
+        {
+          "phase": "F07.7",
+          "scope": "context and authorization",
+          "status": "DONE_POC_LIMITED",
+          "result": "K2 textual checkpoint, K7/K12 and K9 static scoped gates reported favorable; C/D APTO; K4/K6/K9/K10/K11 conceptual pass",
+          "limits": "K1 trace incomplete; K3/K5 NOT_RUN both; K8 excluded; root identity, persistence, effective model equivalence and context skill invocation NOT_VERIFIED"
+        }
+      ],
+      "historicalReuse": {
+        "F03": "preserve prior reported native overlap, own/foreign child handling, cancellation and compact/reopen textual continuity; no assertion that later policy reproduces it or that technical cessation/persistence follows",
+        "F05": "preserve ASK and exposure observations, FAIL historical echo, untested dynamic deny and unresolved isolation; assisted review recovery does not erase initial dependency failure",
+        "F06": "13 catalog entries, nine individual invocation reports in F06; F07 later shows team-coordination invocation, not individual certification; do not overwrite historic F06 record"
+      },
+      "priorityRegister": [
+        {
+          "id": "B01",
+          "priority": "P0_RELEASE_BLOCKER",
+          "scope": "effective authorization, permissions, isolation and ownership",
+          "source": "F03/F05/F07.6/F07.7; T5/C3/C8/C10 and historical PERM-02 FAIL",
+          "state": "NOT_VERIFIED_OR_NOT_RUN_AS_RECORDED",
+          "destination": "F09 tool permission surface; F12 runtime integration; F13 deployment/ownership gates",
+          "exit": "in an authorized disposable context, prove effective controls required by enabled roles and capabilities, no second writer while cessation uncertain; constrain unavailable capabilities and do not release with unresolved critical enforcement or data-loss risk"
+        },
+        {
+          "id": "B02",
+          "priority": "P0_RELEASE_BLOCKER",
+          "scope": "external effects and uncertain results",
+          "source": "C9/K8 out of initial F07 scope",
+          "state": "NOT_RUN_OUT_OF_SCOPE",
+          "destination": "F09 exposure and permission design; F12 authorized integration where applicable; F14 pilot",
+          "exit": "for any enabled effectful capability verify safe reconciliation, no duplicate effect and current authorization before retry; keep unverified effectful capability disabled or blocked"
+        },
+        {
+          "id": "B03",
+          "priority": "P1_FUNCTIONAL",
+          "scope": "native scheduling, dependency readiness, blocked terminal returns and integration",
+          "source": "C1/C2/C5/T5/T6; F07.2/F07.3/F07.6",
+          "state": "DIRECT_SCENARIO_PASS; NATIVE_REMAINDER_NOT_VERIFIED_OR_NOT_RUN",
+          "destination": "F12 useful native integration; F11 reuse observations as learning candidates",
+          "exit": "actual independent work, observed dependencies and completion semantics, no overlapping incompatible writers, preserve valid work; do not manufacture sleeps or failures"
+        },
+        {
+          "id": "B04",
+          "priority": "P1_FUNCTIONAL",
+          "scope": "Swarm identity, material messages and corrective events",
+          "source": "F07.4 C6/C7/C11",
+          "state": "FAVORABLE_PARTIAL_NOT_VERIFIED; CONDITIONAL_CASES_NOT_RUN",
+          "destination": "F12 real integration; F10 only if necessity established after F09/F11",
+          "exit": "observe material decision with native post/read evidence; confirm correction/cursor only when needed; fallback prompt/return or localized block; not use Swarm as lock or delivery confirmation"
+        },
+        {
+          "id": "B05",
+          "priority": "P1_QUALITY",
+          "scope": "independent review of stable object, versioned delta and negative dependency cases",
+          "source": "F05 review blocked initially; F07.1/F07.2/F07.5 R3/T3/T7",
+          "state": "PARTIAL_POSITIVE_REPORTED; T7_NOT_VERIFIED; NEGATIVES_NOT_RUN",
+          "destination": "F12 review real material change; F11 learn from observed failures",
+          "exit": "concrete accessible input before review, original return and version association, affected delta rechecked; no independent approval inferred from skill load or leader summary"
+        },
+        {
+          "id": "B06",
+          "priority": "P1_GOVERNANCE",
+          "scope": "Git branch/index ownership, material review and checks",
+          "source": "F06 G2/G4/G9/G12; F07.1 PR draft flag and absent CI, prior consolidation",
+          "state": "CONSOLIDATION_REPORTED; G9_NOT_CERTIFIED; G2_G4_G12_FULL_GUARANTEES_NOT_VERIFIED",
+          "destination": "F12 real Git workflow and evidence reuse; F13 deployment safety",
+          "exit": "respect draft/review/check gates, exact base/head, preserve staged and untracked work and evidence validity, no force push; do not generate fake PRs/branches for routine verification"
+        },
+        {
+          "id": "B07",
+          "priority": "P1_CONTINUITY",
+          "scope": "native persistence, root identity, compact/reopen and state reconciliation",
+          "source": "F03.5E/F historical; F07.7 K1/K3/K5/K6",
+          "state": "ASSISTED_AND_TEXTUAL_RECOVERY_REPORTED; CURRENT_NATIVE_PERSISTENCE_NOT_VERIFIED",
+          "destination": "F12 when useful real transitions; F11 minimum sanitized learning inputs",
+          "exit": "separate each native transition, root and task state; do not restore unknown tasks or treat UI restart as cese; if not observable preserve NOT_RUN/NOT_VERIFIED and use authorized assisted continuation"
+        },
+        {
+          "id": "B08",
+          "priority": "P2_EFFICIENCY",
+          "scope": "verification scope, skill activation and model equivalence",
+          "source": "F07.1 and F07.7; F06 partial skill coverage",
+          "state": "NO_CAUSAL_BENEFIT_ESTABLISHED; CONTEXT_SKILL_INVOCATION_NOT_VERIFIED",
+          "destination": "F08 specialized skill design, F11 learning candidates, F12 controlled model and workload comparison",
+          "exit": "same authorized effective model/provider/variant and context when observable, compare correctness before time/reads, measure available cost and repeated representative tasks only when useful; no forced skill loading"
+        },
+        {
+          "id": "B09",
+          "priority": "P1_INTEGRATION",
+          "scope": "effective MCP/plugin exposure and least privilege",
+          "source": "F06 tool-mcp-discovery invocation not established",
+          "state": "PENDING_F09",
+          "destination": "F09, F10 necessity gate, F12 integration",
+          "exit": "inventory installed capabilities, authorized real calls by role and negative controls as applicable; no new server before evidence of gap"
+        },
+        {
+          "id": "B10",
+          "priority": "P1_EVIDENCE_RETENTION",
+          "scope": "local laboratory archive and trace availability",
+          "source": "F06/F07 physical archive pending, partial original traces",
+          "state": "PENDING_OPERATOR_AUTHORIZED_ARCHIVE",
+          "destination": "separate local authorized archival procedure; F12 evidence retrieval, F13 distribution records",
+          "exit": "preserve existing labs and inventories; no deletion/recreation, no private paths, raw transcripts or secrets in Git; missing historical trace remains unknown"
+        }
+      ],
+      "optimization": {
+        "policyVersion": "0.23.0",
+        "policyBlob": "1a30ecb4253a0d87bd4fb278985afa051f97fc32",
+        "decision": "NO_NORMATIVE_CHANGE_JUSTIFIED_BY_CURRENT_EVIDENCE",
+        "reason": "existing policy sections 1,2,3,5,6 and skills already specify proportional reads, evidence reuse, scope, exclusive writers and no routine loads; sample differences do not isolate cause",
+        "observation": "F07.7 C 52/53 s and 4/4 reads; D 81/97 s and 11/14 reads, S shared requirements-acceptance skill invoked; F07.1 candidate 216 s initial/346 s including correction vs baseline 269 s",
+        "method": "future useful task: verify identity, version, authorization, accepted evidence; recheck affected artifact/dependency only unless integrity/risk needs more; measure visible actions and correctness; no arbitrary call count or weaker guarantee"
+      },
+      "exitGate": {
+        "independentReview": "PENDING",
+        "reviewScope": "read-only, verify exact candidate and source revision; reconcile cases and priorities, check historical vs new evidence and no loss of release blockers; no local runtime or new tests required for documentary review",
+        "decisionRequired": "explicit APTO for limited development closure after resolved material findings; APTO CON CONDICIONES requires resolution or explicit scope/condition disposition before closure",
+        "F07": "IN_PROGRESS",
+        "subsequent": "F08/F09 per own dependencies; F11 after F07 limited closure; F10 after F07/F09/F11 necessity gate; F12/F13/F14 retain all applicable certification and release blockers",
+        "installable": false,
+        "globalActivationAuthorized": false,
+        "fullRuntimeCertification": false,
+        "releaseAuthorized": false
       }
     }
   }
