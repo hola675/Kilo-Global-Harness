@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.98.0",
+    "version": "0.99.0",
     "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
@@ -302,7 +302,8 @@
     "F09": "PENDING_DESIGN",
     "F11": "PENDING_DESIGN",
     "F08_1": "METHODOLOGY_CANDIDATE_PREPARED",
-    "F08_2": "INITIAL_SOURCE_SCREENING_STARTED"
+    "F08_2": "MULTIDOMAIN_RESEARCH_REQUIREMENTS_CANDIDATE_PREPARED",
+    "F08_3": "PENDING_ARCHITECTURE_DESIGN"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -3467,10 +3468,10 @@
     }
   },
   "f08Candidate": {
-    "version": "0.1.0",
+    "version": "0.2.0",
     "last_modified": "2026-11-28",
     "baselineRevision": "1f9538116ecdf5720d6d344132ffa6a15fdaa82f",
-    "status": "METHODOLOGY_CANDIDATE_PREPARED",
+    "status": "MULTIDOMAIN_RESEARCH_AND_REQUIREMENTS_CANDIDATE_PREPARED",
     "sourcePath": "docs/INVESTIGACION-SKILLS.md",
     "sourceSection": "F08.1–F08.2 — método y primer contraste",
     "existingSkillAuthoring": "0.1.0 unchanged",
@@ -3596,7 +3597,7 @@
       {
         "id": "F08.2",
         "title": "Investigación de fuentes y repositorios",
-        "status": "INITIAL_SCREENING"
+        "status": "MULTIDOMAIN_SCREENING_AND_REQUIREMENTS_PREPARED"
       },
       {
         "id": "F08.3",
@@ -3652,7 +3653,190 @@
     "functionalEvaluation": "NOT_RUN",
     "externalCompatibility": "NOT_VERIFIED",
     "independentReview": "PENDING",
-    "next": "F08.2: inspect pinned guides, evals, upstream technology docs and independent alternatives per family; first frontend; record license and compatible versions, no ranking without evidence",
-    "fullRuntimeCertification": false
+    "next": "F08.2–F08.3: review candidate requirements and architecture, then deep source contrast per family beginning frontend; no implementation before clear scope and evaluation contract.",
+    "fullRuntimeCertification": false,
+    "researchExpansion": {
+      "date": "2026-11-28",
+      "baseRevision": "8ae35b36006c66197badc4343bc2b8373f9bbb52",
+      "sourcePath": "docs/INVESTIGACION-SKILLS.md",
+      "sourceSection": "F08.2 — ampliación multidisciplinaria y requisitos por habilidad",
+      "method": "13 additional pinned repositories; 8 selected SKILL.md excerpts across 5 repositories; 16 thematic source groups; official docs, first-person practitioners and catalog inspection; not exhaustive or runtime certification",
+      "repositoryCount": 13,
+      "inspectedSkillFiles": 8,
+      "domainGroups": 16,
+      "skillRequirementRows": 21,
+      "repoPins": [
+        {
+          "repository": "mattpocock/skills",
+          "revision": "bbadaa631c37af594e5a05c9cefacd9956136b18",
+          "date": "2026-11-27",
+          "license": "MIT",
+          "decision": "Pruebas a través de interfaces públicas y oráculos independientes; revisión de especificación y normas. Adaptar sin imponer aprobación de cada interfaz ni dos hijos por revisión."
+        },
+        {
+          "repository": "addyosmani/agent-skills",
+          "revision": "e997ac5b9a74eab332d5e9793bb38a38c8cfdd74",
+          "date": "2026-11-24",
+          "license": "MIT",
+          "decision": "Composición de UI, herramientas existentes, diagnóstico de rendimiento con baseline y comprobación posterior; evitar imponer árbol de carpetas, ciclo rígido o referencias no incluidas."
+        },
+        {
+          "repository": "anthropics/skills",
+          "revision": "e4bb5d960d87126ff3b3a8af1a104b7db67560ba",
+          "date": "2026-11-16",
+          "license": "Por skill; README declara muchas Apache-2.0",
+          "decision": "Ejemplos de habilidades y carga de recursos; el propio README advierte su alcance demostrativo. Contrastar licencias por archivo y adaptar al loader de Kilo."
+        },
+        {
+          "repository": "openai/skills",
+          "revision": "49f948faa9258a0c61caceaf225e179651397431",
+          "date": "2026-06-24",
+          "license": "Por skill",
+          "decision": "README declara deprecación y remite a openai/plugins. HISTORICAL_ONLY, no fuente tecnológica vigente."
+        },
+        {
+          "repository": "openai/plugins",
+          "revision": "981b02c0c44058b595f3b4180002c3ae3c806d40",
+          "date": "2026-11-18",
+          "license": "NO_VERIFICADA por componente",
+          "decision": "Ejemplos Codex de diseño, aplicaciones y MCP. Solo patrón de integración; F09 debe comprobar capacidades reales y no copiar configuración de otro host."
+        },
+        {
+          "repository": "vercel-labs/agent-skills",
+          "revision": "5a37a6329fbad3666c3207392a6a7c0110e92efb",
+          "date": "2026-11-20",
+          "license": "react-best-practices declara MIT; resto por verificar",
+          "decision": "Prioridad por impacto y consulta de reglas selectiva; no generalizar Next.js/RSC a React SPA, ni agregar dependencias por consejo aislado."
+        },
+        {
+          "repository": "supabase/agent-skills",
+          "revision": "c9be0e931b7930f7d02126d04774d904c381e7d7",
+          "date": "2026-10-02",
+          "license": "MIT en metadatos y skill PostgreSQL",
+          "decision": "Reglas SQL por impacto, ejemplos correctos/incorrectos, planes y concurrencia. No aplicar indiscriminadamente cada regla a toda consulta ni extender supuestos Supabase a SQLite."
+        },
+        {
+          "repository": "trailofbits/skills",
+          "revision": "149d7b21f4067765b82e67029730b42d228ef4b4",
+          "date": "2026-11-12",
+          "license": "CC-BY-SA-4.0 en metadatos; por archivo pendiente",
+          "decision": "Rust/FFI/async y cadena de suministro, distinguir no evaluable de limpio. Sus herramientas, scripts y jerarquía Claude no son portables automáticamente; reutilización conceptual, no ejecutar."
+        },
+        {
+          "repository": "cloudflare/skills",
+          "revision": "ff191de7d903788eceaf516a514ae7d3b56b924a",
+          "date": "2026-11-24",
+          "license": "Apache-2.0 en metadatos",
+          "decision": "Rutas por servicio y framework, distinción de estable/preview, diagnóstico y despliegue. Solo cuando el proyecto use o evalúe esa plataforma."
+        },
+        {
+          "repository": "expo/skills",
+          "revision": "8f2b6c0c65533e695243aa401eaa1cb6f1fe86c2",
+          "date": "2026-11-27",
+          "license": "MIT en metadatos/README",
+          "decision": "Contexto y actualización SDK, APIs y publicación móvil; separar Expo de Android nativo o Tauri; no enviar feedback ni iniciar sesión automáticamente."
+        },
+        {
+          "repository": "dotnet/skills",
+          "revision": "a273ceb823340c260b796ef49113b399430472a9",
+          "date": "2026-11-25",
+          "license": "MIT en metadatos",
+          "decision": "Dashboard de valor por skill, modelo, activación, tokens, tiempo y no aprobados; compatibilidad por host, no asumir que agentes Copilot son nativos Kilo."
+        },
+        {
+          "repository": "microsoft/skills",
+          "revision": "47eb3888eb42aef074fcb617931bf6e5934e45d9",
+          "date": "2026-11-20",
+          "license": "MIT en metadatos",
+          "decision": "Selección contextual de SDK y pruebas; repositorio declara trabajo en progreso. No copiar Azure/Foundry a proyectos no dependientes."
+        },
+        {
+          "repository": "obra/superpowers",
+          "revision": "22f0b463e7a5e579904dd6211a520321035526f7",
+          "date": "2026-11-03",
+          "license": "MIT en metadatos",
+          "decision": "Reutilizar investigación F06 de habilidades componibles y TDD; evitar gates, rituales y orquestación duplicada. README contrastado, no reevaluación de runtime."
+        }
+      ],
+      "skillFiles": [
+        {
+          "repository": "mattpocock/skills",
+          "path": "skills/engineering/tdd/SKILL.md",
+          "blob": "01eadaa34e7c9a63a67d6dc3cce1cc81b0e49985",
+          "finding": "Interfaces públicas, resultado esperado independiente, incrementos verticales."
+        },
+        {
+          "repository": "mattpocock/skills",
+          "path": "skills/engineering/code-review/SKILL.md",
+          "blob": "83183e0ad36fd0eef25d37c7e483284b7e34c1f0",
+          "finding": "Revisión de normas y especificación, base fija, heurísticas subordinadas al proyecto."
+        },
+        {
+          "repository": "addyosmani/agent-skills",
+          "path": "skills/frontend-ui-engineering/SKILL.md",
+          "blob": "cdb6a19a02b75761dc535a16b3b741fb4bd2d1fb",
+          "finding": "Componentes cohesionados, estados, reutilizar runner del proyecto."
+        },
+        {
+          "repository": "addyosmani/agent-skills",
+          "path": "skills/performance-optimization/SKILL.md",
+          "blob": "3059f41a1ebd30e09bb67c0a6ab38bf09ad2e32d",
+          "finding": "Medición, aislamiento de cuello de botella, corrección y nueva medición."
+        },
+        {
+          "repository": "vercel-labs/agent-skills",
+          "path": "skills/react-best-practices/SKILL.md",
+          "blob": "237988de4a66dd8a71d30a2c24ebe1a86b58d04e",
+          "finding": "Reglas priorizadas; manifiesto declara 70, README 40+, prevalece objeto exacto; no se contó ni verificó cada regla."
+        },
+        {
+          "repository": "supabase/agent-skills",
+          "path": "skills/supabase-postgres-best-practices/SKILL.md",
+          "blob": "6400792389dfcc82c81953054e546bd72ebcd259",
+          "finding": "Versión declarada 1.1.1, referencias por impacto; activación amplia que conviene calibrar."
+        },
+        {
+          "repository": "trailofbits/skills",
+          "path": "plugins/rust-review/skills/rust-review/SKILL.md",
+          "blob": "f32c03a536c2f45f5b8b81af67dc2499c3554e65",
+          "finding": "Fronteras unsafe/FFI/async; depende de herramientas/agentes propios, no trasladar."
+        },
+        {
+          "repository": "trailofbits/skills",
+          "path": "plugins/supply-chain-risk-auditor/skills/supply-chain-risk-auditor/SKILL.md",
+          "blob": "83affaaf2841182c5eb610338256f7f540b270aa",
+          "finding": "Advisories por versión; no medido != limpio; limitaciones declaradas para pnpm/yarn/poetry y ecosistemas."
+        }
+      ],
+      "sourceHierarchy": [
+        "official specification/version support",
+        "code and observable engineering evidence",
+        "practitioner analysis",
+        "skills and catalogs",
+        "educational discovery"
+      ],
+      "requirements": "21 candidate rows in research section; no quota, no new skill by technology by default",
+      "evidenceLevels": [
+        "DISCOVERED",
+        "SOURCE_INSPECTED_STATIC",
+        "PUBLISHER_EVAL_REPORTED",
+        "LOCAL_KILO_EVAL",
+        "INDEPENDENT_REVIEW",
+        "ACCEPTED"
+      ],
+      "constraints": [
+        "No source execution, installation, copy or dependency additions",
+        "No popularity ranking or fabricated effectiveness scores",
+        "Check exact license, compatibility, stable vs draft, maintenance and superseding sources; date alone is not quality",
+        "No automatic downloads, external reporting or new permissions",
+        "Retain historical F07 gaps and use existing runners"
+      ],
+      "limitations": [
+        "Sara Soueidan blog, design token format redirect, Modbus specification index and selected Kent C. Dodds article inaccessible through web; not used as verified content",
+        "Linux/systemd, industrial protocol details, Android vendor SDK and further framework-specific official references remain to inspect",
+        "Repo-level license metadata not complete file-level license audit",
+        "External skills not executed, no comparative effectiveness proven; source excerpts not full audits"
+      ]
+    }
   }
 }

@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.149.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.150.0 | Última modificación: 2026-11-28
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -543,3 +543,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-28 — F08.1 metodología y fuentes iniciales
 - Diseño de especialización: cinco niveles, 13 criterios ponderados, garantías no compensables, 12 hitos candidatos y adaptación por stack real. Modern Web Guidance y autoskills como referencias de investigación, no dependencias. Crystal World candidato contextual; no copiar material de terceros ni forzar modernización incompatible.
 - Manifiesto 0.98.0, roadmap/changelog 0.149.0, investigación 0.15.0. F08 IN_PROGRESS; evaluación y revisión pendientes. Sin cambios normativos, ejecución de terceros, instalación ni release.
+
+## 2026-11-28 — F08.2 investigación ampliada y requisitos candidatos
+- 13 repos adicionales con revisión fijada, ocho archivos SKILL.md inspeccionados selectivamente, 16 grupos de fuentes oficiales y autores; detectar deprecación, distinguir afirmaciones de autor de evidencia reproducible. Requisitos por 21 skills candidatas con activación, resultado y caso discriminante; sin imponer cuota ni stack.
+- Manifiesto 0.99.0, roadmap/changelog 0.150.0, investigación 0.16.0. F08.3 pendiente; sin nuevas skills, cambios normativos, ejecución externa, instalación o release.
