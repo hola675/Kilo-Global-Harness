@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.103.0",
+    "version": "0.104.0",
     "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
@@ -309,7 +309,10 @@
     "F08_4_2": "FOCUSED_UX_SOURCE_CONTRAST_PREPARED",
     "F08_4_3": "UX_CANDIDATE_WRITTEN_REVIEW_PENDING",
     "F08_4_4": "FRONTEND_CANDIDATE_WRITTEN_REVIEW_PENDING",
-    "F08_4_5": "DESIGN_SYSTEM_CANDIDATE_WRITTEN_REVIEW_PENDING"
+    "F08_4_5": "DESIGN_SYSTEM_CANDIDATE_WRITTEN_REVIEW_PENDING",
+    "F08_4_6": "ACCESSIBILITY_CANDIDATE_WRITTEN_REVIEW_PENDING",
+    "F08_4_7": "VISUAL_REVIEW_CANDIDATE_WRITTEN_REVIEW_PENDING",
+    "F08_4_8": "FAMILY_CANDIDATE_INTEGRATED_STATIC_REVIEW_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -3474,7 +3477,7 @@
     }
   },
   "f08Candidate": {
-    "version": "0.6.0",
+    "version": "0.7.0",
     "last_modified": "2026-11-28",
     "baselineRevision": "1f9538116ecdf5720d6d344132ffa6a15fdaa82f",
     "status": "FRONTEND_DESIGN_CANDIDATE_PREPARED",
@@ -3666,7 +3669,7 @@
     "functionalEvaluation": "NOT_RUN",
     "externalCompatibility": "NOT_VERIFIED",
     "independentReview": "PENDING",
-    "next": "Complete accessibility and visual-ui-review on same branch; integrate family and perform independent review and focused evaluation before merge.",
+    "next": "F08.4.8–F08.4.9: independent documentary review of exact family candidate, resolve material findings, prepare grouped fixture/oracles and focused runtime evaluation; no merge or activation until applicable gates.",
     "fullRuntimeCertification": false,
     "researchExpansion": {
       "date": "2026-11-28",
@@ -4012,11 +4015,11 @@
       "effectiveReferenceAccess": "NOT_VERIFIED"
     },
     "frontendCandidate": {
-      "version": "0.3.0",
+      "version": "0.4.0",
       "last_modified": "2026-11-28",
       "baseRevision": "45d0c25c1b30d47ab603d3659caccbc1bdb7eb9e",
       "contract": "tests/F08-FRONTEND.md",
-      "status": "THREE_SKILL_CANDIDATES_WRITTEN",
+      "status": "FIVE_SKILL_CANDIDATES_WRITTEN_REVIEW_PENDING",
       "skills": [
         {
           "id": "ux-product-design",
@@ -4108,7 +4111,16 @@
             "B09",
             "B10"
           ],
-          "implementation": "NOT_CREATED"
+          "implementation": "CANDIDATE_WRITTEN_REVIEW_PENDING",
+          "version": "0.1.0",
+          "path": "team/skills/accessibility/SKILL.md",
+          "references": [
+            "team/skills/accessibility/references/accessible-interaction.md"
+          ],
+          "sourceEvidence": "FOCUSED_PRIMARY_DOCS_AND_PRACTITIONER_CONCEPTUAL_ONLY",
+          "evaluation": "NOT_RUN",
+          "independentReview": "PENDING",
+          "necessity": "detailed accessible interaction and criterion-specific evidence beyond Lumen/design and generic focused-testing; hypothesis not proven; compare no-change/reference-only"
         },
         {
           "id": "visual-ui-review",
@@ -4126,7 +4138,16 @@
             "B09",
             "B10"
           ],
-          "implementation": "NOT_CREATED"
+          "implementation": "CANDIDATE_WRITTEN_REVIEW_PENDING",
+          "version": "0.1.0",
+          "path": "team/skills/visual-ui-review/SKILL.md",
+          "references": [
+            "team/skills/visual-ui-review/references/visual-evidence.md"
+          ],
+          "sourceEvidence": "FOCUSED_PRIMARY_DOCS_AND_PRACTITIONER_CONCEPTUAL_ONLY",
+          "evaluation": "NOT_RUN",
+          "independentReview": "PENDING",
+          "necessity": "visual evidence comparability, aesthetic/functional distinction and review criteria beyond generic quality role; hypothesis not proven; compare no-change/reference-only"
         }
       ],
       "cases": [
@@ -4158,7 +4179,7 @@
           "id": "U04",
           "scope": "Diseño",
           "scenario": "Misma tarjeta, botón, campo, diálogo y fila de tabla con dos marcas y tres perfiles de material.",
-          "expected": "Tokens semánticos, misma semántica/estados, paletas separadas y fallback opaco; sin duplicar componente por perfil.; expressive color/type/asset direction appropriate to brand; no generic neutral default where creative scope permits; validate actual color pairs",
+          "expected": "Tokens semánticos, misma semántica/estados, paletas separadas y fallback opaco; sin duplicar componente por perfil; color/tipografía/assets expresivos y coherentes cuando marca y alcance lo permitan, contraste real verificado.",
           "oracle": "Inventario tokens, inspección de estilos y render representativo; A07,A09",
           "status": "NOT_RUN"
         },
@@ -4213,11 +4234,19 @@
       ],
       "crystalWorld": "candidate contextual expressive visual grammar; six logical layers; brand/theme/material independent; vivid color, type and assets; Premium/Professional/Lite, opaque fallback, accessible states and device-dependent budget",
       "conditionsStatus": "OPEN_UNTIL_EVIDENCE",
-      "sourceReview": "UX/frontend/design focused conceptual contrasts; accessibility and visual review pending; no external material reused",
-      "implementation": "PARTIAL_CANDIDATE_3_OF_5",
+      "sourceReview": "focused conceptual source contrasts for all five; exact reuse licenses pending if external material proposed; no external material reused; runtime NOT_RUN",
+      "implementation": "CANDIDATE_5_OF_5",
       "functionalEvaluation": "NOT_RUN",
       "independentReview": "PENDING",
-      "installable": false
+      "installable": false,
+      "integration": {
+        "status": "CANDIDATE_PREPARED",
+        "scope": "five skills with six explicit relative references; catalog and manifest; initial author-side structural checks only",
+        "independentReview": "PENDING",
+        "runtime": "NOT_RUN",
+        "conditions": "OPEN_UNTIL_EVIDENCE",
+        "baselineComparison": "NOT_RUN"
+      }
     }
   }
 }

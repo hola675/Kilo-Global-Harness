@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.154.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.155.0 | Última modificación: 2026-11-28
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -578,3 +578,6 @@ Contraste focalizado de GOV.UK, Carbon, heurísticas de Nielsen y WCAG 2.2; sín
 
 ## F08.4.4–F08.4.5 — frontend y Crystal World expresivo (2026-11-28)
 Candidatas frontend-engineering y design-system 0.1.0, tres referencias 0.1.0: plataforma/componentes, Crystal World y color/tipografía/assets. Preferencia del operador: colores vivos armonizados, acabados luminosos, profundidad, tipografía expresiva y recursos coherentes, evitar neutralidad genérica en creación autorizada; preservar marca, accesibilidad y límites operativos. Seis paletas ilustrativas sin contraste certificado. Contrato F08-FRONTEND 0.1.1 amplía U04 sin retirar garantías. Tres de cinco candidatas escritas; casos NOT_RUN, revisión pendiente. Rama work/f08-frontend PR #177 draft, main intacta, sin activación.
+
+## F08.4.6–F08.4.8 — familia frontend candidata completa (2026-11-28)
+accessibility y visual-ui-review 0.1.0 con referencias contextualizadas; cinco candidatas y seis referencias, procedencia conceptual, revisión visual sin mutación. Contrato F08-FRONTEND 0.1.1 intacto; descripción U04 del manifiesto alineada con contrato sin cambiar garantías. Manifiesto 0.104.0, integración candidata, revisión independiente y evaluación U01–U10 pendientes. Rama work/f08-frontend PR #177 draft, sin merge ni instalación. Siguiente revisión conjunta y preparación focalizada de oráculos/fixture; no repetir F07 ni crear diez laboratorios.
