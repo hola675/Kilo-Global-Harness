@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.153.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.154.0 | Última modificación: 2026-11-28
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -575,3 +575,6 @@ Dictamen especialista y Code APTO CON CONDICIONES reportado para candidato 0.1.0
 
 ## F08.4.2–F08.4.3 — primera candidata UX (2026-11-28)
 Contraste focalizado de GOV.UK, Carbon, heurísticas de Nielsen y WCAG 2.2; síntesis original, sin incorporar código/textos/activos de terceros. ux-product-design 0.1.0 y referencia interaction-contract 0.1.0, hipótesis de valor diferenciada frente a requirements-acceptance y rol Lumen. Candidata en work/f08-frontend, no aceptada; casos U01/U03/U08/U10 pertinentes NOT_RUN, revisión independiente pendiente, cuatro skills restantes no creadas. Manifiesto 0.102.0 en rama; condiciones abiertas, main e instalación intactos.
+
+## F08.4.4–F08.4.5 — frontend y Crystal World expresivo (2026-11-28)
+Candidatas frontend-engineering y design-system 0.1.0, tres referencias 0.1.0: plataforma/componentes, Crystal World y color/tipografía/assets. Preferencia del operador: colores vivos armonizados, acabados luminosos, profundidad, tipografía expresiva y recursos coherentes, evitar neutralidad genérica en creación autorizada; preservar marca, accesibilidad y límites operativos. Seis paletas ilustrativas sin contraste certificado. Contrato F08-FRONTEND 0.1.1 amplía U04 sin retirar garantías. Tres de cinco candidatas escritas; casos NOT_RUN, revisión pendiente. Rama work/f08-frontend PR #177 draft, main intacta, sin activación.

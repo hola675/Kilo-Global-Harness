@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.153.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.154.0 | Última modificación: 2026-11-28
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -559,3 +559,6 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 
 ## 2026-11-28 — F08.4.3 candidata UX
 - ux-product-design 0.1.0 y referencia interaction-contract 0.1.0: flujo, autoridad de resultado, recuperación, UX verificable; fuentes conceptuales contrastadas. Diseño original, sin dependencias ni permisos nuevos. Casos pendientes y revisión no realizada. Manifiesto 0.102.0, investigación 0.18.0, catálogo 0.21.0, roadmap/changelog 0.153.0 en rama temporal.
+
+## 2026-11-28 — F08.4.4–F08.4.5 frontend y diseño expresivo
+- frontend-engineering y design-system 0.1.0 con tres referencias originales 0.1.0; compatibilidad, componentes, estado y rendimiento; material, color, tipografía y assets. Preferencia visual del operador incorporada de forma contextual; seis paletas ilustrativas, sin recursos externos. Contrato F08-FRONTEND 0.1.1 amplía U04. Manifiesto 0.103.0, investigación 0.19.0, catálogo 0.22.0, roadmap/changelog 0.154.0. Revisión/evaluación pendientes; rama temporal sin merge ni instalación.

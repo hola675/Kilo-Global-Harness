@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.102.0",
+    "version": "0.103.0",
     "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
@@ -307,7 +307,9 @@
     "F08_4": "IN_PROGRESS",
     "F08_4_1": "DESIGN_EVALUATION_CONTRACT_CANDIDATE_PREPARED",
     "F08_4_2": "FOCUSED_UX_SOURCE_CONTRAST_PREPARED",
-    "F08_4_3": "UX_CANDIDATE_WRITTEN_REVIEW_PENDING"
+    "F08_4_3": "UX_CANDIDATE_WRITTEN_REVIEW_PENDING",
+    "F08_4_4": "FRONTEND_CANDIDATE_WRITTEN_REVIEW_PENDING",
+    "F08_4_5": "DESIGN_SYSTEM_CANDIDATE_WRITTEN_REVIEW_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -3472,7 +3474,7 @@
     }
   },
   "f08Candidate": {
-    "version": "0.5.0",
+    "version": "0.6.0",
     "last_modified": "2026-11-28",
     "baselineRevision": "1f9538116ecdf5720d6d344132ffa6a15fdaa82f",
     "status": "FRONTEND_DESIGN_CANDIDATE_PREPARED",
@@ -3590,7 +3592,14 @@
     "visualIdentity": {
       "name": "Crystal World",
       "scope": "candidate shared visual grammar separate from brand palettes; adapt to accessibility, density, hardware and project requirements; opaque fallback and reduced motion; no forced adoption or new dependency",
-      "status": "DESIGN_PENDING"
+      "status": "CANDIDATE_WRITTEN_REVIEW_PENDING",
+      "operatorPreference": "vivid harmonious colors, luminous polished materials, expressive typography and coherent assets; not default muted/gray generic pages; preserve brand, accessibility and operational constraints",
+      "references": [
+        "team/skills/design-system/references/crystal-world.md",
+        "team/skills/design-system/references/color-type-assets.md"
+      ],
+      "paletteCount": 6,
+      "paletteStatus": "ILLUSTRATIVE_NOT_CONTRAST_CERTIFIED"
     },
     "stages": [
       {
@@ -3657,7 +3666,7 @@
     "functionalEvaluation": "NOT_RUN",
     "externalCompatibility": "NOT_VERIFIED",
     "independentReview": "PENDING",
-    "next": "Continue focused source contrast and frontend-engineering candidate on same branch; review and evaluate family before merge. Conditions remain open.",
+    "next": "Complete accessibility and visual-ui-review on same branch; integrate family and perform independent review and focused evaluation before merge.",
     "fullRuntimeCertification": false,
     "researchExpansion": {
       "date": "2026-11-28",
@@ -4003,11 +4012,11 @@
       "effectiveReferenceAccess": "NOT_VERIFIED"
     },
     "frontendCandidate": {
-      "version": "0.2.0",
+      "version": "0.3.0",
       "last_modified": "2026-11-28",
       "baseRevision": "45d0c25c1b30d47ab603d3659caccbc1bdb7eb9e",
       "contract": "tests/F08-FRONTEND.md",
-      "status": "FIRST_SKILL_CANDIDATE_WRITTEN",
+      "status": "THREE_SKILL_CANDIDATES_WRITTEN",
       "skills": [
         {
           "id": "ux-product-design",
@@ -4049,7 +4058,16 @@
             "B08",
             "B09"
           ],
-          "implementation": "NOT_CREATED"
+          "implementation": "CANDIDATE_WRITTEN_REVIEW_PENDING",
+          "version": "0.1.0",
+          "path": "team/skills/frontend-engineering/SKILL.md",
+          "references": [
+            "team/skills/frontend-engineering/references/platform-and-components.md"
+          ],
+          "sourceEvidence": "FOCUSED_PRIMARY_DOCS_AND_PRIOR_PINNED_SKILLS_CONCEPTUAL_ONLY",
+          "evaluation": "NOT_RUN",
+          "independentReview": "PENDING",
+          "necessity": "domain-specific platform compatibility, component/state/render tradeoffs beyond general implementation discipline; hypothesis not proven; compare no-change/reference-only"
         },
         {
           "id": "design-system",
@@ -4064,7 +4082,17 @@
             "B08",
             "B09"
           ],
-          "implementation": "NOT_CREATED"
+          "implementation": "CANDIDATE_WRITTEN_REVIEW_PENDING",
+          "version": "0.1.0",
+          "path": "team/skills/design-system/SKILL.md",
+          "references": [
+            "team/skills/design-system/references/crystal-world.md",
+            "team/skills/design-system/references/color-type-assets.md"
+          ],
+          "sourceEvidence": "FOCUSED_PRIMARY_DOCS_AND_PRIOR_PINNED_SKILLS_CONCEPTUAL_ONLY",
+          "evaluation": "NOT_RUN",
+          "independentReview": "PENDING",
+          "necessity": "reusable visual grammar, semantic tokens, color/type/asset direction and material profiles beyond Lumen role; hypothesis not proven; compare no-change/reference-only"
         },
         {
           "id": "accessibility",
@@ -4130,7 +4158,7 @@
           "id": "U04",
           "scope": "Diseño",
           "scenario": "Misma tarjeta, botón, campo, diálogo y fila de tabla con dos marcas y tres perfiles de material.",
-          "expected": "Tokens semánticos, misma semántica/estados, paletas separadas y fallback opaco; sin duplicar componente por perfil.",
+          "expected": "Tokens semánticos, misma semántica/estados, paletas separadas y fallback opaco; sin duplicar componente por perfil.; expressive color/type/asset direction appropriate to brand; no generic neutral default where creative scope permits; validate actual color pairs",
           "oracle": "Inventario tokens, inspección de estilos y render representativo; A07,A09",
           "status": "NOT_RUN"
         },
@@ -4183,10 +4211,10 @@
           "status": "NOT_RUN"
         }
       ],
-      "crystalWorld": "candidate contextual visual grammar; six logical layers; brand/theme/material independent; Premium/Professional/Lite, opaque fallback, accessible states and device-dependent budget",
+      "crystalWorld": "candidate contextual expressive visual grammar; six logical layers; brand/theme/material independent; vivid color, type and assets; Premium/Professional/Lite, opaque fallback, accessible states and device-dependent budget",
       "conditionsStatus": "OPEN_UNTIL_EVIDENCE",
-      "sourceReview": "UX focused contrast complete for conceptual adaptation; remaining families pending",
-      "implementation": "PARTIAL_CANDIDATE_1_OF_5",
+      "sourceReview": "UX/frontend/design focused conceptual contrasts; accessibility and visual review pending; no external material reused",
+      "implementation": "PARTIAL_CANDIDATE_3_OF_5",
       "functionalEvaluation": "NOT_RUN",
       "independentReview": "PENDING",
       "installable": false
