@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.152.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.155.0 | Última modificación: 2026-11-28
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -556,3 +556,12 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-28 — F08.3 revisión y F08.4.1 diseño frontend
 - APTO CON CONDICIONES reportado por especialista y Code, avance documental limitado, condiciones abiertas y objeto revisado intacto. Contrato F08-FRONTEND 0.1.0: fronteras, entradas, salidas, brechas F07, criterios Crystal World y diez casos candidatos.
 - Manifiesto 0.101.0, roadmap/changelog 0.152.0, investigación 0.17.0. Referencias DTCG estables de grupo comunitario, WCAG, MDN, Baseline y Playwright contrastadas; pendiente contraste por habilidad y licencia exacta antes de reutilizar. Sin implementación ni pruebas, sin instalación/release.
+
+## 2026-11-28 — F08.4.3 candidata UX
+- ux-product-design 0.1.0 y referencia interaction-contract 0.1.0: flujo, autoridad de resultado, recuperación, UX verificable; fuentes conceptuales contrastadas. Diseño original, sin dependencias ni permisos nuevos. Casos pendientes y revisión no realizada. Manifiesto 0.102.0, investigación 0.18.0, catálogo 0.21.0, roadmap/changelog 0.153.0 en rama temporal.
+
+## 2026-11-28 — F08.4.4–F08.4.5 frontend y diseño expresivo
+- frontend-engineering y design-system 0.1.0 con tres referencias originales 0.1.0; compatibilidad, componentes, estado y rendimiento; material, color, tipografía y assets. Preferencia visual del operador incorporada de forma contextual; seis paletas ilustrativas, sin recursos externos. Contrato F08-FRONTEND 0.1.1 amplía U04. Manifiesto 0.103.0, investigación 0.19.0, catálogo 0.22.0, roadmap/changelog 0.154.0. Revisión/evaluación pendientes; rama temporal sin merge ni instalación.
+
+## 2026-11-28 — F08.4.6–F08.4.8 familia frontend candidata
+- accessibility y visual-ui-review 0.1.0, dos referencias 0.1.0: interacción inclusiva por criterio y evidencia visual comparable, clasificación y límites. Cinco candidatas y seis referencias; descripción U04 alineada al contrato existente. Manifiesto 0.104.0, investigación 0.20.0, catálogo 0.23.0, roadmap/changelog 0.155.0. Revisión/evaluación pendientes; sin cambios de contrato, agentes, política, permisos ni activación.
