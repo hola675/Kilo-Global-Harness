@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.97.0",
+    "version": "0.98.0",
     "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
@@ -298,9 +298,11 @@
     "F07_8_1": "DOCUMENTARY_RECONCILIATION_PREPARED",
     "F07_8_2": "INDEPENDENT_DOCUMENTARY_APTO_REPORTED",
     "F07_8_3": "DONE_DOCUMENTARY_CLOSURE_LIMITED",
-    "F08": "PENDING_DESIGN",
+    "F08": "IN_PROGRESS",
     "F09": "PENDING_DESIGN",
-    "F11": "PENDING_DESIGN"
+    "F11": "PENDING_DESIGN",
+    "F08_1": "METHODOLOGY_CANDIDATE_PREPARED",
+    "F08_2": "INITIAL_SOURCE_SCREENING_STARTED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -3463,5 +3465,194 @@
       "fullRuntimeCertification": false,
       "releaseAuthorized": false
     }
+  },
+  "f08Candidate": {
+    "version": "0.1.0",
+    "last_modified": "2026-11-28",
+    "baselineRevision": "1f9538116ecdf5720d6d344132ffa6a15fdaa82f",
+    "status": "METHODOLOGY_CANDIDATE_PREPARED",
+    "sourcePath": "docs/INVESTIGACION-SKILLS.md",
+    "sourceSection": "F08.1–F08.2 — método y primer contraste",
+    "existingSkillAuthoring": "0.1.0 unchanged",
+    "existingSpecializedCatalog": 21,
+    "catalogDecision": "candidate inventory; revise by proven need, no quota or one skill per technology",
+    "levels": [
+      "professional competence",
+      "operational skills",
+      "on-demand technical references",
+      "shared engineering identity",
+      "project-specific context"
+    ],
+    "criteria": [
+      {
+        "criterion": "vigencia tecnológica",
+        "weight": 12
+      },
+      {
+        "criterion": "efectividad demostrable",
+        "weight": 12
+      },
+      {
+        "criterion": "profundidad profesional",
+        "weight": 10
+      },
+      {
+        "criterion": "calidad de procedimiento",
+        "weight": 10
+      },
+      {
+        "criterion": "idoneidad y alcance",
+        "weight": 8
+      },
+      {
+        "criterion": "seguridad y fiabilidad",
+        "weight": 10
+      },
+      {
+        "criterion": "rendimiento",
+        "weight": 8
+      },
+      {
+        "criterion": "calidad del resultado",
+        "weight": 8
+      },
+      {
+        "criterion": "compatibilidad",
+        "weight": 5
+      },
+      {
+        "criterion": "eficiencia contextual",
+        "weight": 5
+      },
+      {
+        "criterion": "adaptabilidad",
+        "weight": 4
+      },
+      {
+        "criterion": "mantenimiento",
+        "weight": 4
+      },
+      {
+        "criterion": "procedencia y licencia",
+        "weight": 4
+      }
+    ],
+    "score": "0–5 evidence-based; 0 missing or negative evidence distinguished by state; no acceptance by score alone",
+    "mandatoryGates": [
+      "verified provenance and applicable license",
+      "no critical regression",
+      "effective target compatibility",
+      "functional evaluation and applicable independent review"
+    ],
+    "sources": [
+      {
+        "repository": "GoogleChrome/modern-web-guidance",
+        "ref": "v1.0.2",
+        "revision": "2b4aa13a72dd47cd135b06ce5abfccd92e19b24f",
+        "published": "2026-11-23",
+        "license": "code Apache-2.0; guides CC BY 4.0 per source README; verify exact files before reuse",
+        "decision": "priority benchmark and conceptual reference; no installation",
+        "evidence": "publisher eval methodology, release notes, public dashboard; no Kilo execution"
+      },
+      {
+        "repository": "midudev/autoskills",
+        "revision": "579bc98259b0ba5f8ce0d9702c7d761a8fbd451a",
+        "lastCommit": "2026-11-23",
+        "license": "CC BY-NC 4.0 per pinned README",
+        "decision": "conceptual reference only; inspect stack detection and curated integrity; no copy or commercial redistribution; no installer integration",
+        "evidence": "pinned README inspected; claims not independently tested"
+      },
+      {
+        "repository": "midudev/tailwind-animations",
+        "revision": "020bbbb00d7d2a12537889b60d20fd544f31e40f",
+        "decision": "screen for motion/UI references; not default dependency"
+      },
+      {
+        "repository": "midudev/la-velada-web-oficial",
+        "revision": "daefa30da38401aff0167bac1e57def0323adb67",
+        "decision": "screen real application patterns; no code/assets copied"
+      },
+      {
+        "url": "https://github.com/midudev/midu.dev",
+        "decision": "historical archive since 2024-11-24, not current technical authority; website 403"
+      },
+      {
+        "url": "https://www.youtube.com/@midudev",
+        "decision": "discovery of public teaching and new patterns; validate each against primary sources; exact reel/full transcript not verified"
+      }
+    ],
+    "architecture": "native skills + optional relative references + project profile facts; no new search engine, service, lock format or installer until need",
+    "visualIdentity": {
+      "name": "Crystal World",
+      "scope": "candidate shared visual grammar separate from brand palettes; adapt to accessibility, density, hardware and project requirements; opaque fallback and reduced motion; no forced adoption or new dependency",
+      "status": "DESIGN_PENDING"
+    },
+    "stages": [
+      {
+        "id": "F08.1",
+        "title": "Método y criterios de investigación",
+        "status": "CANDIDATE_PREPARED"
+      },
+      {
+        "id": "F08.2",
+        "title": "Investigación de fuentes y repositorios",
+        "status": "INITIAL_SCREENING"
+      },
+      {
+        "id": "F08.3",
+        "title": "Arquitectura de conocimiento",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.4",
+        "title": "Frontend, UX/UI y Crystal World",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.5",
+        "title": "Arquitectura y backend",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.6",
+        "title": "Datos y local-first",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.7",
+        "title": "Plataforma e infraestructura",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.8",
+        "title": "Seguridad y calidad",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.9",
+        "title": "Investigación y editorial",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.10",
+        "title": "Perfiles contextuales",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.11",
+        "title": "Evaluación y revisión independiente",
+        "status": "PENDING"
+      },
+      {
+        "id": "F08.12",
+        "title": "Consolidación",
+        "status": "PENDING"
+      }
+    ],
+    "functionalEvaluation": "NOT_RUN",
+    "externalCompatibility": "NOT_VERIFIED",
+    "independentReview": "PENDING",
+    "next": "F08.2: inspect pinned guides, evals, upstream technology docs and independent alternatives per family; first frontend; record license and compatible versions, no ranking without evidence",
+    "fullRuntimeCertification": false
   }
 }

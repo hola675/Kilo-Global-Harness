@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.148.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.149.0 | Última modificación: 2026-11-28
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -539,3 +539,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-28 — F07.8 revisión independiente y cierre limitado de F07
 - Preflight local PASS reportado, identidad de candidato contrastada remotamente; retorno original de especialista reproducido por Code y dictamen Code APTO reportados, 10/10 criterios, cero hallazgos materiales, sin correcciones. Sin comprobación criptográfica por revisor, argumentos Task originales no aportados. Candidato revisado intacto; decisión posterior en cierre separado.
 - F07/F07.8 DONE_POC_LIMITED para desarrollo; B01–B10, bloqueos aplicables de release y estados históricos intactos. F08/F09/F11 pendientes de diseño según dependencias, F10 condicionado a necesidad. Manifiesto 0.97.0, roadmap/changelog 0.148.0. Sin cambios normativos, nuevas pruebas, instalación ni release.
+
+## 2026-11-28 — F08.1 metodología y fuentes iniciales
+- Diseño de especialización: cinco niveles, 13 criterios ponderados, garantías no compensables, 12 hitos candidatos y adaptación por stack real. Modern Web Guidance y autoskills como referencias de investigación, no dependencias. Crystal World candidato contextual; no copiar material de terceros ni forzar modernización incompatible.
+- Manifiesto 0.98.0, roadmap/changelog 0.149.0, investigación 0.15.0. F08 IN_PROGRESS; evaluación y revisión pendientes. Sin cambios normativos, ejecución de terceros, instalación ni release.

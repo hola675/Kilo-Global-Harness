@@ -1,5 +1,5 @@
 # Investigación comparada de skills propias
-Versión del archivo: 0.14.0 | Última modificación: 2026-11-25
+Versión del archivo: 0.15.0 | Última modificación: 2026-11-28
 
 ## F06.1-R — team-routing
 Objetivo: mejorar selección proporcional y evitar el bloqueo de revisión observado en F05-B-R sin reconstruir Task ni cambiar modelo. Consulta web y lectura selectiva de archivos fijados en GitHub el 2026-11-25. No se ejecutaron harness externos; no es ranking de popularidad, auditoría integral, benchmark ni prueba de superioridad.
@@ -193,3 +193,36 @@ Objeto: revisión candidata 7b6e84347154cd4fdea7275e17533d2255ae65f6, 13 skills,
 | 175 IDs de evaluación únicos; 13 metadatos siguen patrón restringido de nuestro formato; referencia quality-baseline disponible y ejemplo JSON parcial. | Conservar casos y agrupar reevaluación por garantías/delta, no añadir suite redundante. Revisión estructural no certifica comportamiento. |
 
 No se fusionan skills por similitud textual: routing/contrato/coordinación/contexto, requisitos/arquitectura/implementación/diagnóstico/calidad/Git, herramientas/seguridad/creación tienen resultados diferenciados. Reutilización explícita de límites globales y autonomía de carga; se conservan guardas locales de seguridad y fallback aunque se repitan cuando la skill no esté disponible. No se elimina prueba, no se modifica permiso, no se mide reducción de tokens ni latencia. Revisión propia no independiente; laboratorio y runtime NOT_RUN.
+
+## F08.1–F08.2 — método y primer contraste (2026-11-28)
+Entrada del operador y cierre F07 confirmado. Aplicar skill-authoring como fuente normativa única, sin cambiarla. Separar competencia profesional, procedimiento reutilizable, referencias técnicas consultables, identidad de ingeniería y contexto particular del proyecto. Investigar por dominio, stack real y problema, sin convertir cada biblioteca en skill. Catálogo 21 candidato, no cuota. Matriz de comparación propuesta, no puntuación certificada:
+
+| Criterio | Peso |
+|---|---:|
+| vigencia tecnológica | 12 % |
+| efectividad demostrable | 12 % |
+| profundidad profesional | 10 % |
+| calidad de procedimiento | 10 % |
+| idoneidad y alcance | 8 % |
+| seguridad y fiabilidad | 10 % |
+| rendimiento | 8 % |
+| calidad del resultado | 8 % |
+| compatibilidad | 5 % |
+| eficiencia contextual | 5 % |
+| adaptabilidad | 4 % |
+| mantenimiento | 4 % |
+| procedencia y licencia | 4 % |
+
+Escala 0–5 con evidencia por criterio; distinguir desconocido de fallo, no puntuar sin fuentes. Pesos y umbrales orientativos, no compensan seguridad crítica, licencia/procedencia, compatibilidad o evaluación obligatoria. Revisar fecha y versión soportada, APIs retiradas, vulnerabilidades, compatibilidad, pruebas, coste de mantenimiento y no solo commit reciente; conocimiento estable antiguo puede ser válido. Experimental por autorización y fallback, legacy para mantenimiento/migración. No modernizar un proyecto por inercia ni forzar stack. Registro por fuente: revisión/tag, fecha, licencia aplicable, técnica, evidencia, límites y decisión; en evaluación, misma entrada/modelo efectivo y condiciones, comparar resultado observable antes que coste. Probar criterios positivos, negativos y alternativas válidas; distinguir selección autónoma de carga dirigida, calibrar verificaciones sobre implementación correcta e incorrecta cuando sea viable; evitar sobreajuste, suite masiva y repetición rutinaria.
+
+### Primer contraste: Modern Web Guidance y midudev
+
+| Fuente inspeccionada | Aporte y límite | Decisión |
+|---|---|---|
+| [Modern Web Guidance v1.0.2](https://github.com/GoogleChrome/modern-web-guidance/releases/tag/v1.0.2), revisión 2b4aa13a72dd47cd135b06ce5abfccd92e19b24f (2026-11-23); [fuente](https://github.com/GoogleChrome/modern-web-guidance-src), [anuncio 1.0](https://developer.chrome.com/blog/modern-web-guidance-v1), [evals](https://googlechrome.github.io/modern-web-guidance-src/) | Guías breves bajo demanda con búsqueda local y datos Baseline; evals A/B del autor con Playwright, calibración positiva/negativa y revisión experta. Resultados publicados no son pruebas de Kilo; dashboard consultado sin datos dinámicos completos. Código Apache-2.0 y guías CC BY 4.0 según README fuente, verificar archivo exacto. | Priorizar en investigación frontend; recuperar patrones y evaluar equivalencia, no instalar CLI ni ejecutar npx. Revisar telemetría y permisos si se propone en F09. |
+| [autoskills](https://github.com/midudev/autoskills/blob/579bc98259b0ba5f8ce0d9702c7d761a8fbd451a/README.md), revisión 579bc98259b0ba5f8ce0d9702c7d761a8fbd451a (2026-11-23), CC BY-NC 4.0 declarada | Detecta stack mediante archivos de proyecto y selecciona paquetes de un registro revisado y fijado por hash; garantías de seguridad declaradas, no probadas aquí. | Referencia conceptual para perfil contextual y procedencia, no copiar ni incorporar material NC a producto comercial, no instalar, no crear registro paralelo. Verificar licencias de cada upstream por separado. |
+| [tailwind-animations](https://github.com/midudev/tailwind-animations/tree/020bbbb00d7d2a12537889b60d20fd544f31e40f) y [la-velada-web-oficial](https://github.com/midudev/la-velada-web-oficial/tree/daefa30da38401aff0167bac1e57def0323adb67) | Candidatos para investigar animación, CSS, componentes y estructura de aplicaciones reales; no auditoría integral. | Examinar código, versiones y licencias antes de adoptar. No dependencia predeterminada. |
+| [Canal midudev](https://www.youtube.com/@midudev), [perfil](https://github.com/midudev), [blog archivado](https://github.com/midudev/midu.dev) | Canal de descubrimiento de prácticas y tecnologías; blog GitHub archivado desde 2024-11-24, acceso web directo 403; reel exacto no recuperado. | Contrastar publicaciones concretas con documentación primaria y versiones vigentes; no convertir opinión ni tutorial histórico en norma. |
+
+### Aplicación transversal y frontend
+Patrón propio: detectar dependencias declaradas y resueltas en workspace autorizado; elegir habilidad existente y referencias relativas necesarias, consultar fuente primaria si hay incertidumbre material; no instalar paquetes, modificar configuración o migrar sin autorización. Preferir APIs nativas cuando satisfacen contrato/soporte y coste; librerías justificadas cuando cubran semántica, accesibilidad o compatibilidad faltante. [Baseline](https://web.dev/baseline) y [MDN compatibilidad](https://developer.mozilla.org/en-US/docs/Glossary/Baseline/Compatibility) orientan, no sustituyen motores WebView, dispositivos y pruebas reales. Evaluar dialog, popover, grid/flex, anchor positioning, container queries, CSS moderno, movimiento reducido, rendimiento y fallback según objetivo. Crystal World: candidato de identidad visual compartida (profundidad, relieve, cristal y jerarquía) desacoplado de color de marca; adaptar densidad, contraste, foco, movimiento y rendimiento; alternativa opaca y soporte de equipos limitados. No imponer CSS experimental, WebGL, Tauri, Tailwind ni una librería visual. No copiar material externo, no alterar configuración global. Próximo: análisis profundo de fuentes y alternativas por familia, empezando frontend; contrastar perfiles, criterios y evidencia, después diseño original. Evaluación funcional y revisión independiente NOT_RUN/PENDING; sin superioridad ni instalación acreditadas.
