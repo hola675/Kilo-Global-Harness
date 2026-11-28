@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.151.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.152.0 | Última modificación: 2026-11-28
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -569,3 +569,6 @@ Contraste de 13 repositorios adicionales fijados, ocho extractos de SKILL.md con
 
 ## F08.3 — arquitectura candidata de conocimiento (2026-11-28)
 [Arquitectura](ARQUITECTURA.md) 0.5.0, diseño F08.3 0.1.0: seis capas, 9 roles, 7 perfiles lógicos, referencias relativas con vigencia y autoridad, 10 casos transversales candidatos A01–A10 NOT_RUN; inspección estática de cinco archivos CLI 7.8.27 fijado, no acceso efectivo garantizado. Sin nuevo motor, detector, registro ni permisos; conserva 13 skills comunes y 21 ID especializados como candidatos. Crystal World contextual. Revisión independiente documental pendiente; F08.4 diseño frontend pendiente, antes de implementación y evaluación. Manifiesto 0.100.0; no instalación, certificación integral ni release.
+
+## F08.3 revisión y F08.4.1 — contrato de frontend (2026-11-28)
+Dictamen especialista y Code APTO CON CONDICIONES reportado para candidato 0.1.0, 12 criterios revisados, sin bloqueantes ni altos; parciales especialista 8/10 y Code 8/9. Identidades externas contrastadas; no comprobación de hashes por revisor. Candidato histórico intacto, disposición posterior en manifiesto 0.101.0. F08.3 DONE_DOCUMENTARY_LIMITED_CONDITIONS_CARRIED. Condiciones abiertas: fuentes exactas/licencias/compatibilidad, necesidad/activación y oráculos, Crystal World comprobable, brechas F07 pertinentes y revisión. F08.4 IN_PROGRESS: [contrato candidato](../tests/F08-FRONTEND.md) 0.1.0, cinco habilidades y diez casos U01–U10 NOT_RUN; diseño de material y perfiles contextual. Contraste focalizado y construcción controlada en rama temporal siguientes; no instalación, pruebas no ejecutadas, sin cambios de agentes ni política.

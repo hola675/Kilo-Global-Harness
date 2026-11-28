@@ -1,5 +1,5 @@
 # Historial resumido por sección
-Versión del archivo: 0.151.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.152.0 | Última modificación: 2026-11-28
 
 ## 2026-11-24
 - Investigación: archivo legacy, Kilo nativo, comparación de harness públicos y Task Observer.
@@ -552,3 +552,7 @@ Cada sección se actualiza aquí con cambios resumidos; no repetir historial en 
 ## 2026-11-28 — F08.3 arquitectura candidata
 - Seis capas, mapa de nueve especialistas y siete perfiles lógicos, fuentes/compatibilidad bajo demanda, autoridad, límites del loader y revisión de vigencia. Diez criterios transversales candidatos sin ejecución. Referencia CLI fijada inspeccionada estáticamente; no afirmar acceso efectivo, activación ni aislamiento.
 - Manifiesto 0.100.0, arquitectura 0.5.0, catálogo 0.20.0, roadmap/changelog 0.151.0. Diseño 0.1.0 pendiente de revisión documental, F08.4 pendiente. Sin nuevas skills, perfiles instalables, scripts, cambios normativos ni release.
+
+## 2026-11-28 — F08.3 revisión y F08.4.1 diseño frontend
+- APTO CON CONDICIONES reportado por especialista y Code, avance documental limitado, condiciones abiertas y objeto revisado intacto. Contrato F08-FRONTEND 0.1.0: fronteras, entradas, salidas, brechas F07, criterios Crystal World y diez casos candidatos.
+- Manifiesto 0.101.0, roadmap/changelog 0.152.0, investigación 0.17.0. Referencias DTCG estables de grupo comunitario, WCAG, MDN, Baseline y Playwright contrastadas; pendiente contraste por habilidad y licencia exacta antes de reutilizar. Sin implementación ni pruebas, sin instalación/release.

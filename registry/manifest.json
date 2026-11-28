@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.100.0",
+    "version": "0.101.0",
     "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
@@ -303,8 +303,9 @@
     "F11": "PENDING_DESIGN",
     "F08_1": "METHODOLOGY_CANDIDATE_PREPARED",
     "F08_2": "MULTIDOMAIN_RESEARCH_REQUIREMENTS_CANDIDATE_PREPARED",
-    "F08_3": "ARCHITECTURE_CANDIDATE_PREPARED_REVIEW_PENDING",
-    "F08_4": "PENDING_FRONTEND_DESIGN"
+    "F08_3": "DONE_DOCUMENTARY_LIMITED_CONDITIONS_CARRIED",
+    "F08_4": "IN_PROGRESS",
+    "F08_4_1": "DESIGN_EVALUATION_CONTRACT_CANDIDATE_PREPARED"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -3469,10 +3470,10 @@
     }
   },
   "f08Candidate": {
-    "version": "0.3.0",
+    "version": "0.4.0",
     "last_modified": "2026-11-28",
     "baselineRevision": "1f9538116ecdf5720d6d344132ffa6a15fdaa82f",
-    "status": "KNOWLEDGE_ARCHITECTURE_CANDIDATE_PREPARED",
+    "status": "FRONTEND_DESIGN_CANDIDATE_PREPARED",
     "sourcePath": "docs/INVESTIGACION-SKILLS.md",
     "sourceSection": "F08.1–F08.2 — método y primer contraste",
     "existingSkillAuthoring": "0.1.0 unchanged",
@@ -3603,12 +3604,12 @@
       {
         "id": "F08.3",
         "title": "Arquitectura de conocimiento",
-        "status": "CANDIDATE_PREPARED_REVIEW_PENDING"
+        "status": "DOCUMENTARY_APTO_CONDITIONS_ADVANCE"
       },
       {
         "id": "F08.4",
         "title": "Frontend, UX/UI y Crystal World",
-        "status": "PENDING"
+        "status": "DESIGN_CONTRACT_PREPARED"
       },
       {
         "id": "F08.5",
@@ -3654,7 +3655,7 @@
     "functionalEvaluation": "NOT_RUN",
     "externalCompatibility": "NOT_VERIFIED",
     "independentReview": "PENDING",
-    "next": "F08.3: independent read-only review of architecture candidate and requirements; then F08.4 first frontend family scope and focused evaluation contract before implementing on temporary branch.",
+    "next": "F08.4: complete focused source contrasts and write original candidates on one temporary branch; validate T0 and obtain applicable independent review/evaluations; preserve conditions and no global activation.",
     "fullRuntimeCertification": false,
     "researchExpansion": {
       "date": "2026-11-28",
@@ -3964,6 +3965,219 @@
       "runtime": "NOT_RUN",
       "effectiveReferenceAccess": "NOT_VERIFIED",
       "externalEffects": "NOT_AUTHORIZED",
+      "installable": false
+    },
+    "knowledgeArchitectureReview": {
+      "version": "0.1.0",
+      "last_modified": "2026-11-28",
+      "reviewedRevision": "45d0c25c1b30d47ab603d3659caccbc1bdb7eb9e",
+      "reviewedManifestBlob": "b2c51c3e16543653a7525603dfefd82a76eca8ad",
+      "reviewedArchitectureBlob": "30479e79a4c9865dd10ecc2cba17ee20afd5cc7d",
+      "reviewedArchitectureVersion": "0.1.0",
+      "status": "APTO_CON_CONDICIONES_REPORTED_ADVANCE_ONLY",
+      "specialist": "APTO_CON_CONDICIONES_REPORTED",
+      "code": "APTO_CON_CONDICIONES_REPORTED",
+      "criteriaReviewed": 12,
+      "materialBlockingFindings": 0,
+      "highFindings": 0,
+      "specialistPartialCriteria": [
+        8,
+        10
+      ],
+      "codePartialCriteria": [
+        8,
+        9
+      ],
+      "conditions": [
+        "Fuentes exactas, procedencia, versión, vigencia y compatibilidad por habilidad; licencia exacta antes de reutilizar expresión, código o assets.",
+        "Necesidad diferenciada, activación positiva/negativa, entradas/salida, alternativas y oráculos por familia; no crear por cuota.",
+        "Crystal World con criterios observables de marca, accesibilidad, densidad, rendimiento y fallback; uso contextual no obligatorio.",
+        "B01–B10 conservadas, vincular brechas pertinentes y bloquear/acotar capacidad cuyo permiso/referencia/efecto no esté comprobado.",
+        "Revisión independiente cuando exigida; no aceptación funcional por revisión documental ni por puntuación."
+      ],
+      "provenance": "operator supplied specialist return and consolidated Code verdict; remote object identities checked; reviewer did not recalculate hashes; independent native task arguments and effective runtime not verified",
+      "decision": "advance F08.4 design and controlled candidate construction; preserve conditions as acceptance gates, not unconditional APTO",
+      "runtime": "NOT_RUN",
+      "effectiveReferenceAccess": "NOT_VERIFIED"
+    },
+    "frontendCandidate": {
+      "version": "0.1.0",
+      "last_modified": "2026-11-28",
+      "baseRevision": "45d0c25c1b30d47ab603d3659caccbc1bdb7eb9e",
+      "contract": "tests/F08-FRONTEND.md",
+      "status": "DESIGN_CONTRACT_PREPARED",
+      "skills": [
+        {
+          "id": "ux-product-design",
+          "owner": "Lumen",
+          "activation": "Diseño o cambio material de flujo, tarea, navegación o interacción; no para estilo aislado ni texto sin impacto.",
+          "input": "Objetivo, actor, tareas, estados, restricciones, contrato y evidencia disponible.",
+          "output": "Flujo priorizado, acciones, errores, incertidumbre, recuperación, criterios UX; no investigación de usuario inventada.",
+          "boundary": "requirements-acceptance conserva intención/aceptación; Ágora lenguaje; Atlas contratos.",
+          "gaps": [
+            "B02",
+            "B05",
+            "B07",
+            "B08"
+          ],
+          "implementation": "NOT_CREATED"
+        },
+        {
+          "id": "frontend-engineering",
+          "owner": "Lumen",
+          "activation": "Implementar/refactorizar UI, componentes, estado y compatibilidad; no para backend, estilo puramente conceptual ni migración no solicitada.",
+          "input": "Stack/lockfile pertinentes, soporte objetivo, contrato de datos, tokens y convenciones.",
+          "output": "Componente funcional, semántica y estados, estrategia nativa/librería justificada, fallback, tipos, pruebas pertinentes.",
+          "boundary": "implementation-discipline construye incremento; accessibility profundiza interacción; performance-profiling mide cuando necesario.",
+          "gaps": [
+            "B01",
+            "B02",
+            "B03",
+            "B05",
+            "B06",
+            "B08",
+            "B09"
+          ],
+          "implementation": "NOT_CREATED"
+        },
+        {
+          "id": "design-system",
+          "owner": "Lumen",
+          "activation": "Crear/evolucionar tokens, familias de componentes o identidad compartida; no para corregir un margen aislado ni reemplazar marca existente sin alcance.",
+          "input": "Identidad aprobada, sistema existente, densidad, entorno, perfiles y restricciones.",
+          "output": "Contrato semántico de tokens/componentes y estados, materiales, variantes y fallback; Crystal World solo pertinente y autorizado.",
+          "boundary": "ux-product-design define flujo; frontend-engineering implementa; accessibility verifica; no duplicar componentes por tema.",
+          "gaps": [
+            "B01",
+            "B05",
+            "B08",
+            "B09"
+          ],
+          "implementation": "NOT_CREATED"
+        },
+        {
+          "id": "accessibility",
+          "owner": "Lumen / Veritas",
+          "activation": "Diseñar o verificar semántica, teclado, foco, contraste o interacción compleja; no para cambios sin impacto de accesibilidad.",
+          "input": "Interacción, plataforma/versión, criterios aplicables, estados, medios de prueba.",
+          "output": "Hallazgos y corrección autorizada o verificación independiente; no confundir escáner con conformidad completa.",
+          "boundary": "secure-development mantiene autorización; focused-testing selecciona garantías; no conceder escritura a revisor.",
+          "gaps": [
+            "B01",
+            "B05",
+            "B08",
+            "B09",
+            "B10"
+          ],
+          "implementation": "NOT_CREATED"
+        },
+        {
+          "id": "visual-ui-review",
+          "owner": "Veritas (independiente) / Lumen (autoinspección)",
+          "activation": "Inspeccionar UI renderizada o fidelidad material; no para código sin UI o certificar comportamiento mediante captura.",
+          "input": "Objeto estable, referencia si existe, entorno, estados y tamaños pertinentes.",
+          "output": "Hallazgos concretos con gravedad, evidencia, comparación, límites y revalidación de delta; si no render disponible revisión estática limitada.",
+          "boundary": "code-review futuro revisa cambio técnico; focused-testing gobierna selección; distinguir autoinspección y revisión independiente.",
+          "gaps": [
+            "B01",
+            "B05",
+            "B06",
+            "B07",
+            "B08",
+            "B09",
+            "B10"
+          ],
+          "implementation": "NOT_CREATED"
+        }
+      ],
+      "cases": [
+        {
+          "id": "U01",
+          "scope": "UX",
+          "scenario": "Solicitud de operación de venta ficticia con carga, error y resultado incierto.",
+          "expected": "Flujo y acciones de recuperación coherentes, estado unknown no es fallo ni éxito, no duplicar efecto, no inventar API.",
+          "oracle": "Contrato de estados y tabla de transiciones independiente; A01,A08; B02",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U02",
+          "scope": "Frontend",
+          "scenario": "Formulario modal de una SPA con motor objetivo antiguo explícito; alternativa de web moderna.",
+          "expected": "Semántica, teclado, foco y cierre; seleccionar API compatible o fallback sin migración ni dependencia gratuita; no aplicar SSR/RSC al SPA.",
+          "oracle": "Contrato de interacción, prueba funcional del entorno si disponible, comprobación de soporte; A02,A06",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U03",
+          "scope": "Frontend/UX",
+          "scenario": "Formulario de datos con validación, latencia, reenvío y desconexión.",
+          "expected": "Estados completos, conserva entrada cuando seguro, validación de frontera y autoridad servidor/núcleo, no confiar en ocultar control.",
+          "oracle": "Oráculo de entrada/salida y estado, fallos simulados inocuos; A08; B01,B02",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U04",
+          "scope": "Diseño",
+          "scenario": "Misma tarjeta, botón, campo, diálogo y fila de tabla con dos marcas y tres perfiles de material.",
+          "expected": "Tokens semánticos, misma semántica/estados, paletas separadas y fallback opaco; sin duplicar componente por perfil.",
+          "oracle": "Inventario tokens, inspección de estilos y render representativo; A07,A09",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U05",
+          "scope": "Accesibilidad",
+          "scenario": "Diálogo y control desplegable con teclado, zoom, foco y estados de error.",
+          "expected": "Nombre/rol/estado correctos, foco visible/no oculto, regreso lógico, interacción alternativa y lectura de error; contraste efectivo.",
+          "oracle": "WCAG 2.2 AA aplicable y prueba manual + automatización disponible; A08",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U06",
+          "scope": "Visual/Accesibilidad",
+          "scenario": "UI con cristal sobre fondos claros/oscuros y modo reducido; muestras válida y defectuosa.",
+          "expected": "Detecta texto ilegible, solapamiento, foco tapado, contraste o estados indistinguibles; distingue captura de interacción y no inventa render.",
+          "oracle": "Muestras deterministas, comparación sobre fondo efectivo y criterios independientes; A07,A08",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U07",
+          "scope": "Rendimiento",
+          "scenario": "Interfaz densa y equipo limitado simulado o representativo, con efectos opcionales.",
+          "expected": "Preserva información y respuesta, reduce efectos costosos, mide antes/después si posible; no afirma rendimiento objetivo sin hardware/datos.",
+          "oracle": "Presupuesto acordado y escenario comparable; tiempos/frames/memoria solo observables; A02,A07; B08",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U08",
+          "scope": "Selección",
+          "scenario": "Cambio editorial sin impacto de UX, bug de UI y tarea con referencia fuera de muestra.",
+          "expected": "Omite skills ajenas, activa procedimiento útil, resuelve enlace autorizado o declara límite; sin exploración masiva.",
+          "oracle": "Traza nativa si disponible, referencia exacta y resultado; A01,A03,A05; B01,B09",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U09",
+          "scope": "Revisión",
+          "scenario": "Objeto estable con dos defectos materiales preparados y variante corregida.",
+          "expected": "Identifica defectos con evidencia, no falsos positivos sobre alternativa válida, no edita objeto del autor; revalida solo delta.",
+          "oracle": "Oráculo previo e independiente, identidad/diff y verificación; A08,A10; B05,B06",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "U10",
+          "scope": "Comparación",
+          "scenario": "Misión representativa con 13 skills comunes vs misma base + familia candidata, entradas y condiciones equivalentes.",
+          "expected": "Separar catálogo, invocación, consulta, resultado, seguridad y coste; sin inferencia causal si origen/modelo no verificado; no aprobar por promedio.",
+          "oracle": "Rúbrica de casos, integridad, trazas disponibles y juez independiente; A04,A10; B08,B10",
+          "status": "NOT_RUN"
+        }
+      ],
+      "crystalWorld": "candidate contextual visual grammar; six logical layers; brand/theme/material independent; Premium/Professional/Lite, opaque fallback, accessible states and device-dependent budget",
+      "conditionsStatus": "OPEN_UNTIL_EVIDENCE",
+      "sourceReview": "PARTIAL; family-specific exact source and applicability/rights checks pending",
+      "implementation": "NOT_CREATED",
+      "functionalEvaluation": "NOT_RUN",
+      "independentReview": "PENDING",
       "installable": false
     }
   }
