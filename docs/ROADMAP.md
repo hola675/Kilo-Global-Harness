@@ -1,5 +1,5 @@
 # Roadmap de ejecución
-Versión del archivo: 0.150.0 | Última modificación: 2026-11-28
+Versión del archivo: 0.151.0 | Última modificación: 2026-11-28
 
 Leyenda: DONE_POC_LIMITED = PoC suficiente para desarrollar candidatos, certificación parcial y restricciones de activación/release vigentes; DONE_INVENTORY = inventario estático y preparación de laboratorio completados dentro del alcance; no certificación funcional ni cobertura absoluta; IN_PROGRESS = trabajo iniciado, puerta aún no superada; DONE_DOC = entregable documental completado; PENDING = no iniciado/certificado; BLOCKED = dependencia no disponible; NO_NECESARIO = brecha descartada con evidencia (solo fases condicionales). No confundir DONE_DOC con PASS de runtime.
 
@@ -565,3 +565,7 @@ Entrada F08_DESIGN_READY reportada. Aplicar skill-authoring 0.1.0 intacta, matri
 
 ## F08.2 — ampliación multidisciplinaria y requisitos candidatos (2026-11-28)
 Contraste de 13 repositorios adicionales fijados, ocho extractos de SKILL.md concretos en cinco colecciones y 16 grupos de fuentes técnicas y profesionales. OpenAI/skills se declara deprecado en README de la revisión consultada; successor openai/plugins solo referencia F09. Separar licencia por objeto, fecha de revisión, soporte efectivo, procedimiento y evidencia. Requisitos, activación, resultado y caso discriminante candidatos para 21 habilidades originales; no cuota ni nueva skill por framework. Fuentes, decisiones y límites en INVESTIGACION-SKILLS 0.16.0; manifiesto 0.99.0. No se ejecutó ni instaló material externo, no se acredita superioridad, compatibilidad Kilo, evaluación funcional o revisión independiente. F08.2 candidato de investigación ampliada; F08.3 arquitectura pendiente, seguir contraste focalizado por dominio antes de implementar. Política 0.23.0, 9 agentes, 13 skills base y B01–B10 intactos; instalación/release bloqueadas.
+
+
+## F08.3 — arquitectura candidata de conocimiento (2026-11-28)
+[Arquitectura](ARQUITECTURA.md) 0.5.0, diseño F08.3 0.1.0: seis capas, 9 roles, 7 perfiles lógicos, referencias relativas con vigencia y autoridad, 10 casos transversales candidatos A01–A10 NOT_RUN; inspección estática de cinco archivos CLI 7.8.27 fijado, no acceso efectivo garantizado. Sin nuevo motor, detector, registro ni permisos; conserva 13 skills comunes y 21 ID especializados como candidatos. Crystal World contextual. Revisión independiente documental pendiente; F08.4 diseño frontend pendiente, antes de implementación y evaluación. Manifiesto 0.100.0; no instalación, certificación integral ni release.
