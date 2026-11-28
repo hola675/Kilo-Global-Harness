@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "version": "0.101.0",
+    "version": "0.102.0",
     "last_modified": "2026-11-28"
   },
   "id": "kilo-global-harness-team",
@@ -305,7 +305,9 @@
     "F08_2": "MULTIDOMAIN_RESEARCH_REQUIREMENTS_CANDIDATE_PREPARED",
     "F08_3": "DONE_DOCUMENTARY_LIMITED_CONDITIONS_CARRIED",
     "F08_4": "IN_PROGRESS",
-    "F08_4_1": "DESIGN_EVALUATION_CONTRACT_CANDIDATE_PREPARED"
+    "F08_4_1": "DESIGN_EVALUATION_CONTRACT_CANDIDATE_PREPARED",
+    "F08_4_2": "FOCUSED_UX_SOURCE_CONTRAST_PREPARED",
+    "F08_4_3": "UX_CANDIDATE_WRITTEN_REVIEW_PENDING"
   },
   "globalInstructionEvidence": {
     "inventoryStatus": "PASS_REPORTED",
@@ -3470,7 +3472,7 @@
     }
   },
   "f08Candidate": {
-    "version": "0.4.0",
+    "version": "0.5.0",
     "last_modified": "2026-11-28",
     "baselineRevision": "1f9538116ecdf5720d6d344132ffa6a15fdaa82f",
     "status": "FRONTEND_DESIGN_CANDIDATE_PREPARED",
@@ -3655,7 +3657,7 @@
     "functionalEvaluation": "NOT_RUN",
     "externalCompatibility": "NOT_VERIFIED",
     "independentReview": "PENDING",
-    "next": "F08.4: complete focused source contrasts and write original candidates on one temporary branch; validate T0 and obtain applicable independent review/evaluations; preserve conditions and no global activation.",
+    "next": "Continue focused source contrast and frontend-engineering candidate on same branch; review and evaluate family before merge. Conditions remain open.",
     "fullRuntimeCertification": false,
     "researchExpansion": {
       "date": "2026-11-28",
@@ -4001,11 +4003,11 @@
       "effectiveReferenceAccess": "NOT_VERIFIED"
     },
     "frontendCandidate": {
-      "version": "0.1.0",
+      "version": "0.2.0",
       "last_modified": "2026-11-28",
       "baseRevision": "45d0c25c1b30d47ab603d3659caccbc1bdb7eb9e",
       "contract": "tests/F08-FRONTEND.md",
-      "status": "DESIGN_CONTRACT_PREPARED",
+      "status": "FIRST_SKILL_CANDIDATE_WRITTEN",
       "skills": [
         {
           "id": "ux-product-design",
@@ -4020,7 +4022,16 @@
             "B07",
             "B08"
           ],
-          "implementation": "NOT_CREATED"
+          "implementation": "CANDIDATE_WRITTEN_REVIEW_PENDING",
+          "version": "0.1.0",
+          "path": "team/skills/ux-product-design/SKILL.md",
+          "references": [
+            "team/skills/ux-product-design/references/interaction-contract.md"
+          ],
+          "sourceEvidence": "FOCUSED_PRIMARY_DOCS_INSPECTED_CONCEPTUAL_ONLY",
+          "evaluation": "NOT_RUN",
+          "independentReview": "PENDING",
+          "necessity": "domain-specific interaction contract and recovery patterns beyond requirements-acceptance and Lumen role; hypothesis not proven; compare no-change/reference-only"
         },
         {
           "id": "frontend-engineering",
@@ -4174,8 +4185,8 @@
       ],
       "crystalWorld": "candidate contextual visual grammar; six logical layers; brand/theme/material independent; Premium/Professional/Lite, opaque fallback, accessible states and device-dependent budget",
       "conditionsStatus": "OPEN_UNTIL_EVIDENCE",
-      "sourceReview": "PARTIAL; family-specific exact source and applicability/rights checks pending",
-      "implementation": "NOT_CREATED",
+      "sourceReview": "UX focused contrast complete for conceptual adaptation; remaining families pending",
+      "implementation": "PARTIAL_CANDIDATE_1_OF_5",
       "functionalEvaluation": "NOT_RUN",
       "independentReview": "PENDING",
       "installable": false
